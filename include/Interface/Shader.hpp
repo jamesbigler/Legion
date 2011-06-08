@@ -3,6 +3,9 @@
 #define LEGION_SHADER_H_
 
 
+#include <private/APIBase.h>
+
+
 namespace legion
 {
 

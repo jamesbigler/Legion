@@ -2,16 +2,14 @@
 #ifndef LEGION_MESH_H_
 #define LEGION_MESH_H_
 
-
-// TODO:
-//   - Remove non-copyable semantics and make Impl* member be shared_ptr?
+#include <private/APIBase.h>
 
 namespace legion
 {
 
 class Shader;
 
-class Mesh
+class Mesh : public APIBase
 {
 public:
     enum Type
@@ -37,7 +35,7 @@ public:
 private:
 
     class Impl;
-    Impl* impl;
+    std::shared_ptr<Impl> m_impl;
 };
 
 }
