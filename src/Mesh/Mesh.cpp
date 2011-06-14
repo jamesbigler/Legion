@@ -1,6 +1,7 @@
 
-#include <Mesh.hpp>
+#include <Core/Mesh.hpp>
 
+using namespace legion;
 
 Mesh::Mesh( const std::string& name, Type type, unsigned vertex_count )
     : APIBase( name )
@@ -18,7 +19,7 @@ void Mesh::setTime( float time )
 }
 
 
-void Mesh::setVertices( const Point3*  vertices )
+void Mesh::setVertices( const Vector3* vertices )
 {
 }
 
@@ -28,21 +29,23 @@ void Mesh::setNormals(  const Vector3* normals )
 }
 
 
+void Mesh::setTransform( const Matrix4x4& transform )
+{
+}
+
+
 void Mesh::setTextureCoordinates( const Vector2* tex_coords )
 {
 }
 
 
-void Mesh::addTris( int num_faces, const TriIndices* tris, const Shader& shader )
+void Mesh::addTriangles( unsigned num_triangles, const Index3* triangles, const IShader& shader )
 {
 }
 
 
-void Mesh::addQuads( int num_faces, const QuadIndices* quads, const Shader& shader )
+void Mesh::addQuads( unsigned num_quads, const Index4* quads, const IShader& shader )
 {
 }
 
 
-void Mesh::setTransform( const Matrix4x4& transform )
-{
-}

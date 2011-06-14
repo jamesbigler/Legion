@@ -1,6 +1,8 @@
 
-#ifndef LEGION_CAMERA_H_
-#define LEGION_CAMERA_H_
+#ifndef LEGION_THIN_LENS_CAMERA_HPP_
+#define LEGION_THIN_LENS_CAMERA_HPP_
+
+#include <Interface/IBasicCamera.hpp>
 
 
 namespace legion
@@ -18,12 +20,13 @@ public:
     void setLensRadius( float radius );
 
 private:
-    void generateCameraSpaceRay( const Sample& filtered_sample, CameraSpaceRay& ray );
+    void generateCameraSpaceRay( const Camera::Sample& filtered_sample, CameraSpaceRay& ray );
 
     class Impl;
-    std::shared_ptr<Impl> m_impl;
+    std::tr1::shared_ptr<Impl> m_impl;
 };
 
 
 }
-#endif // LEGION_CAMERA_H_
+
+#endif // LEGION_THIN_LENS_CAMERA_HPP_

@@ -1,25 +1,31 @@
 
-#ifndef LEGION_FILM_H_
-#define LEGION_FILM_H_
+#ifndef LEGION_IMAGE_FILM_H_
+#define LEGION_IMAGE_FILM_H_
 
-#include <private/APIBase.h>
+#include <Interface/IFilm.hpp>
 
 namespace legion
 {
 
 
-class IFilm : public APIBase
+class ImageFilm : public IFilm 
 {
 public:
-    IFilm( const std::string& name );
-    virtual ~IFilm();
+    ImageFilm( const std::string& name );
+    ~ImageFilm();
 
-    virtual void addSample( const Index2& pixel_index, const Color& color, float weight )=0;
-    virtual void shutterOpen=0;
-    virtual void shutterClose=0;
-    virtual void passComplete=0; 
+    void addSample( const Index2& pixel_index, const Color& color, float weight );
+    void shutterOpen();
+    void shutterClose();
+    void passComplete();
+    void setDimensions( const Index2& dimensions );
+    Index2 getDimensions();
+
+private:
+    class Impl;
+    std::tr1::shared_ptr<Impl> m_impl;
 };
 
 } // namespace legion
 
-#endif // LEGION_FILM_H_
+#endif // LEGION_IMAGE_FILM_H_

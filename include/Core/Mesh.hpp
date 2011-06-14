@@ -1,42 +1,45 @@
 
-#ifndef LEGION_MESH_H_
-#define LEGION_MESH_H_
+#ifndef LEGION_CORE_MESH_HPP_
+#define LEGION_CORE_MESH_HPP_
 
-#include <private/APIBase.h>
+#include <Private/APIBase.hpp>
+#include <Core/Vector.hpp>
+#include <Core/Index.hpp>
+#include <Core/Matrix.hpp>
 
 namespace legion
 {
 
-class Shader;
+class IShader;
 
 class Mesh : public APIBase
 {
 public:
     enum Type
     {
-        TYPE_TRIANGLE = 0,
+        TYPE_POLYGONAL = 0,
         TYPE_CATMULL_CLARK,
         TYPE_BUILTIN_COUNT
     };
 
-    explicit Mesh( const std::string& name, Type type, unsigned vertex_count );
+    Mesh( const std::string& name, Type type, unsigned vertex_count );
     ~Mesh();
 
     void setTime( float time );
-    void setVertices( const Point3*  vertices );
-    void setNormals(  const Vector3* normals );
+    void setVertices( const Vector3* vertices );
+    void setNormals( const Vector3* normals );
     void setTextureCoordinates( const Vector2* tex_coords );
-
-    void addTris( int num_faces, const TriIndices* tris, const Shader& shader );
-    void addQuads( int num_faces, const QuadIndices* quads, const Shader& shader );
-
     void setTransform( const Matrix4x4& transform );
+
+    void addTriangles( unsigned num_faces, const Index3* tris, const IShader& shader );
+    void addQuads( unsigned num_faces, const Index4* quads, const IShader& shader );
+
 
 private:
 
     class Impl;
-    std::shared_ptr<Impl> m_impl;
+    std::tr1::shared_ptr<Impl> m_impl;
 };
 
 }
-#endif // LEGION_MESH_H_
+#endif // LEGION_CORE_MESH_HPP_ 

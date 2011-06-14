@@ -1,6 +1,8 @@
 
-#ifndef LEGION_CAMERA_H_
-#define LEGION_CAMERA_H_
+
+#include <Camera/ThinLensCamera.hpp>
+
+using namespace legion;
 
 
 ThinLensCamera::ThinLensCamera( const std::string& name )
@@ -30,6 +32,6 @@ void ThinLensCamera::setLensRadius( float radius )
 }
 
 
-void ThinLensCamera::generateCameraSpaceRay( const Sample& filtered_sample, CameraSpaceRay& ray )
+void ThinLensCamera::generateCameraSpaceRay( const Camera::Sample& filtered_sample, CameraSpaceRay& ray )
 {
 }

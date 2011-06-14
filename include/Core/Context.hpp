@@ -3,15 +3,15 @@
 #ifndef LEGION_CONTEXT_H_
 #define LEGION_CONTEXT_H_
 
-#include <private/APIBase.hpp>
+#include <Private/APIBase.hpp>
 
 namespace legion
 {
 
 
-class Camera;
+class ICamera;
+class IFilm;
 class Mesh;
-class Film;
 
 class Context : public APIBase 
 {
@@ -19,17 +19,17 @@ public:
     explicit Context( const std::string& name );
     ~Context();
 
-    void addMesh( const Mesh& mesh );
+    void addMesh( const Mesh* mesh );
 
-    void setActiveCamera( const Camera& camera );
-    void setActiveFilm( const Film& camera );
+    void setActiveCamera( const ICamera* camera );
+    void setActiveFilm( const IFilm* film );
 
     void render();
 
 private:
 
     class Impl;
-    std::shared_ptr<Impl> m_impl;
+    std::tr1::shared_ptr<Impl> m_impl;
 };
 
 
