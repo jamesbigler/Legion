@@ -39,12 +39,12 @@ void Mesh::setTextureCoordinates( const Vector2* tex_coords )
 }
 
 
-void Mesh::addTriangles( unsigned num_triangles, const Index3* triangles, const IShader& shader )
+void Mesh::addTriangles( unsigned num_triangles, const Index3* triangles, const ISurfaceShader& shader )
 {
 }
 
 
-void Mesh::addQuads( unsigned num_quads, const Index4* quads, const IShader& shader )
+void Mesh::addQuads( unsigned num_quads, const Index4* quads, const ISurfaceShader& shader )
 {
 }
 

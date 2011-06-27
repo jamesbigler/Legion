@@ -8,6 +8,8 @@ namespace legion
 class Color
 {
 public:
+    Color() {}
+
     Color( float r, float g, float b ) {}
 };
 

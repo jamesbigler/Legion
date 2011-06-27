@@ -10,7 +10,7 @@
 namespace legion
 {
 
-class IShader;
+class ISurfaceShader;
 
 class Mesh : public APIBase
 {
@@ -31,8 +31,8 @@ public:
     void setTextureCoordinates( const Vector2* tex_coords );
     void setTransform( const Matrix4x4& transform );
 
-    void addTriangles( unsigned num_faces, const Index3* tris, const IShader& shader );
-    void addQuads( unsigned num_faces, const Index4* quads, const IShader& shader );
+    void addTriangles( unsigned num_faces, const Index3* tris, const ISurfaceShader& shader );
+    void addQuads( unsigned num_faces, const Index4* quads, const ISurfaceShader& shader );
 
 
 private:

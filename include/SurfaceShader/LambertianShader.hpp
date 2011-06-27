@@ -3,28 +3,27 @@
 #define LEGION_LAMBERTIAN_SHADER_H_
 
 
-#include <Interface/IShader.hpp>
+#include <Interface/ISurfaceShader.hpp>
 
 
 namespace legion
 {
 
 
-class LambertianShader : public IShader
+class LambertianShader : public ISurfaceShader
 {
 public:
     LambertianShader( const std::string& name );
     virtual ~LambertianShader();
 
-    void  sample  ( const Vector3& w_out, const Shader::Geometry& p, Vector3& w_in, float& pdf );
+    void  sample  ( const Vector2& seed, const Vector3& w_out, const Shader::Geometry& p, Vector3& w_in, float& pdf );
     float pdf     ( const Vector3& w_out, const Shader::Geometry& p, const Vector3& w_in );
     Color evaluate( const Vector3& w_out, const Shader::Geometry& p, const Vector3& w_in );
 
     void setKd( const Color& kd );
         
 private:
-    class Impl;
-    std::tr1::shared_ptr<Impl> m_impl;
+    Color m_kd;
 };
 
 

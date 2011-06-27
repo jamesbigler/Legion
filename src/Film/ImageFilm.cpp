@@ -40,4 +40,5 @@ void ImageFilm::setDimensions( const Index2& dimensions )
 
 Index2 ImageFilm::getDimensions()
 {
+    return Index2( 0u, 0u );
 }

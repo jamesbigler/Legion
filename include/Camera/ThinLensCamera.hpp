@@ -8,24 +8,28 @@
 namespace legion
 {
 
+    class ThinLensCamera : public IBasicCamera
+    {
+    public:
+        explicit ThinLensCamera( const std::string& name );
+        ~ThinLensCamera();
 
-class ThinLensCamera : public IBasicCamera
-{
-public:
-    explicit ThinLensCamera( const std::string& name );
-    ~ThinLensCamera();
+        void setViewPlane( float left, float right, float bottom, float top );
+        void setFocalDistance( float distance );
+        void setLensRadius( float radius );
 
-    void setViewPlane( float left, float right, float bottom, float top );
-    void setFocalDistance( float distance );
-    void setLensRadius( float radius );
+    private:
+        void generateCameraSpaceRay( const Camera::Sample& filtered_sample, CameraSpaceRay& ray );
 
-private:
-    void generateCameraSpaceRay( const Camera::Sample& filtered_sample, CameraSpaceRay& ray );
 
-    class Impl;
-    std::tr1::shared_ptr<Impl> m_impl;
-};
+        float m_left;
+        float m_right;
+        float m_bottom;
+        float m_top;
 
+        float m_focal_distance;
+        float m_lens_radius;
+    };
 
 }
 

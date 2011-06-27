@@ -23,6 +23,7 @@ public:
 protected:
     struct CameraSpaceRay
     {
+        Vector3 origin;
         Vector3 direction;
     };
 

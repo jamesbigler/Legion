@@ -2,6 +2,7 @@
 #ifndef LEGION_CORE_INDEX_H_
 #define  LEGION_CORE_INDEX_H_
 
+/*
 namespace legion
 {
 
@@ -24,5 +25,8 @@ public:
 };
 
 }
+*/
+
+// TODO: get rid of this file
 
 #endif // LEGION_CORE_INDEX_H_

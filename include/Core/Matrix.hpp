@@ -8,7 +8,7 @@ namespace legion
 class Matrix4x4
 {
 public:
-    static Matrix4x4 identity() {}
+    static Matrix4x4 identity() { return Matrix4x4(); }
 };
 
 }

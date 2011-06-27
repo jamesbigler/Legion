@@ -16,7 +16,7 @@ namespace Camera
 {
     struct Sample
     {
-        Vector2 pixel;
+        Vector2 viewplane;
         Vector2 lens;
         float   time;
     };

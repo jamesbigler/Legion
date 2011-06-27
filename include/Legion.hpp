@@ -16,9 +16,10 @@
 #include <Interface/IBasicCamera.hpp>
 #include <Interface/ICamera.hpp>
 #include <Interface/IFilm.hpp>
-#include <Interface/IShader.hpp>
-#include <Legion.hpp>
+#include <Interface/ISurfaceShader.hpp>
+#include <LightShader/PointLightShader.hpp>
+#include <Math/Math.hpp>
 #include <Private/APIBase.hpp>
-#include <Shader/LambertianShader.hpp>
+#include <SurfaceShader/LambertianShader.hpp>
 
 #endif // LEGION_LEGION_HPP_

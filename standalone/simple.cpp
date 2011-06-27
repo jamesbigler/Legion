@@ -23,19 +23,25 @@ int main( int argc, char** argv )
         indices.push_back( legion::Index3( 0, 1, 3 ) );
         indices.push_back( legion::Index3( 1, 2, 3 ) );
 
-        legion::Mesh square = legion::Mesh( "square", legion::Mesh::TYPE_POLYGONAL, vertices.size() );
+        legion::Mesh square = legion::Mesh( "square",
+                                            legion::Mesh::TYPE_POLYGONAL,
+                                            vertices.size() );
         square.setTime( 0.0f );
-        //square.setVertices( vertices.begin(), vertices.end );
         square.setVertices( &vertices[0] );
         square.setTransform( legion::Matrix4x4::identity() );
-        //square.addTriangles( indices.begin(), indices.end() );
         square.addTriangles( indices.size(), &indices[0], mtl );
         ctx.addMesh( &square );
+
+        legion::PointLightShader light = legion::PointLightShader( "lshader" );
+        light.setPosition( legion::Vector3( 1.0f, 1.0f, 1.0f ) );
+        light.setRadiantFlux( legion::Color( 1.0f, 1.0f, 1.0f ) );
+        ctx.addLight( &light );
+        //ctx.addAreaLigth(...); 
 
         legion::ThinLensCamera cam( "camera" );
         cam.setViewPlane( -1.0f, 1.0f, -0.75f, 0.75f );
         cam.setShutterOpenClose( 0.0f, 0.005f );
-        cam.setFocalDistance( 10.0f );
+        cam.setFocalDistance( 1.0f );
         cam.setLensRadius( 0.005f );
         ctx.setActiveCamera( &cam );
 

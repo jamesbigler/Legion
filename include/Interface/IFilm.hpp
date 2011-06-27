@@ -3,7 +3,7 @@
 #define LEGION_INTERFACE_IFILM_H_
 
 #include <private/APIBase.hpp>
-#include <Core/Index.hpp>
+#include <Core/Vector.hpp>
 #include <Core/Color.hpp>
 
 namespace legion
