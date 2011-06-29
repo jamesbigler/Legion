@@ -13,13 +13,14 @@ class ImageFilm : public IFilm
 public:
     ImageFilm( const std::string& name );
     ~ImageFilm();
+    
+    void   setDimensions( const Index2& dimensions );
+    Index2 getDimensions()const;
 
     void addSample( const Index2& pixel_index, const Color& color, float weight );
     void shutterOpen();
     void shutterClose();
     void passComplete();
-    void setDimensions( const Index2& dimensions );
-    Index2 getDimensions();
 
 private:
     class Impl;

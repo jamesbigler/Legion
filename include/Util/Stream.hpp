@@ -4,15 +4,15 @@
 
 #include <ostream>
 #include <Core/Vector.hpp>
+#include <Core/Color.hpp>
 
 namespace legion
 {
 
 template<unsigned DIM, typename TYPE>
-std::ostream& operator<<( std::ostream& out,
-                          const legion::Vector<DIM, TYPE>& v ); 
+std::ostream& operator<<( std::ostream& out, const legion::Vector<DIM, TYPE>& v ); 
 
-
+std::ostream& operator<<( std::ostream& out, const legion::Color& c ); 
 
 
 

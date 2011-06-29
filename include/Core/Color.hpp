@@ -5,13 +5,33 @@
 namespace legion
 {
 
-class Color
-{
-public:
-    Color() {}
+    class Color
+    {
+    public:
+        Color() {}
+        Color( float r, float g, float b );
 
-    Color( float r, float g, float b ) {}
-};
+        float red()const           { return m_c[0]; }
+        float green()const         { return m_c[1]; }
+        float blue()const          { return m_c[2]; }
+
+        void  setRed( float r )    { m_c[0] = r; }
+        void  setGreen( float g )  { m_c[1] = g; }
+        void  setBlue( float b )   { m_c[2] = b; }
+    private:
+
+        float m_c[3];
+
+    };
+
+        
+    inline Color::Color( float r, float g, float b )
+    {
+        m_c[0] = r;
+        m_c[1] = g;
+        m_c[2] = b;
+    }
+
 
 }
 
