@@ -32,7 +32,7 @@ public:
 
     virtual void setTransform( const Matrix4x4& matrix, float time )=0;
     virtual void setShutterOpenClose( float open, float close )=0;
-    virtual void generateRay( const Camera::Sample& sample, legion::Ray& transformed_ray )=0;
+    virtual void generateRay( const Camera::Sample& sample, legion::Ray& transformed_ray )const=0;
 
 };
 

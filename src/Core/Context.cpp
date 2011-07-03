@@ -37,8 +37,7 @@ private:
     struct Light
     {
         // TODO: Flesh this out, move to shared place if needed
-        std::string    getName() { return shader->getName() + ":" + 
-                                          ( geometry ? geometry->getName() : "NULL" ); }
+        std::string    getName() { return shader->getName() + ":" + ( geometry ? geometry->getName() : "NULL" ); }
         const ILightShader* shader;
         const Mesh*         geometry;
     };
@@ -47,8 +46,8 @@ private:
     std::vector<Light> m_lights;
     const ICamera*           m_camera;
     const IFilm*             m_film;
-
 };
+
 
 Context::Impl::Impl()
 {
@@ -107,6 +106,24 @@ void Context::Impl::setActiveFilm( const IFilm* film )
 void Context::Impl::render()
 {
     std::cerr << "rendering ...." << std::endl;
+
+    const Index2  image_dims  = m_film->getDimensions();
+    const Vector2 image_dimsf = Vector2( image_dims );
+    const Vector2 pixel_dimsf = Vector2( 1.0f, 1.0f ) / image_dimsf;
+
+    for( int i = 0; i < image_dims.x(); ++i )
+    {
+        for( int j = 0; j < image_dims.y(); ++j )
+        {
+            Camera::Sample camera_sample;
+            camera_sample.viewplane = Vector2( i, j ) / pixel_dimsf;
+            camera_sample.lens      = Vector2( drand48(), drand48() );
+            camera_sample.time      = drand48();
+            Ray camera_ray;
+            m_camera->generateRay( camera_sample, camera_ray );
+
+        }
+    }
 }
 
 

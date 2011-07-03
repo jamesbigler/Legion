@@ -19,7 +19,7 @@ namespace legion
         void setLensRadius( float radius );
 
     private:
-        void generateCameraSpaceRay( const Camera::Sample& filtered_sample, CameraSpaceRay& ray );
+        void generateCameraSpaceRay( const Camera::Sample& filtered_sample, CameraSpaceRay& ray )const;
 
 
         float m_left;

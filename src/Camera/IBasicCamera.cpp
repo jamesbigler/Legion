@@ -26,7 +26,7 @@ void IBasicCamera::setShutterOpenClose( float open, float close )
 }
 
 
-void IBasicCamera::generateRay( const Camera::Sample& sample, Ray& transformed_ray )
+void IBasicCamera::generateRay( const Camera::Sample& sample, Ray& transformed_ray )const
 {
   // generate camera space ray
   CameraSpaceRay ray;

@@ -18,7 +18,7 @@ public:
 
     void setTransform( const Matrix4x4& matrix, float time );
     void setShutterOpenClose( float open, float close );
-    void generateRay( const Camera::Sample& sample, legion::Ray& transformed_ray );
+    void generateRay( const Camera::Sample& sample, legion::Ray& transformed_ray )const;
 
 protected:
     struct CameraSpaceRay
@@ -28,7 +28,7 @@ protected:
     };
 
 private:
-    virtual void generateCameraSpaceRay( const Camera::Sample& filtered_sample, CameraSpaceRay& ray )=0;
+    virtual void generateCameraSpaceRay( const Camera::Sample& filtered_sample, CameraSpaceRay& ray )const=0;
 
     class Impl;
     std::tr1::shared_ptr<Impl> m_impl;

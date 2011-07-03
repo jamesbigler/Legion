@@ -23,11 +23,14 @@ class Vector
 {
 public:
     Vector();
-    Vector( TYPE x, TYPE y );                     // Only valid for Vector<2>
-    Vector( TYPE x, TYPE y, TYPE z );            // Only valid for Vector<3>
-    Vector( TYPE x, TYPE y, TYPE z, TYPE w  );  // Only valid for Vector<4>
+    Vector( TYPE x, TYPE y );                      // Only valid for Vector<2>
+    Vector( TYPE x, TYPE y, TYPE z );              // Only valid for Vector<3>
+    Vector( TYPE x, TYPE y, TYPE z, TYPE w  );     // Only valid for Vector<4>
     Vector( const Vector& v );
     explicit Vector( const TYPE v[DIM] );
+    
+    template <typename TYPE2>
+    explicit Vector( const Vector<DIM, TYPE2>& v );
 
     TYPE x() const;
     TYPE y() const;
@@ -35,8 +38,8 @@ public:
     TYPE w() const;                                // Only valid for Vector<4>
     TYPE setX( TYPE x );
     TYPE setY( TYPE y );
-    TYPE setZ( TYPE z );                          // Only valid for Vector<3,4>
-    TYPE setW( TYPE w );                          // Only valid for Vector<3>
+    TYPE setZ( TYPE z );                           // Only valid for Vector<3,4>
+    TYPE setW( TYPE w );                           // Only valid for Vector<3>
 
 
     TYPE  operator[]( unsigned idx ) const;
@@ -129,6 +132,14 @@ inline Vector<DIM, TYPE>::Vector( const Vector<DIM, TYPE>& v )
 
 template<unsigned DIM, typename TYPE>
 inline Vector<DIM, TYPE>::Vector( const TYPE v[DIM] )
+{
+    for( unsigned i = 0; i < DIM; ++i ) m_v[i] = v[i];
+}
+
+
+template<unsigned DIM, typename TYPE>
+template<typename TYPE2>
+inline Vector<DIM, TYPE>::Vector( const Vector<DIM, TYPE2>& v )
 {
     for( unsigned i = 0; i < DIM; ++i ) m_v[i] = v[i];
 }

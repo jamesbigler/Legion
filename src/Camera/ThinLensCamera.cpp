@@ -40,7 +40,7 @@ void ThinLensCamera::setLensRadius( float radius )
 }
 
 
-void ThinLensCamera::generateCameraSpaceRay( const Camera::Sample& filtered_sample, CameraSpaceRay& ray )
+void ThinLensCamera::generateCameraSpaceRay( const Camera::Sample& filtered_sample, CameraSpaceRay& ray )const
 {
     Vector3 on_viewplane( legion::lerp( m_left, m_right, filtered_sample.viewplane.x() ),
                           legion::lerp( m_bottom, m_top, filtered_sample.viewplane.y() ),
