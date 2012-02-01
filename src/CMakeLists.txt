@@ -1,4 +1,6 @@
 
+#TODO: Move plugins into separate library and load dynamically
+
 # Search for the OptiX libraries and include files.
 find_package(OptiX REQUIRED)
 
@@ -8,8 +10,17 @@ include_directories(
     "${CMAKE_CURRENT_SOURCE_DIR}"
     )
 
+#include( Cuda/CMakeLists.txt )
+#message( "ptx files: ${ptx_files}" )
+
+find_package(CUDA 4.0 REQUIRED)
+CUDA_COMPILE_PTX( ptx_files
+    Cuda/ray_generation.cu
+    Cuda/triangle_mesh.cu
+    )
 
 add_library( legion SHARED
+    ${ptx_files}
     ../include/Camera/ThinLensCamera.hpp
     ../include/Core/Color.hpp
     ../include/Core/Context.hpp
@@ -58,4 +69,4 @@ target_link_libraries( legion
     )
 
 
-#TODO: Move plugins into separate library and load dynamically
+
