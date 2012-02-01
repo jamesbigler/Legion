@@ -26,6 +26,8 @@ public:
     ~Mesh();
 
     void setTime( float time );
+
+    // TODO: add templated iterator setters???
     void setVertices( const Vector3* vertices );
     void setNormals( const Vector3* normals );
     void setTextureCoordinates( const Vector2* tex_coords );
