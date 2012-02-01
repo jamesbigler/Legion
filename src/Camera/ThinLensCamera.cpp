@@ -2,6 +2,8 @@
 
 #include <Camera/ThinLensCamera.hpp>
 #include <Math/Math.hpp>
+#include <Util/Stream.hpp>
+#include <iostream>
 
 using namespace legion;
 
@@ -40,16 +42,18 @@ void ThinLensCamera::setLensRadius( float radius )
 }
 
 
-void ThinLensCamera::generateCameraSpaceRay( const Camera::Sample& filtered_sample, CameraSpaceRay& ray )const
+void ThinLensCamera::generateCameraSpaceRay( const Camera::Sample& filtered_sample,
+                                             CameraSpaceRay& ray )const
 {
     Vector3 on_viewplane( legion::lerp( m_left, m_right, filtered_sample.viewplane.x() ),
                           legion::lerp( m_bottom, m_top, filtered_sample.viewplane.y() ),
                           0.0f );
     
     Vector2 lens_sample( legion::squareToDisk( filtered_sample.lens ) * m_lens_radius );
-    Vector3 on_lens(     lens_sample.x(), lens_sample.y(), 0.0f );
+    Vector3 on_lens( lens_sample.x(), lens_sample.y(), 0.0f );
                         
     ray.origin    = on_lens;
     ray.direction = legion::normalize( on_viewplane - on_lens );
-                        
+
+    std::cerr << " thinlens ray: " << ray.origin << " | " << ray.direction << std::endl;
 }

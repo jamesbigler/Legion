@@ -46,7 +46,7 @@ int main( int argc, char** argv )
         ctx.setActiveCamera( &cam );
 
         legion::ImageFilm film = legion::ImageFilm( "image" );
-        film.setDimensions( legion::Index2( 1024u, 756u ) );
+        film.setDimensions( legion::Index2( 16u, 16u ) );
         ctx.setActiveFilm( &film );
 
         ctx.render();

@@ -5,6 +5,7 @@ find_package(OptiX REQUIRED)
 # Add the path to the OptiX headers to our include paths.
 include_directories(
     "${OptiX_INCLUDE}"
+    "${CMAKE_CURRENT_SOURCE_DIR}"
     )
 
 
@@ -35,7 +36,11 @@ add_library( legion SHARED
     Camera/ThinLensCamera.cpp
     Core/APIBase.cpp
     Core/Context.cpp
-    Engine/Engine.cpp
+    Engine/ContextImpl.cpp
+    Engine/ContextImpl.hpp
+    Engine/PrimaryRayGenerator.cpp
+    Engine/PrimaryRayGenerator.hpp
+    Engine/Light.hpp
     Film/IFilm.cpp
     Film/ImageFilm.cpp
     LightShader/ILightShader.cpp

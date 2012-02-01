@@ -33,5 +33,7 @@ void IBasicCamera::generateRay( const Camera::Sample& sample, Ray& transformed_r
   generateCameraSpaceRay( sample, ray );
 
   // Transform ray into world space
-  transformed_ray = Ray(); 
+  transformed_ray = Ray( ray.origin,
+                         ray.direction,
+                         Vector2( 0.0f, 1e8f ) ); 
 }
