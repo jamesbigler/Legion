@@ -10,15 +10,14 @@ include_directories(
     "${CMAKE_CURRENT_SOURCE_DIR}"
     )
 
-#include( Cuda/CMakeLists.txt )
-#message( "ptx files: ${ptx_files}" )
-
+# Set up build .cu -> .ptx build 
 find_package(CUDA 4.0 REQUIRED)
 CUDA_COMPILE_PTX( ptx_files
     Cuda/ray_generation.cu
     Cuda/triangle_mesh.cu
     )
 
+# build the library and ptx files
 add_library( legion SHARED
     ${ptx_files}
     ../include/Camera/ThinLensCamera.hpp
@@ -63,6 +62,7 @@ add_library( legion SHARED
     Util/Stream.cpp
     )
 
+# Link against optix
 target_link_libraries( legion
     optix
     ${optix_rpath}
