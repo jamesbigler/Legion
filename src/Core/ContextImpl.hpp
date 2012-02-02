@@ -2,7 +2,7 @@
 #ifndef LEGION_ENGINE_CONTEXT_IMPL_HPP_
 #define LEGION_ENGINE_CONTEXT_IMPL_HPP_
 
-#include <Engine/Light.hpp>
+#include <Core/Light.hpp>
 #include <Core/Context.hpp>
 
 #include <vector>

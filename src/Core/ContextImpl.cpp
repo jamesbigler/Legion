@@ -1,6 +1,6 @@
 
 #include <Core/Mesh.hpp>
-#include <Engine/ContextImpl.hpp>
+#include <Core/ContextImpl.hpp>
 #include <Engine/PrimaryRayGenerator.hpp>
 #include <Interface/ICamera.hpp>
 #include <Interface/IFilm.hpp>

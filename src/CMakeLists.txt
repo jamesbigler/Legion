@@ -46,11 +46,11 @@ add_library( legion SHARED
     Camera/ThinLensCamera.cpp
     Core/APIBase.cpp
     Core/Context.cpp
-    Engine/ContextImpl.cpp
-    Engine/ContextImpl.hpp
+    Core/ContextImpl.cpp
+    Core/ContextImpl.hpp
+    Core/Light.hpp
     Engine/PrimaryRayGenerator.cpp
     Engine/PrimaryRayGenerator.hpp
-    Engine/Light.hpp
     Film/IFilm.cpp
     Film/ImageFilm.cpp
     LightShader/ILightShader.cpp
