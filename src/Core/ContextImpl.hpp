@@ -31,7 +31,7 @@ namespace legion
     private:
 
         std::vector<const Mesh*> m_meshes;
-        std::vector<Light> m_lights;
+        std::vector<Light>       m_lights;
         const ICamera*           m_camera;
         const IFilm*             m_film;
     };
