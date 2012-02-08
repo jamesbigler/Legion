@@ -28,7 +28,13 @@ float PointLightShader::pdf( const LocalGeometry& p, const Vector3& w_in )
 }
 
 
-Color PointLightShader::evaluate( const LocalGeometry& p, const Vector3& w_in )
+float PointLightShader::getPower()const
+{
+    return 0.0f;
+}
+
+
+Color PointLightShader::getRadiance( const LocalGeometry& p, const Vector3& w_in )
 {
     return Color( 0.0f, 0.0f, 0.0f );
 }

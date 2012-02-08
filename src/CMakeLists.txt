@@ -33,7 +33,6 @@ add_library( legion SHARED
     ../include/Film/ImageFilm.hpp
     ../include/Interface/ICamera.hpp
     ../include/Interface/IFilm.hpp
-    ../include/Interface/IFilmScheduler.h
     ../include/Interface/ILightShader.hpp
     ../include/Interface/ISurfaceShader.hpp
     ../include/LightShader/PointLightshader.hpp

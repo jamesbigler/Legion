@@ -18,7 +18,11 @@ public:
     void   setDimensions( const Index2& dimensions );
     Index2 getDimensions()const;
 
-    void addSample( const Index2& pixel_index, const Color& color, float weight );
+    void  addSample( const Index2& pixel_index, const Color& color, float weight );
+
+    Color getPixel( const Index2& pixel_index )const;
+    Color* getPixels()const;
+
     void shutterOpen();
     void shutterClose();
     void passComplete();

@@ -113,6 +113,18 @@ void ImageFilm::addSample( const Index2& pixel_index, const Color& color, float 
 }
 
 
+Color ImageFilm::getPixel( const Index2& pixel_index )const
+{
+    return Color();
+}
+
+
+Color* ImageFilm::getPixels()const
+{
+    return 0u;
+}
+
+
 void ImageFilm::shutterOpen()
 {
     m_impl->shutterOpen();

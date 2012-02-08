@@ -21,10 +21,24 @@ public:
     PointLightShader( const std::string& name );
     virtual ~PointLightShader();
 
-    void  sample  ( const LocalGeometry& p, Vector3& w_in, float& pdf );
-    float pdf     ( const LocalGeometry& p, const Vector3& w_in );
-    Color evaluate( const LocalGeometry& p, const Vector3& w_in );
+    //--------------------------------------------------------------------------
+    // ILightShader interface
+    //--------------------------------------------------------------------------
+    void    sample( const LocalGeometry& p,
+                            Vector3& w_in,
+                            float& pdf );
 
+    float   pdf( const LocalGeometry& p, const Vector3& w_in );
+
+
+    float   getPower()const;
+
+    Color   getRadiance( const LocalGeometry& p,
+                         const Vector3& w_in );
+
+    //--------------------------------------------------------------------------
+    // PointLightShader specific interface
+    //--------------------------------------------------------------------------
     void setRadiantFlux( const Color& kd );
     void setPosition( const Vector3& position );
 

@@ -31,9 +31,9 @@ float LambertianShader::pdf( const Vector3& w_out, const LocalGeometry& p, const
 }
 
 
-Color LambertianShader::evalueateBSDF( const Vector3& w_out,
-                                       const LocalGeometry& p,
-                                       const Vector3& w_in )
+Color LambertianShader::evaluateBSDF( const Vector3& w_out,
+                                      const LocalGeometry& p,
+                                      const Vector3& w_in )
 {
     return Color( 0.0f, 0.0f, 0.0f );
 }

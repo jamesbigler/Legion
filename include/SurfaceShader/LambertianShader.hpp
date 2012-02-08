@@ -24,16 +24,16 @@ public:
                                const Vector3& w_out,
                                const LocalGeometry& p,
                                Vector3& w_in,
-                               float& pdf )=0;
+                               float& pdf );
 
 
     virtual float   pdf( const Vector3& w_out,
                          const LocalGeometry& p,
-                         const Vector3& w_in )=0;
+                         const Vector3& w_in );
 
-    virtual Color   evalueateBSDF( const Vector3& w_out,
-                                   const LocalGeometry& p,
-                                   const Vector3& w_in )=0;
+    virtual Color   evaluateBSDF( const Vector3& w_out,
+                                  const LocalGeometry& p,
+                                  const Vector3& w_in );
 
     void setKd( const Color& kd );
         

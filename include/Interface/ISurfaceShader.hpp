@@ -54,9 +54,9 @@ public:
     ///   \param      p      Local geometry information of point being shaded
     ///   \param      w_in   Direction to light
     ///   \returns The value of the bsdf
-    virtual Color   evalueateBSDF( const Vector3& w_out,
-                                   const LocalGeometry& p,
-                                   const Vector3& w_in )=0;
+    virtual Color   evaluateBSDF( const Vector3& w_out,
+                                  const LocalGeometry& p,
+                                  const Vector3& w_in )=0;
 };
 
 
