@@ -42,7 +42,7 @@ private:
     /// See IBasicCamera::generateCameraSpaceRay.
     void generateCameraSpaceRay( const CameraSample& sample, Ray& ray )const;
 
-
+    
     float m_left;                 ///< Left edge of viewplane in camera coords
     float m_right;                ///< Right edge of viewplane in camera coords
     float m_bottom;               ///< Bottom edge of viewplane in camera coords

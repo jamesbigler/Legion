@@ -3,8 +3,8 @@
 /// \file IFilm.hpp
 /// Pure virtual interface for Film classes
 
-#ifndef LEGION_INTERFACE_IFILM_H_
-#define LEGION_INTERFACE_IFILM_H_
+#ifndef LEGION_INTERFACE_IFILM_HPP_
+#define LEGION_INTERFACE_IFILM_HPP_
 
 #include <private/APIBase.hpp>
 #include <Core/Vector.hpp>

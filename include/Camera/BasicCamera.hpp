@@ -1,4 +1,9 @@
 
+
+/// \file BasicCamera.hpp
+/// Base class for cameras with a default implementation of Ray camera-to-world
+/// transformation
+
 #ifndef LEGION_INTERFACE_BASIC_CAMERA_H_
 #define LEGION_INTERFACE_BASIC_CAMERA_H_
 
@@ -44,10 +49,10 @@ public:
 
 protected:
     /// Generate ray in camera space.
-    virtual void generateCameraSpaceRay( const CameraSample& sample,
-                                         Ray& ray )const=0;
     /// \param sample      A 2D sample in [0,1]^2
     /// \param ray         Output parameter for generated world space ray
+    virtual void generateCameraSpaceRay( const CameraSample& sample,
+                                         Ray& ray )const=0;
 
 private:
     class Impl;
