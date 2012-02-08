@@ -2,6 +2,10 @@
 #ifndef LEGION_LEGION_HPP_
 #define LEGION_LEGION_HPP_
 
+/// \file Legion.hpp
+/// Wrapper include for the Legion API.  Includes all of the public Legion
+/// headers.
+
 #include <Camera/ThinLensCamera.hpp>
 #include <Core/Color.hpp>
 #include <Core/Context.hpp>

@@ -3,7 +3,6 @@
 #define LEGION_APIBASE_H_
 
 #include <string>
-#include <tr1/memory>
 
 namespace legion
 {
@@ -18,8 +17,7 @@ public:
     std::string getName()const;
 
 private:
-    class Impl;
-    std::tr1::shared_ptr<Impl> m_impl;
+    std::string m_name;
 };
 
 

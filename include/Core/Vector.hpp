@@ -531,31 +531,6 @@ typedef Vector<2, unsigned> Index2;
 typedef Vector<3, unsigned> Index3;
 typedef Vector<4, unsigned> Index4;
 
-
-
-/*
-class Vector2
-{
-public:
-    Vector2() {}
-    Vector2( TYPE x, TYPE y ) {}
-};
-
-class Vector3
-{
-public:
-    Vector3() {}
-    Vector3( TYPE x, TYPE y, TYPE z ) {}
-};
-
-class Vector4
-{
-public:
-    Vector4() {}
-    Vector4( TYPE x, TYPE y, TYPE z, TYPE w ) {}
-};
-*/
-
 }
 
 #endif // LEGION_CORE_VECTOR_H_

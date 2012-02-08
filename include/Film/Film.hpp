@@ -18,9 +18,6 @@ namespace Film
         PIXEL_FILTER_CUBIC_SPLINE
     };
 
-    void warpSampleByTentFilter       ( const Vector2& in_sample, Vector2& filtered_sample );
-    void warpSampleByBoxFilter        ( const Vector2& in_sample, Vector2& filtered_sample );
-    void warpSampleByCubicSplineFilter( const Vector2& in_sample, Vector2& filtered_sample );
 }
 
 

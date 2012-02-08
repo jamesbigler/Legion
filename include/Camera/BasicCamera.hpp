@@ -1,6 +1,6 @@
 
-#ifndef LEGION_INTERFACE_IBASIC_CAMERA_H_
-#define LEGION_INTERFACE_IBASIC_CAMERA_H_
+#ifndef LEGION_INTERFACE_BASIC_CAMERA_H_
+#define LEGION_INTERFACE_BASIC_CAMERA_H_
 
 #include <Interface/ICamera.hpp>
 
@@ -14,15 +14,15 @@ namespace legion
 /// transformation.  This means that derived class need only supply a function
 /// for generating rays in camera space.
 ///
-class IBasicCamera : public ICamera
+class BasicCamera : public ICamera
 {
 public:
-    /// Create named IBasicCamera
-    /// \param name  The name of the IBasicCamera
-    explicit IBasicCamera( const std::string& name );
+    /// Create named BasicCamera
+    /// \param name  The name of the BasicCamera
+    explicit BasicCamera( const std::string& name );
 
-    /// Destroy IBasicCamera
-    virtual ~IBasicCamera();
+    /// Destroy BasicCamera
+    virtual ~BasicCamera();
 
     /// Set the Camera-to-World transform associated with a given time
     /// \param matrix   The transform matrix 
@@ -36,7 +36,7 @@ public:
     void setShutterOpenClose( float open, float close );
 
     /// Generates a camera space ray by calling the user supplied
-    /// IBasicCamera::generateCameraSpaceRay function and transforming according
+    /// BasicCamera::generateCameraSpaceRay function and transforming according
     /// to the transforms specified via setTransform.  
     /// \param sample            A 2D sample in [0,1]^2
     /// \param time              The time associated with this ray
@@ -57,4 +57,4 @@ private:
 
 }
 
-#endif // LEGION_INTERFACE_IBASIC_CAMERA_H_
+#endif // LEGION_INTERFACE_BASIC_CAMERA_H_
