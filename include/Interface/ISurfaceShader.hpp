@@ -15,6 +15,7 @@ namespace legion
 {
 
 class Color;
+class LocalGeometry;
 
 /// Pure virtual interface for Surface Shaders
 class ISurfaceShader : public APIBase
@@ -34,7 +35,7 @@ public:
     ///   \param[out] pdf    The BSDF PDF for w_in 
     virtual void   sampleBSDF( const Vector2& seed,
                                const Vector3& w_out,
-                               const SurfaceGeometry& p,
+                               const LocalGeometry& p,
                                Vector3& w_in,
                                float& pdf )=0;
 
@@ -45,7 +46,7 @@ public:
     ///   \param      w_in   Direction to light
     ///   \returns The pdf
     virtual float   pdf( const Vector3& w_out,
-                         const SurfaceGeometry& p,
+                         const LocalGeometry& p,
                          const Vector3& w_in )=0;
 
     /// Compute the BSDF value for the given incoming/outgoing direction pair
@@ -54,7 +55,7 @@ public:
     ///   \param      w_in   Direction to light
     ///   \returns The value of the bsdf
     virtual Color   evalueateBSDF( const Vector3& w_out,
-                                   const SurfaceGeometry& p,
+                                   const LocalGeometry& p,
                                    const Vector3& w_in )=0;
 };
 

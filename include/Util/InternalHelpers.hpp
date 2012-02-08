@@ -21,6 +21,13 @@ template<size_t> struct StaticAssertionChecker       {};
 #define LEGION_DO_JOIN( X, Y ) LEGION_DO_JOIN2(X,Y)
 #define LEGION_DO_JOIN2( X, Y ) X##Y
 
+/// Static (compile time) assertion.
+/// \param condition   The condition to be tested
+#define LEGION_STATIC_ASSERT( condition )                                      \
+    typedef StaticAssertionChecker<                                            \
+    sizeof( StaticAssertionFailure<(bool)(condition)> ) >                      \
+    LEGION_JOIN( _static_assertion_checker_, __LINE__ )
+
 }
 
 #endif // LEGION_UTIL_INTERNAL_HELPERS_HPP_

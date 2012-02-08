@@ -22,8 +22,12 @@ namespace legion
 
         }
 
-        Vector3 origin()const    { return m_origin;       }
-        Vector3 direction()const { return m_direction;    }
+        Vector3 getOrigin()const    { return m_origin;       }
+        Vector3 getDirection()const { return m_direction;    }
+
+        void    setOrigin   ( const Vector3& o )  { m_origin = o;    }
+        void    setDirection( const Vector3& d )  { m_direction = d; }
+
         float   tmin()const      { return m_interval.x(); }
         float   tmax()const      { return m_interval.y(); }
         Vector2 tInterval()const { return m_interval;     }

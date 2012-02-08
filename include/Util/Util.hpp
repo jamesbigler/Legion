@@ -5,18 +5,10 @@
 #ifndef LEGION_UTIL_UTIL_HPP_
 #define LEGION_UTIL_UTIL_HPP_
 
-#include <Util/InternalHelpers.h>
+#include <Core/Vector.hpp>
 
 namespace legion 
 {
-
-/// Static (compile time) assertion.
-/// \param condition   The condition to be tested
-#define LEGION_STATIC_ASSERT( condition )                                      \
-    typedef StaticAssertionChecker<                                            \
-    sizeof( StaticAssertionFailure<(bool)(condition)> ) >                      \
-    LEGION_JOIN( _static_assertion_checker_, __LINE__ )
-
 
 /// Warp the uniformly chosen 2D sample to fit a Box filter kernel.
 /// \param in_sample  The input  sample in [0,2]^2

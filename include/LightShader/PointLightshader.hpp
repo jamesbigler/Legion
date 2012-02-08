@@ -4,37 +4,35 @@
 
 
 #include <Interface/ILightShader.hpp>
-#include <Core/Color.hpp>
 #include <Core/Vector.hpp>
+#include <tr1/memory>
 
 
 namespace legion
 {
 
-    namespace Shader
-    {
-        class Geometry;
-    }
+class LocalGeometry;
+class Color;
 
 
-    class PointLightShader : public ILightShader 
-    {
-    public:
-        PointLightShader( const std::string& name );
-        virtual ~PointLightShader();
+class PointLightShader : public ILightShader 
+{
+public:
+    PointLightShader( const std::string& name );
+    virtual ~PointLightShader();
 
-        void  sample  ( const Shader::Geometry& p, Vector3& w_in, float& pdf );
-        float pdf     ( const Shader::Geometry& p, const Vector3& w_in );
-        Color evaluate( const Shader::Geometry& p, const Vector3& w_in );
+    void  sample  ( const LocalGeometry& p, Vector3& w_in, float& pdf );
+    float pdf     ( const LocalGeometry& p, const Vector3& w_in );
+    Color evaluate( const LocalGeometry& p, const Vector3& w_in );
 
-        void setRadiantFlux( const Color& kd );
-        void setPosition( const Vector3& position );
+    void setRadiantFlux( const Color& kd );
+    void setPosition( const Vector3& position );
 
-    private:
-        class Impl;
-        std::tr1::shared_ptr<Impl> m_impl;
+private:
+    class Impl;
+    std::tr1::shared_ptr<Impl> m_impl;
 
-    };
+};
 
 
 }

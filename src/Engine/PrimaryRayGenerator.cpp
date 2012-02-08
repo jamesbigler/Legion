@@ -1,4 +1,5 @@
 
+#include <Core/Ray.hpp>
 #include <Engine/PrimaryRayGenerator.hpp>
 #include <Interface/ICamera.hpp>
 #include <Util/Stream.hpp>
@@ -26,7 +27,7 @@ void PrimaryRayGenerator::generate( unsigned pass )
         for( int j = 0; j < m_screen_resolution.y(); ++j )
         {
             // TODO: This will use a sampler object
-            Camera::Sample camera_sample;
+            CameraSample camera_sample;
             camera_sample.viewplane = Vector2( i, j ) / pixel_dimsf;
             camera_sample.lens      = Vector2( drand48(), drand48() );
             camera_sample.time      = drand48();

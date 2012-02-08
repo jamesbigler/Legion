@@ -16,22 +16,24 @@ LambertianShader::~LambertianShader()
 }
 
 
-void LambertianShader::sample( const Vector2& seed, 
-                               const Vector3& w_out,
-                               const Shader::Geometry& p,
-                               Vector3& w_in,
-                               float& pdf )
+void LambertianShader::sampleBSDF( const Vector2& seed, 
+                                   const Vector3& w_out,
+                                   const LocalGeometry& p,
+                                   Vector3& w_in,
+                                   float& pdf )
 {
 }
 
 
-float LambertianShader::pdf( const Vector3& w_out, const Shader::Geometry& p, const Vector3& w_in )
+float LambertianShader::pdf( const Vector3& w_out, const LocalGeometry& p, const Vector3& w_in )
 {
     return 0.0f;
 }
 
 
-Color LambertianShader::evaluate( const Vector3& w_out, const Shader::Geometry& p, const Vector3& w_in )
+Color LambertianShader::evalueateBSDF( const Vector3& w_out,
+                                       const LocalGeometry& p,
+                                       const Vector3& w_in )
 {
     return Color( 0.0f, 0.0f, 0.0f );
 }

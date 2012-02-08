@@ -1,6 +1,7 @@
 
 
 #include <LightShader/PointLightShader.hpp>
+#include <Core/Color.hpp>
 
 using namespace legion;
 
@@ -16,18 +17,18 @@ PointLightShader::~PointLightShader()
 }
 
 
-void PointLightShader::sample( const Shader::Geometry& p, Vector3& w_in, float& pdf )
+void PointLightShader::sample( const LocalGeometry& p, Vector3& w_in, float& pdf )
 {
 }
 
 
-float PointLightShader::pdf( const Shader::Geometry& p, const Vector3& w_in )
+float PointLightShader::pdf( const LocalGeometry& p, const Vector3& w_in )
 {
     return 0.0f;
 }
 
 
-Color PointLightShader::evaluate( const Shader::Geometry& p, const Vector3& w_in )
+Color PointLightShader::evaluate( const LocalGeometry& p, const Vector3& w_in )
 {
     return Color( 0.0f, 0.0f, 0.0f );
 }

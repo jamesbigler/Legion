@@ -3,16 +3,16 @@
 #include <Camera/ThinLensCamera.hpp>
 #include <Math/Math.hpp>
 #include <Util/Stream.hpp>
+#include <Core/Ray.hpp>
 #include <iostream>
 
 using namespace legion;
 
 
 ThinLensCamera::ThinLensCamera( const std::string& name )
-  : IBasicCamera( name )
+  : BasicCamera( name )
 {
     // TODO: give default values to all params
-    
 }
 
 
@@ -21,7 +21,10 @@ ThinLensCamera::~ThinLensCamera()
 }
 
 
-void ThinLensCamera::setViewPlane( float left, float right, float bottom, float top )
+void ThinLensCamera::setViewPlane( float left,
+                                   float right,
+                                   float bottom,
+                                   float top )
 {
     m_left   = left; 
     m_right  = right; 
@@ -42,18 +45,19 @@ void ThinLensCamera::setLensRadius( float radius )
 }
 
 
-void ThinLensCamera::generateCameraSpaceRay( const Camera::Sample& filtered_sample,
-                                             CameraSpaceRay& ray )const
+void ThinLensCamera::generateCameraSpaceRay( const CameraSample& sample,
+                                             Ray& ray )const
 {
-    Vector3 on_viewplane( legion::lerp( m_left, m_right, filtered_sample.viewplane.x() ),
-                          legion::lerp( m_bottom, m_top, filtered_sample.viewplane.y() ),
+    Vector3 on_viewplane( legion::lerp( m_left, m_right, sample.viewplane.x() ),
+                          legion::lerp( m_bottom, m_top, sample.viewplane.y() ),
                           0.0f );
     
-    Vector2 lens_sample( legion::squareToDisk( filtered_sample.lens ) * m_lens_radius );
+    Vector2 lens_sample( legion::squareToDisk( sample.lens ) * m_lens_radius );
     Vector3 on_lens( lens_sample.x(), lens_sample.y(), 0.0f );
                         
-    ray.origin    = on_lens;
-    ray.direction = legion::normalize( on_viewplane - on_lens );
+    ray.setOrigin( on_lens );
+    ray.setDirection( legion::normalize( on_viewplane - on_lens ) );
 
-    std::cerr << " thinlens ray: " << ray.origin << " | " << ray.direction << std::endl;
+    std::cerr << " thinlens ray: " << ray.getOrigin() << " | " 
+              << ray.getDirection() << std::endl;
 }

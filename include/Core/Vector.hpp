@@ -1,9 +1,11 @@
 
+/// \file Vector.hpp
+/// Vector (numeric tuple) class of arbitrary dimension and element type
 #ifndef LEGION_CORE_VECTOR_H_
 #define LEGION_CORE_VECTOR_H_
 
 #include <cmath>
-#include <Util/Util.h>
+#include <Util/InternalHelpers.hpp>  // LEGION_STATIC_ASSERT
 
 namespace legion
 {
@@ -11,13 +13,8 @@ namespace legion
 //template<unsigned DIM, typename TYPE> class Vector;
 
 
-/******************************************************************************\
- * 
- * Vector unsignederface
- *
-\******************************************************************************/
 
-
+/// Vector (numeric tuple) class of arbitrary dimension and element type
 template <unsigned DIM, typename TYPE>
 class Vector
 {

@@ -3,6 +3,7 @@
 #define LEGION_IMAGE_FILM_H_
 
 #include <Interface/IFilm.hpp>
+#include <tr1/memory>
 
 namespace legion
 {

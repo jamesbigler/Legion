@@ -14,7 +14,7 @@ namespace legion
 {
 
 class Ray;
-class Matrix;
+class Matrix4x4;
 
 
 /// Contains the necessary sample information to generate a Camera ray

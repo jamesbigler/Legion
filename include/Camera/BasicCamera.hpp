@@ -3,7 +3,7 @@
 #define LEGION_INTERFACE_BASIC_CAMERA_H_
 
 #include <Interface/ICamera.hpp>
-
+#include <tr1/memory>
 
 namespace legion
 {
@@ -38,16 +38,16 @@ public:
     /// Generates a camera space ray by calling the user supplied
     /// BasicCamera::generateCameraSpaceRay function and transforming according
     /// to the transforms specified via setTransform.  
-    /// \param sample            A 2D sample in [0,1]^2
-    /// \param time              The time associated with this ray
-    /// \param transformed_ray   Output parameter for generated world space ray
-    void generateRay( const Camera::Sample& sample, float time, Ray& transformed_ray )const;
+    /// \param sample      A 2D sample in [0,1]^2
+    /// \param ray         Output parameter for generated world space ray
+    void generateRay( const CameraSample& sample, Ray& ray )const;
 
 protected:
     /// Generate ray in camera space.
-    virtual void generateCameraSpaceRay( const Camera::Sample& sample, Ray& ray )const=0;
-    /// \param sample            A 2D sample in [0,1]^2
-    /// \param transformed_ray   Output parameter for generated world space ray
+    virtual void generateCameraSpaceRay( const CameraSample& sample,
+                                         Ray& ray )const=0;
+    /// \param sample      A 2D sample in [0,1]^2
+    /// \param ray         Output parameter for generated world space ray
 
 private:
     class Impl;

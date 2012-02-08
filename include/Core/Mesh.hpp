@@ -4,13 +4,13 @@
 
 #include <Private/APIBase.hpp>
 #include <Core/Vector.hpp>
-#include <Core/Index.hpp>
-#include <Core/Matrix.hpp>
+#include <tr1/memory>
 
 namespace legion
 {
 
 class ISurfaceShader;
+class Matrix4x4;
 
 class Mesh : public APIBase
 {

@@ -4,6 +4,7 @@
 #define LEGION_CONTEXT_H_
 
 #include <Private/APIBase.hpp>
+#include <tr1/memory>
 
 namespace legion
 {

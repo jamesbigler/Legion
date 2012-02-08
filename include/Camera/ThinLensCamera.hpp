@@ -2,7 +2,7 @@
 #ifndef LEGION_THIN_LENS_CAMERA_HPP_
 #define LEGION_THIN_LENS_CAMERA_HPP_
 
-#include <Interface/IBasicCamera.hpp>
+#include <Camera/BasicCamera.hpp>
 
 
 namespace legion
@@ -10,7 +10,7 @@ namespace legion
 
 /// A basic thin lens camera implementation.  Supports depth-of-field with a
 /// round lens model.
-class ThinLensCamera : public IBasicCamera
+class ThinLensCamera : public BasicCamera
 {
 public:
 
@@ -40,8 +40,7 @@ public:
 
 private:
     /// See IBasicCamera::generateCameraSpaceRay.
-    void generateCameraSpaceRay( const Camera::Sample& sample,
-                                 CameraSpaceRay& ray )const;
+    void generateCameraSpaceRay( const CameraSample& sample, Ray& ray )const;
 
 
     float m_left;                 ///< Left edge of viewplane in camera coords
