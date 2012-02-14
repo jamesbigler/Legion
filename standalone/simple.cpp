@@ -42,7 +42,7 @@ int main( int argc, char** argv )
         cam.setViewPlane( -1.0f, 1.0f, -0.75f, 0.75f );
         cam.setShutterOpenClose( 0.0f, 0.005f );
         cam.setFocalDistance( 1.0f );
-        cam.setLensRadius( 0.005f );
+        cam.setLensRadius( 0.0f );
         ctx.setActiveCamera( &cam );
 
         legion::ImageFilm film = legion::ImageFilm( "image" );

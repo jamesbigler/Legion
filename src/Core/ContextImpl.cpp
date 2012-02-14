@@ -64,9 +64,31 @@ void Context::Impl::setActiveFilm( const IFilm* film )
 }
 
 
+void Context::Imp::preprocess()
+{
+}
+
+
+void Context::Imp::doRender()
+{
+}
+
+
+void Context::Imp::postprocess()
+{
+}
+
 void Context::Impl::render()
 {
     std::cerr << "rendering ...." << std::endl;
+
+    preprocess();
+
+    doRender();
+
+    postprocess();
+
+
 
     const Index2  image_dims  = m_film->getDimensions();
     PrimaryRayGenerator( image_dims, m_camera ).generate( 0u );
