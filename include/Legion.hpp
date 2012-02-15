@@ -24,5 +24,11 @@
 #include <Util/Stream.hpp>
 #include <Util/Util.hpp>
 
+// These will go away when factories are in place
+#include <../src/Scene/Camera/ThinLensCamera.hpp>
+#include <../src/Scene/Film/ImageFilm.hpp>
+#include <../src/Scene/LightShader/PointLightshader.hpp>
+#include <../src/Scene/SurfaceShader/LambertianShader.hpp>
+
 
 #endif // LEGION_LEGION_HPP_
