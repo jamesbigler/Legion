@@ -2,7 +2,7 @@
 #ifndef LEGION_THIN_LENS_CAMERA_HPP_
 #define LEGION_THIN_LENS_CAMERA_HPP_
 
-#include <Camera/BasicCamera.hpp>
+#include <Scene/Camera/BasicCamera.hpp>
 
 
 namespace legion

@@ -1,7 +1,6 @@
 
 #include <Core/Mesh.hpp>
 #include <Core/ContextImpl.hpp>
-#include <Engine/PrimaryRayGenerator.hpp>
 #include <Interface/ICamera.hpp>
 #include <Interface/IFilm.hpp>
 #include <Interface/ILightShader.hpp>
@@ -64,17 +63,17 @@ void Context::Impl::setActiveFilm( const IFilm* film )
 }
 
 
-void Context::Imp::preprocess()
+void Context::Impl::preprocess()
 {
 }
 
 
-void Context::Imp::doRender()
+void Context::Impl::doRender()
 {
 }
 
 
-void Context::Imp::postprocess()
+void Context::Impl::postprocess()
 {
 }
 
@@ -91,7 +90,6 @@ void Context::Impl::render()
 
 
     const Index2  image_dims  = m_film->getDimensions();
-    PrimaryRayGenerator( image_dims, m_camera ).generate( 0u );
 }
 
 

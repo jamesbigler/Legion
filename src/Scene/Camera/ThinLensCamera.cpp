@@ -1,7 +1,7 @@
 
 
-#include <Camera/ThinLensCamera.hpp>
-#include <Math/Math.hpp>
+#include <Scene/Camera/ThinLensCamera.hpp>
+#include <Util/Math.hpp>
 #include <Util/Stream.hpp>
 #include <Core/Ray.hpp>
 #include <iostream>

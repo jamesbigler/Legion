@@ -3,7 +3,7 @@
 #ifndef LEGION_CONTEXT_H_
 #define LEGION_CONTEXT_H_
 
-#include <Private/APIBase.hpp>
+#include <Core/APIBase.hpp>
 #include <tr1/memory>
 
 namespace legion

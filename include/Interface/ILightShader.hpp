@@ -5,7 +5,7 @@
 #define LEGION_INTERFACE_ILIGHTSHADER_HPP_
 
 
-#include <Private/APIBase.hpp>
+#include <Core/APIBase.hpp>
 #include <Core/Vector.hpp>
 
 

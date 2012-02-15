@@ -10,6 +10,7 @@ int main( int argc, char** argv )
         std::cerr << " Starting ***********" << std::endl;
         legion::Context ctx( "legion_simple" );
         
+        legion::createSurfaceShader( "Lambertian", "material", "Kd", color
         legion::LambertianShader mtl( "material" );
         mtl.setKd( legion::Color(  0.5f, 0.5f, 0.5f ) );
        

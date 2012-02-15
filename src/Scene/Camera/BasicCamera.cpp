@@ -1,6 +1,6 @@
 
 
-#include <Camera/BasicCamera.hpp>
+#include <Scene/Camera/BasicCamera.hpp>
 #include <Core/Ray.hpp>
 
 using namespace legion;

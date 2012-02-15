@@ -2,7 +2,7 @@
 #ifndef LEGION_CORE_MESH_HPP_
 #define LEGION_CORE_MESH_HPP_
 
-#include <Private/APIBase.hpp>
+#include <Core/APIBase.hpp>
 #include <Core/Vector.hpp>
 #include <tr1/memory>
 

@@ -7,7 +7,7 @@
 #ifndef LEGION_INTERFACE_ICAMERA_H_
 #define LEGION_INTERFACE_ICAMERA_H_
 
-#include <private/APIBase.hpp>
+#include <Core/APIBase.hpp>
 #include <Core/Vector.hpp>
 
 namespace legion

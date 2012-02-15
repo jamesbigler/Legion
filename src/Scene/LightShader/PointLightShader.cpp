@@ -1,6 +1,6 @@
 
 
-#include <LightShader/PointLightShader.hpp>
+#include <Scene/LightShader/PointLightShader.hpp>
 #include <Core/Color.hpp>
 
 using namespace legion;

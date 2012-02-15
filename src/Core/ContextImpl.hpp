@@ -26,9 +26,15 @@ namespace legion
         void setActiveCamera( const ICamera* camera );
         void setActiveFilm( const IFilm* film );
 
+
         void render();
 
     private:
+
+        void preprocess();
+        void doRender();
+        void postprocess();
+
 
         std::vector<const Mesh*> m_meshes;
         std::vector<Light>       m_lights;

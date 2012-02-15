@@ -6,7 +6,7 @@
 #define LEGION_INTERFACE_ISURFACESHADER_H_
 
 
-#include <Private/APIBase.hpp>
+#include <Core/APIBase.hpp>
 #include <Core/Vector.hpp>
 
 

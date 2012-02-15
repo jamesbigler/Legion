@@ -1,6 +1,6 @@
 
 
-#include <SurfaceShader/LambertianShader.hpp>
+#include <Scene/SurfaceShader/LambertianShader.hpp>
 
 using namespace legion;
 

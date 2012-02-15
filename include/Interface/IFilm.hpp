@@ -6,13 +6,14 @@
 #ifndef LEGION_INTERFACE_IFILM_HPP_
 #define LEGION_INTERFACE_IFILM_HPP_
 
-#include <private/APIBase.hpp>
+#include <Core/APIBase.hpp>
 #include <Core/Vector.hpp>
 #include <Core/Color.hpp>
 
 namespace legion
 {
 
+class Color;
 
 /// Interface for all Film classes
 class IFilm : public APIBase
