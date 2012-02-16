@@ -1,6 +1,6 @@
 
-#ifndef LEGION_ENGINE_LIGHT_HPP_
-#define LEGION_ENGINE_LIGHT_HPP_
+#ifndef LEGION_CORE_LIGHT_HPP_
+#define LEGION_CORE_LIGHT_HPP_
 
 #include <Legion/Scene/Mesh/Mesh.hpp>
 #include <Legion/Scene/LightShader/ILightShader.hpp>
@@ -25,4 +25,4 @@ namespace legion
 
 }
 
-#endif // LEGION_ENGINE_LIGHT_HPP_
+#endif // LEGION_CORE_LIGHT_HPP_

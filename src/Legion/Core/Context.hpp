@@ -1,7 +1,7 @@
 
 
-#ifndef LEGION_CONTEXT_H_
-#define LEGION_CONTEXT_H_
+#ifndef LEGION_CORE_CONTEXT_H_
+#define LEGION_CORE_CONTEXT_H_
 
 #include <Legion/Core/APIBase.hpp>
 #include <tr1/memory>
@@ -38,4 +38,4 @@ private:
 
 
 }
-#endif // LEGION_CONTEXT_H_
+#endif // LEGION_CORE_CONTEXT_H_

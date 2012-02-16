@@ -1,6 +1,6 @@
 
-#ifndef LEGION_APIBASE_H_
-#define LEGION_APIBASE_H_
+#ifndef LEGION_CORE_APIBASE_H_
+#define LEGION_CORE_APIBASE_H_
 
 #include <string>
 
@@ -23,4 +23,4 @@ private:
 
 }
 
-#endif // LEGION_APIBASE_H_
+#endif // LEGION_CORE_APIBASE_H_

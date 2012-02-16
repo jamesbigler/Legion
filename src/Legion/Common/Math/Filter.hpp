@@ -2,8 +2,8 @@
 /// \file Util.hpp
 /// Utility functions and macros
 
-#ifndef LEGION_UTIL_UTIL_HPP_
-#define LEGION_UTIL_UTIL_HPP_
+#ifndef LEGION_COMMON_MATH_FILTER_HPP_
+#define LEGION_COMMON_MATH_FILTER_HPP_
 
 #include <Legion/Core/Vector.hpp>
 
@@ -27,4 +27,4 @@ Vector2 warpSampleByCubicSplineFilter( const Vector2& in_sample );
 
 }
 
-#endif // LEGION_UTIL_UTIL_HPP_
+#endif // LEGION_COMMON_MATH_FILTER_HPP_

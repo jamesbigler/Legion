@@ -4,8 +4,8 @@
 /// Base class for cameras with a default implementation of Ray camera-to-world
 /// transformation
 
-#ifndef LEGION_INTERFACE_BASIC_CAMERA_H_
-#define LEGION_INTERFACE_BASIC_CAMERA_H_
+#ifndef LEGION_SCENE_CAMERA_BASICCAMERA_H_
+#define LEGION_SCENE_CAMERA_BASICCAMERA_H_
 
 #include <Legion/Scene/Camera/ICamera.hpp>
 #include <tr1/memory>
@@ -62,4 +62,4 @@ private:
 
 }
 
-#endif // LEGION_INTERFACE_BASIC_CAMERA_H_
+#endif // LEGION_SCENE_CAMERA_BASICCAMERA_H_

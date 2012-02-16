@@ -1,7 +1,7 @@
 
 
-#ifndef LEGION_UTIL_INTERNAL_HELPERS_HPP_
-#define LEGION_UTIL_INTERNAL_HELPERS_HPP_
+#ifndef LEGION_COMMON_UTIL_ASSERT_H_
+#define LEGION_COMMON_UTIL_ASSERT_H_
 
 /// The global namespace for the Legion API
 namespace legion 
@@ -30,4 +30,4 @@ template<size_t> struct StaticAssertionChecker       {};
 
 }
 
-#endif // LEGION_UTIL_INTERNAL_HELPERS_HPP_
+#endif // LEGION_COMMON_UTIL_ASSERT_H_

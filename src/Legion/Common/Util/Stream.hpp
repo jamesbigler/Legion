@@ -1,6 +1,6 @@
 
-#ifndef LEGION_UTIL_STREAM_HPP_
-#define LEGION_UTIL_STREAM_HPP_
+#ifndef LEGION_COMMON_UTIL_STREAM_HPP_
+#define LEGION_COMMON_UTIL_STREAM_HPP_
 
 #include <Legion/Core/Vector.hpp>
 #include <ostream>
@@ -32,4 +32,4 @@ namespace legion
     }
 
 }
-#endif // LEGION_UTIL_STREAM_HPP_
+#endif // LEGION_COMMON_UTIL_STREAM_HPP_

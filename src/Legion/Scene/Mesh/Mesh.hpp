@@ -44,4 +44,4 @@ private:
 };
 
 }
-#endif // LEGION_CORE_MESH_HPP_ 
+#endif // LEGION_SCENE_MESH_MESH_HPP_ 

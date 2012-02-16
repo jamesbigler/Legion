@@ -1,6 +1,6 @@
 
-#ifndef LEGION_ENGINE_CONTEXT_IMPL_HPP_
-#define LEGION_ENGINE_CONTEXT_IMPL_HPP_
+#ifndef LEGION_CORE_CONTEXTIMPL_HPP_
+#define LEGION_CORE_CONTEXTIMPL_HPP_
 
 #include <Legion/Core/Light.hpp>
 #include <Legion/Core/Context.hpp>
@@ -44,4 +44,4 @@ namespace legion
  
 }
 
-#endif // LEGION_ENGINE_CONTEXT_IMPL_HPP_
+#endif // LEGION_CORE_CONTEXTIMPL_HPP_

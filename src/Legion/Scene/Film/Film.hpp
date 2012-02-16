@@ -1,6 +1,6 @@
 
-#ifndef LEGION_FILM_FILM_HPP_
-#define LEGION_FILM_FILM_HPP_
+#ifndef LEGION_SCENE_FILM_FILM_HPP_
+#define LEGION_SCENE_FILM_FILM_HPP_
 
 
 #include <Legion/Core/Vector.hpp>
@@ -23,4 +23,4 @@ namespace Film
 
 }
 
-#endif // LEGION_FILM_FILM_HPP_
+#endif // LEGION_SCENE_FILM_FILM_HPP_

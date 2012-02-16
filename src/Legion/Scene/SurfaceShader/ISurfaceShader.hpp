@@ -2,8 +2,8 @@
 
 /// \file ISurfaceShader.hpp
 /// Pure virtual interface for Surface Shaders
-#ifndef LEGION_INTERFACE_ISURFACESHADER_H_
-#define LEGION_INTERFACE_ISURFACESHADER_H_
+#ifndef LEGION_SCENE_SURFACESHADER_ISURFACESHADER_H_
+#define LEGION_SCENE_SURFACESHADER_ISURFACESHADER_H_
 
 
 #include <Legion/Core/APIBase.hpp>
@@ -62,4 +62,4 @@ public:
 
 }
 
-#endif // LEGION_INTERFACE_ISURFACESHADER_H_
+#endif // LEGION_SCENE_SURFACESHADER_ISURFACESHADER_H_

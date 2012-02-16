@@ -1,6 +1,6 @@
 
-#ifndef LEGION_MATH_MATH_HPP_
-#define LEGION_MATH_MATH_HPP_
+#ifndef LEGION_COMMON_MATH_MATH_HPP_
+#define LEGION_COMMON_MATH_MATH_HPP_
 
 #include <Legion/Core/Vector.hpp>
 #include <cmath>
@@ -54,4 +54,4 @@ namespace legion
  
 }
 
-#endif //LEGION_MATH_MATH_HPP_
+#endif //LEGION_COMMON_MATH_MATH_HPP_

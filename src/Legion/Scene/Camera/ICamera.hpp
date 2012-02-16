@@ -4,8 +4,8 @@
 /// Pure virtual interface for Camera classes
 
 
-#ifndef LEGION_INTERFACE_ICAMERA_H_
-#define LEGION_INTERFACE_ICAMERA_H_
+#ifndef LEGION_SCENE_CAMERA_ICAMERA_H_
+#define LEGION_SCENE_CAMERA_ICAMERA_H_
 
 #include <Legion/Core/APIBase.hpp>
 #include <Legion/Core/Vector.hpp>
@@ -60,4 +60,4 @@ public:
 
 }
 
-#endif // LEGION_INTERFACE_ICAMERA_H_
+#endif // LEGION_SCENE_CAMERA_ICAMERA_H_

@@ -1,6 +1,6 @@
 
-#ifndef LEGION_IMAGE_FILM_H_
-#define LEGION_IMAGE_FILM_H_
+#ifndef LEGION_SCENE_FILM_IMAGEFILM_H_
+#define LEGION_SCENE_FILM_IMAGEFILM_H_
 
 #include <Legion/Scene/Film/IFilm.hpp>
 #include <tr1/memory>
@@ -34,4 +34,4 @@ private:
 
 } // namespace legion
 
-#endif // LEGION_IMAGE_FILM_H_
+#endif // LEGION_SCENE_FILM_IMAGEFILM_H_

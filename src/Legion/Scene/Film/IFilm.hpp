@@ -3,8 +3,8 @@
 /// \file IFilm.hpp
 /// Pure virtual interface for Film classes
 
-#ifndef LEGION_INTERFACE_IFILM_HPP_
-#define LEGION_INTERFACE_IFILM_HPP_
+#ifndef LEGION_SCENE_FILM_IFILM_HPP_
+#define LEGION_SCENE_FILM_IFILM_HPP_
 
 #include <Legion/Core/APIBase.hpp>
 #include <Legion/Core/Vector.hpp>
@@ -63,4 +63,4 @@ public:
 
 } // namespace legion
 
-#endif // LEGION_INTERFACE_IFILM_H_
+#endif // LEGION_SCENE_FILM_IFILM_H_
