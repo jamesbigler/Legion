@@ -15,14 +15,8 @@ class Matrix4x4;
 class Mesh : public APIBase
 {
 public:
-    enum Type
-    {
-        TYPE_POLYGONAL = 0,
-        TYPE_CATMULL_CLARK,
-        TYPE_BUILTIN_COUNT
-    };
 
-    Mesh( const std::string& name, Type type, unsigned vertex_count );
+    Mesh( const std::string& name, unsigned vertex_count );
     ~Mesh();
 
     void setTime( float time );
@@ -33,9 +27,11 @@ public:
     void setTextureCoordinates( const Vector2* tex_coords );
     void setTransform( const Matrix4x4& transform );
 
-    void addTriangles( unsigned num_faces, const Index3* tris, const ISurfaceShader& shader );
-    void addQuads( unsigned num_faces, const Index4* quads, const ISurfaceShader& shader );
+    void addTriangles( unsigned num_faces, const Index3* tris,  const ISurfaceShader* shader );
+    void addQuads    ( unsigned num_faces, const Index4* quads, const ISurfaceShader* shader );
 
+    void enableSubdivision();
+    void disableSubdivision();
 
 private:
 

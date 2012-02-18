@@ -17,6 +17,7 @@ namespace legion
 class Color;
 class LocalGeometry;
 
+
 /// Pure virtual interface for Surface Shaders
 class ISurfaceShader : public APIBase
 {

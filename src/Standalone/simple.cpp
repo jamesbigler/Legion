@@ -26,16 +26,14 @@ int main( int argc, char** argv )
         indices.push_back( legion::Index3( 0, 1, 3 ) );
         indices.push_back( legion::Index3( 1, 2, 3 ) );
 
-        legion::Mesh square = legion::Mesh( "square",
-                                            legion::Mesh::TYPE_POLYGONAL,
-                                            vertices.size() );
+        legion::Mesh square( "square", vertices.size() );
         square.setTime( 0.0f );
         square.setVertices( &vertices[0] );
         square.setTransform( legion::Matrix4x4::identity() );
-        square.addTriangles( indices.size(), &indices[0], mtl );
+        square.addTriangles( indices.size(), &indices[0], &mtl );
         ctx.addMesh( &square );
 
-        legion::PointLightShader light = legion::PointLightShader( "lshader" );
+        legion::PointLightShader light( "lshader" );
         light.setPosition( legion::Vector3( 1.0f, 1.0f, 1.0f ) );
         light.setRadiantFlux( legion::Color( 1.0f, 1.0f, 1.0f ) );
         ctx.addLight( &light );
@@ -48,7 +46,7 @@ int main( int argc, char** argv )
         cam.setLensRadius( 0.0f );
         ctx.setActiveCamera( &cam );
 
-        legion::ImageFilm film = legion::ImageFilm( "image" );
+        legion::ImageFilm film( "image" );
         film.setDimensions( legion::Index2( 4u, 4u ) );
         ctx.setActiveFilm( &film );
 
