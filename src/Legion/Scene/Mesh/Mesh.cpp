@@ -47,12 +47,22 @@ void Mesh::Impl::setTextureCoordinates( const Vector2* tex_coords )
 }
 
 
-void Mesh::Impl::addTriangles( unsigned num_triangles, const Index3* triangles, const ISurfaceShader* shader )
+void Mesh::Impl::addTriangles( unsigned num_faces, const Index3* triangles, const ISurfaceShader* shader )
 {
 }
 
 
-void Mesh::Impl::addQuads( unsigned num_quads, const Index4* quads, const ISurfaceShader* shader )
+void Mesh::Impl::addQuads( unsigned num_faces, const Index4* quads, const ISurfaceShader* shader )
+{
+}
+
+
+void Mesh::Impl::enableSubdivision()
+{
+}
+
+
+void Mesh::Impl::disableSubdivision()
 {
 }
 
@@ -104,14 +114,26 @@ void Mesh::setTextureCoordinates( const Vector2* tex_coords )
 }
 
 
-void Mesh::addTriangles( unsigned num_triangles, const Index3* triangles, const ISurfaceShader* shader )
+void Mesh::addTriangles( unsigned num_faces, const Index3* triangles, const ISurfaceShader* shader )
 {
-//    m_impl->addTriangles( unsigned num_triangles,  );
+    m_impl->addTriangles( num_faces, triangles, shader  );
 }
 
 
-void Mesh::addQuads( unsigned num_quads, const Index4* quads, const ISurfaceShader* shader )
+void Mesh::addQuads( unsigned num_faces, const Index4* quads, const ISurfaceShader* shader )
 {
+    m_impl->addQuads( num_faces, quads, shader  );
 }
 
+    
+void Mesh::enableSubdivision()
+{
+    m_impl->enableSubdivision();
+}
+
+
+void Mesh::disableSubdivision()
+{
+    m_impl->disableSubdivision();
+}
 
