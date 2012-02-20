@@ -3,20 +3,30 @@
 #define LEGION_COMMON_UTIL_HPP_
 
 #include <optixu/optixpp_namespace.h>
+#include <Legion/Common/Util/Noncopyable.hpp>
 
 
 namespace legion
 {
 
-class Optix
+class Optix : Noncopyable
 {
 public:
-    static optix::Context context();
+    typedef std::vector<std::string>  ProgramSearchPath;
+    Optix();
+    ~Optix();
+
+    optix::Context getContext();
+
+    void setProgramSearchPath( const ProgramSearchPath& search_path );
+
+    optix::Program loadProgram( const std::string& filename,
+                                const std::string& program_name )const;
 
 private:
-    static void destroyContext();
 
-    static optix::Context s_context;
+    ProgramSearchPath m_search_path;
+    optix::Context    m_context;
 };
 
 }

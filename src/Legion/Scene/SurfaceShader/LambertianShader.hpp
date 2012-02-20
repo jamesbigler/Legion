@@ -17,7 +17,7 @@ class LocalGeometry;
 class LambertianShader : public ISurfaceShader
 {
 public:
-    LambertianShader( const std::string& name );
+    LambertianShader( Context* context, const std::string& name );
     virtual ~LambertianShader();
 
     virtual void   sampleBSDF( const Vector2& seed,

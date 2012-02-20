@@ -18,7 +18,7 @@ class Color;
 class PointLightShader : public ILightShader 
 {
 public:
-    PointLightShader( const std::string& name );
+    PointLightShader( Context* context, const std::string& name );
     virtual ~PointLightShader();
 
     //--------------------------------------------------------------------------

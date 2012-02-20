@@ -4,8 +4,8 @@
 using namespace legion;
 
 
-IFilm::IFilm( const std::string& name )
-    : APIBase( name )
+IFilm::IFilm( Context* context, const std::string& name )
+    : APIBase( context, name )
 {
 }
 

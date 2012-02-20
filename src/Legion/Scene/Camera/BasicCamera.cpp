@@ -6,8 +6,8 @@
 using namespace legion;
 
 
-BasicCamera::BasicCamera( const std::string& name )
-  : ICamera( name )
+BasicCamera::BasicCamera( Context* context, const std::string& name )
+  : ICamera( context, name )
 {
 }
 

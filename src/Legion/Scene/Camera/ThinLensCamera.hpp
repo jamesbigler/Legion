@@ -15,10 +15,10 @@ class ThinLensCamera : public BasicCamera
 public:
 
     /// Create a named ThinLensCamera object
-    explicit          ThinLensCamera( const std::string& name );
+    ThinLensCamera( Context* context, const std::string& name );
 
     /// Destroy a ThinLensCamera object
-                      ~ThinLensCamera();
+    ~ThinLensCamera();
 
     /// Set the position of the viewplane in camera coordinates.  The viewplane
     /// is set at 1 unit from the camera and determintes the viewplane skew,

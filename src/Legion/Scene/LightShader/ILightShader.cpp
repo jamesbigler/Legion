@@ -4,8 +4,8 @@
 using namespace legion;
 
 
-ILightShader::ILightShader( const std::string& name )
-    : APIBase( name )
+ILightShader::ILightShader( Context* context, const std::string& name )
+    : APIBase( context, name )
 {
 }
 

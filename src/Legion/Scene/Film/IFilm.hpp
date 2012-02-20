@@ -21,7 +21,7 @@ class IFilm : public APIBase
 public:
 
     /// Create named Film object
-    explicit         IFilm( const std::string& name );
+                     IFilm( Context* context, const std::string& name );
     
     /// Destroy Film object
     virtual          ~IFilm();

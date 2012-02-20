@@ -83,8 +83,8 @@ void ImageFilm::Impl::passComplete()
 //
 //------------------------------------------------------------------------------
 
-ImageFilm::ImageFilm( const std::string& name )
-    : IFilm( name ),
+ImageFilm::ImageFilm( Context* context, const std::string& name )
+    : IFilm( context, name ),
       m_impl( new Impl )
 {
 }

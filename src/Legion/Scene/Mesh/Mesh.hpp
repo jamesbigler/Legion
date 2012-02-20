@@ -16,7 +16,10 @@ class Mesh : public APIBase
 {
 public:
 
-    Mesh( const std::string& name, unsigned vertex_count );
+    //
+    // External interface -- will be wrapped via Pimpl
+    //
+    Mesh( Context* context, const std::string& name, unsigned vertex_count );
     ~Mesh();
 
     void setTime( float time );
@@ -38,10 +41,12 @@ public:
     void enableSubdivision();
     void disableSubdivision();
 
+    //
+    // Internal interface
+    //
+
 private:
 
-    class Impl;
-    std::tr1::shared_ptr<Impl> m_impl;
 };
 
 }

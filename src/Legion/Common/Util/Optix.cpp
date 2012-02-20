@@ -4,26 +4,59 @@
 
 using namespace legion;
 
-
-optix::Context Optix::s_context;
-
-
-optix::Context Optix::context()
+namespace
 {
-    if( !optix::Context() )
+    optix::Program loadProgram( optix::Context context,
+                                const std::string& path,
+                                const std::string& filename,
+                                const std::string& program_name )
     {
-        LLOG_INFO << "Creating optix::Context";
-        std::atexit( destroyContext );
-        s_context = optix::Context::create();
+        std::string full_path;
+        if( !path.empty() )
+            full_path = path + "/" + filename;
+        else
+            full_path = filename;
+
+        try
+        {
+            return context->createProgramFromPTXFile( full_path, program_name );
+        }
+        catch( ... )
+        {
+            return optix::Program();
+
+        }
     }
-
-    return s_context;
 }
 
 
-void Optix::destroyContext()
+Optix::Optix()
+    : m_context( optix::Context::create() )
 {
-    LLOG_INFO << "Destroying optix::Context";
-    s_context->destroy(); 
 }
 
+
+Optix::~Optix()
+{
+    m_context->destroy();
+}
+
+
+optix::Context Optix::getContext()
+{
+    return m_context;
+}
+
+
+void Optix::setProgramSearchPath( const ProgramSearchPath& search_path )
+{
+    m_search_path.assign( search_path.begin(), search_path.end() );
+}
+
+
+optix::Program Optix::loadProgram( const std::string& filename,
+                                   const std::string& program_name )const
+{
+    
+
+}

@@ -4,8 +4,8 @@
 using namespace legion;
 
 
-ICamera::ICamera( const std::string& name )
-    : APIBase( name )
+ICamera::ICamera( Context* context, const std::string& name )
+    : APIBase( context, name )
 {
 }
 

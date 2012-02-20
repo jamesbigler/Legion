@@ -12,7 +12,7 @@ namespace legion
 class ImageFilm : public IFilm 
 {
 public:
-    ImageFilm( const std::string& name );
+    ImageFilm( Context* context, const std::string& name );
     ~ImageFilm();
     
     void   setDimensions( const Index2& dimensions );

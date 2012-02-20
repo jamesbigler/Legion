@@ -3,7 +3,10 @@
 #ifndef LEGION_CORE_CONTEXT_H_
 #define LEGION_CORE_CONTEXT_H_
 
+#include <Legion/Common/Util/Noncopyable.hpp>
+#include <Legion/Common/Util/Optix.hpp>
 #include <Legion/Core/APIBase.hpp>
+#include <Legion/Core/Light.hpp>
 #include <tr1/memory>
 
 namespace legion
@@ -18,7 +21,10 @@ class Mesh;
 class Context : public APIBase 
 {
 public:
-    explicit Context( const std::string& name );
+    //
+    // External interface -- will be wrapped via Pimpl
+    //
+    explicit   Context( const std::string& name );
     ~Context();
 
     void addMesh ( const Mesh* mesh );
@@ -28,12 +34,26 @@ public:
     void setActiveCamera( const ICamera* camera );
     void setActiveFilm( const IFilm* film );
 
+
     void render();
 
+    //
+    // Internal interface -- will exist only in Pimpl class
+    //
+    Optix&       getOptixContext();
+    const Optix& getOptixContext()const;
 private:
 
-    class Impl;
-    std::tr1::shared_ptr<Impl> m_impl;
+    void preprocess();
+    void doRender();
+    void postprocess();
+
+
+    Optix                    m_optix;
+    std::vector<const Mesh*> m_meshes;
+    std::vector<Light>       m_lights;
+    const ICamera*           m_camera;
+    const IFilm*             m_film;
 };
 
 

@@ -8,19 +8,25 @@
 namespace legion
 {
 
+class Context;
+
 class APIBase : public Noncopyable
 {
 public:
-    APIBase( const std::string& name );
+    APIBase( Context* context, const std::string& name );
     virtual ~APIBase();
 
-    std::string getName()const;
+    std::string    getName()const;
 
-    unsigned    getID()const;
+    unsigned       getID()const;
+
+    Context&       getContext();
+    const Context& getContext()const;
 
 private:
     const std::string   m_name;
     const unsigned      m_uid;
+    Context*            m_context;
 
     static unsigned     s_next_uid;
 };

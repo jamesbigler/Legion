@@ -5,8 +5,8 @@
 using namespace legion;
 
 
-LambertianShader::LambertianShader( const std::string& name )
-  : ISurfaceShader( name )
+LambertianShader::LambertianShader( Context* context, const std::string& name )
+  : ISurfaceShader( context, name )
 {
 }
 

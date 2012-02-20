@@ -13,6 +13,7 @@
 namespace legion
 {
 
+class Context;
 
 /// 
 /// Base class for cameras with a default implementation of Ray camera-to-world
@@ -24,7 +25,7 @@ class BasicCamera : public ICamera
 public:
     /// Create named BasicCamera
     /// \param name  The name of the BasicCamera
-    explicit BasicCamera( const std::string& name );
+    BasicCamera( Context* context, const std::string& name );
 
     /// Destroy BasicCamera
     virtual ~BasicCamera();

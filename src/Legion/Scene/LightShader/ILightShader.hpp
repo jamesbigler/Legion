@@ -22,7 +22,7 @@ public:
 
     /// Create a named ILightShader object
     ///   \param name  The object's name 
-    explicit        ILightShader( const std::string& name );
+                    ILightShader( Context* context, const std::string& name );
 
 
     /// Destroy an ILightShader object

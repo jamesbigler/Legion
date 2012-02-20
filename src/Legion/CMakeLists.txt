@@ -28,8 +28,6 @@ add_library( legion SHARED
     Core/Color.hpp
     Core/Context.cpp
     Core/Context.hpp
-    Core/ContextImpl.cpp
-    Core/ContextImpl.hpp
     Core/Exception.hpp
     Core/Light.hpp
     Core/Matrix.hpp
@@ -52,7 +50,7 @@ add_library( legion SHARED
     Scene/LightShader/ILightShader.cpp
     Scene/LightShader/ILightShader.hpp
     Scene/LightShader/PointLightShader.cpp
-    Scene/LightShader/PointLightshader.hpp
+    Scene/LightShader/PointLightShader.hpp
     Scene/Mesh/Mesh.cpp
     Scene/Mesh/Mesh.hpp
     Scene/SurfaceShader/ISurfaceShader.cpp

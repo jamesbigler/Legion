@@ -23,7 +23,7 @@ class ISurfaceShader : public APIBase
 {
 public:
     /// Create named ISurfaceShader object
-    explicit       ISurfaceShader( const std::string& name );
+                   ISurfaceShader( Context* context, const std::string& name );
     
     /// Destroy ISurfaceShader object
     virtual        ~ISurfaceShader();

@@ -13,6 +13,7 @@
 namespace legion
 {
 
+class Context;
 class Ray;
 class Matrix4x4;
 
@@ -34,7 +35,7 @@ public:
 
     /// Create named camera object
     /// \param name Then name of the camera
-    explicit           ICamera( const std::string& name );
+                       ICamera( Context* context, const std::string& name );
 
     /// Destroy the camera object 
     virtual            ~ICamera();

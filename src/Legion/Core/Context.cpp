@@ -1,7 +1,12 @@
 
 
+#include <Legion/Common/Util/Logger.hpp>
+#include <Legion/Common/Util/Optix.hpp>
+#include <Legion/Scene/Camera/ICamera.hpp>
+#include <Legion/Scene/Film/IFilm.hpp>
+#include <Legion/Scene/SurfaceShader/ISurfaceShader.hpp>
+#include <Legion/Scene/LightShader/ILightShader.hpp>
 #include <Legion/Core/Context.hpp>
-#include <Legion/Core/ContextImpl.hpp>
 
 
 using namespace legion;
@@ -12,49 +17,88 @@ using namespace legion;
  *                                                                            *
 \******************************************************************************/
 
-Context::Context( const std::string& name )
-  : APIBase( name ), m_impl( new Impl() )
+Context::Context( const std::string& name ) 
+    : APIBase( this, name )
 {
+    LLOG_INFO << "Creating Context::Impl";
 }
 
 
 Context::~Context()
 {
+    LLOG_INFO << "Destroying Context::Impl";
 }
 
 
 void Context::addMesh( const Mesh* mesh )
 {
-    m_impl->addMesh( mesh );
+    // TODO: add NULL check to all of these
+    LLOG_INFO << "Adding mesh <" << mesh->getName() << ">";
+    m_meshes.push_back( mesh );
 }
 
 
 void Context::addLight( const ILightShader* light_shader )
 {
-    m_impl->addLight( light_shader );
+    Light light;
+    light.shader   = light_shader;
+    light.geometry = 0u;
+    LLOG_INFO << "Adding light <" << light.getName() << ">";
+    m_lights.push_back( light );
 }
 
 
 void Context::addLight( const ILightShader* light_shader, const Mesh* light_geometry )
 {
-    m_impl->addLight( light_shader, light_geometry );
+    Light light;
+    light.shader   = light_shader;
+    light.geometry = light_geometry;
+    LLOG_INFO << "Adding light <" << light.getName() << ">";
+    m_lights.push_back( light );
 }
 
 
 void Context::setActiveCamera( const ICamera* camera )
 {
-    m_impl->setActiveCamera( camera );
+    LLOG_INFO << "Adding camera <" << camera->getName() << ">";
+    m_camera = camera;
 }
 
 
 void Context::setActiveFilm( const IFilm* film )
 {
-    m_impl->setActiveFilm( film );
+    LLOG_INFO << "Adding film <" << film->getName() << ">";
+    m_film = film;
 }
 
+
+void Context::preprocess()
+{
+}
+
+
+void Context::doRender()
+{
+}
+
+
+void Context::postprocess()
+{
+}
 
 void Context::render()
 {
-    m_impl->render();
+    LLOG_INFO << "rendering ....";
+
+    preprocess();
+
+    doRender();
+
+    postprocess();
+
+
+
+    const Index2  image_dims  = m_film->getDimensions();
 }
+
 

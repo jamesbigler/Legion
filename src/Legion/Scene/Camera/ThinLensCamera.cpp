@@ -9,8 +9,8 @@
 using namespace legion;
 
 
-ThinLensCamera::ThinLensCamera( const std::string& name )
-  : BasicCamera( name )
+ThinLensCamera::ThinLensCamera( Context* context, const std::string& name )
+  : BasicCamera( context, name )
 {
     // TODO: give default values to all params
 }

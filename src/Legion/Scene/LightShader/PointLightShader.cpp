@@ -6,8 +6,8 @@
 using namespace legion;
 
 
-PointLightShader::PointLightShader( const std::string& name )
-  : ILightShader( name )
+PointLightShader::PointLightShader( Context* context, const std::string& name )
+  : ILightShader( context, name )
 {
 }
 

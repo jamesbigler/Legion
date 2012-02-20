@@ -3,8 +3,8 @@
 
 using namespace legion;
 
-ISurfaceShader::ISurfaceShader( const std::string& name )
-    : APIBase( name )
+ISurfaceShader::ISurfaceShader( Context* context, const std::string& name )
+    : APIBase( context, name )
 {
 }
 
