@@ -2,6 +2,7 @@
 
 # Set up build .cu -> .ptx build 
 CUDA_COMPILE_PTX( ptx_files
+    Cuda/hit_programs.cu
     Cuda/ray_generation.cu
     Cuda/triangle_mesh.cu
     )
