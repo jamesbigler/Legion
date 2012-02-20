@@ -1,13 +1,14 @@
 
 #include <Legion/Legion.hpp>
 #include <vector>
-#include <iostream>
 
 int main( int argc, char** argv )
 {
     try
     {
-        std::cerr << " Starting ***********" << std::endl;
+        legion::Log::setReportingLevel( legion::Log::INFO );
+
+        LLOG_INFO << "Starting ***********";
         legion::Context ctx( "legion_simple" );
         
         // Parameters params;
@@ -51,11 +52,11 @@ int main( int argc, char** argv )
         ctx.setActiveFilm( &film );
 
         ctx.render();
-        std::cerr << " Finished ***********" << std::endl;
+        LLOG_INFO << "Finished ***********";
     }
     catch( legion::Exception& e )
     {
-        std::cerr << e.what() << std::endl;
+        LLOG_ERROR << e.what();
     }
 }
 

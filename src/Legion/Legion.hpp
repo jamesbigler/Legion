@@ -10,6 +10,7 @@
 #include <Legion/Common/Math/Filter.hpp>
 #include <Legion/Common/Math/Math.hpp>
 #include <Legion/Common/Util/Assert.hpp>
+#include <Legion/Common/Util/Logger.hpp>
 #include <Legion/Common/Util/Stream.hpp>
 #include <Legion/Core/Color.hpp>
 #include <Legion/Core/Context.hpp>

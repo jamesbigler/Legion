@@ -1,7 +1,6 @@
 
 
 # Set up build .cu -> .ptx build 
-find_package(CUDA 4.0 REQUIRED)
 CUDA_COMPILE_PTX( ptx_files
     Cuda/ray_generation.cu
     Cuda/triangle_mesh.cu
@@ -15,6 +14,12 @@ add_library( legion SHARED
     Common/Math/Math.cpp
     Common/Math/Math.hpp
     Common/Util/Assert.hpp
+    Common/Util/Logger.cpp
+    Common/Util/Logger.hpp
+    Common/Util/Noncopyable.hpp
+    Common/Util/Singleton.hpp
+    Common/Util/Optix.cpp
+    Common/Util/Optix.hpp
     Common/Util/Stream.cpp
     Common/Util/Stream.hpp
     Core/APIBase.cpp
