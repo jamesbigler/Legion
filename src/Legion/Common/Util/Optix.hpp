@@ -4,6 +4,7 @@
 
 #include <optixu/optixpp_namespace.h>
 #include <Legion/Common/Util/Noncopyable.hpp>
+#include <map>
 
 
 namespace legion
@@ -12,7 +13,9 @@ namespace legion
 class Optix : Noncopyable
 {
 public:
-    typedef std::vector<std::string>  ProgramSearchPath;
+    typedef std::vector<std::string>               ProgramSearchPath;
+    typedef std::map<std::string, optix::Program>  ProgramMap;
+
     Optix();
     ~Optix();
 
@@ -20,13 +23,20 @@ public:
 
     void setProgramSearchPath( const ProgramSearchPath& search_path );
 
-    optix::Program loadProgram( const std::string& filename,
-                                const std::string& program_name )const;
+    void registerProgram( const std::string& filename,
+                          const std::string& program_name );
 
+    optix::Program getProgram( const std::string& program_name )const;
 private:
 
-    ProgramSearchPath m_search_path;
-    optix::Context    m_context;
+    optix::Program loadProgram( const std::string& path,
+                                const std::string& filename,
+                                const std::string& program_name );
+
+    optix::Context     m_context;
+
+    ProgramSearchPath  m_search_path;
+    ProgramMap         m_program_map;
 };
 
 }

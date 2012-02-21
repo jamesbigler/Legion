@@ -28,6 +28,7 @@ add_library( legion SHARED
     Core/Color.hpp
     Core/Context.cpp
     Core/Context.hpp
+    Core/Exception.cpp
     Core/Exception.hpp
     Core/Light.hpp
     Core/Matrix.hpp

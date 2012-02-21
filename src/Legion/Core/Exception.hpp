@@ -7,8 +7,11 @@
 namespace legion
 {
 
-class Exception : public std::exception
+class Exception : public std::runtime_error
 {
+public:
+    Exception();
+    Exception( const std::string& mssg );
 };
 
 

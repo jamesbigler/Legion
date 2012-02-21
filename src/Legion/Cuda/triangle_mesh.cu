@@ -16,7 +16,7 @@ rtBuffer<optix::int3>    triangles;
 rtDeclareVariable( legion::SurfaceInfo, surface_info, attribute surface_info, );
 rtDeclareVariable( optix::Ray,          ray,          rtCurrentRay, );
 
-RT_PROGRAM void PolyMeshIntersect( int prim_index )
+RT_PROGRAM void polyMeshIntersect( int prim_index )
 {
   const optix::int3 triangle = triangles[ prim_index ];
 
@@ -43,7 +43,8 @@ RT_PROGRAM void PolyMeshIntersect( int prim_index )
 }
 
 
-RT_PROGRAM void mesh_bounds( int prim_index, float bbox[6] )
+RT_PROGRAM void polyMeshBounds( int prim_index, float bbox[6] )
+
 {  
   const optix::int3   triangle = triangles[ prim_index ];
   const optix::float3 v0       = vertices[ triangle.x ].position;
