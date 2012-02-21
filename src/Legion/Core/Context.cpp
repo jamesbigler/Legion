@@ -21,6 +21,12 @@ Context::Context( const std::string& name )
     : APIBase( this, name )
 {
     LLOG_INFO << "Creating Context::Impl";
+
+    std::vector<std::string> paths;
+    paths.push_back( "/Users/keithm/Code/Legion/build_debug/src/Legion/" );
+    m_optix.setProgramSearchPath( paths );
+    m_optix.loadProgram( "cuda_compile_ptx_generated_hit_programs.cu.ptx",
+                         "XXclosestHit" );
 }
 
 

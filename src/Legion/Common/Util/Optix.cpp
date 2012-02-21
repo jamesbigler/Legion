@@ -57,6 +57,23 @@ void Optix::setProgramSearchPath( const ProgramSearchPath& search_path )
 optix::Program Optix::loadProgram( const std::string& filename,
                                    const std::string& program_name )const
 {
+
+    for( ProgramSearchPath::const_iterator path = m_search_path.begin();
+         path != m_search_path.end();
+         ++path )
+    {
+        optix::Program program = ::loadProgram( m_context,
+                                              *path,
+                                              filename,
+                                              program_name );
+        if( program )
+        {
+            LLOG_INFO << "Successfully loaded optix program " << program_name;
+            return program;
+        }
+    }
+    LLOG_INFO << "Failed to load optix program " << program_name;
     
+    throw "Couldnt load program!!";
 
 }
