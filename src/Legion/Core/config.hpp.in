@@ -1,0 +1,15 @@
+
+/// \file config.hpp
+/// Compile-time configuration values
+
+#ifndef LEGION_CORE_CONFIG_HPP_
+#define LEGION_CORE_CONFIG_HPP_
+
+namespace legion
+{
+
+const char* PTX_DIR = "@PTX_OUTPUT_DIR@";
+
+}
+
+#endif // LEGION_CORE_CONFIG_HPP_
