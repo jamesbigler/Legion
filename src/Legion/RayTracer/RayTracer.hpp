@@ -11,6 +11,23 @@ class RayTracer
 public:
     RayTracer();
 
+    optix::Buffer createBuffer();
+
+    void updateVertexBuffer( optix::Buffer buffer,
+                             unsigned num_verts,
+                             const Vertex* verts );
+
+    void updateTriangleBuffer( optix::Buffer buffer,
+                               unsigned num_tris,
+                               const optix::Index3* tris );
+
+
+
+
+
+
+
+
 
 private:
 };

@@ -4,9 +4,9 @@
 
 int main( int argc, char** argv )
 {
-        legion::Context ctx( "legion_simple" );
     try
     {
+        legion::Context ctx( "legion_simple" );
         legion::Log::setReportingLevel( legion::Log::INFO );
 
         LLOG_INFO << "Starting ***********";
@@ -17,19 +17,26 @@ int main( int argc, char** argv )
         legion::LambertianShader mtl( &ctx, "material" );
         mtl.setKd( legion::Color(  0.5f, 0.5f, 0.5f ) );
        
-        std::vector<legion::Vector3> vertices;
-        vertices.push_back( legion::Vector3( -0.5f, -0.5f, 0.0f ) );
-        vertices.push_back( legion::Vector3( -0.5f,  0.5f, 0.0f ) );
-        vertices.push_back( legion::Vector3(  0.5f,  0.5f, 0.0f ) );
-        vertices.push_back( legion::Vector3(  0.5f, -0.5f, 0.0f ) );
+        std::vector<legion::Mesh::Vertex> verts;
+        verts.push_back( legion::Mesh::Vertex( legion::Vector3(-0.5f,-0.5f, 0.0f ),
+                                         legion::Vector3( 0.0f, 0.0f,-1.0f ),
+                                         legion::Vector3( 0.0f, 0.0f, 0.0f )) );
+        verts.push_back( legion::Mesh::Vertex( legion::Vector3(-0.5f, 0.5f, 0.0f ),
+                                         legion::Vector3( 0.0f, 0.0f,-1.0f ),
+                                         legion::Vector3( 0.0f, 0.0f, 0.0f )) );
+        verts.push_back( legion::Mesh::Vertex( legion::Vector3( 0.5f, 0.5f, 0.0f ),
+                                         legion::Vector3( 0.0f, 0.0f,-1.0f ),
+                                         legion::Vector3( 0.0f, 0.0f, 0.0f )) );
+        verts.push_back( legion::Mesh::Vertex( legion::Vector3( 0.5f, -0.5f, 0.0f),
+                                         legion::Vector3( 0.0f, 0.0f,-1.0f ),
+                                         legion::Vector3( 0.0f, 0.0f, 0.0f )) );
 
         std::vector<legion::Index3> indices;
         indices.push_back( legion::Index3( 0, 1, 3 ) );
         indices.push_back( legion::Index3( 1, 2, 3 ) );
 
-        legion::Mesh square( &ctx, "square", vertices.size() );
-        square.setTime( 0.0f );
-        square.setVertices( &vertices[0] );
+        legion::Mesh square( &ctx, "square" );
+        square.setVertices( vertices.size(), &vertices[0] );
         square.setTransform( legion::Matrix4x4::identity() );
         square.addTriangles( indices.size(), &indices[0], &mtl );
         ctx.addMesh( &square );

@@ -2,9 +2,11 @@
 #ifndef LEGION_CORE_MESH_HPP_
 #define LEGION_CORE_MESH_HPP_
 
+
 #include <Legion/Core/APIBase.hpp>
 #include <Legion/Core/Vector.hpp>
 #include <tr1/memory>
+#include <optixu/optixpp_namespace.h>
 
 namespace legion
 {
@@ -19,22 +21,35 @@ public:
     //
     // External interface -- will be wrapped via Pimpl
     //
-    Mesh( Context* context, const std::string& name, unsigned vertex_count );
+
+    struct Vertex
+    {
+        Vertex() {}
+        Vertex( const Vector3& p, const Vector3& n, const Vector3& t )
+            : position( p ), normal( n ), texcoord( t ) {}
+        Vector3 position;
+        Vector3 normal;
+        Vector3 texcoord;
+    };
+
+    Mesh( Context* context, const std::string& name );
     ~Mesh();
 
-    void setTime( float time );
 
-    // TODO: add templated iterator setters???
-    void setVertices( const Vector3* vertices );
-    void setNormals( const Vector3* normals );
-    void setTextureCoordinates( const Vector2* tex_coords );
+    
     void setTransform( const Matrix4x4& transform );
+    void setTransform( unsigned num_samples, const Matrix4x4* transform );
 
-    void addTriangles( unsigned num_faces,
-                       const Index3* tris,
-                       const ISurfaceShader* shader );
+    void setVertices( unsigned num_vertices, const Vertex* vertices );
 
-    void addQuads( unsigned num_faces,
+    void setVertices( unsigned num_samples,  const float* times,
+                      unsigned num_vertices, const Vertex** vertices );
+
+    void setFaces( unsigned num_faces,
+                   const Index3* tris,
+                   const ISurfaceShader* shader );
+
+    void setFaces( unsigned num_faces,
                    const Index4* quads,
                    const ISurfaceShader* shader );
 
@@ -44,9 +59,27 @@ public:
     //
     // Internal interface
     //
+    void setVertexBuffer  ( optix::Buffer buffer );
+    void setTriangleBuffer( optix::Buffer buffer );
+    void setQuadBuffer    ( optix::Buffer buffer );
+
+    bool subdvisionEnabled()const;
+
+    const std::vector<Matrix4x4>& getTransform()const;
+
+    bool verticesChanged()const;
+    bool facesChanged()const;
 
 private:
 
+    bool                     m_subdivision_enabled;
+    std::vector<Matrix4x4>   m_transform;
+
+    bool                     m_vertices_changed;
+    bool                     m_faces_changed;
+
+    optix::Buffer            m_vertices;
+    optix::Buffer            m_faces;
 };
 
 }
