@@ -7,13 +7,40 @@
 #include <map>
 
 
+#define OPTIX_CATCH_RETHROW                                                    \
+    catch ( optix::Exception& e )                                              \
+    {                                                                          \
+        throw legion::Exception( std::string("OPTIX_EXCEPTION: ")+e.what() );  \
+    }                                                                          \
+    catch ( std::exception& e )                                                \
+    {                                                                          \
+        throw legion::Exception( std::string("OPTIX_EXCEPTION: ")+e.what() );  \
+    }                                                                          \
+    catch (...)                                                                \
+    {                                                                          \
+        throw legion::Exception( std::string("OPTIX_EXCEPTION: unknown") );    \
+    }
+
+#define OPTIX_CATCH_WARN                                                       \
+    catch ( optix::Exception& e )                                              \
+    {                                                                          \
+        LLOG_WARN << "OPTIX_EXCEPTION: " << e.what();                          \
+    }                                                                          \
+    catch ( std::exception& e )                                                \
+    {                                                                          \
+        LLOG_WARN << "OPTIX_EXCEPTION: " << e.what();                          \
+    }                                                                          \
+    catch (...)                                                                \
+    {                                                                          \
+        LLOG_WARN << "OPTIX_EXCEPTION: Unknown";                               \
+    }
+
 namespace legion
 {
 
 class Optix : Noncopyable
 {
 public:
-    typedef std::vector<std::string>               ProgramSearchPath;
     typedef std::map<std::string, optix::Program>  ProgramMap;
 
     Optix();
@@ -21,7 +48,7 @@ public:
 
     optix::Context getContext();
 
-    void setProgramSearchPath( const ProgramSearchPath& search_path );
+    void setProgramSearchPath( const std::string& path );
 
     void registerProgram( const std::string& filename,
                           const std::string& program_name );
@@ -29,13 +56,11 @@ public:
     optix::Program getProgram( const std::string& program_name )const;
 private:
 
-    optix::Program loadProgram( const std::string& path,
-                                const std::string& filename,
+    optix::Program loadProgram( const std::string& filename,
                                 const std::string& program_name );
 
     optix::Context     m_context;
-
-    ProgramSearchPath  m_search_path;
+    std::string        m_search_path;
     ProgramMap         m_program_map;
 };
 

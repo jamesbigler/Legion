@@ -8,7 +8,7 @@ using namespace legion;
 Mesh::Mesh( Context* context, const std::string& name, unsigned vertex_count )
     : APIBase( context, name )
 {
-    optix::Context = context->getOptixContext();
+
 }
 
 

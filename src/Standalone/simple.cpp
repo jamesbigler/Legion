@@ -4,12 +4,12 @@
 
 int main( int argc, char** argv )
 {
+        legion::Context ctx( "legion_simple" );
     try
     {
         legion::Log::setReportingLevel( legion::Log::INFO );
 
         LLOG_INFO << "Starting ***********";
-        legion::Context ctx( "legion_simple" );
         
         // Parameters params;
         // params.add( "Kd", legion::Color( 0.5f, 0.5f, 0.5f ) );

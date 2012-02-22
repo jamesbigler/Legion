@@ -28,54 +28,29 @@ optix::Context Optix::getContext()
 }
 
 
-void Optix::setProgramSearchPath( const ProgramSearchPath& search_path )
+void Optix::setProgramSearchPath( const std::string& search_path )
 {
-    m_search_path.assign( search_path.begin(), search_path.end() );
-}
-
-
-optix::Program Optix::loadProgram( const std::string& path,
-                                   const std::string& filename,
-                                   const std::string& program_name )
-{
-    std::string full_path;
-    if( !path.empty() )  full_path = path + "/" + filename;
-    else                 full_path = filename;
-
-    try
-    {
-        return m_context->createProgramFromPTXFile( full_path, program_name );
-    }
-    catch( ... )
-    {
-        return optix::Program();
-    }
+    m_search_path = search_path;
 }
 
 
 void Optix::registerProgram( const std::string& filename,
                              const std::string& program_name )
 {
+    std::string path;
+    if( !m_search_path.empty() )  path = m_search_path + "/" + filename;
+    else                          path = filename;
 
-    for( ProgramSearchPath::const_iterator path = m_search_path.begin();
-         path != m_search_path.end();
-         ++path )
+    try
     {
-        optix::Program program = loadProgram( *path, filename, program_name );
-        if( program )
-        {
-            LLOG_INFO << "Successfully loaded optix program " << program_name;
-            LLOG_INFO << "    from: " << filename;
+        optix::Program program;
+        program = m_context->createProgramFromPTXFile( path, program_name );
+        m_program_map.insert( std::make_pair( program_name, program ) );
 
-            m_program_map.insert( std::make_pair( program_name, program ) );
-            return;
-        }
+        LLOG_INFO << "Successfully loaded optix program " << program_name;
+        LLOG_INFO << "    from: " << filename;
     }
-
-    LLOG_INFO << "Failed to load optix program '" << program_name;
-    LLOG_INFO << "   from: " << filename;
-    throw Exception( "Couldnt load optix program!!" );
-
+    OPTIX_CATCH_RETHROW;
 }
     
 

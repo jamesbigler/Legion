@@ -7,6 +7,7 @@
 #include <Legion/Scene/SurfaceShader/ISurfaceShader.hpp>
 #include <Legion/Scene/LightShader/ILightShader.hpp>
 #include <Legion/Core/Context.hpp>
+#include <Legion/Core/config.hpp>
 
 
 using namespace legion;
@@ -22,17 +23,14 @@ Context::Context( const std::string& name )
 {
     LLOG_INFO << "Creating Context::Impl";
 
-    std::vector<std::string> paths;
-
-    paths.push_back( "/Users/keithm/Code/Legion/build_debug/src/Legion/" );
-    m_optix.setProgramSearchPath( paths );
+    m_optix.setProgramSearchPath( legion::PTX_DIR );
 
     std::string pre = "cuda_compile_ptx_generated_";
-    m_optix.registerProgram( pre+"hit_programs.cu.ptx",   "closestHit" );
-    m_optix.registerProgram( pre+"hit_programs.cu.ptx",   "anyHit" );
-    m_optix.registerProgram( pre+"ray_generation.cu.ptx", "traceRays" );
+    m_optix.registerProgram( pre+"hit_programs.cu.ptx",   "closestHit"        );
+    m_optix.registerProgram( pre+"hit_programs.cu.ptx",   "anyHit"            );
+    m_optix.registerProgram( pre+"ray_generation.cu.ptx", "traceRays"         );
     m_optix.registerProgram( pre+"triangle_mesh.cu.ptx",  "polyMeshIntersect" );
-    m_optix.registerProgram( pre+"triangle_mesh.cu.ptx",  "polyMeshBounds" );
+    m_optix.registerProgram( pre+"triangle_mesh.cu.ptx",  "polyMeshBounds"    );
 }
 
 

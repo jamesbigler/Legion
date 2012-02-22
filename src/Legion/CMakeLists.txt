@@ -1,4 +1,7 @@
 
+set( PTX_OUTPUT_DIR "${CMAKE_BINARY_DIR}/lib/ptx" CACHE PATH "Path to where generated PTX is stored" ) 
+set( CUDA_GENERATED_OUTPUT_DIR ${PTX_OUTPUT_DIR} )
+
 
 # Set up build .cu -> .ptx build 
 CUDA_COMPILE_PTX( ptx_files
@@ -7,6 +10,7 @@ CUDA_COMPILE_PTX( ptx_files
     Cuda/triangle_mesh.cu
     )
 
+configure_file( "${CMAKE_CURRENT_SOURCE_DIR}/Core/config.hpp.in"  "${CMAKE_CURRENT_SOURCE_DIR}/Core/config.hpp" )
 
 # build the library and ptx files
 add_library( legion SHARED
