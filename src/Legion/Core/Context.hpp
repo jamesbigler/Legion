@@ -27,7 +27,7 @@ public:
     explicit   Context( const std::string& name );
     ~Context();
 
-    void addMesh ( const Mesh* mesh );
+    void addMesh ( Mesh* mesh );
     void addLight( const ILightShader* light_shader );
     void addLight( const ILightShader* light_shader, const Mesh* light_geometry );
 
@@ -50,7 +50,8 @@ private:
     std::vector<Light>       m_lights;
     const ICamera*           m_camera;
     const IFilm*             m_film;
-    const RayTracer          m_ray_tracer;
+
+    RayTracer          m_ray_tracer;
 };
 
 

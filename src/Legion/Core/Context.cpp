@@ -30,13 +30,13 @@ Context::~Context()
 }
 
 
-void Context::addMesh( const Mesh* mesh )
+void Context::addMesh( Mesh* mesh )
 {
     // TODO: add NULL check to all of these
     LLOG_INFO << "Adding mesh <" << mesh->getName() << ">";
     m_meshes.push_back( mesh );
 
-
+    m_ray_tracer.addMesh( mesh );
 }
 
 
