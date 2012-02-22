@@ -1,7 +1,6 @@
 
 
 #include <Legion/Common/Util/Logger.hpp>
-#include <Legion/Common/Util/Optix.hpp>
 #include <Legion/Scene/Camera/ICamera.hpp>
 #include <Legion/Scene/Film/IFilm.hpp>
 #include <Legion/Scene/SurfaceShader/ISurfaceShader.hpp>
@@ -22,15 +21,6 @@ Context::Context( const std::string& name )
     : APIBase( this, name )
 {
     LLOG_INFO << "Creating Context::Impl";
-
-    m_optix.setProgramSearchPath( legion::PTX_DIR );
-
-    std::string pre = "cuda_compile_ptx_generated_";
-    m_optix.registerProgram( pre+"hit_programs.cu.ptx",   "closestHit"        );
-    m_optix.registerProgram( pre+"hit_programs.cu.ptx",   "anyHit"            );
-    m_optix.registerProgram( pre+"ray_generation.cu.ptx", "traceRays"         );
-    m_optix.registerProgram( pre+"triangle_mesh.cu.ptx",  "polyMeshIntersect" );
-    m_optix.registerProgram( pre+"triangle_mesh.cu.ptx",  "polyMeshBounds"    );
 }
 
 
@@ -45,6 +35,8 @@ void Context::addMesh( const Mesh* mesh )
     // TODO: add NULL check to all of these
     LLOG_INFO << "Adding mesh <" << mesh->getName() << ">";
     m_meshes.push_back( mesh );
+
+
 }
 
 
@@ -58,7 +50,8 @@ void Context::addLight( const ILightShader* light_shader )
 }
 
 
-void Context::addLight( const ILightShader* light_shader, const Mesh* light_geometry )
+void Context::addLight( const ILightShader* light_shader,
+                        const Mesh* light_geometry )
 {
     Light light;
     light.shader   = light_shader;

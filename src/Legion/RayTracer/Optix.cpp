@@ -1,5 +1,5 @@
 
-#include <Legion/Common/Util/Optix.hpp>
+#include <Legion/RayTracer/Optix.hpp>
 #include <Legion/Common/Util/Logger.hpp>
 #include <Legion/Core/Exception.hpp>
 

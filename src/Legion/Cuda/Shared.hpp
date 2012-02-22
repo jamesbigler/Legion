@@ -35,6 +35,7 @@ struct SurfaceInfo
     int             material_id;
 };
 
+
 struct RayInfo
 {
     optix::float3   origin;

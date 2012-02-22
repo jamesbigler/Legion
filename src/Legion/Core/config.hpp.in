@@ -8,7 +8,7 @@
 namespace legion
 {
 
-const char* PTX_DIR = "@PTX_OUTPUT_DIR@";
+static const char* PTX_DIR = "@PTX_OUTPUT_DIR@";
 
 }
 

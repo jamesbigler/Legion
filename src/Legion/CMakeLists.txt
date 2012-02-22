@@ -23,8 +23,6 @@ add_library( legion SHARED
     Common/Util/Logger.hpp
     Common/Util/Noncopyable.hpp
     Common/Util/Singleton.hpp
-    Common/Util/Optix.cpp
-    Common/Util/Optix.hpp
     Common/Util/Stream.cpp
     Common/Util/Stream.hpp
     Core/APIBase.cpp
@@ -41,6 +39,10 @@ add_library( legion SHARED
     Cuda/ray_generation.cu
     Cuda/triangle_mesh.cu
     Legion.hpp
+    RayTracer/Optix.cpp
+    RayTracer/Optix.hpp
+    RayTracer/RayTracer.cpp
+    RayTracer/RayTracer.hpp
     Scene/Camera/BasicCamera.cpp
     Scene/Camera/BasicCamera.hpp
     Scene/Camera/ICamera.cpp

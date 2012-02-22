@@ -1,7 +1,6 @@
 
 #include <Legion/Core/Matrix.hpp>
 #include <Legion/Scene/Mesh/Mesh.hpp>
-#include <Legion/Common/Util/Optix.hpp>
 
 using namespace legion;
 

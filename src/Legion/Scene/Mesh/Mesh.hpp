@@ -6,6 +6,7 @@
 #include <Legion/Core/APIBase.hpp>
 #include <Legion/Core/Vector.hpp>
 #include <tr1/memory>
+
 #include <optixu/optixpp_namespace.h>
 
 namespace legion
