@@ -69,12 +69,7 @@ void Mesh::setVertexBuffer( optix::Buffer buffer )
 }
 
 
-void Mesh::setTriangleBuffer( optix::Buffer buffer )
-{
-}
-
-
-void Mesh::setQuadBuffer( optix::Buffer buffer )
+void Mesh::setFaceBuffer( optix::Buffer buffer )
 {
 }
 

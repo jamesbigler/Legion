@@ -46,6 +46,9 @@ private:
 
     Optix   m_optix;
 
+    std::vector<Mesh*>   m_meshes;
+    optix::Buffer        m_ray_buffer;;
+    optix::Buffer        m_result_buffer;
 };
 
 }

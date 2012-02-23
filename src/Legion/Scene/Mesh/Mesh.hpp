@@ -61,8 +61,7 @@ public:
     // Internal interface
     //
     void setVertexBuffer  ( optix::Buffer buffer );
-    void setTriangleBuffer( optix::Buffer buffer );
-    void setQuadBuffer    ( optix::Buffer buffer );
+    void setFaceBuffer    ( optix::Buffer buffer );
 
     bool subdvisionEnabled()const;
 
