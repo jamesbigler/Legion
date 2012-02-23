@@ -5,10 +5,12 @@
 #ifndef LEGION_CORE_CONFIG_HPP_
 #define LEGION_CORE_CONFIG_HPP_
 
+#include <string>
+
 namespace legion
 {
 
-static const char* PTX_DIR = "@PTX_OUTPUT_DIR@";
+static const std::string PTX_DIR = "@PTX_OUTPUT_DIR@";
 
 }
 

@@ -4,7 +4,6 @@
 
 #include <optix.h>
 #include <optixu/optixu_math_namespace.h>
-#include <Legion/Cuda/Shared.hpp>
 
 #define HOST_DEVICE __host__ __device__
 

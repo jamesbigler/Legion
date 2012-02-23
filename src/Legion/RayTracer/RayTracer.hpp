@@ -40,15 +40,32 @@ public:
 
 
     void traceRays( QueryType type, unsigned num_rays, legion::Ray* rays );
-    legion::SurfaceInfo* getResults()const;
+
+    optix::Buffer  getResults()const;
 
 private:
+    optix::Program createProgram( const std::string& cuda_file,
+                                  const std::string name );
 
-    Optix   m_optix;
+    void initializeOptixContext();
+      
+
+    static const int     OPTIX_ENTRY_POINT_INDEX = 0u;
+
+    optix::Context       m_optix_context;
 
     std::vector<Mesh*>   m_meshes;
+
     optix::Buffer        m_ray_buffer;;
     optix::Buffer        m_result_buffer;
+
+    optix::Program       m_closest_hit;
+    optix::Program       m_any_hit;
+    optix::Program       m_trace_rays;
+    optix::Program       m_pmesh_intersect;
+    optix::Program       m_pmesh_bounds;
+
+    optix::Group         m_top_object;
 };
 
 }

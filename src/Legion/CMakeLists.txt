@@ -5,9 +5,9 @@ set( CUDA_GENERATED_OUTPUT_DIR ${PTX_OUTPUT_DIR} )
 
 # Set up build .cu -> .ptx build 
 CUDA_COMPILE_PTX( ptx_files
-    Cuda/hit_programs.cu
-    Cuda/ray_generation.cu
-    Cuda/triangle_mesh.cu
+    RayTracer/Cuda/hit.cu
+    RayTracer/Cuda/raygen.cu
+    RayTracer/Cuda/trimesh.cu
     )
 
 configure_file( "${CMAKE_CURRENT_SOURCE_DIR}/Core/config.hpp.in"  "${CMAKE_CURRENT_SOURCE_DIR}/Core/config.hpp" )
@@ -36,8 +36,6 @@ add_library( legion SHARED
     Core/Matrix.hpp
     Core/Ray.hpp
     Core/Vector.hpp
-    Cuda/ray_generation.cu
-    Cuda/triangle_mesh.cu
     Legion.hpp
     RayTracer/Optix.cpp
     RayTracer/Optix.hpp

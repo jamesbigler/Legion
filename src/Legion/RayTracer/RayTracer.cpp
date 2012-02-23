@@ -1,47 +1,51 @@
 
-#include <Legion/RayTracer/RayTracer.hpp>
-#include <Legion/Core/config.hpp>
-#include <Legion/Core/Ray.hpp>
+#include <Legion/Common/Util/Logger.hpp>
 #include <Legion/Core/Exception.hpp>
-#include <Legion/Cuda/Shared.hpp>
+#include <Legion/Core/Ray.hpp>
+#include <Legion/Core/config.hpp>
+#include <Legion/RayTracer/Cuda/Shared.hpp>
+#include <Legion/RayTracer/RayTracer.hpp>
 #include <Legion/Scene/Mesh/Mesh.hpp>
 
 
 using namespace legion;
 
-//
-//
-//
-//
-//  TODO: looks like Optix class can be folded into this one
-//
-//
-//
+#define OPTIX_CATCH_RETHROW                                                    \
+    catch ( optix::Exception& e )                                              \
+    {                                                                          \
+        throw legion::Exception( std::string("OPTIX_EXCEPTION: ")+e.what() );  \
+    }                                                                          \
+    catch ( std::exception& e )                                                \
+    {                                                                          \
+        throw legion::Exception( std::string("OPTIX_EXCEPTION: ")+e.what() );  \
+    }                                                                          \
+    catch (...)                                                                \
+    {                                                                          \
+        throw legion::Exception( std::string("OPTIX_EXCEPTION: unknown") );    \
+    }
+
+
+#define OPTIX_CATCH_WARN                                                       \
+    catch ( optix::Exception& e )                                              \
+    {                                                                          \
+        LLOG_WARN << "OPTIX_EXCEPTION: " << e.what();                          \
+    }                                                                          \
+    catch ( std::exception& e )                                                \
+    {                                                                          \
+        LLOG_WARN << "OPTIX_EXCEPTION: " << e.what();                          \
+    }                                                                          \
+    catch (...)                                                                \
+    {                                                                          \
+        LLOG_WARN << "OPTIX_EXCEPTION: Unknown";                               \
+    }
+
+
 
 RayTracer::RayTracer()
 {
-    m_optix.setProgramSearchPath( legion::PTX_DIR );
-
-    std::string pre = "cuda_compile_ptx_generated_";
-    m_optix.registerProgram( pre+"hit_programs.cu.ptx",   "closestHit"        );
-    m_optix.registerProgram( pre+"hit_programs.cu.ptx",   "anyHit"            );
-    m_optix.registerProgram( pre+"ray_generation.cu.ptx", "traceRays"         );
-    m_optix.registerProgram( pre+"triangle_mesh.cu.ptx",  "polyMeshIntersect" );
-    m_optix.registerProgram( pre+"triangle_mesh.cu.ptx",  "polyMeshBounds"    );
-
-    try
-    {
-        m_ray_buffer = m_optix.getContext()->createBuffer( RT_BUFFER_INPUT );
-        m_ray_buffer->setFormat( RT_FORMAT_USER );
-        m_ray_buffer->setElementSize( sizeof( Ray ) );
-
-        m_ray_buffer = m_optix.getContext()->createBuffer( RT_BUFFER_INPUT );
-        m_ray_buffer->setFormat( RT_FORMAT_USER );
-        m_ray_buffer->setElementSize( sizeof( SurfaceInfo ) );
-    }
-    OPTIX_CATCH_RETHROW;
-
+    initializeOptixContext();
 }
+
 
 void RayTracer::updateVertexBuffer( optix::Buffer buffer,
                                     unsigned num_verts,
@@ -80,13 +84,12 @@ void RayTracer::addMesh( legion::Mesh* mesh )
 
     try
     {
-        optix::Context optix_context = m_optix.getContext();
-        optix::Buffer vbuffer = optix_context->createBuffer( RT_BUFFER_INPUT );
+        optix::Buffer vbuffer = m_optix_context->createBuffer(RT_BUFFER_INPUT);
         vbuffer->setFormat( RT_FORMAT_USER );
         vbuffer->setElementSize( sizeof( Vertex ) );
         mesh->setVertexBuffer( vbuffer );
 
-        optix::Buffer ibuffer = optix_context->createBuffer( RT_BUFFER_INPUT );
+        optix::Buffer ibuffer = m_optix_context->createBuffer(RT_BUFFER_INPUT);
         ibuffer->setFormat( RT_FORMAT_USER );
         mesh->setFaceBuffer( ibuffer );
     }
@@ -113,12 +116,78 @@ void RayTracer::traceRays( QueryType type,
         Ray* buffer_data = static_cast<Ray*>( m_ray_buffer->map() );
         memcpy( buffer_data, rays, num_rays*sizeof( Ray ) );
         m_ray_buffer->unmap();
+
+        m_optix_context[ "ray_type" ]->setUint( static_cast<unsigned>( type ) );
+
+        LLOG_INFO << "RayTracer::traceRays(): Compiling OptiX context...";
+        m_optix_context->compile();
+        LLOG_INFO << "    Finished.";
+
+        LLOG_INFO << "RayTracer::traceRays(): Launching OptiX ...";
+        m_optix_context->launch( OPTIX_ENTRY_POINT_INDEX, num_rays );
+        LLOG_INFO << "    Finished.";
+
     }
     OPTIX_CATCH_RETHROW;
 }
 
 
-legion::SurfaceInfo* RayTracer::getResults()const
+optix::Buffer RayTracer::getResults()const
 {
+    return m_result_buffer;
 }
 
+
+optix::Program RayTracer::createProgram( const std::string& cuda_file,
+                                         const std::string name )
+{
+    try
+    {
+        std::string path = legion::PTX_DIR + "/cuda_compile_ptx_generated_" +
+                           cuda_file + ".ptx";
+
+        optix::Program program;
+        program = m_optix_context->createProgramFromPTXFile( path, name );
+
+        LLOG_INFO << "Successfully loaded optix program " << name;
+        LLOG_INFO << "    from: " << cuda_file;
+
+        return program;
+    }
+    OPTIX_CATCH_RETHROW;
+}
+
+
+void RayTracer::initializeOptixContext()
+{
+    // Initialize optix members
+    try
+    {
+        m_optix_context = optix::Context::create();
+        
+        m_closest_hit     = createProgram( "hit.cu",     "closestHit" );
+        m_any_hit         = createProgram( "hit.cu",     "anyHit" );
+        m_trace_rays      = createProgram( "raygen.cu",  "traceRays" );
+        m_pmesh_intersect = createProgram( "trimesh.cu", "polyMeshIntersect" );
+        m_pmesh_bounds    = createProgram( "trimesh.cu", "polyMeshBounds" );
+
+        m_optix_context->setRayTypeCount( 2u );
+        m_optix_context->setEntryPointCount( 1u );
+        m_optix_context->setRayGenerationProgram( OPTIX_ENTRY_POINT_INDEX,
+                                                  m_trace_rays );
+
+        m_ray_buffer = m_optix_context->createBuffer( RT_BUFFER_INPUT );
+        m_ray_buffer->setFormat( RT_FORMAT_USER );
+        m_ray_buffer->setElementSize( sizeof( Ray ) );
+        m_optix_context[ "rays" ]->set( m_ray_buffer );
+
+        m_result_buffer = m_optix_context->createBuffer( RT_BUFFER_INPUT );
+        m_result_buffer->setFormat( RT_FORMAT_USER );
+        m_result_buffer->setElementSize( sizeof( SurfaceInfo ) );
+        m_optix_context[ "results" ]->set( m_result_buffer );
+
+        m_top_object = m_optix_context->createGroup();
+        m_optix_context[ "top_object" ]->set( m_top_object );
+    }
+    OPTIX_CATCH_RETHROW;
+}

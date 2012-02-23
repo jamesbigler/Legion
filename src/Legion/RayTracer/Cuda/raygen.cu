@@ -1,16 +1,15 @@
 
 #include <optix.h>
 #include <optixu/optixu_math_namespace.h>
-#include <Legion/Cuda/Shared.hpp>
+#include <Legion/RayTracer/Cuda/Shared.hpp>
 
 
 rtDeclareVariable( unsigned, launch_index, rtLaunchIndex, );
 rtDeclareVariable( rtObject, top_object, , );
+rtDeclareVariable( unsigned, ray_type, , );
 
 rtBuffer<legion::SurfaceInfo, 1> results;
 rtBuffer<legion::RayInfo,     1> rays;
-
-const unsigned RAY_TYPE=0u;
 
 
 RT_PROGRAM void traceRays()
@@ -19,7 +18,7 @@ RT_PROGRAM void traceRays()
 
     optix::Ray ray( ray_info.origin,
                     ray_info.direction, 
-                    RAY_TYPE,
+                    ray_type,
                     ray_info.tmin,
                     ray_info.tmax );
 
