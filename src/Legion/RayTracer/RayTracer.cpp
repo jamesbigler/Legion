@@ -112,9 +112,8 @@ void RayTracer::addMesh( legion::Mesh* mesh )
         gi->setGeometry( geom );
         gi->addMaterial( m_material );
 
-        optix::Acceleration accel = m_optix_context->createAcceleration();
-        accel->setTraverser( "Bvh" );
-        accel->setBuilder( "Bvh" );
+        optix::Acceleration accel;
+        accel = m_optix_context->createAcceleration( "Bvh", "Bvh" );
 
         optix::GeometryGroup gg = m_optix_context->createGeometryGroup();
         gg->setAcceleration( accel );
@@ -231,9 +230,8 @@ void RayTracer::initializeOptixContext()
         m_result_buffer->setElementSize( sizeof( SurfaceInfo ) );
         m_optix_context[ "results" ]->set( m_result_buffer );
 
-        optix::Acceleration accel = m_optix_context->createAcceleration();
-        accel->setTraverser( "Bvh" );
-        accel->setBuilder( "Bvh" );
+        optix::Acceleration accel;
+        accel = m_optix_context->createAcceleration( "Bvh", "Bvh" );
         m_top_object = m_optix_context->createGroup();
         m_top_object->setAcceleration( accel );
         m_optix_context[ "top_object" ]->set( m_top_object );
