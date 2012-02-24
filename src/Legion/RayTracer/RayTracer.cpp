@@ -1,11 +1,13 @@
 
 #include <Legion/Common/Util/Logger.hpp>
+#include <Legion/Common/Util/Assert.hpp>
 #include <Legion/Core/Exception.hpp>
 #include <Legion/Core/Ray.hpp>
 #include <Legion/Core/config.hpp>
 #include <Legion/RayTracer/Cuda/Shared.hpp>
 #include <Legion/RayTracer/RayTracer.hpp>
 #include <Legion/Scene/Mesh/Mesh.hpp>
+#include <Legion/Scene/SurfaceShader/ISurfaceShader.hpp>
 
 
 using namespace legion;
@@ -46,14 +48,26 @@ RayTracer::RayTracer()
     initializeOptixContext();
 }
 
-
-void RayTracer::updateVertexBuffer( optix::Buffer buffer,
-                                    unsigned num_verts,
-                                    const Vertex* verts )
+optix::Buffer RayTracer::createBuffer()
 {
     try
     {
+        return m_optix_context->createBuffer(RT_BUFFER_INPUT);
+    }
+    OPTIX_CATCH_RETHROW;
+}
+
+void RayTracer::updateVertexBuffer( optix::Buffer buffer,
+                                    unsigned num_verts,
+                                    const Mesh::Vertex* verts )
+{
+    LEGION_STATIC_ASSERT( sizeof( Mesh::Vertex ) == sizeof( Vertex ) );
+    try
+    {
+        buffer->setFormat( RT_FORMAT_USER );
+        buffer->setElementSize( sizeof( Vertex ) );
         buffer->setSize( num_verts );
+
         Vertex* buffer_data = static_cast<Vertex*>( buffer->map() );
         memcpy( buffer_data, verts, num_verts*sizeof( Vertex ) );
         buffer->unmap();
@@ -64,14 +78,19 @@ void RayTracer::updateVertexBuffer( optix::Buffer buffer,
 
 void RayTracer::updateFaceBuffer( optix::Buffer buffer,
                                   unsigned num_faces,
-                                  const Index3* tris )
+                                  const Index3* tris,
+                                  const ISurfaceShader* shader )
 {
     try
     {
+        buffer->setFormat( RT_FORMAT_UNSIGNED_INT4 );
         buffer->setSize( num_faces  );
-        buffer->setFormat( RT_FORMAT_UNSIGNED_INT3 );
-        Index3* buffer_data = static_cast<Index3*>( buffer->map() );
-        memcpy( buffer_data, tris, num_faces*sizeof( Index3 ) );
+
+        unsigned shader_id = shader->getID();
+        Index4* buffer_data = static_cast<Index4*>( buffer->map() );
+        for( unsigned i = 0; i < num_faces; ++i )
+            buffer_data[i] = Index4( tris[i], shader_id );
+
         buffer->unmap();
     }
     OPTIX_CATCH_RETHROW;
@@ -80,18 +99,34 @@ void RayTracer::updateFaceBuffer( optix::Buffer buffer,
 
 void RayTracer::addMesh( legion::Mesh* mesh )
 {
-    m_meshes.push_back( mesh );
-
     try
     {
-        optix::Buffer vbuffer = m_optix_context->createBuffer(RT_BUFFER_INPUT);
-        vbuffer->setFormat( RT_FORMAT_USER );
-        vbuffer->setElementSize( sizeof( Vertex ) );
-        mesh->setVertexBuffer( vbuffer );
+        optix::Geometry geom = m_optix_context->createGeometry();
+        geom->setBoundingBoxProgram( m_pmesh_bounds );
+        geom->setIntersectionProgram( m_pmesh_intersect );
+        geom->setPrimitiveCount( mesh->getFaceCount() );
+        geom[ "vertices"  ]->set( mesh->getVertexBuffer() );
+        geom[ "triangles" ]->set( mesh->getFaceBuffer() );
 
-        optix::Buffer ibuffer = m_optix_context->createBuffer(RT_BUFFER_INPUT);
-        ibuffer->setFormat( RT_FORMAT_USER );
-        mesh->setFaceBuffer( ibuffer );
+        optix::GeometryInstance gi = m_optix_context->createGeometryInstance();
+        gi->setGeometry( geom );
+        gi->addMaterial( m_material );
+
+        optix::Acceleration accel = m_optix_context->createAcceleration();
+        accel->setTraverser( "Bvh" );
+        accel->setBuilder( "Bvh" );
+
+        optix::GeometryGroup gg = m_optix_context->createGeometryGroup();
+        gg->setAcceleration( accel );
+        gg->setChildCount( 1u );
+        gg->setChild( 0, gi );
+
+        unsigned num_meshes = m_top_object->getChildCount() + 1;
+        m_top_object->setChildCount( num_meshes );
+        m_top_object->setChild( num_meshes-1, gg );
+        m_top_object->getAcceleration()->markDirty();
+
+        m_meshes.push_back( std::make_pair( mesh, gg ) );
     }
     OPTIX_CATCH_RETHROW;
 }
@@ -99,6 +134,8 @@ void RayTracer::addMesh( legion::Mesh* mesh )
 
 void RayTracer::removeMesh( legion::Mesh* mesh )
 {
+    LEGION_TODO();
+
     try
     {
     }
@@ -106,12 +143,20 @@ void RayTracer::removeMesh( legion::Mesh* mesh )
 }
 
 
-void RayTracer::traceRays( QueryType type,
-                           unsigned num_rays,
-                           Ray* rays )
+void RayTracer::traceRays( RayType type, unsigned num_rays, Ray* rays )
 {
     try
     {
+       
+        for( MeshList::iterator it = m_meshes.begin();
+             it != m_meshes.end();
+             ++it )
+        {
+            Mesh* mesh = it->first;
+            if( mesh->verticesChanged() || mesh->facesChanged() )
+                it->second->getAcceleration()->markDirty();
+        }
+        
         m_ray_buffer->setSize( num_rays );
         Ray* buffer_data = static_cast<Ray*>( m_ray_buffer->map() );
         memcpy( buffer_data, rays, num_rays*sizeof( Ray ) );
@@ -186,8 +231,16 @@ void RayTracer::initializeOptixContext()
         m_result_buffer->setElementSize( sizeof( SurfaceInfo ) );
         m_optix_context[ "results" ]->set( m_result_buffer );
 
+        optix::Acceleration accel = m_optix_context->createAcceleration();
+        accel->setTraverser( "Bvh" );
+        accel->setBuilder( "Bvh" );
         m_top_object = m_optix_context->createGroup();
+        m_top_object->setAcceleration( accel );
         m_optix_context[ "top_object" ]->set( m_top_object );
+
+        m_material = m_optix_context->createMaterial();
+        m_material->setClosestHitProgram( CLOSEST_HIT, m_closest_hit );
+        m_material->setClosestHitProgram( ANY_HIT,     m_any_hit );
     }
     OPTIX_CATCH_RETHROW;
 }

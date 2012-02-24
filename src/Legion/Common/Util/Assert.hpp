@@ -3,6 +3,9 @@
 #ifndef LEGION_COMMON_UTIL_ASSERT_H_
 #define LEGION_COMMON_UTIL_ASSERT_H_
 
+#include <Legion/Core/Exception.hpp>
+
+
 /// The global namespace for the Legion API
 namespace legion 
 {
@@ -17,8 +20,8 @@ template<bool>   struct StaticAssertionFailure;
 template<>       struct StaticAssertionFailure<true> {};
 template<size_t> struct StaticAssertionChecker       {};
 
-#define LEGION_JOIN( X, Y ) LEGION_DO_JOIN( X, Y )
-#define LEGION_DO_JOIN( X, Y ) LEGION_DO_JOIN2(X,Y)
+#define LEGION_JOIN( X, Y )     LEGION_DO_JOIN( X, Y )
+#define LEGION_DO_JOIN( X, Y )  LEGION_DO_JOIN2(X,Y)
 #define LEGION_DO_JOIN2( X, Y ) X##Y
 
 /// Static (compile time) assertion.
@@ -27,6 +30,14 @@ template<size_t> struct StaticAssertionChecker       {};
     typedef StaticAssertionChecker<                                            \
     sizeof( StaticAssertionFailure<(bool)(condition)> ) >                      \
     LEGION_JOIN( _static_assertion_checker_, __LINE__ )
+
+
+//------------------------------------------------------------------------------
+//
+//  LEGION_TODO triggers exception. Place this in unimplemented functions, etc
+//
+//------------------------------------------------------------------------------
+#define LEGION_TODO() throw Exception("Unimplemented code path taken (TODO)");
 
 }
 

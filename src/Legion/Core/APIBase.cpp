@@ -16,9 +16,9 @@ unsigned APIBase::s_next_uid = 0u;
 
 
 APIBase::APIBase( Context* context, const std::string& name )
-    : m_context( context ),
-      m_name( name ),
-      m_uid( s_next_uid++ )
+    : m_name( name ),
+      m_uid( s_next_uid++ ),
+      m_context( context )
 {
 }
 

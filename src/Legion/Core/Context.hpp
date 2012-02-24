@@ -40,6 +40,8 @@ public:
     //
     // Internal interface -- will exist only in Pimpl class
     //
+    optix::Buffer createOptixBuffer();
+
 private:
 
     void preprocess();

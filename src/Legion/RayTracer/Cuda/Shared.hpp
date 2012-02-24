@@ -10,11 +10,12 @@
 namespace legion
 {
 
+/// Must match layout and size of legion::Mesh::Vertex
 struct Vertex
 {
     optix::float3   position;
     optix::float3   normal;
-    optix::float3   tex;
+    optix::float2   tex;
 };
 
 
@@ -23,15 +24,15 @@ struct SurfaceInfo
     HOST_DEVICE SurfaceInfo() {} 
 
     HOST_DEVICE SurfaceInfo( int material_id ) 
-        : material_id( material_id )
-    { 
-        geometric_normal = shading_normal = texcoord = optix::make_float3(0.0f);
-    }
+        : material_id( material_id ) {}
 
+    optix::float3   position;
+    optix::float3   position_object;
     optix::float3   geometric_normal;
     optix::float3   shading_normal;
-    optix::float3   texcoord;
+    optix::float2   texcoord;
     int             material_id;
+    unsigned        padding;
 };
 
 

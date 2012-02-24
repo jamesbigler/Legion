@@ -26,11 +26,12 @@ public:
     struct Vertex
     {
         Vertex() {}
-        Vertex( const Vector3& p, const Vector3& n, const Vector3& t )
+        Vertex( const Vector3& p, const Vector3& n, const Vector2& t )
             : position( p ), normal( n ), texcoord( t ) {}
+
         Vector3 position;
         Vector3 normal;
-        Vector3 texcoord;
+        Vector2 texcoord;
     };
 
     Mesh( Context* context, const std::string& name );
@@ -46,6 +47,7 @@ public:
     void setVertices( unsigned num_samples,  const float* times,
                       unsigned num_vertices, const Vertex** vertices );
 
+
     void setFaces( unsigned num_faces,
                    const Index3* tris,
                    const ISurfaceShader* shader );
@@ -54,14 +56,17 @@ public:
                    const Index4* quads,
                    const ISurfaceShader* shader );
 
+    unsigned  getVertexCount();
+    unsigned  getFaceCount();
+
     void enableSubdivision();
     void disableSubdivision();
 
     //
     // Internal interface
     //
-    void setVertexBuffer  ( optix::Buffer buffer );
-    void setFaceBuffer    ( optix::Buffer buffer );
+    optix::Buffer getVertexBuffer();
+    optix::Buffer getFaceBuffer();
 
     bool subdvisionEnabled()const;
 
@@ -73,13 +78,13 @@ public:
 private:
 
     bool                     m_subdivision_enabled;
-    std::vector<Matrix4x4>   m_transform;
 
-    bool                     m_vertices_changed;
-    bool                     m_faces_changed;
+    std::vector<Matrix4x4>   m_transform;
 
     optix::Buffer            m_vertices;
     optix::Buffer            m_faces;
+    bool                     m_vertices_changed;
+    bool                     m_faces_changed;
 };
 
 }

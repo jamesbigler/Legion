@@ -21,19 +21,19 @@ int main( int argc, char** argv )
         verts.push_back( legion::Mesh::Vertex(
                              legion::Vector3(-0.5f,-0.5f, 0.0f ),
                              legion::Vector3( 0.0f, 0.0f,-1.0f ),
-                             legion::Vector3( 0.0f, 0.0f, 0.0f )) );
+                             legion::Vector2( 0.0f, 0.0f ) ) );
         verts.push_back( legion::Mesh::Vertex(
                              legion::Vector3(-0.5f, 0.5f, 0.0f ),
                              legion::Vector3( 0.0f, 0.0f,-1.0f ),
-                             legion::Vector3( 0.0f, 0.0f, 0.0f )) );
+                             legion::Vector2( 0.0f, 0.0f ) ) );
         verts.push_back( legion::Mesh::Vertex(
                              legion::Vector3( 0.5f, 0.5f, 0.0f ),
                              legion::Vector3( 0.0f, 0.0f,-1.0f ),
-                             legion::Vector3( 0.0f, 0.0f, 0.0f )) );
+                             legion::Vector2( 0.0f, 0.0f ) ) );
         verts.push_back( legion::Mesh::Vertex(
                              legion::Vector3( 0.5f, -0.5f, 0.0f),
                              legion::Vector3( 0.0f, 0.0f,-1.0f ),
-                             legion::Vector3( 0.0f, 0.0f, 0.0f )) );
+                             legion::Vector2( 0.0f, 0.0f ) ) );
 
         std::vector<legion::Index3> indices;
         indices.push_back( legion::Index3( 0, 1, 3 ) );

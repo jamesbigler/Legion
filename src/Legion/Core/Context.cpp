@@ -30,6 +30,12 @@ Context::~Context()
 }
 
 
+optix::Buffer Context::createOptixBuffer()
+{
+    return m_ray_tracer.createBuffer();
+}
+
+
 void Context::addMesh( Mesh* mesh )
 {
     // TODO: add NULL check to all of these

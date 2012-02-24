@@ -24,6 +24,7 @@ public:
     Vector( TYPE x, TYPE y, TYPE z );              // Only valid for Vector<3>
     Vector( TYPE x, TYPE y, TYPE z, TYPE w  );     // Only valid for Vector<4>
     Vector( const Vector& v );
+    Vector( const Vector<DIM-1,TYPE>& v, TYPE last );
     explicit Vector( const TYPE v[DIM] );
     
     template <typename TYPE2>
@@ -126,6 +127,12 @@ inline Vector<DIM, TYPE>::Vector( const Vector<DIM, TYPE>& v )
     for( unsigned i = 0; i < DIM; ++i ) m_v[i] = v[i];
 }
 
+template<unsigned DIM, typename TYPE>
+inline Vector<DIM, TYPE>::Vector( const Vector<DIM-1, TYPE>& v, TYPE last )
+{
+    for( unsigned i = 0; i < DIM-1; ++i ) m_v[i] = v[i];
+    m_v[DIM-1] = last;
+}
 
 template<unsigned DIM, typename TYPE>
 inline Vector<DIM, TYPE>::Vector( const TYPE v[DIM] )
