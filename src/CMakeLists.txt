@@ -13,6 +13,10 @@ include_directories(
     "${CMAKE_CURRENT_SOURCE_DIR}"
     )
 
+# Tell clang_complete about our include paths
+configure_file( "${CMAKE_CURRENT_SOURCE_DIR}/clang_complete.in"  "${CMAKE_CURRENT_SOURCE_DIR}/.clang_complete" )
+
+
 add_subdirectory( Legion)
 add_subdirectory( Standalone )
 add_subdirectory( Test )

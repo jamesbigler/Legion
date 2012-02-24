@@ -39,10 +39,14 @@ add_library( legion SHARED
     Legion.hpp
     Renderer/Renderer.cpp
     Renderer/Renderer.hpp
+    Renderer/RayScheduler.cpp
+    Renderer/RayScheduler.hpp
     Renderer/RayQueue.cpp
     Renderer/RayQueue.hpp
     Renderer/RayTracer.cpp
     Renderer/RayTracer.hpp
+    Renderer/ShadingEngine.cpp
+    Renderer/ShadingEngine.hpp
     Scene/Camera/BasicCamera.cpp
     Scene/Camera/BasicCamera.hpp
     Scene/Camera/ICamera.cpp

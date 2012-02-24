@@ -141,12 +141,32 @@ void RayTracer::removeMesh( legion::Mesh* mesh )
     OPTIX_CATCH_RETHROW;
 }
 
-
-void RayTracer::traceRays( RayType type, unsigned num_rays, Ray* rays )
+    
+Ray* RayTracer::getRayData( unsigned num_rays )
 {
     try
     {
-       
+        m_ray_buffer->setSize( num_rays );
+        return static_cast<Ray*>( m_ray_buffer->map() );
+    }
+    OPTIX_CATCH_RETHROW;
+}
+
+
+void RayTracer::setRayData()
+{
+    try
+    {
+        m_ray_buffer->unmap();
+    }
+    OPTIX_CATCH_RETHROW;
+}
+
+
+void RayTracer::traceRays( RayType type )
+{
+    try
+    {
         for( MeshList::iterator it = m_meshes.begin();
              it != m_meshes.end();
              ++it )
@@ -156,11 +176,6 @@ void RayTracer::traceRays( RayType type, unsigned num_rays, Ray* rays )
                 it->second->getAcceleration()->markDirty();
         }
         
-        m_ray_buffer->setSize( num_rays );
-        Ray* buffer_data = static_cast<Ray*>( m_ray_buffer->map() );
-        memcpy( buffer_data, rays, num_rays*sizeof( Ray ) );
-        m_ray_buffer->unmap();
-
         m_optix_context[ "ray_type" ]->setUint( static_cast<unsigned>( type ) );
 
         LLOG_INFO << "RayTracer::traceRays(): Compiling OptiX context...";
@@ -168,6 +183,8 @@ void RayTracer::traceRays( RayType type, unsigned num_rays, Ray* rays )
         LLOG_INFO << "    Finished.";
 
         LLOG_INFO << "RayTracer::traceRays(): Launching OptiX ...";
+        RTsize num_rays;
+        m_ray_buffer->getSize( num_rays );
         m_optix_context->launch( OPTIX_ENTRY_POINT_INDEX, num_rays );
         LLOG_INFO << "    Finished.";
 

@@ -2,16 +2,47 @@
 #ifndef LEGION_RENDERER_RENDERER_HPP_
 #define LEGION_RENDERER_RENDERER_HPP_
 
+#include <Legion/Renderer/RayQueue.hpp>
+#include <Legion/Renderer/RayScheduler.hpp>
+#include <Legion/Renderer/RayTracer.hpp>
+#include <Legion/Renderer/ShadingEngine.hpp>
+#include <Legion/Common/Util/Noncopyable.hpp>
+
 namespace legion
 {
 
+class Mesh;
+class IFilm;
+class ICamera;
+class ILightShader;
 
-class Renderer
+class Renderer : public Noncopyable
 {
 public:
-private:
-};
+    Renderer();
 
+    void render();
+
+    void setFilm( IFilm* film );
+    void setCamera( ICamera* camera);
+
+    void addLight( const ILightShader* light_shader );
+
+    void addMesh( Mesh* mesh );
+
+    void removeMesh( Mesh* mesh );
+
+    optix::Buffer createBuffer();
+private:
+
+    ShadingEngine  m_shading_engine;
+    RayScheduler   m_ray_scheduler;
+    RayQueue       m_ray_queue;
+    RayTracer      m_ray_tracer;
+
+    IFilm*         m_film;
+    ICamera*       m_camera;
+};
 
 }
 

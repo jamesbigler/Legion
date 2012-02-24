@@ -6,8 +6,14 @@
 #include <Legion/Common/Util/Noncopyable.hpp>
 #include <Legion/Core/APIBase.hpp>
 #include <Legion/Core/Light.hpp>
-#include <Legion/Renderer/RayTracer.hpp>
+#include <Legion/Renderer/Renderer.hpp>
 
+
+
+
+
+
+#include <iostream>
 
 namespace legion
 {
@@ -44,16 +50,13 @@ public:
 
 private:
 
-    void preprocess();
-    void doRender();
-    void postprocess();
 
     std::vector<const Mesh*> m_meshes;
     std::vector<Light>       m_lights;
     const ICamera*           m_camera;
     const IFilm*             m_film;
 
-    RayTracer          m_ray_tracer;
+    Renderer                 m_renderer;
 };
 
 

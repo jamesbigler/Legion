@@ -32,7 +32,7 @@ Context::~Context()
 
 optix::Buffer Context::createOptixBuffer()
 {
-    return m_ray_tracer.createBuffer();
+    return m_renderer.createBuffer();
 }
 
 
@@ -42,7 +42,7 @@ void Context::addMesh( Mesh* mesh )
     LLOG_INFO << "Adding mesh <" << mesh->getName() << ">";
     m_meshes.push_back( mesh );
 
-    m_ray_tracer.addMesh( mesh );
+    m_renderer.addMesh( mesh );
 }
 
 
@@ -59,6 +59,7 @@ void Context::addLight( const ILightShader* light_shader )
 void Context::addLight( const ILightShader* light_shader,
                         const Mesh* light_geometry )
 {
+
     Light light;
     light.shader   = light_shader;
     light.geometry = light_geometry;
@@ -69,6 +70,7 @@ void Context::addLight( const ILightShader* light_shader,
 
 void Context::setActiveCamera( const ICamera* camera )
 {
+  
     LLOG_INFO << "Adding camera <" << camera->getName() << ">";
     m_camera = camera;
 }
@@ -81,33 +83,11 @@ void Context::setActiveFilm( const IFilm* film )
 }
 
 
-void Context::preprocess()
-{
-}
-
-
-void Context::doRender()
-{
-}
-
-
-void Context::postprocess()
-{
-}
-
 void Context::render()
 {
+
     LLOG_INFO << "rendering ....";
-
-    preprocess();
-
-    doRender();
-
-    postprocess();
-
-
-
-    const Index2  image_dims  = m_film->getDimensions();
+    m_renderer.render();
 }
 
 

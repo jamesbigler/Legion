@@ -30,10 +30,13 @@ public:
     void addMesh( legion::Mesh* mesh );
     void removeMesh( legion::Mesh* mesh );
 
+    Ray* getRayData( unsigned num_rays );
+    void setRayData();
 
-    void traceRays( RayType type, unsigned num_rays, legion::Ray* rays );
+    void traceRays( RayType type );
+    void traceRaysNonBlocking( RayType type );
 
-    optix::Buffer  getResults()const;
+    optix::Buffer getResults()const;
 
     static void updateVertexBuffer( optix::Buffer buffer,
                                     unsigned num_verts,

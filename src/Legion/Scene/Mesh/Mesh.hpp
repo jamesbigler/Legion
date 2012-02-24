@@ -69,7 +69,7 @@ public:
     optix::Buffer getFaceBuffer();
 
     bool subdvisionEnabled()const;
-
+  
     const std::vector<Matrix4x4>& getTransform()const;
 
     bool verticesChanged()const;
