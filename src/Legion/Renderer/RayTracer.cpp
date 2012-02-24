@@ -4,8 +4,8 @@
 #include <Legion/Core/Exception.hpp>
 #include <Legion/Core/Ray.hpp>
 #include <Legion/Core/config.hpp>
-#include <Legion/RayTracer/Cuda/Shared.hpp>
-#include <Legion/RayTracer/RayTracer.hpp>
+#include <Legion/Renderer/Cuda/Shared.hpp>
+#include <Legion/Renderer/RayTracer.hpp>
 #include <Legion/Scene/Mesh/Mesh.hpp>
 #include <Legion/Scene/SurfaceShader/ISurfaceShader.hpp>
 

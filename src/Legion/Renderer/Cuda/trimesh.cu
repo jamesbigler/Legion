@@ -2,7 +2,7 @@
 #include <optix.h>
 #include <optixu/optixu_math_namespace.h>
 #include <optixu/optixu_aabb_namespace.h>
-#include <Legion/RayTracer/Cuda/Shared.hpp>
+#include <Legion/Renderer/Cuda/Shared.hpp>
 
 
 // TODO: interleave all time-vertex sets in single buffer and add buffer of

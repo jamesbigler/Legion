@@ -1,7 +1,7 @@
 
 #include <optix.h>
 #include <optixu/optixu_math_namespace.h>
-#include <Legion/RayTracer/Cuda/Shared.hpp>
+#include <Legion/Renderer/Cuda/Shared.hpp>
 
 
 rtDeclareVariable( unsigned, launch_index, rtLaunchIndex, );

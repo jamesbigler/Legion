@@ -2,7 +2,7 @@
 #include <Legion/Core/Matrix.hpp>
 #include <Legion/Core/Context.hpp>
 #include <Legion/Scene/Mesh/Mesh.hpp>
-#include <Legion/RayTracer/RayTracer.hpp>
+#include <Legion/Renderer/RayTracer.hpp>
 
 using namespace legion;
 

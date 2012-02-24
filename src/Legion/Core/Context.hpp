@@ -6,7 +6,7 @@
 #include <Legion/Common/Util/Noncopyable.hpp>
 #include <Legion/Core/APIBase.hpp>
 #include <Legion/Core/Light.hpp>
-#include <Legion/RayTracer/RayTracer.hpp>
+#include <Legion/Renderer/RayTracer.hpp>
 
 
 namespace legion

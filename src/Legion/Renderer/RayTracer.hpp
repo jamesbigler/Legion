@@ -3,7 +3,6 @@
 #define LEGION_RAYTRACER_RAYTRACER_HPP_
 
 #include <optixu/optixpp_namespace.h>
-#include <Legion/RayTracer/Optix.hpp>
 #include <Legion/Core/Vector.hpp>
 #include <Legion/Scene/Mesh/Mesh.hpp>
 
