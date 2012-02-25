@@ -37,8 +37,8 @@ public:
     void addLight( const ILightShader* light_shader );
     void addLight( const ILightShader* light_shader, const Mesh* light_geometry );
 
-    void setActiveCamera( const ICamera* camera );
-    void setActiveFilm( const IFilm* film );
+    void setActiveCamera( ICamera* camera );
+    void setActiveFilm  ( IFilm* film );
 
 
     void render();

@@ -68,18 +68,18 @@ void Context::addLight( const ILightShader* light_shader,
 }
 
 
-void Context::setActiveCamera( const ICamera* camera )
+void Context::setActiveCamera( ICamera* camera )
 {
   
     LLOG_INFO << "Adding camera <" << camera->getName() << ">";
-    m_camera = camera;
+    m_renderer.setCamera( camera );
 }
 
 
-void Context::setActiveFilm( const IFilm* film )
+void Context::setActiveFilm( IFilm* film )
 {
     LLOG_INFO << "Adding film <" << film->getName() << ">";
-    m_film = film;
+    m_renderer.setFilm( film );
 }
 
 

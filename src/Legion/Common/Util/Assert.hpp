@@ -4,7 +4,7 @@
 #define LEGION_COMMON_UTIL_ASSERT_H_
 
 #include <Legion/Core/Exception.hpp>
-
+#include <string>
 
 /// The global namespace for the Legion API
 namespace legion 
@@ -37,7 +37,9 @@ template<size_t> struct StaticAssertionChecker       {};
 //  LEGION_TODO triggers exception. Place this in unimplemented functions, etc
 //
 //------------------------------------------------------------------------------
-#define LEGION_TODO() throw Exception("Unimplemented code path taken (TODO)");
+#define LEGION_TODO()                                                          \
+    throw Exception( std::string( __PRETTY_FUNCTION__ ) +                      \
+                     ": Unimplemented code path taken (TODO)");
 
 }
 
