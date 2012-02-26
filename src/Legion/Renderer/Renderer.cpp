@@ -15,38 +15,24 @@ Renderer::Renderer()
 void Renderer::setCamera( ICamera* camera )
 {
     m_camera = camera;
+    m_ray_scheduler.setCamera( camera );
 }
 
 
 void Renderer::setFilm( IFilm* film )
 {
     m_film = film;
+    m_ray_scheduler.setFilm( film );
 }
 
 
 void Renderer::render()
 {
-    Index2   film_dims  = m_film->getDimensions();
-    unsigned num_pixels = film_dims.x() * film_dims.y();
-    Ray*     rays       = m_ray_tracer.getRayData( num_pixels );
+    /// TODO: this vec needs to be persistant
+    std::vector<RayScheduler::PixelID> pixel_ids;
+    optix::Buffer rays       = m_ray_tracer.getRayBuffer();
 
-    //
-    //
-    //
-    //
-    //
-    //
-    /// TODO: uhnhh, leak
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    RayScheduler::PixelID* pixel_ids = new RayScheduler::PixelID[ num_pixels ];
-
-    m_ray_scheduler.getPass( num_pixels, rays, pixel_ids );
+    m_ray_scheduler.getPass( rays, pixel_ids );
 }
 
 

@@ -30,8 +30,7 @@ public:
     void addMesh( legion::Mesh* mesh );
     void removeMesh( legion::Mesh* mesh );
 
-    Ray* getRayData( unsigned num_rays );
-    void setRayData();
+    optix::Buffer getRayBuffer();
 
     void traceRays( RayType type );
     void traceRaysNonBlocking( RayType type );

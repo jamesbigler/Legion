@@ -142,24 +142,9 @@ void RayTracer::removeMesh( legion::Mesh* mesh )
 }
 
     
-Ray* RayTracer::getRayData( unsigned num_rays )
+optix::Buffer RayTracer::getRayBuffer()
 {
-    try
-    {
-        m_ray_buffer->setSize( num_rays );
-        return static_cast<Ray*>( m_ray_buffer->map() );
-    }
-    OPTIX_CATCH_RETHROW;
-}
-
-
-void RayTracer::setRayData()
-{
-    try
-    {
-        m_ray_buffer->unmap();
-    }
-    OPTIX_CATCH_RETHROW;
+    return m_ray_buffer;
 }
 
 

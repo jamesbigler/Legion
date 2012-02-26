@@ -20,13 +20,11 @@ using namespace legion;
 Context::Context( const std::string& name ) 
     : APIBase( this, name )
 {
-    LLOG_INFO << "Creating Context::Impl";
 }
 
 
 Context::~Context()
 {
-    LLOG_INFO << "Destroying Context::Impl";
 }
 
 

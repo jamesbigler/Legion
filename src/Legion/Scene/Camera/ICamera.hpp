@@ -21,7 +21,7 @@ class Matrix4x4;
 /// Contains the necessary sample information to generate a Camera ray
 struct CameraSample
 {
-    Vector2 viewplane;  ///< Viewplane coordinates 
+    Vector2 screen;  ///< Viewplane coordinates 
     Vector2 lens;       ///< Lens coordinates
     float   time;       ///< Time value associated with ray
 };
