@@ -65,6 +65,7 @@ void RayScheduler::getPass( optix::Buffer ray_buffer,
         for( unsigned j = 0; j < film_dims.y(); ++j )
         {
             Vector2 pixel_coord( drand48(), drand48() );
+            LLOG_INFO << "pix_coord: " << pixel_coord;
             Vector2 screen_coord( cur_x + pixel_width  / pixel_coord.x(),
                                   cur_y + pixel_height / pixel_coord.y() ); 
 
