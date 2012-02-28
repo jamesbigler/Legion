@@ -22,6 +22,7 @@
 // (MIT/X11 License)
 
 #include <Legion/Common/Util/Image.hpp>
+#include <Legion/Core/Exception.hpp>
 #include <ImfOutputFile.h>
 #include <ImfInputFile.h>
 #include <ImfRgbaFile.h>
@@ -36,30 +37,48 @@ using namespace legion;
 bool legion::writeOpenEXR( const std::string& filename,
                    unsigned int width,
                    unsigned int height,
+                   unsigned int num_channels,
                    const float* pixels )
 {
+    if( num_channels < 3 || num_channels > 4 )
+    {
+        throw Exception( std::string( __PRETTY_FUNCTION__ ) + ": Only 3-channel"
+                         " and 4-channel images supported - RGB(A)" );
+    }
+
     Imf::Header header( width, height );
     header.channels().insert ("R", Imf::Channel( Imf::FLOAT ) );
     header.channels().insert ("G", Imf::Channel( Imf::FLOAT ) );
     header.channels().insert ("B", Imf::Channel( Imf::FLOAT ) );
+    if( num_channels == 4 )
+      header.channels().insert ("A", Imf::Channel( Imf::FLOAT ) );
+
 
     Imf::OutputFile file( filename.c_str(), header );
     Imf::FrameBuffer frame_buffer; 
+    const unsigned int element_stride = sizeof(float)*num_channels;
 
     frame_buffer.insert( "R", Imf::Slice( Imf::FLOAT,                // type
                                           (char*)&pixels[0],         // base
-                                          sizeof(float)*3,           // xStride
-                                          sizeof(float)*3*width ) ); // yStride
+                                          element_stride,            // xStride
+                                          element_stride*width ) );  // yStride
 
     frame_buffer.insert( "G", Imf::Slice( Imf::FLOAT,                // type
                                           (char*)&pixels[1],         // base
-                                          sizeof(float)*3,           // xStride
-                                          sizeof(float)*3*width ) ); // yStride
+                                          element_stride,            // xStride
+                                          element_stride*width ) );  // yStride
 
     frame_buffer.insert( "B", Imf::Slice( Imf::FLOAT,                // type
                                           (char*)&pixels[2],         // base
-                                          sizeof(float)*3,           // xStride
-                                          sizeof(float)*3*width ) ); // yStride
+                                          element_stride,            // xStride
+                                          element_stride*width ) );  // yStride
+    if( num_channels == 4 )
+    {
+      frame_buffer.insert( "A", Imf::Slice( Imf::FLOAT,               // type
+                                            (char*)&pixels[3],        // base
+                                            element_stride,           // xStride
+                                            element_stride*width ) ); // yStride
+    }
 
     file.setFrameBuffer( frame_buffer );
     file.writePixels( height );

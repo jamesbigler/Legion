@@ -34,7 +34,8 @@ namespace legion
 
 bool writeOpenEXR( const std::string& filename,
                    unsigned int width,
-                   unsigned int heigh,
+                   unsigned int height,
+                   unsigned int num_channels,
                    const float* pixels );
 
 }

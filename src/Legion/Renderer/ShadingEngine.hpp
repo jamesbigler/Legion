@@ -34,6 +34,8 @@
 namespace legion
 {
 
+class Ray;
+
 class ShadingEngine
 {
 public:
