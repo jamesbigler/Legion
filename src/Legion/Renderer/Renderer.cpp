@@ -33,6 +33,7 @@ void Renderer::render()
     optix::Buffer rays       = m_ray_tracer.getRayBuffer();
 
     m_ray_scheduler.getPass( rays, pixel_ids );
+    m_ray_tracer.traceRays( RayTracer::CLOSEST_HIT );
 }
 
 

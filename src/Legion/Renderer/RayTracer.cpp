@@ -161,6 +161,9 @@ void RayTracer::traceRays( RayType type )
                 it->second->getAcceleration()->markDirty();
         }
         
+        RTsize num_rays;
+        m_ray_buffer->getSize( num_rays );
+        m_result_buffer->setSize( num_rays );
         m_optix_context[ "ray_type" ]->setUint( static_cast<unsigned>( type ) );
 
         LLOG_INFO << "RayTracer::traceRays(): Compiling OptiX context...";
@@ -168,8 +171,6 @@ void RayTracer::traceRays( RayType type )
         LLOG_INFO << "    Finished.";
 
         LLOG_INFO << "RayTracer::traceRays(): Launching OptiX ...";
-        RTsize num_rays;
-        m_ray_buffer->getSize( num_rays );
         m_optix_context->launch( OPTIX_ENTRY_POINT_INDEX, num_rays );
         LLOG_INFO << "    Finished.";
 
@@ -240,7 +241,7 @@ void RayTracer::initializeOptixContext()
 
         m_material = m_optix_context->createMaterial();
         m_material->setClosestHitProgram( CLOSEST_HIT, m_closest_hit );
-        m_material->setClosestHitProgram( ANY_HIT,     m_any_hit );
+        m_material->setAnyHitProgram    ( ANY_HIT,     m_any_hit );
     }
     OPTIX_CATCH_RETHROW;
 }

@@ -19,6 +19,8 @@ add_library( legion SHARED
     Common/Math/Math.cpp
     Common/Math/Math.hpp
     Common/Util/Assert.hpp
+    Common/Util/Image.cpp
+    Common/Util/Image.hpp
     Common/Util/Logger.cpp
     Common/Util/Logger.hpp
     Common/Util/Noncopyable.hpp
@@ -74,6 +76,7 @@ add_library( legion SHARED
 target_link_libraries( legion
     optix
     ${optix_rpath}
+    ${OPENEXR_LIBRARIES}
     )
 
 

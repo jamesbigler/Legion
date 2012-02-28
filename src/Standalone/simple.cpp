@@ -52,7 +52,8 @@ int main( int argc, char** argv )
         //ctx.addAreaLigth(...); 
 
         legion::ThinLensCamera cam( &ctx, "camera" );
-        cam.setViewPlane( -1.0f, 1.0f, -1.0f, 1.0f );
+        //cam.setViewPlane( -1.0f, 1.0f, -1.0f, 1.0f );
+        cam.setViewPlane( 0.0f, 1.0f, 0.0f, 1.0f );
         cam.setShutterOpenClose( 0.0f, 0.005f );
         cam.setFocalDistance( 1.0f );
         cam.setLensRadius( 0.0f );
@@ -60,7 +61,7 @@ int main( int argc, char** argv )
 
         legion::ImageFilm film( &ctx, "image" );
         //film.setDimensions( legion::Index2( 2u, 2u ) );
-        film.setDimensions( legion::Index2( 100u, 100u ) );
+        film.setDimensions( legion::Index2( 10u, 10u ) );
         ctx.setActiveFilm( &film );
 
         ctx.render();
