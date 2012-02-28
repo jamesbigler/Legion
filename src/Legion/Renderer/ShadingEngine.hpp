@@ -27,14 +27,25 @@
 #ifndef LEGION_RENDERER_SHADINGENGINE_HPP_
 #define LEGION_RENDERER_SHADINGENGINE_HPP_
 
+#include <vector>
+#include <Legion/Core/Color.hpp>>
+
+
 namespace legion
 {
 
 class ShadingEngine
 {
 public:
+    typedef std::vector< Color > Results;
+    void shade( unsigned int num_rays,
+                const Ray* rays );
+
+    Results& getResults()const;
 
 private:
+
+
 };
 
 
