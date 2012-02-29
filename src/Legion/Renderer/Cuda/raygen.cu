@@ -26,4 +26,19 @@ RT_PROGRAM void traceRays()
     rtTrace( top_object, ray, prd );
 
     results[ launch_index ] = prd;
+
+
+
+
+
+    /*
+    legion::SurfaceInfo si;
+    si.material_id = -1;
+    si.position        = optix::make_float3( 1 );
+    si.position_object = optix::make_float3( 2 );
+    si.geometric_normal= optix::make_float3( 3 );
+    si.shading_normal  = optix::make_float3( 4 );
+    si.texcoord        = optix::make_float2( 5 );
+    results[ launch_index ] = si; 
+    */
 }

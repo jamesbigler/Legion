@@ -1,7 +1,10 @@
 
 #include <Legion/Scene/Film/ImageFilm.hpp>
+#include <Legion/Core/Vector.hpp>
 #include <Legion/Common/Util/Stream.hpp>
+#include <Legion/Common/Util/Image.hpp>
 #include <iostream>
+#include <cstring> // memset
 
 using namespace legion;
 
@@ -11,135 +14,87 @@ using namespace legion;
 //
 //------------------------------------------------------------------------------
 
-class ImageFilm::Impl
+
+
+namespace
 {
-public:
-    Impl();
-    ~Impl();
-    
-    void   setDimensions( const Index2& dimensions );
-    Index2 getDimensions()const;
-
-    void addSample( const Index2& pixel_index, const Color& color, float weight );
-    void shutterOpen();
-    void shutterClose();
-    void passComplete();
-
-private:
-    Index2 m_dimensions;
-
-};
-
-
-ImageFilm::Impl::Impl()
-    : m_dimensions( 0u, 0u )
-{
+    inline unsigned getIndex( const Index2& index2, const Index2& dim  )
+    {
+        return index2.y() * dim.x() + index2.x();
+    }
 }
 
-ImageFilm::Impl::~Impl()
-{
-}
-
-void ImageFilm::Impl::setDimensions( const Index2& dimensions )
-{
-    m_dimensions = dimensions;
-}
-
-
-Index2 ImageFilm::Impl::getDimensions()const
-{
-    return m_dimensions; 
-}
-
-
-void ImageFilm::Impl::addSample( const Index2& pixel_index, const Color& color, float weight )
-{
-    std::cerr << "ImageFilm::addSample( " << pixel_index << ", " << color << ", " << weight << " )" << std::endl;
-}
-
-
-void ImageFilm::Impl::shutterOpen()
-{
-    std::cerr << "ImageFilm::shutterOpen()" << std::endl;
-}
-
-
-void ImageFilm::Impl::shutterClose()
-{
-    std::cerr << "ImageFilm::shutterClose()" << std::endl;
-}
-
-
-void ImageFilm::Impl::passComplete()
-{
-    std::cerr << "ImageFilm::passComplete()" << std::endl;
-}
-
-
-
-//------------------------------------------------------------------------------
-//
-// ImageFilm
-//
-//------------------------------------------------------------------------------
 
 ImageFilm::ImageFilm( Context* context, const std::string& name )
     : IFilm( context, name ),
-      m_impl( new Impl )
+      m_dimensions( 0u, 0u ),
+      m_data( 0u )
 {
 }
 
 
 ImageFilm::~ImageFilm()
 {
+    delete [] m_data;
 }
 
 
 void ImageFilm::setDimensions( const Index2& dimensions )
 {
-    m_impl->setDimensions( dimensions );
+    m_dimensions = dimensions;
+    if( m_data ) delete [] m_data;
+    m_data = new Color[ dimensions.x() * dimensions.y() ];
+
+    memset( m_data, 0, dimensions.x() * dimensions.y() * sizeof( Color ) );
 }
 
 
 Index2 ImageFilm::getDimensions()const
 {
-    return m_impl->getDimensions(); 
+    return m_dimensions; 
 }
 
 
-void ImageFilm::addSample( const Index2& pixel_index, const Color& color, float weight )
+void ImageFilm::addSample( const Index2& pixel_index,
+                           const Color& color,
+                           float weight )
 {
-    m_impl->addSample( pixel_index, color, weight );
+    // TODO: use weights to combine
+    unsigned idx = getIndex( pixel_index, m_dimensions );
+    m_data[ idx ] = color;
 }
 
 
 Color ImageFilm::getPixel( const Index2& pixel_index )const
 {
-    return Color();
+    return m_data[ getIndex( pixel_index, m_dimensions ) ];
 }
 
 
 Color* ImageFilm::getPixels()const
 {
-    return 0u;
+    return m_data;
 }
 
 
 void ImageFilm::shutterOpen()
 {
-    m_impl->shutterOpen();
+    std::cerr << "ImageFilm::shutterOpen()" << std::endl;
 }
 
 
 void ImageFilm::shutterClose()
 {
-    m_impl->shutterClose();
+    std::cerr << "ImageFilm::shutterClose()" << std::endl;
+    writeOpenEXR( "output.exr", m_dimensions.x(), m_dimensions.y(), 3,
+                  reinterpret_cast<float*>( m_data ) );
 }
 
 
 void ImageFilm::passComplete()
 {
-    m_impl->passComplete();
+    std::cerr << "ImageFilm::passComplete()" << std::endl;
 }
+
 
 

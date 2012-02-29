@@ -51,19 +51,11 @@ void ThinLensCamera::generateCameraSpaceRay( const CameraSample& sample,
 {
     Vector3 on_viewplane( legion::lerp( m_left, m_right, sample.screen.x() ),
                           legion::lerp( m_bottom, m_top, sample.screen.y() ),
-                          0.0f );
+                          -1.0f );
 
-    LLOG_INFO << " lrtb: " << m_left << "," << m_right << ","
-              << m_top << "," <<  m_bottom;
-    LLOG_INFO << " screen sample: " << sample.screen;
-    LLOG_INFO << "    : on_viewplane : " << on_viewplane;
-    
     Vector2 lens_sample( legion::squareToDisk( sample.lens ) * m_lens_radius );
     Vector3 on_lens( lens_sample.x(), lens_sample.y(), 0.0f );
-    LLOG_INFO << "    : on_lens      : " << on_lens;
                         
     ray.setOrigin( on_lens );
     ray.setDirection( legion::normalize( on_viewplane - on_lens ) );
-
-    LLOG_INFO << "    : dir          : " << ray.getDirection();
 }

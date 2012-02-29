@@ -24,6 +24,8 @@
 #include <Legion/Renderer/ShadingEngine.hpp>
 #include <Legion/Renderer/Cuda/Shared.hpp>
 #include <Legion/Core/Color.hpp>
+#include <Legion/Common/Util/Logger.hpp>
+#include <Legion/Common/Util/Stream.hpp>
 
 using namespace legion;
 
@@ -33,7 +35,10 @@ void ShadingEngine::shade( unsigned int num_rays, const SurfaceInfo* surface )
 {
     m_results.resize( num_rays );
     for( unsigned i = 0; i < num_rays; ++i )
-        m_results[i] = Color( static_cast<float>( surface->material_id != -1 ) ); 
+    {
+        LLOG_INFO << surface[i];
+        m_results[i] = Color( static_cast<float>( surface[i].material_id != -1 ) ); 
+    }
 }
 
 const ShadingEngine::Results& ShadingEngine::getResults()const

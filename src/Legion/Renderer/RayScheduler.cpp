@@ -65,7 +65,6 @@ void RayScheduler::getPass( optix::Buffer ray_buffer,
         for( unsigned j = 0; j < film_dims.y(); ++j )
         {
             Vector2 pixel_coord( drand48(), drand48() );
-            LLOG_INFO << "pix_coord: " << pixel_coord;
             Vector2 screen_coord( cur_x + pixel_width  / pixel_coord.x(),
                                   cur_y + pixel_height / pixel_coord.y() ); 
 
@@ -78,10 +77,9 @@ void RayScheduler::getPass( optix::Buffer ray_buffer,
                                   drand48() );
 
             m_camera->generateRay( sample, rays[ ray_index ] );
-            pixel_ids[ ray_index   ].weight = 1.0f;
-            pixel_ids[ ray_index++ ].pixel = Index2( i, j );
-
-            LLOG_INFO << "ray " << Index2( i, j ) << ": " << rays[ ray_index ];
+            pixel_ids[ ray_index ].weight = 1.0f;
+            pixel_ids[ ray_index ].pixel  = Index2( i, j );
+            ray_index++;
             
             cur_y += pixel_height;
 

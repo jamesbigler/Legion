@@ -3,13 +3,16 @@
 #define LEGION_SCENE_FILM_IMAGEFILM_H_
 
 #include <Legion/Scene/Film/IFilm.hpp>
-#include <tr1/memory>
+#include <Legion/Core/Vector.hpp>
+#include <Legion/Core/Color.hpp>
+#include <Legion/Common/Util/Noncopyable.hpp>
+//#include <tr1/memory>
 
 namespace legion
 {
 
 
-class ImageFilm : public IFilm 
+class ImageFilm : public IFilm
 {
 public:
     ImageFilm( Context* context, const std::string& name );
@@ -28,8 +31,11 @@ public:
     void passComplete();
 
 private:
-    class Impl;
-    std::tr1::shared_ptr<Impl> m_impl;
+
+    Index2     m_dimensions;
+    Color*     m_data;
+
+
 };
 
 } // namespace legion

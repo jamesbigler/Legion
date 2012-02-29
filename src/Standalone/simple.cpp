@@ -19,25 +19,25 @@ int main( int argc, char** argv )
        
         std::vector<legion::Mesh::Vertex> verts;
         verts.push_back( legion::Mesh::Vertex(
-                             legion::Vector3(-0.1f,-0.1f,-1.0f ),
+                             legion::Vector3(-0.5f,-0.5f,-1.0f ),
                              legion::Vector3( 0.0f, 0.0f,-1.0f ),
                              legion::Vector2( 0.0f, 0.0f ) ) );
         verts.push_back( legion::Mesh::Vertex(
-                             legion::Vector3(-0.1f, 0.1f,-1.0f ),
+                             legion::Vector3(-0.5f, 0.5f,-1.0f ),
                              legion::Vector3( 0.0f, 0.0f,-1.0f ),
                              legion::Vector2( 0.0f, 0.0f ) ) );
         verts.push_back( legion::Mesh::Vertex(
-                             legion::Vector3( 0.1f, 0.1f,-1.0f ),
+                             legion::Vector3( 0.5f, 0.5f,-1.0f ),
                              legion::Vector3( 0.0f, 0.0f,-1.0f ),
                              legion::Vector2( 0.0f, 0.0f ) ) );
         verts.push_back( legion::Mesh::Vertex(
-                             legion::Vector3( 0.1f,-0.1f,-1.0f),
+                             legion::Vector3( 0.5f,-0.5f,-1.0f),
                              legion::Vector3( 0.0f, 0.0f,-1.0f ),
                              legion::Vector2( 0.0f, 0.0f ) ) );
 
         std::vector<legion::Index3> indices;
-        indices.push_back( legion::Index3( 0, 1, 3 ) );
-        indices.push_back( legion::Index3( 1, 2, 3 ) );
+        indices.push_back( legion::Index3( 0, 1, 2 ) );
+        indices.push_back( legion::Index3( 0, 2, 3 ) );
 
         legion::Mesh square( &ctx, "square" );
         square.setVertices( verts.size(), &verts[0] );
@@ -59,8 +59,8 @@ int main( int argc, char** argv )
         ctx.setActiveCamera( &cam );
 
         legion::ImageFilm film( &ctx, "image" );
-        //film.setDimensions( legion::Index2( 2u, 2u ) );
-        film.setDimensions( legion::Index2( 10u, 10u ) );
+        film.setDimensions( legion::Index2( 32u, 32u ) );
+        //film.setDimensions( legion::Index2( 10u, 10u ) );
         ctx.setActiveFilm( &film );
 
         ctx.render();

@@ -24,7 +24,17 @@ struct SurfaceInfo
     HOST_DEVICE SurfaceInfo() {} 
 
     HOST_DEVICE SurfaceInfo( int material_id ) 
-        : material_id( material_id ) {}
+        : material_id( material_id ) 
+    {
+#if 1
+        position = position_object 
+                 = geometric_normal 
+                 = shading_normal 
+                 = optix::make_float3( -1.0f );
+        texcoord = optix::make_float2( -1.0f );
+        padding  = ~0;
+#endif
+    }
 
     optix::float3   position;
     optix::float3   position_object;

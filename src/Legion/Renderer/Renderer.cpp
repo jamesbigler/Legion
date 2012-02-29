@@ -28,6 +28,8 @@ void Renderer::setFilm( IFilm* film )
 
 void Renderer::render()
 {
+    m_film->shutterOpen();
+
     /// TODO: this vec needs to be persistant
     std::vector<RayScheduler::PixelID> pixel_ids;
     optix::Buffer rays       = m_ray_tracer.getRayBuffer();
@@ -43,8 +45,11 @@ void Renderer::render()
 
     for( unsigned int i = 0; i < pixel_ids.size(); ++i )
     {
-        m_film->addSample( pixel_ids[0].pixel, shading_results[i], pixel_ids[0].weight );
+        m_film->addSample( pixel_ids[i].pixel, shading_results[i], pixel_ids[0].weight );
     }
+    m_film->passComplete();
+
+    m_film->shutterClose();
 }
 
 

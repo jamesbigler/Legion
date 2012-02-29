@@ -30,16 +30,23 @@ RT_PROGRAM void polyMeshIntersect( int prim_index )
   if( intersect_triangle( ray, v0.position, v1.position, v2.position,
                           geometric_normal, t, beta, gamma ) )
   {
-      const float alpha = 1.0f - beta - gamma;
-      legion::SurfaceInfo si;
-      si.position_object  = ray.origin + ray.direction*t;
-      si.geometric_normal = geometric_normal; 
-      si.shading_normal   = alpha*v0.normal + beta*v1.normal + gamma*v2.normal;
-      si.texcoord         = alpha*v0.tex    + beta*v1.tex    + gamma*v2.tex;
-      si.material_id      = triangle.w;
-      surface_info = si;
+      if(  rtPotentialIntersection( t ) )
+      {
+          const float alpha = 1.0f - beta - gamma;
+          legion::SurfaceInfo si;
+          si.position_object  = ray.origin + ray.direction*t;
+          si.geometric_normal = geometric_normal; 
+          si.shading_normal   = alpha*v0.normal +
+                                beta*v1.normal  +
+                                gamma*v2.normal;
+          si.texcoord         = alpha*v0.tex    +
+                                beta*v1.tex     +
+                                gamma*v2.tex;
+          si.material_id      = triangle.w;
+          surface_info = si;
 
-      rtReportIntersection( 0 );
+          rtReportIntersection( 0 );
+      }
   }
 }
 

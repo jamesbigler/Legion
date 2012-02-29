@@ -1,6 +1,7 @@
 
-#include <Legion/Common/Util/Logger.hpp>
 #include <Legion/Common/Util/Assert.hpp>
+#include <Legion/Common/Util/Logger.hpp>
+#include <Legion/Common/Util/Stream.hpp>
 #include <Legion/Core/Exception.hpp>
 #include <Legion/Core/Ray.hpp>
 #include <Legion/Core/config.hpp>
@@ -173,7 +174,6 @@ void RayTracer::traceRays( RayType type )
         LLOG_INFO << "RayTracer::traceRays(): Launching OptiX ...";
         m_optix_context->launch( OPTIX_ENTRY_POINT_INDEX, num_rays );
         LLOG_INFO << "    Finished.";
-
     }
     OPTIX_CATCH_RETHROW;
 }
@@ -228,7 +228,7 @@ void RayTracer::initializeOptixContext()
         m_ray_buffer->setElementSize( sizeof( Ray ) );
         m_optix_context[ "rays" ]->set( m_ray_buffer );
 
-        m_result_buffer = m_optix_context->createBuffer( RT_BUFFER_INPUT );
+        m_result_buffer = m_optix_context->createBuffer( RT_BUFFER_OUTPUT );
         m_result_buffer->setFormat( RT_FORMAT_USER );
         m_result_buffer->setElementSize( sizeof( SurfaceInfo ) );
         m_optix_context[ "results" ]->set( m_result_buffer );
