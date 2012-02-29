@@ -9,6 +9,7 @@ namespace legion
     {
     public:
         Color() {}
+        explicit Color( float rgb );
         Color( float r, float g, float b );
 
         float red()const           { return m_c[0]; }
@@ -25,6 +26,12 @@ namespace legion
     };
 
         
+    inline Color::Color( float rgb )
+    {
+        m_c[0] = m_c[1] = m_c[2] = rgb;
+    }
+
+
     inline Color::Color( float r, float g, float b )
     {
         m_c[0] = r;

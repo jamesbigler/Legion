@@ -35,19 +35,20 @@ namespace legion
 {
 
 class Ray;
+class SurfaceInfo;
 
 class ShadingEngine
 {
 public:
     typedef std::vector< Color > Results;
-    void shade( unsigned int num_rays,
-                const Ray* rays );
+    void shade( unsigned int num_rays, const SurfaceInfo* surface_info );
 
-    Results& getResults()const;
+    const Results& getResults()const;
 
 private:
 
 
+    Results   m_results;
 };
 
 

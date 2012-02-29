@@ -34,6 +34,17 @@ void Renderer::render()
 
     m_ray_scheduler.getPass( rays, pixel_ids );
     m_ray_tracer.traceRays( RayTracer::CLOSEST_HIT );
+    optix::Buffer trace_results = m_ray_tracer.getResults();
+
+    m_shading_engine.shade( pixel_ids.size(), static_cast<const SurfaceInfo*>( trace_results->map() ) );
+    trace_results->unmap();
+
+    const ShadingEngine::Results& shading_results = m_shading_engine.getResults();
+
+    for( unsigned int i = 0; i < pixel_ids.size(); ++i )
+    {
+        m_film->addSample( pixel_ids[0].pixel, shading_results[i], pixel_ids[0].weight );
+    }
 }
 
 

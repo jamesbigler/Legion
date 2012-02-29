@@ -22,6 +22,21 @@
 // (MIT/X11 License)
 
 #include <Legion/Renderer/ShadingEngine.hpp>
+#include <Legion/Renderer/Cuda/Shared.hpp>
+#include <Legion/Core/Color.hpp>
 
 using namespace legion;
 
+    
+
+void ShadingEngine::shade( unsigned int num_rays, const SurfaceInfo* surface )
+{
+    m_results.resize( num_rays );
+    for( unsigned i = 0; i < num_rays; ++i )
+        m_results[i] = Color( static_cast<float>( surface->material_id != -1 ) ); 
+}
+
+const ShadingEngine::Results& ShadingEngine::getResults()const
+{
+    return m_results;
+}

@@ -19,19 +19,19 @@ int main( int argc, char** argv )
        
         std::vector<legion::Mesh::Vertex> verts;
         verts.push_back( legion::Mesh::Vertex(
-                             legion::Vector3(-0.5f,-0.5f, 0.0f ),
+                             legion::Vector3(-0.1f,-0.1f,-1.0f ),
                              legion::Vector3( 0.0f, 0.0f,-1.0f ),
                              legion::Vector2( 0.0f, 0.0f ) ) );
         verts.push_back( legion::Mesh::Vertex(
-                             legion::Vector3(-0.5f, 0.5f, 0.0f ),
+                             legion::Vector3(-0.1f, 0.1f,-1.0f ),
                              legion::Vector3( 0.0f, 0.0f,-1.0f ),
                              legion::Vector2( 0.0f, 0.0f ) ) );
         verts.push_back( legion::Mesh::Vertex(
-                             legion::Vector3( 0.5f, 0.5f, 0.0f ),
+                             legion::Vector3( 0.1f, 0.1f,-1.0f ),
                              legion::Vector3( 0.0f, 0.0f,-1.0f ),
                              legion::Vector2( 0.0f, 0.0f ) ) );
         verts.push_back( legion::Mesh::Vertex(
-                             legion::Vector3( 0.5f, -0.5f, 0.0f),
+                             legion::Vector3( 0.1f,-0.1f,-1.0f),
                              legion::Vector3( 0.0f, 0.0f,-1.0f ),
                              legion::Vector2( 0.0f, 0.0f ) ) );
 
@@ -52,8 +52,7 @@ int main( int argc, char** argv )
         //ctx.addAreaLigth(...); 
 
         legion::ThinLensCamera cam( &ctx, "camera" );
-        //cam.setViewPlane( -1.0f, 1.0f, -1.0f, 1.0f );
-        cam.setViewPlane( 0.0f, 1.0f, 0.0f, 1.0f );
+        cam.setViewPlane( -1.0f, 1.0f, 1.0f, -1.0f );
         cam.setShutterOpenClose( 0.0f, 0.005f );
         cam.setFocalDistance( 1.0f );
         cam.setLensRadius( 0.0f );
