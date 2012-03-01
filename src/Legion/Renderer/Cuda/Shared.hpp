@@ -19,11 +19,11 @@ struct Vertex
 };
 
 
-struct SurfaceInfo 
+struct LocalGeometry 
 {
-    HOST_DEVICE SurfaceInfo() {} 
+    HOST_DEVICE LocalGeometry() {} 
 
-    HOST_DEVICE SurfaceInfo( int material_id ) 
+    HOST_DEVICE LocalGeometry( int material_id ) 
         : material_id( material_id ) 
     {
 #if 1

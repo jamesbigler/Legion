@@ -20,6 +20,7 @@ class Vector
 {
 public:
     Vector();
+    Vector( TYPE t );
     Vector( TYPE x, TYPE y );                      // Only valid for Vector<2>
     Vector( TYPE x, TYPE y, TYPE z );              // Only valid for Vector<3>
     Vector( TYPE x, TYPE y, TYPE z, TYPE w  );     // Only valid for Vector<4>
@@ -89,6 +90,12 @@ template<typename TYPE> Vector<3, TYPE> cross( const Vector<3, TYPE>& v0, const 
 template<unsigned DIM, typename TYPE>
 inline Vector<DIM, TYPE>::Vector() 
 {
+}
+
+template<unsigned DIM, typename TYPE>
+inline Vector<DIM, TYPE>::Vector( TYPE t )
+{
+    for( unsigned i = 0; i < DIM; ++i ) m_v[i] = t;
 }
 
 template<unsigned DIM, typename TYPE>

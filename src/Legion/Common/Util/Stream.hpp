@@ -19,7 +19,8 @@ namespace legion
 
     std::ostream& operator<<( std::ostream& out, const legion::Ray& ray ); 
     
-    std::ostream& operator<<( std::ostream& out, const legion::SurfaceInfo& si);
+    std::ostream& operator<<( std::ostream& out,
+                              const legion::LocalGeometry& lgeom );
 
 
 

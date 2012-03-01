@@ -8,8 +8,8 @@ rtDeclareVariable( unsigned, launch_index, rtLaunchIndex, );
 rtDeclareVariable( rtObject, top_object, , );
 rtDeclareVariable( unsigned, ray_type, , );
 
-rtBuffer<legion::SurfaceInfo, 1> results;
-rtBuffer<legion::RayInfo,     1> rays;
+rtBuffer<legion::LocalGeometry, 1> results;
+rtBuffer<legion::RayInfo,       1> rays;
 
 
 RT_PROGRAM void traceRays()
@@ -22,23 +22,8 @@ RT_PROGRAM void traceRays()
                     ray_info.tmin,
                     ray_info.tmax );
 
-    legion::SurfaceInfo prd( -1 );
+    legion::LocalGeometry prd( -1 );
     rtTrace( top_object, ray, prd );
 
     results[ launch_index ] = prd;
-
-
-
-
-
-    /*
-    legion::SurfaceInfo si;
-    si.material_id = -1;
-    si.position        = optix::make_float3( 1 );
-    si.position_object = optix::make_float3( 2 );
-    si.geometric_normal= optix::make_float3( 3 );
-    si.shading_normal  = optix::make_float3( 4 );
-    si.texcoord        = optix::make_float2( 5 );
-    results[ launch_index ] = si; 
-    */
 }

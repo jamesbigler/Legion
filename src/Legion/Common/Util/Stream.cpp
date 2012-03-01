@@ -26,14 +26,14 @@ std::ostream& legion::operator<<( std::ostream& out, const legion::Ray& ray )
     
 
 std::ostream& legion::operator<<( std::ostream& out,
-                                  const legion::SurfaceInfo& si)
+                                  const legion::LocalGeometry& lgeom)
 {
-    out << "pos       :" << si.position         << "\n"
-        << "obj_pos   :" << si.position_object  << "\n"
-        << "geo_norm  :" << si.geometric_normal << "\n"
-        << "shade_norm:" << si.shading_normal   << "\n"
-        << "texcoord  :" << si.texcoord         << "\n"
-        << "mat_id    :" << si.material_id;
+    out << "pos       :" << lgeom.position         << "\n"
+        << "obj_pos   :" << lgeom.position_object  << "\n"
+        << "geo_norm  :" << lgeom.geometric_normal << "\n"
+        << "shade_norm:" << lgeom.shading_normal   << "\n"
+        << "texcoord  :" << lgeom.texcoord         << "\n"
+        << "mat_id    :" << lgeom.material_id;
         
     return out;
 }

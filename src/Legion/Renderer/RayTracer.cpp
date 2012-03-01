@@ -230,7 +230,7 @@ void RayTracer::initializeOptixContext()
 
         m_result_buffer = m_optix_context->createBuffer( RT_BUFFER_OUTPUT );
         m_result_buffer->setFormat( RT_FORMAT_USER );
-        m_result_buffer->setElementSize( sizeof( SurfaceInfo ) );
+        m_result_buffer->setElementSize( sizeof( LocalGeometry ) );
         m_optix_context[ "results" ]->set( m_result_buffer );
 
         optix::Acceleration accel;

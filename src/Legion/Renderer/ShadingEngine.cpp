@@ -24,19 +24,34 @@
 #include <Legion/Renderer/ShadingEngine.hpp>
 #include <Legion/Renderer/Cuda/Shared.hpp>
 #include <Legion/Core/Color.hpp>
+#include <Legion/Core/Ray.hpp>
 #include <Legion/Common/Util/Logger.hpp>
 #include <Legion/Common/Util/Stream.hpp>
+#include <Legion/Scene/SurfaceShader/ISurfaceShader.hpp>
+
 
 using namespace legion;
 
     
 
-void ShadingEngine::shade( unsigned int num_rays, const SurfaceInfo* surface )
+void ShadingEngine::shade( unsigned int num_rays,
+                           const Ray* rays,
+                           const LocalGeometry* lgeom )
 {
     m_results.resize( num_rays );
     for( unsigned i = 0; i < num_rays; ++i )
     {
-        m_results[i] = Color( static_cast<float>( surface[i].material_id != -1 ) ); 
+        if( lgeom[i].material_id == -1 )
+        {
+            m_results[i] = Color( 0.0f ); 
+            continue;
+        }
+
+        //m_results[i] = Color(static_cast<float>(lgeom[i].material_id != -1));
+        const ISurfaceShader* shader = m_shaders[ lgeom[i].material_id ];
+        const Vector3         w_in   = rays[ i ].getDirection();
+
+        m_results[i] = shader->emission( w_in, lgeom[ i ] ); 
     }
 }
 
@@ -44,3 +59,10 @@ const ShadingEngine::Results& ShadingEngine::getResults()const
 {
     return m_results;
 }
+
+
+void ShadingEngine::addSurfaceShader( const ISurfaceShader* shader )
+{
+    m_shaders[ shader->getID() ] = shader;
+}
+

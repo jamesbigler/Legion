@@ -11,7 +11,8 @@ Mesh::Mesh( Context* context, const std::string& name )
     : APIBase( context, name ),
       m_subdivision_enabled( false ),
       m_vertices_changed( true ),
-      m_faces_changed( true )
+      m_faces_changed( true ),
+      m_shader( 0u )
 {
     m_vertices = context->createOptixBuffer();
     m_faces    = context->createOptixBuffer();
@@ -58,6 +59,7 @@ void Mesh::setFaces( unsigned num_faces,
 {
     RayTracer::updateFaceBuffer( m_faces, num_faces, tris, shader );
     m_faces_changed = true;
+    m_shader = shader;
 }
 
 
@@ -108,9 +110,16 @@ void Mesh::disableSubdivision()
 }
 
 
+
 bool Mesh::subdvisionEnabled()const
 {
     return m_subdivision_enabled;
+}
+
+    
+const ISurfaceShader* Mesh::getShader()const
+{
+    return m_shader;
 }
 
 

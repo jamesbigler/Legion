@@ -28,6 +28,7 @@
 #define LEGION_RENDERER_SHADINGENGINE_HPP_
 
 #include <vector>
+#include <map>
 #include <Legion/Core/Color.hpp>>
 
 
@@ -35,20 +36,26 @@ namespace legion
 {
 
 class Ray;
-class SurfaceInfo;
+class LocalGeometry;
+class ISurfaceShader;
 
 class ShadingEngine
 {
 public:
     typedef std::vector< Color > Results;
-    void shade( unsigned int num_rays, const SurfaceInfo* surface_info );
+    void shade( unsigned int num_rays,
+                const Ray* rays,
+                const LocalGeometry* local_geom );
 
     const Results& getResults()const;
 
+    void addSurfaceShader( const ISurfaceShader* shader );
+
 private:
+    typedef std::map<unsigned, const ISurfaceShader*> ShaderMap;
 
-
-    Results   m_results;
+    Results          m_results;
+    ShaderMap        m_shaders;
 };
 
 

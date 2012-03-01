@@ -69,6 +69,8 @@ public:
     optix::Buffer getFaceBuffer();
 
     bool subdvisionEnabled()const;
+
+    const ISurfaceShader* getShader()const;
   
     const std::vector<Matrix4x4>& getTransform()const;
 
@@ -85,6 +87,9 @@ private:
     optix::Buffer            m_faces;
     bool                     m_vertices_changed;
     bool                     m_faces_changed;
+
+    const ISurfaceShader*    m_shader;
+
 };
 
 }

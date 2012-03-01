@@ -23,10 +23,10 @@ class ISurfaceShader : public APIBase
 {
 public:
     /// Create named ISurfaceShader object
-                   ISurfaceShader( Context* context, const std::string& name );
+                    ISurfaceShader( Context* context, const std::string& name );
     
     /// Destroy ISurfaceShader object
-    virtual        ~ISurfaceShader();
+    virtual         ~ISurfaceShader();
 
     /// Sample the BSDF at given local geometry.
     ///   \param      seed   2D sampling seed in [0,1]^2
@@ -34,11 +34,11 @@ public:
     ///   \param      p      Local geometry information of point being shaded
     ///   \param[out] w_in   Direction to light
     ///   \param[out] pdf    The BSDF PDF for w_in 
-    virtual void   sampleBSDF( const Vector2& seed,
-                               const Vector3& w_out,
-                               const LocalGeometry& p,
-                               Vector3& w_in,
-                               float& pdf )=0;
+    virtual void    sampleBSDF( const Vector2& seed,
+                                const Vector3& w_out,
+                                const LocalGeometry& p,
+                                Vector3& w_in,
+                                float& pdf )const=0;
 
 
     /// Compute the PDF value for the given incoming/outgoing direction pair
@@ -48,7 +48,8 @@ public:
     ///   \returns The pdf
     virtual float   pdf( const Vector3& w_out,
                          const LocalGeometry& p,
-                         const Vector3& w_in )=0;
+                         const Vector3& w_in )const=0;
+
 
     /// Compute the BSDF value for the given incoming/outgoing direction pair
     ///   \param      w_out  Outgoing light direction (-ray.direction typically)
@@ -57,7 +58,14 @@ public:
     ///   \returns The value of the bsdf
     virtual Color   evaluateBSDF( const Vector3& w_out,
                                   const LocalGeometry& p,
-                                  const Vector3& w_in )=0;
+                                  const Vector3& w_in )const=0;
+
+
+    virtual bool    emits()const=0;
+
+
+    virtual Color   emission( const Vector3& w_out,
+                              const LocalGeometry& p )const=0;
 };
 
 

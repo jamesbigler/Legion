@@ -10,7 +10,6 @@ namespace legion
 {
 
 class Ray;
-class SurfaceInfo;
 class ISurfaceShader;
 
 

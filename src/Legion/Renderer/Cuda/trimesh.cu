@@ -13,8 +13,8 @@
 rtBuffer<legion::Vertex> vertices;     
 rtBuffer<optix::int4>    triangles;
 
-rtDeclareVariable( legion::SurfaceInfo, surface_info, attribute surface_info, );
-rtDeclareVariable( optix::Ray,          ray,          rtCurrentRay, );
+rtDeclareVariable( legion::LocalGeometry, lgeom, attribute surface_info, );
+rtDeclareVariable( optix::Ray,            ray,   rtCurrentRay, );
 
 RT_PROGRAM void polyMeshIntersect( int prim_index )
 {
@@ -33,17 +33,17 @@ RT_PROGRAM void polyMeshIntersect( int prim_index )
       if(  rtPotentialIntersection( t ) )
       {
           const float alpha = 1.0f - beta - gamma;
-          legion::SurfaceInfo si;
-          si.position_object  = ray.origin + ray.direction*t;
-          si.geometric_normal = geometric_normal; 
-          si.shading_normal   = alpha*v0.normal +
+          legion::LocalGeometry lg;
+          lg.position_object  = ray.origin + ray.direction*t;
+          lg.geometric_normal = geometric_normal; 
+          lg.shading_normal   = alpha*v0.normal +
                                 beta*v1.normal  +
                                 gamma*v2.normal;
-          si.texcoord         = alpha*v0.tex    +
+          lg.texcoord         = alpha*v0.tex    +
                                 beta*v1.tex     +
                                 gamma*v2.tex;
-          si.material_id      = triangle.w;
-          surface_info = si;
+          lg.material_id      = triangle.w;
+          lgeom = lg;
 
           rtReportIntersection( 0 );
       }
