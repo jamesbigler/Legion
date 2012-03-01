@@ -3,6 +3,7 @@
 #include <Legion/Core/Vector.hpp>
 #include <Legion/Common/Util/Stream.hpp>
 #include <Legion/Common/Util/Image.hpp>
+#include <Legion/Common/Util/Logger.hpp>
 #include <iostream>
 #include <cstring> // memset
 
@@ -79,21 +80,21 @@ Color* ImageFilm::getPixels()const
 
 void ImageFilm::shutterOpen()
 {
-    std::cerr << "ImageFilm::shutterOpen()" << std::endl;
+    LLOG_INFO << "ImageFilm::shutterOpen()";
 }
 
 
 void ImageFilm::shutterClose()
 {
-    std::cerr << "ImageFilm::shutterClose()" << std::endl;
-    writeOpenEXR( "output.exr", m_dimensions.x(), m_dimensions.y(), 3,
+    LLOG_INFO << "ImageFilm::shutterClose()";
+    writeOpenEXR( "output.exr", m_dimensions.x(), m_dimensions.y(), 4,
                   reinterpret_cast<float*>( m_data ) );
 }
 
 
 void ImageFilm::passComplete()
 {
-    std::cerr << "ImageFilm::passComplete()" << std::endl;
+    LLOG_INFO << "ImageFilm::passComplete()";
 }
 
 

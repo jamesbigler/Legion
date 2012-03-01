@@ -71,16 +71,8 @@ void generateSphere( std::vector<legion::Mesh::Vertex>& verts,
                                       (lat_div-2u)*(long_div+1u) + i + 1,
                                       (lat_div-2u)*(long_div+1u) + i );
     }
-    std::cerr << vindex << ":" << tindex << "   " << num_verts << ":" << num_tris <<  std::endl;
-
-    for( unsigned i = 0; i < num_tris; ++i )
-    {
-        std::cerr << std::setprecision( 2 ) << std::fixed
-                  << verts[ indices[i].x() ].position << ", "
-                  << verts[ indices[i].y() ].position << ", "
-                  << verts[ indices[i].z() ].position << std::endl; 
-    }
 }
+
 
 int main( int argc, char** argv )
 {
