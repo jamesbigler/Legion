@@ -36,7 +36,6 @@ void ShadingEngine::shade( unsigned int num_rays, const SurfaceInfo* surface )
     m_results.resize( num_rays );
     for( unsigned i = 0; i < num_rays; ++i )
     {
-        LLOG_INFO << surface[i];
         m_results[i] = Color( static_cast<float>( surface[i].material_id != -1 ) ); 
     }
 }

@@ -1,8 +1,6 @@
 
-add_executable( simple
-  simple.cpp
-  )
+add_executable( simple simple.cpp)
+target_link_libraries( simple legion )
 
-target_link_libraries( simple 
-  legion
-  )
+add_executable( sphere sphere.cpp )
+target_link_libraries( sphere legion)

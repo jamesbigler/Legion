@@ -37,7 +37,7 @@ int main( int argc, char** argv )
 
         std::vector<legion::Index3> indices;
         indices.push_back( legion::Index3( 0, 1, 2 ) );
-        indices.push_back( legion::Index3( 0, 2, 3 ) );
+        //indices.push_back( legion::Index3( 0, 2, 3 ) );
 
         legion::Mesh square( &ctx, "square" );
         square.setVertices( verts.size(), &verts[0] );
@@ -59,7 +59,7 @@ int main( int argc, char** argv )
         ctx.setActiveCamera( &cam );
 
         legion::ImageFilm film( &ctx, "image" );
-        film.setDimensions( legion::Index2( 32u, 32u ) );
+        film.setDimensions( legion::Index2( 256u, 256u ) );
         //film.setDimensions( legion::Index2( 10u, 10u ) );
         ctx.setActiveFilm( &film );
 
