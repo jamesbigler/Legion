@@ -33,9 +33,14 @@ public:
     explicit   Context( const std::string& name );
     ~Context();
 
-    void addMesh ( Mesh* mesh );
+    void addMesh( Mesh* mesh );
+
+    // TODO: * create baseclass MeshLight < ILightShader implements sample()
+    //       * Add internal sample() method to mesh
+    //       * Add internal setLightShader() method to mesh
+    //       
     void addLight( const ILightShader* light_shader );
-    void addLight( const ILightShader* light_shader, const Mesh* light_geometry );
+
 
     void setActiveCamera( ICamera* camera );
     void setActiveFilm  ( IFilm* film );

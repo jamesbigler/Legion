@@ -47,7 +47,6 @@ public:
     void setVertices( unsigned num_samples,  const float* times,
                       unsigned num_vertices, const Vertex** vertices );
 
-
     void setFaces( unsigned num_faces,
                    const Index3* tris,
                    const ISurfaceShader* shader );
