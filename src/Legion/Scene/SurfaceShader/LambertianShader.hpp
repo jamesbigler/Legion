@@ -39,13 +39,7 @@ public:
     Color   evaluateBSDF( const Vector3& w_out,
                           const LocalGeometry& p,
                           const Vector3& w_in )const;
-    
 
-    bool    emits()const;
-
-
-    Color   emission( const Vector3& w_out, const LocalGeometry& p )const;
-        
 private:
     Color m_kd;
 };

@@ -48,26 +48,3 @@ Color LambertianShader::evaluateBSDF( const Vector3& w_out,
     return Color( 0.0f, 0.0f, 0.0f );
 }
     
-
-bool LambertianShader::emits()const
-{
-    return true;
-}
-
-
-Color LambertianShader::emission( const Vector3& w_out,
-                                  const LocalGeometry& p )const
-{
-  /*
-    Vector3 normal = Vector3( p.shading_normal.x,
-                              p.shading_normal.y,
-                              p.shading_normal.z );
-                              */
-    Vector3 normal = Vector3( p.geometric_normal.x,
-                              p.geometric_normal.y,
-                              p.geometric_normal.z );
-    Vector3 in_gammut = ( normal + Vector3( 1.0f ) ) * 0.5f;
-    return Color( in_gammut.x(), in_gammut.y(), in_gammut.z() );
-}
-    
-        

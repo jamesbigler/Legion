@@ -21,12 +21,13 @@
 // IN THE SOFTWARE.
 // (MIT/X11 License)
 
-#include <Legion/Renderer/ShadingEngine.hpp>
-#include <Legion/Renderer/Cuda/Shared.hpp>
-#include <Legion/Core/Color.hpp>
-#include <Legion/Core/Ray.hpp>
 #include <Legion/Common/Util/Logger.hpp>
 #include <Legion/Common/Util/Stream.hpp>
+#include <Legion/Common/Util/TypeConversion.hpp>
+#include <Legion/Core/Color.hpp>
+#include <Legion/Core/Ray.hpp>
+#include <Legion/Renderer/Cuda/Shared.hpp>
+#include <Legion/Renderer/ShadingEngine.hpp>
 #include <Legion/Scene/SurfaceShader/ISurfaceShader.hpp>
 
 
@@ -43,15 +44,16 @@ void ShadingEngine::shade( unsigned int num_rays,
     {
         if( lgeom[i].material_id == -1 )
         {
+            // TODO: add env map support
             m_results[i] = Color( 0.0f ); 
             continue;
         }
 
-        //m_results[i] = Color(static_cast<float>(lgeom[i].material_id != -1));
-        const ISurfaceShader* shader = m_shaders[ lgeom[i].material_id ];
-        const Vector3         w_in   = rays[ i ].getDirection();
+        // queryDirectLighting( lgeom, 
+        //const ISurfaceShader* shader = m_shaders[ lgeom[i].material_id ];
+        //const Vector3         w_in   = rays[ i ].getDirection();
 
-        m_results[i] = shader->emission( w_in, lgeom[ i ] ); 
+        m_results[i] = toColor( lgeom[i].geometric_normal ); 
     }
 }
 
@@ -64,5 +66,10 @@ const ShadingEngine::Results& ShadingEngine::getResults()const
 void ShadingEngine::addSurfaceShader( const ISurfaceShader* shader )
 {
     m_shaders[ shader->getID() ] = shader;
+}
+
+void ShadingEngine::addLight( const ILightShader* shader )
+{
+    m_lights.push_back( shader );
 }
 

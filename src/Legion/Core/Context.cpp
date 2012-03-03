@@ -63,29 +63,12 @@ void Context::addMesh( Mesh* mesh )
 }
 
 
-void Context::addLight( const ILightShader* light_shader )
+void Context::addLight( const ILightShader* shader )
 {
-    CHECK_NULL( LFUNC, light_shader ); 
+    CHECK_NULL( LFUNC, shader ); 
 
-    Light light;
-    light.shader   = light_shader;
-    light.geometry = 0u;
-    LLOG_INFO << "Adding light <" << light.getName() << ">";
-    m_lights.push_back( light );
-}
-
-
-void Context::addLight( const ILightShader* light_shader,
-                        const Mesh* light_geometry )
-{
-    CHECK_NULL( LFUNC, light_shader ); 
-    CHECK_NULL( LFUNC, light_geometry ); 
-
-    Light light;
-    light.shader   = light_shader;
-    light.geometry = light_geometry;
-    LLOG_INFO << "Adding light <" << light.getName() << ">";
-    m_lights.push_back( light );
+    LLOG_INFO << "Adding light <" << shader->getName() << ">";
+    m_renderer.addLight( shader );
 }
 
 

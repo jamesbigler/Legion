@@ -21,51 +21,24 @@
 // IN THE SOFTWARE.
 // (MIT/X11 License)
 
-/// \file ShadingEngine.hpp
-/// ShadingEngine
+/// \file TypeConversion.hpp
+/// TypeConversion
 
-#ifndef LEGION_RENDERER_SHADINGENGINE_HPP_
-#define LEGION_RENDERER_SHADINGENGINE_HPP_
+#ifndef LEGION_TYPECONVERSION_HPP_
+#define LEGION_TYPECONVERSION_HPP_
 
-#include <vector>
-#include <map>
-#include <Legion/Core/Color.hpp>>
-
+#include <Legion/Core/Color.hpp>
+#include <Legion/Core/Vector.hpp>
+#include <optixu/optixu_vector_types.h>
 
 namespace legion
 {
+    Vector3  toVector3( const optix::float3& v );
+    Vector4  toVector4( const optix::float4& v );
 
-class Ray;
-class LocalGeometry;
-class ISurfaceShader;
-class ILightShader;
-
-class ShadingEngine
-{
-public:
-    typedef std::vector< Color > Results;
-    void shade( unsigned int num_rays,
-                const Ray* rays,
-                const LocalGeometry* local_geom );
-
-    const Results& getResults()const;
-
-    void addSurfaceShader( const ISurfaceShader* shader );
-
-    void addLight( const ILightShader* shader );
-
-private:
-    typedef std::map<unsigned, const ISurfaceShader*> ShaderMap;
-    typedef std::vector<const ILightShader*>          LightList;
-
-    Results          m_results;
-    ShaderMap        m_shaders;
-    LightList        m_lights;
-
-};
-
-
+    Color toColor( const Vector3& v );
+    Color toColor( const optix::float3& v );
 }
 
 
-#endif // LEGION_RENDERER_SHADINGENGINE_HPP_
+#endif // LEGION_TYPECONVERSION_HPP_

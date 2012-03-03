@@ -60,6 +60,12 @@ void Renderer::render()
 }
 
 
+void Renderer::addLight( const ILightShader* light_shader )
+{
+    m_shading_engine.addLight( light_shader );
+}
+
+
 void Renderer::addMesh( Mesh* mesh )
 {
     m_ray_tracer.addMesh( mesh );

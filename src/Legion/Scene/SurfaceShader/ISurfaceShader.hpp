@@ -59,13 +59,6 @@ public:
     virtual Color   evaluateBSDF( const Vector3& w_out,
                                   const LocalGeometry& p,
                                   const Vector3& w_in )const=0;
-
-
-    virtual bool    emits()const=0;
-
-
-    virtual Color   emission( const Vector3& w_out,
-                              const LocalGeometry& p )const=0;
 };
 
 

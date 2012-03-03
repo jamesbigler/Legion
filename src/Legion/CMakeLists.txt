@@ -27,6 +27,8 @@ add_library( legion SHARED
     Common/Util/Singleton.hpp
     Common/Util/Stream.cpp
     Common/Util/Stream.hpp
+    Common/Util/TypeConversion.cpp
+    Common/Util/TypeConversion.hpp
     Core/APIBase.cpp
     Core/APIBase.hpp
     Core/Color.hpp
