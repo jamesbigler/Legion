@@ -1,19 +1,21 @@
 
 #TODO: Move plugins into separate library and load dynamically
 
-find_package(OptiX REQUIRED)
-find_package(CUDA 4.0 REQUIRED)
-find_package(CUDA 4.0 REQUIRED)
-find_package(OPENEXR REQUIRED)
+find_package( OptiX REQUIRED )
+find_package( CUDA 4.0 REQUIRED )
+find_package( CUDA 4.0 REQUIRED )
+find_package( OPENEXR REQUIRED )
+find_package( Boost COMPONENTS thread REQUIRED )
 
 add_definitions( -DLLOG_MAX_LEVEL=legion::Log::DEBUG )
 
 # Add the path to the OptiX headers to our include paths.
 include_directories(
-    "${OptiX_INCLUDE}"
-    "${CUDA_INCLUDE_DIRS}" 
+    "${Boost_INCLUDE_DIRS}"
     "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CUDA_INCLUDE_DIRS}" 
     "${OPENEXR_INCLUDE_PATHS}"
+    "${OptiX_INCLUDE}"
     )
 
 # Tell clang_complete about our include paths

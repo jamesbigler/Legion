@@ -44,6 +44,31 @@ using namespace legion;
 
 
 
+namespace
+{
+
+struct OptiXLaunch
+{
+    OptiXLaunch( optix::Context context,
+                 unsigned entry_point_index,
+                 unsigned num_rays )
+        : m_context( context ),
+          m_entry_point_index( entry_point_index ),
+          m_num_rays( num_rays )
+    {}
+
+    void operator()()
+    {
+        m_context->launch( m_entry_point_index, m_num_rays );
+    }
+
+    optix::Context m_context;
+    unsigned       m_entry_point_index;
+    unsigned       m_num_rays;
+};
+}
+
+
 RayTracer::RayTracer()
 {
     initializeOptixContext();
@@ -172,6 +197,9 @@ void RayTracer::traceRays( RayType type )
         LLOG_INFO << "    Finished.";
 
         LLOG_INFO << "RayTracer::traceRays(): Launching OptiX ...";
+        OptiXLaunch ol( m_optix_context, OPTIX_ENTRY_POINT_INDEX, num_rays );
+        m_thread = boost::thread( ol );
+        m_thread.join();
         m_optix_context->launch( OPTIX_ENTRY_POINT_INDEX, num_rays );
         LLOG_INFO << "    Finished.";
     }

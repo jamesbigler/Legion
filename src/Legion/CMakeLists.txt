@@ -1,5 +1,8 @@
 
-set( PTX_OUTPUT_DIR "${CMAKE_BINARY_DIR}/lib/ptx" CACHE PATH "Path to where generated PTX is stored" ) 
+set( PTX_OUTPUT_DIR "${CMAKE_BINARY_DIR}/lib/ptx" CACHE PATH
+     "Path to where generated PTX is stored" 
+     ) 
+
 set( CUDA_GENERATED_OUTPUT_DIR ${PTX_OUTPUT_DIR} )
 
 
@@ -10,7 +13,8 @@ CUDA_COMPILE_PTX( ptx_files
     Renderer/Cuda/trimesh.cu
     )
 
-configure_file( "${CMAKE_CURRENT_SOURCE_DIR}/Core/config.hpp.in"  "${CMAKE_CURRENT_SOURCE_DIR}/Core/config.hpp" )
+configure_file( "${CMAKE_CURRENT_SOURCE_DIR}/Core/config.hpp.in"
+                "${CMAKE_CURRENT_SOURCE_DIR}/Core/config.hpp" )
 
 # build the library and ptx files
 add_library( legion SHARED
@@ -74,11 +78,13 @@ add_library( legion SHARED
     Scene/SurfaceShader/LambertianShader.hpp
     )
 
+message( "Boost libs: ${Boost_LIBRARIES}" )
   # Link against optix
 target_link_libraries( legion
     optix
     ${optix_rpath}
     ${OPENEXR_LIBRARIES}
+    ${Boost_LIBRARIES}
     )
 
 

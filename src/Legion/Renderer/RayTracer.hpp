@@ -2,9 +2,11 @@
 #ifndef LEGION_RAYTRACER_RAYTRACER_HPP_
 #define LEGION_RAYTRACER_RAYTRACER_HPP_
 
-#include <optixu/optixpp_namespace.h>
 #include <Legion/Core/Vector.hpp>
 #include <Legion/Scene/Mesh/Mesh.hpp>
+#include <boost/thread.hpp>
+#include <optixu/optixpp_namespace.h>
+
 
 namespace legion
 {
@@ -26,10 +28,12 @@ public:
 
     optix::Buffer createBuffer();
 
-    void addMesh( legion::Mesh* mesh );
+    void trace( RayType ray_type, 
+    optix::Buffer getRayBuffer();
+
+    void addMesh(    legion::Mesh* mesh );
     void removeMesh( legion::Mesh* mesh );
 
-    optix::Buffer getRayBuffer();
 
     void traceRays( RayType type );
     void traceRaysNonBlocking( RayType type );
@@ -71,6 +75,10 @@ private:
 
     optix::Group         m_top_object;
     optix::Material      m_material;
+
+
+    boost::thread        m_thread;
+    boost::mutex         m_mutex;
 };
 
 }
