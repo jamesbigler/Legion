@@ -32,17 +32,13 @@ void Renderer::render()
 
     /// TODO: this vec needs to be persistant
     std::vector<RayScheduler::PixelID> pixel_ids;
-    optix::Buffer rays = m_ray_tracer.getRayBuffer();
+    std::vector<Ray>                   rays;
 
     m_ray_scheduler.getPass( rays, pixel_ids );
-    m_ray_tracer.traceRays( RayTracer::CLOSEST_HIT );
-    optix::Buffer trace_results = m_ray_tracer.getResults();
+    m_ray_tracer.traceRays( RayTracer::CLOSEST_HIT, rays.size(), &rays[0] );
+    const LocalGeometry* trace_results = m_ray_tracer.getResults();
 
-    m_shading_engine.shade( pixel_ids.size(),
-                            static_cast<const Ray*>( rays->map() ), 
-                            static_cast<const LocalGeometry*>( 
-                                trace_results->map() ) );
-    trace_results->unmap();
+    m_shading_engine.shade( pixel_ids.size(), &rays[0], &trace_results[0] );
 
     const ShadingEngine::Results& shading_results =
            m_shading_engine.getResults();

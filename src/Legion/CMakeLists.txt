@@ -49,8 +49,8 @@ add_library( legion SHARED
     Renderer/Renderer.hpp
     Renderer/RayScheduler.cpp
     Renderer/RayScheduler.hpp
-    Renderer/RayQueue.cpp
-    Renderer/RayQueue.hpp
+    Renderer/RayServer.cpp
+    Renderer/RayServer.hpp
     Renderer/RayTracer.cpp
     Renderer/RayTracer.hpp
     Renderer/ShadingEngine.cpp

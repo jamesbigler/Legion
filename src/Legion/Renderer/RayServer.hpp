@@ -21,13 +21,19 @@
 // IN THE SOFTWARE.
 
 //
-// Notes:
+// TODO:
+//     * Lots o' error checking still needed to ensure that internal state
+//       is always consistent (mapped buffers, etc) and that buffers are 
+//       declared.
+//     * Might be better to have this class manage IO buffers completely (create
+//       and destroy them).  This is necessary for most below sugs
 //     * Implement double buffering output so you can be tracing while results
 //       are mapped (make sure does not incur optix compile cost)
 //     * Investigate multiple ray buffers so that multiple async trace() calls 
 //       can be in flight at once (probably use TraceID to identify traces 
 //       ( eg, TraceID trace( ); getResults( TraceID ); )
 //     * Investigate clustering of trace requests if above is implemented
+//     * Handle arbitrary launch dimensionality
 //
 
 #ifndef LEGION_RAYTRACER_RAYSERVER_HPP_
@@ -68,12 +74,12 @@ public:
     ~RayServer();
 
     void setContext         ( optix::Context context );
-    void setRayBufferName   ( const std::string& ray_buffer_name );
-    void setResultBufferName( const std::string& result_buffer_name );
+    void setRayBufferName   ( const std::string& name );
+    void setResultBufferName( const std::string& name );
 
     void trace( unsigned entry_index, unsigned nrays, const RSRay* rays );
 
-    RSResult* getResults()const;
+    const RSResult* getResults()const;
 
 
 private:
@@ -81,52 +87,78 @@ private:
     std::string          m_ray_buffer_name;
     std::string          m_result_buffer_name;
 
+    bool                 m_results_mapped;
+
     boost::thread        m_thread;
     boost::mutex         m_mutex;
 };
 
-
-RayServer::RayServer()
+template < typename RSRay, typename RSResult >
+RayServer<RSRay, RSResult>::RayServer()
+    : m_results_mapped( false )
 {
 }
 
 
-RayServer::~RayServer()
+template < typename RSRay, typename RSResult >
+RayServer<RSRay, RSResult>::~RayServer()
 {
 }
 
 
-void RayServer::setContext( optix::Context context )
+template < typename RSRay, typename RSResult >
+void RayServer<RSRay, RSResult>::setContext( optix::Context context )
 {
     m_context = context;
 }
 
 
-void RayServer::setRayBufferName( const std::string& ray_buffer_name )
+template < typename RSRay, typename RSResult >
+void RayServer<RSRay, RSResult>::setRayBufferName( const std::string& name )
 {
-    m_ray_buffer_name = ray_buffer_name;
+    m_ray_buffer_name = name;
 }
 
 
-void RayServer::setResultBufferName( const std::string& result_buffer_name )
+template < typename RSRay, typename RSResult >
+void RayServer<RSRay, RSResult>::setResultBufferName( const std::string& name )
 {
-    m_result_buffer_name = result_buffer_name;
+    m_result_buffer_name = name;
 }
 
 
-void RayServer::trace( unsigned entry_index, unsigned nrays, const RSRay* rays )
+template < typename RSRay, typename RSResult >
+void RayServer<RSRay, RSResult>::trace( unsigned entry_index,
+                                        unsigned nrays,
+                                        const RSRay* rays )
 {
+    
+    if( m_thread.get_id() != boost::thread().get_id() )
+        throw Exception( "RayServer::trace() called twice without "
+                         "calling RayServer::getResults()" );
 
+    if( m_results_mapped )
+        m_context[ m_result_buffer_name ]->getBuffer()->unmap();
+
+    // Copy ray data into buffer
+    optix:::Buffer ray_buffer = m_context[ m_ray_buffer_name ]->getBuffer();
+    memcpy( ray_buffer->map(), rays, nrays*sizeof( RSRay ) );
+    ray_buffer->unmap();
+
+    // launch a thread which runs optix::Context::launch
     OptiXLaunch optix_launch( m_optix_context, entry_index, nrays );
     m_thread = boost::thread( ol );
-    m_thread = boost::thread( ol );
 }
 
 
-RSResult* RayServer::getResults()const
+template < typename RSRay, typename RSResult >
+const RSResult* RayServer<RSRay, RSResult>::getResults()const
 {
     m_thread.join();
+    m_thread = boost::thread();
     optix::Buffer results = m_context[ m_result_buffer_name ]->getBuffer();
+    m_results_mapped = true;
+    return static_cast<const RSResult*>( results->map() );
 }
 
 

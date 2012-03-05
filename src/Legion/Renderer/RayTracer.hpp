@@ -3,8 +3,8 @@
 #define LEGION_RAYTRACER_RAYTRACER_HPP_
 
 #include <Legion/Core/Vector.hpp>
+#include <Legion/Renderer/RayServer.hpp>
 #include <Legion/Scene/Mesh/Mesh.hpp>
-#include <boost/thread.hpp>
 #include <optixu/optixpp_namespace.h>
 
 
@@ -28,7 +28,7 @@ public:
 
     optix::Buffer createBuffer();
 
-    void trace( RayType ray_type, 
+    //void trace( RayType ray_type, 
     optix::Buffer getRayBuffer();
 
     void addMesh(    legion::Mesh* mesh );
@@ -51,6 +51,7 @@ public:
 
 
 private:
+    typedef RayServer<Ray, LocalGeometry>  LRayServer;
     typedef std::vector< std::pair<Mesh*, optix::GeometryGroup> > MeshList;
     optix::Program createProgram( const std::string& cuda_file,
                                   const std::string name );
@@ -60,7 +61,9 @@ private:
 
     static const int     OPTIX_ENTRY_POINT_INDEX = 0u;
 
+
     optix::Context       m_optix_context;
+    LRayServer           m_ray_server;
 
     MeshList             m_meshes;
 
@@ -76,9 +79,6 @@ private:
     optix::Group         m_top_object;
     optix::Material      m_material;
 
-
-    boost::thread        m_thread;
-    boost::mutex         m_mutex;
 };
 
 }

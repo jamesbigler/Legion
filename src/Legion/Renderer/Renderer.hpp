@@ -2,7 +2,6 @@
 #ifndef LEGION_RENDERER_RENDERER_HPP_
 #define LEGION_RENDERER_RENDERER_HPP_
 
-#include <Legion/Renderer/RayQueue.hpp>
 #include <Legion/Renderer/RayScheduler.hpp>
 #include <Legion/Renderer/RayTracer.hpp>
 #include <Legion/Renderer/ShadingEngine.hpp>
@@ -37,7 +36,6 @@ private:
 
     ShadingEngine  m_shading_engine;
     RayScheduler   m_ray_scheduler;
-    RayQueue       m_ray_queue;
     RayTracer      m_ray_tracer;
 
     IFilm*         m_film;
