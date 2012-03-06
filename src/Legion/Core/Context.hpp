@@ -6,6 +6,8 @@
 #include <Legion/Common/Util/Noncopyable.hpp>
 #include <Legion/Core/APIBase.hpp>
 #include <Legion/Core/Light.hpp>
+#include <Legion/Core/Vector.hpp>
+#include <Legion/Core/Declarations.hpp>
 #include <Legion/Renderer/Renderer.hpp>
 
 
@@ -44,12 +46,17 @@ public:
 
     void setActiveFilm  ( IFilm* film );
 
+    void setPixelFIlter( FilterType type );
+
+    void setSamplesPerPixel( const Index2& spp  );
+
     void render();
 
     //
     // Internal interface -- will exist only in Pimpl class
     //
     optix::Buffer createOptixBuffer();
+
 
 private:
 
