@@ -12,8 +12,8 @@
 namespace legion
 {
 
-class Color;
-class LocalGeometry;
+class  Color;
+struct LocalGeometry;
 
 /// Pure virtual interface for all LightShader classes
 class ILightShader : public APIBase

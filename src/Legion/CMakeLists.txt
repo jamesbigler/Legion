@@ -78,8 +78,7 @@ add_library( legion SHARED
     Scene/SurfaceShader/LambertianShader.hpp
     )
 
-message( "Boost libs: ${Boost_LIBRARIES}" )
-  # Link against optix
+# Link against optix
 target_link_libraries( legion
     optix
     ${optix_rpath}

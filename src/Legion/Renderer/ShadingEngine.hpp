@@ -29,7 +29,7 @@
 
 #include <vector>
 #include <map>
-#include <Legion/Core/Color.hpp>>
+#include <Legion/Core/Color.hpp>
 
 
 namespace legion
