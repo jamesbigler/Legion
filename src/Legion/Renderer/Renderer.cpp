@@ -30,7 +30,6 @@ void Renderer::setFilm( IFilm* film )
 
 void Renderer::render()
 {
-
     m_film->shutterOpen();
 
     std::vector<RayScheduler::PixelID> pixel_ids;
@@ -38,10 +37,10 @@ void Renderer::render()
 
     m_ray_scheduler.setSamplesPerPixel( Index2( 5, 5 ) );
 
-    LLOG_INFO << " --------------- here";
+    //double compilation_time = 0.0;
+
     while( !m_ray_scheduler.finished() )
     {
-        LLOG_INFO << " --------------- and here";
         m_ray_scheduler.getPass( rays, pixel_ids );
         m_ray_tracer.traceRays( RayTracer::CLOSEST_HIT, rays );
         const LocalGeometry* trace_results = m_ray_tracer.getResults();
