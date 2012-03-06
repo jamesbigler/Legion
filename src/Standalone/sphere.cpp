@@ -115,7 +115,7 @@ int main( int argc, char** argv )
 
         legion::ImageFilm film( &ctx, "image" );
         film.setDimensions( legion::Index2( 256u, 256u ) );
-        //film.setDimensions( legion::Index2( 10u, 10u ) );
+        //film.setDimensions( legion::Index2( 3u, 3u ) );
         ctx.setActiveFilm( &film );
 
         ctx.render();

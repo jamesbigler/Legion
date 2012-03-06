@@ -46,6 +46,12 @@ void RayScheduler::setCamera( ICamera* camera )
 }
 
 
+void RayScheduler::setSamplesPerPixel( const Index2& spp )
+{
+    m_spp = spp;
+}
+
+
 void RayScheduler::getPass( std::vector<Ray>& rays,
                             std::vector<PixelID>& pixel_ids )
 {
@@ -88,9 +94,10 @@ void RayScheduler::getPass( std::vector<Ray>& rays,
         cur_y = 0.0;
     }
 
-    m_current_sample.setX( ( m_current_sample.x() + 1 ) % m_spp.x() ); 
-    m_current_sample.setY(   m_current_sample.y() + 
-                           ( m_current_sample.x() + 1 ) / m_spp.x() );
-    // increment m_current_sample
+    Index2 next_sample( ( m_current_sample.x() + 1 ) % m_spp.x(), 
+                          m_current_sample.y() + 
+                        ( m_current_sample.x() + 1 ) / m_spp.x() );
+                       
+    m_current_sample = next_sample;
 }
 

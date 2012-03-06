@@ -36,6 +36,7 @@ private:
 
     Index2     m_dimensions;
     Color*     m_data;
+    float*     m_weights;
 
 
 };

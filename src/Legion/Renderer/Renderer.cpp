@@ -36,6 +36,8 @@ void Renderer::render()
     std::vector<RayScheduler::PixelID> pixel_ids;
     std::vector<Ray>                   rays;
 
+    m_ray_scheduler.setSamplesPerPixel( Index2( 5, 5 ) );
+
     LLOG_INFO << " --------------- here";
     while( !m_ray_scheduler.finished() )
     {

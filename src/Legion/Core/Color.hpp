@@ -52,6 +52,7 @@ Color operator/( const Color& c, float f );
 inline Color::Color( float rgb )
 {
     m_c[0] = m_c[1] = m_c[2] = rgb;
+    m_c[3] = 1.0f;
 }
 
 

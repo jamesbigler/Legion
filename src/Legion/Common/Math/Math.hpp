@@ -2,6 +2,7 @@
 #ifndef LEGION_COMMON_MATH_MATH_HPP_
 #define LEGION_COMMON_MATH_MATH_HPP_
 
+#include <Legion/Core/Color.hpp>
 #include <Legion/Core/Vector.hpp>
 #include <cmath>
 
@@ -12,6 +13,12 @@ namespace legion
     {
         return a + t*(b-a);
     }
+    
+    inline Color lerp( const Color& a, const Color& b, float t )
+    {
+        return a + t*(b-a);
+    }
+
 
 
     inline legion::Vector2 squareToDisk( const legion::Vector2& sample )

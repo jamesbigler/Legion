@@ -45,7 +45,7 @@ void ShadingEngine::shade( const std::vector<Ray>& rays,
         if( local_geom[i].material_id == -1 )
         {
             // TODO: add env map support
-            m_results[i] = Color( 0.5f ); 
+            m_results[i] = Color( 0.0f ); 
             continue;
         }
 

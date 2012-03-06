@@ -1,10 +1,11 @@
 
 #include <Legion/Scene/Film/ImageFilm.hpp>
 #include <Legion/Core/Vector.hpp>
+#include <Legion/Common/Math/Math.hpp>
 #include <Legion/Common/Util/Stream.hpp>
 #include <Legion/Common/Util/Image.hpp>
 #include <Legion/Common/Util/Logger.hpp>
-#include <iostream>
+#include <iomanip>
 #include <cstring> // memset
 
 using namespace legion;
@@ -37,16 +38,23 @@ ImageFilm::ImageFilm( Context* context, const std::string& name )
 ImageFilm::~ImageFilm()
 {
     delete [] m_data;
+    delete [] m_weights;
 }
 
 
 void ImageFilm::setDimensions( const Index2& dimensions )
 {
     m_dimensions = dimensions;
-    if( m_data ) delete [] m_data;
-    m_data = new Color[ dimensions.x() * dimensions.y() ];
+    if( m_data )
+    {
+        delete [] m_data;
+        delete [] m_weights;
+    }
+    m_data    = new Color[ dimensions.x() * dimensions.y() ];
+    m_weights = new float[ dimensions.x() * dimensions.y() ];
 
-    memset( m_data, 0, dimensions.x() * dimensions.y() * sizeof( Color ) );
+    memset( m_data,    0, dimensions.x() * dimensions.y() * sizeof( Color ) );
+    memset( m_weights, 0, dimensions.x() * dimensions.y() * sizeof( float ) );
 }
 
 
@@ -62,7 +70,21 @@ void ImageFilm::addSample( const Index2& pixel_index,
 {
     // TODO: use weights to combine
     unsigned idx = getIndex( pixel_index, m_dimensions );
-    m_data[ idx ] = color;
+    const Color orig_color  = m_data[ idx ];
+    const float orig_weight = m_weights[ idx ];
+    const float new_weight  = orig_weight + weight;
+    const Color new_color   = lerp( orig_color, color, weight/new_weight );
+
+    
+
+    /*
+    LLOG_INFO << std::setprecision(3) 
+              << color << ":" << orig_color << "->" << new_color << "  " 
+              << orig_weight << ":" << new_weight;
+              */
+
+    m_data[ idx ] = new_color;
+    m_weights[ idx ] = new_weight;
 }
 
 
