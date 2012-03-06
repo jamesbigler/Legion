@@ -20,14 +20,15 @@ namespace legion
         {
         }
 
-        Vector3 getOrigin()const                  { return m_origin;       }
-        Vector3 getDirection()const               { return m_direction;    }
-
         void    setOrigin   ( const Vector3& o )  { m_origin    = o;       }
         void    setDirection( const Vector3& d )  { m_direction = d;       }
+        void    setTMax     ( float tmax       )  { m_tmax      = tmax;    }
+        void    setTime     ( float time       )  { m_time      = time;    }
 
-        float   getTMax()const                    { return m_tmax;         }
-        float   getTime()const                    { return m_time;         }
+        Vector3 origin()const                     { return m_origin;       }
+        Vector3 direction()const                  { return m_direction;    }
+        float   tMax()const                       { return m_tmax;         }
+        float   time()const                       { return m_time;         }
 
     private:
         Vector3 m_origin;

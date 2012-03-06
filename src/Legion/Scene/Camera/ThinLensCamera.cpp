@@ -47,15 +47,15 @@ void ThinLensCamera::setLensRadius( float radius )
 
 
 void ThinLensCamera::generateCameraSpaceRay( const CameraSample& sample,
-                                             Ray& ray )const
+                                             Vector3& origin,
+                                             Vector3& direction )const
 {
     Vector3 on_viewplane( legion::lerp( m_left, m_right, sample.screen.x() ),
                           legion::lerp( m_bottom, m_top, sample.screen.y() ),
                           -1.0f );
 
-    Vector2 lens_sample( legion::squareToDisk( sample.lens ) * m_lens_radius );
-    Vector3 on_lens( lens_sample.x(), lens_sample.y(), 0.0f );
-                        
-    ray.setOrigin( on_lens );
-    ray.setDirection( legion::normalize( on_viewplane - on_lens ) );
+    Vector2 on_lens( legion::squareToDisk( sample.lens ) * m_lens_radius );
+
+    origin    = Vector3( on_lens.x(), on_lens.y(), 0.0f );
+    direction = legion::normalize( on_viewplane - origin );
 }

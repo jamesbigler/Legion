@@ -39,9 +39,11 @@ public:
     void setLensRadius( float radius );
 
 private:
-    /// See IBasicCamera::generateCameraSpaceRay.
-    void generateCameraSpaceRay( const CameraSample& sample, Ray& ray )const;
 
+    /// See IBasicCamera::generateCameraSpaceRay.
+    void generateCameraSpaceRay( const CameraSample& sample,
+                                 Vector3& origin,
+                                 Vector3& direction )const;
     
     float m_left;                 ///< Left edge of viewplane in camera coords
     float m_right;                ///< Right edge of viewplane in camera coords

@@ -42,7 +42,6 @@ void ShadingEngine::shade( const std::vector<Ray>& rays,
     m_results.resize( num_rays );
     for( unsigned i = 0; i < num_rays; ++i )
     {
-        LLOG_INFO << local_geom[i];
         if( local_geom[i].material_id == -1 )
         {
             // TODO: add env map support

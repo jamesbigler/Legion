@@ -23,16 +23,6 @@ RT_PROGRAM void traceRays()
                     ray_info.tmax );
 
     legion::LocalGeometry prd( -1 );
-    prd.texcoord = optix::make_float2( 0.2f );
-      rtPrintf( "sending ray %f %f %f, %f %f %f, %f\n",
-          ray.origin.x,
-          ray.origin.y,
-          ray.origin.z,
-          ray.direction.x,
-          ray.direction.y,
-          ray.direction.z,
-          ray.tmax
-          ); 
     rtTrace( top_object, ray, prd );
 
     results[ launch_index ] = prd;

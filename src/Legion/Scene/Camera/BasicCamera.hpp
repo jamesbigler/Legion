@@ -53,7 +53,8 @@ protected:
     /// \param sample      A 2D sample in [0,1]^2
     /// \param ray         Output parameter for generated world space ray
     virtual void generateCameraSpaceRay( const CameraSample& sample,
-                                         Ray& ray )const=0;
+                                         Vector3& origin,
+                                         Vector3& direction )const=0;
 
 private:
     class Impl;

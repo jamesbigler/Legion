@@ -30,15 +30,6 @@ RT_PROGRAM void polyMeshIntersect( int prim_index )
   if( intersect_triangle( ray, v0.position, v1.position, v2.position,
                           geometric_normal, t, beta, gamma ) )
   {
-      rtPrintf( "testing ray %f %f %f, %f %f %f, %f",
-          ray.origin.x,
-          ray.origin.y,
-          ray.origin.z,
-          ray.direction.x,
-          ray.direction.y,
-          ray.direction.z,
-          ray.tmax
-          ); 
       if(  rtPotentialIntersection( t ) )
       {
           const float alpha = 1.0f - beta - gamma;

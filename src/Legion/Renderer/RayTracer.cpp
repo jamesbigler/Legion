@@ -181,11 +181,6 @@ void RayTracer::traceRays( RayType type, const std::vector<Ray>& rays )
                 it->second->getAcceleration()->markDirty();
         }
         
-        /*
-        RTsize num_rays;
-        m_ray_buffer->getSize( num_rays );
-        m_result_buffer->setSize( num_rays );
-        */
         m_optix_context[ "ray_type" ]->setUint( static_cast<unsigned>( type ) );
 
         LLOG_INFO << "RayTracer::traceRays(): Compiling OptiX context...";

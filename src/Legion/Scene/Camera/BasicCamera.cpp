@@ -31,9 +31,14 @@ void BasicCamera::generateRay( const CameraSample& sample,
                                Ray& transformed_ray )const
 {
   // generate camera space ray
-  Ray ray;
-  generateCameraSpaceRay( sample, ray );
+  Vector3 origin, direction;
+  generateCameraSpaceRay( sample, origin, direction );
+
+  // TODO: transform origin, direction
 
   // Transform ray into world space
-  transformed_ray = ray;
+  transformed_ray.setOrigin( origin );
+  transformed_ray.setDirection( direction );
+  transformed_ray.setTMax( 1.0e16f );
+  transformed_ray.setTime( 0.0f );
 }
