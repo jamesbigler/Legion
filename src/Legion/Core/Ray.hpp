@@ -26,8 +26,8 @@ namespace legion
         void    setOrigin   ( const Vector3& o )  { m_origin    = o;       }
         void    setDirection( const Vector3& d )  { m_direction = d;       }
 
-        float   tmax()const                       { return m_tmax;         }
-        float   time()const                       { return m_time;         }
+        float   getTMax()const                    { return m_tmax;         }
+        float   getTime()const                    { return m_time;         }
 
     private:
         Vector3 m_origin;

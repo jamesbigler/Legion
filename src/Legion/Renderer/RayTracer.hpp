@@ -13,6 +13,7 @@ namespace legion
 
 class Ray;
 class ISurfaceShader;
+class LocalGeometry;
 
 
 class RayTracer
@@ -28,17 +29,13 @@ public:
 
     optix::Buffer createBuffer();
 
-    //void trace( RayType ray_type, 
-    optix::Buffer getRayBuffer();
-
     void addMesh(    legion::Mesh* mesh );
     void removeMesh( legion::Mesh* mesh );
 
 
-    void traceRays( RayType type );
-    void traceRaysNonBlocking( RayType type );
+    void traceRays( RayType type, const std::vector<Ray>& rays );
 
-    optix::Buffer getResults()const;
+    const LocalGeometry* getResults();
 
     static void updateVertexBuffer( optix::Buffer buffer,
                                     unsigned num_verts,

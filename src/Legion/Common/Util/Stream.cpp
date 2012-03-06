@@ -20,7 +20,7 @@ std::ostream& legion::operator<<( std::ostream& out, const legion::Color& c )
 std::ostream& legion::operator<<( std::ostream& out, const legion::Ray& ray )
 {
     out << "( " << ray.getOrigin() << " " << ray.getDirection() 
-        << " " << ray.tInterval() << " )";
+        << " " << ray.getTMax() << ", " << ray.getTime() << " )";
     return out;
 }
     

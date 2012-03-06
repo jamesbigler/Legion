@@ -50,8 +50,8 @@ struct RayInfo
 {
     optix::float3   origin;
     optix::float3   direction;
-    float           tmin;
     float           tmax;
+    float           time;
 };
 
 

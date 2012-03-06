@@ -57,8 +57,8 @@ Index2 ImageFilm::getDimensions()const
 
 
 void ImageFilm::addSample( const Index2& pixel_index,
-                           const Color& color,
-                           float weight )
+                           float weight,
+                           const Color& color )
 {
     // TODO: use weights to combine
     unsigned idx = getIndex( pixel_index, m_dimensions );

@@ -39,9 +39,13 @@
 #ifndef LEGION_RAYTRACER_RAYSERVER_HPP_
 #define LEGION_RAYTRACER_RAYSERVER_HPP_
 
+#include <Legion/Common/Util/Logger.hpp>
+
 #include <boost/thread.hpp>
 #include <optixu/optixpp_namespace.h>
+
 #include <string>
+
 
 namespace legion
 {
@@ -77,9 +81,9 @@ public:
     void setRayBufferName   ( const std::string& name );
     void setResultBufferName( const std::string& name );
 
-    void trace( unsigned entry_index, unsigned nrays, const RSRay* rays );
+    void trace( unsigned entry_index, const std::vector<RSRay>& rays );
 
-    const RSResult* getResults()const;
+    const RSResult* getResults();
 
 
 private:
@@ -109,7 +113,7 @@ RayServer<RSRay, RSResult>::~RayServer()
 template < typename RSRay, typename RSResult >
 void RayServer<RSRay, RSResult>::setContext( optix::Context context )
 {
-    m_context = context;
+    m_optix_context = context;
 }
 
 
@@ -129,8 +133,7 @@ void RayServer<RSRay, RSResult>::setResultBufferName( const std::string& name )
 
 template < typename RSRay, typename RSResult >
 void RayServer<RSRay, RSResult>::trace( unsigned entry_index,
-                                        unsigned nrays,
-                                        const RSRay* rays )
+                                        const std::vector<RSRay>& rays )
 {
     
     if( m_thread.get_id() != boost::thread().get_id() )
@@ -138,25 +141,29 @@ void RayServer<RSRay, RSResult>::trace( unsigned entry_index,
                          "calling RayServer::getResults()" );
 
     if( m_results_mapped )
-        m_context[ m_result_buffer_name ]->getBuffer()->unmap();
+        m_optix_context[ m_result_buffer_name ]->getBuffer()->unmap();
 
     // Copy ray data into buffer
-    optix:::Buffer ray_buffer = m_context[ m_ray_buffer_name ]->getBuffer();
-    memcpy( ray_buffer->map(), rays, nrays*sizeof( RSRay ) );
+    optix::Buffer ray_buffer = m_optix_context[m_ray_buffer_name]->getBuffer();
+    ray_buffer->setSize( rays.size() );
+    memcpy( ray_buffer->map(), &rays[0], rays.size()*sizeof( RSRay ) );
     ray_buffer->unmap();
+    
+    optix::Buffer results = m_optix_context[m_result_buffer_name]->getBuffer();
+    results->setSize( rays.size() );
 
     // launch a thread which runs optix::Context::launch
-    OptiXLaunch optix_launch( m_optix_context, entry_index, nrays );
-    m_thread = boost::thread( ol );
+    OptiXLaunch optix_launch( m_optix_context, entry_index, rays.size() );
+    m_thread = boost::thread( optix_launch );
 }
 
 
 template < typename RSRay, typename RSResult >
-const RSResult* RayServer<RSRay, RSResult>::getResults()const
+const RSResult* RayServer<RSRay, RSResult>::getResults()
 {
     m_thread.join();
     m_thread = boost::thread();
-    optix::Buffer results = m_context[ m_result_buffer_name ]->getBuffer();
+    optix::Buffer results = m_optix_context[m_result_buffer_name]->getBuffer();
     m_results_mapped = true;
     return static_cast<const RSResult*>( results->map() );
 }

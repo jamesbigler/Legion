@@ -14,7 +14,7 @@
 using namespace legion;
 
 RayScheduler::RayScheduler() 
-    : m_spp( 3u, 3u ),
+    : m_spp( 1u, 1u ),
       m_current_sample( 0u, 0u ),
       m_time_interval( 0.0f, 0.0f )
 {
@@ -46,16 +46,16 @@ void RayScheduler::setCamera( ICamera* camera )
 }
 
 
-void RayScheduler::getPass( optix::Buffer ray_buffer,
+void RayScheduler::getPass( std::vector<Ray>& rays,
                             std::vector<PixelID>& pixel_ids )
 {
+    LLOG_INFO << "RayScheduler::getPass: sample " << m_current_sample;
     Index2 film_dims       = m_film->getDimensions();
     unsigned rays_per_pass = film_dims.x() * film_dims.y();
 
-    ray_buffer->setSize( rays_per_pass );
+    rays.resize( rays_per_pass );
     pixel_ids.resize( rays_per_pass );
 
-    Ray* rays = static_cast<Ray*>( ray_buffer->map() );
     double pixel_width  = 1.0 / static_cast<double>( film_dims.x() );
     double pixel_height = 1.0 / static_cast<double>( film_dims.y() );
     double cur_x = 0.0, cur_y = 0.0;
@@ -88,7 +88,9 @@ void RayScheduler::getPass( optix::Buffer ray_buffer,
         cur_y = 0.0;
     }
 
-    ray_buffer->unmap();
+    m_current_sample.setX( ( m_current_sample.x() + 1 ) % m_spp.x() ); 
+    m_current_sample.setY(   m_current_sample.y() + 
+                           ( m_current_sample.x() + 1 ) / m_spp.x() );
     // increment m_current_sample
 }
 

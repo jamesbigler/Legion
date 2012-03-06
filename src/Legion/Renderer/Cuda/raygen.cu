@@ -19,7 +19,7 @@ RT_PROGRAM void traceRays()
     optix::Ray ray( ray_info.origin,
                     ray_info.direction, 
                     ray_type,
-                    ray_info.tmin,
+                    0.0001f,    // TODO: use 0.0f, use iterative intersection
                     ray_info.tmax );
 
     legion::LocalGeometry prd( -1 );

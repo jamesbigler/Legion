@@ -35,17 +35,17 @@ using namespace legion;
 
     
 
-void ShadingEngine::shade( unsigned int num_rays,
-                           const Ray* rays,
-                           const LocalGeometry* lgeom )
+void ShadingEngine::shade( const std::vector<Ray>& rays,
+                           const LocalGeometry* local_geom )
 {
+    const unsigned num_rays = rays.size();
     m_results.resize( num_rays );
     for( unsigned i = 0; i < num_rays; ++i )
     {
-        if( lgeom[i].material_id == -1 )
+        if( local_geom[i].material_id == -1 )
         {
             // TODO: add env map support
-            m_results[i] = Color( 0.0f ); 
+            m_results[i] = Color( 0.5f ); 
             continue;
         }
 
@@ -53,7 +53,7 @@ void ShadingEngine::shade( unsigned int num_rays,
         //const ISurfaceShader* shader = m_shaders[ lgeom[i].material_id ];
         //const Vector3         w_in   = rays[ i ].getDirection();
 
-        m_results[i] = toColor( lgeom[i].geometric_normal ); 
+        m_results[i] = toColor( local_geom[i].geometric_normal ); 
     }
 }
 

@@ -21,7 +21,9 @@ public:
     void   setDimensions( const Index2& dimensions );
     Index2 getDimensions()const;
 
-    void  addSample( const Index2& pixel_index, const Color& color, float weight );
+    void  addSample( const Index2& pixel_index,
+                     float weight,
+                     const Color& color );
 
     Color getPixel( const Index2& pixel_index )const;
     Color* getPixels()const;

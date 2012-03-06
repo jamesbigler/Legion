@@ -31,16 +31,17 @@ public:
     void setFilm( IFilm* film );
     void setCamera( ICamera* camera );
 
-    void getPass( optix::Buffer rays, std::vector<PixelID>& pixel_ids );
+    void getPass( std::vector<Ray>& rays, std::vector<PixelID>& pixel_ids );
     
 private:
 
     IFilm*    m_film;
     ICamera*  m_camera;
 
-    Index2 m_spp;
-    Index2 m_current_sample;
-    Vector2 m_time_interval;
+    bool      m_finished;
+    Index2    m_spp;
+    Index2    m_current_sample;
+    Vector2   m_time_interval;
 };
 
 }

@@ -44,8 +44,7 @@ class ShadingEngine
 {
 public:
     typedef std::vector< Color > Results;
-    void shade( unsigned int num_rays,
-                const Ray* rays,
+    void shade( const std::vector<Ray>& rays,
                 const LocalGeometry* local_geom );
 
     const Results& getResults()const;

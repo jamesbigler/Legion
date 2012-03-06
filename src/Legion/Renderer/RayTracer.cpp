@@ -168,13 +168,7 @@ void RayTracer::removeMesh( legion::Mesh* mesh )
 }
 
     
-optix::Buffer RayTracer::getRayBuffer()
-{
-    return m_ray_buffer;
-}
-
-
-void RayTracer::traceRays( RayType type )
+void RayTracer::traceRays( RayType type, const std::vector<Ray>& rays )
 {
     try
     {
@@ -197,19 +191,16 @@ void RayTracer::traceRays( RayType type )
         LLOG_INFO << "    Finished.";
 
         LLOG_INFO << "RayTracer::traceRays(): Launching OptiX ...";
-        OptiXLaunch ol( m_optix_context, OPTIX_ENTRY_POINT_INDEX, num_rays );
-        m_thread = boost::thread( ol );
-        m_thread.join();
-        m_optix_context->launch( OPTIX_ENTRY_POINT_INDEX, num_rays );
+        m_ray_server.trace( OPTIX_ENTRY_POINT_INDEX, rays );
         LLOG_INFO << "    Finished.";
     }
     OPTIX_CATCH_RETHROW;
 }
 
 
-optix::Buffer RayTracer::getResults()const
+const LocalGeometry*RayTracer::getResults()
 {
-    return m_result_buffer;
+    return m_ray_server.getResults();
 }
 
 
@@ -254,11 +245,13 @@ void RayTracer::initializeOptixContext()
         m_ray_buffer = m_optix_context->createBuffer( RT_BUFFER_INPUT );
         m_ray_buffer->setFormat( RT_FORMAT_USER );
         m_ray_buffer->setElementSize( sizeof( Ray ) );
+        m_ray_buffer->setSize( 0 );
         m_optix_context[ "rays" ]->set( m_ray_buffer );
 
         m_result_buffer = m_optix_context->createBuffer( RT_BUFFER_OUTPUT );
         m_result_buffer->setFormat( RT_FORMAT_USER );
         m_result_buffer->setElementSize( sizeof( LocalGeometry ) );
+        m_result_buffer->setSize( 0 );
         m_optix_context[ "results" ]->set( m_result_buffer );
 
         optix::Acceleration accel;
@@ -270,6 +263,11 @@ void RayTracer::initializeOptixContext()
         m_material = m_optix_context->createMaterial();
         m_material->setClosestHitProgram( CLOSEST_HIT, m_closest_hit );
         m_material->setAnyHitProgram    ( ANY_HIT,     m_any_hit );
+
+
+        m_ray_server.setContext( m_optix_context );
+        m_ray_server.setRayBufferName( "rays" );
+        m_ray_server.setResultBufferName( "results" );
     }
     OPTIX_CATCH_RETHROW;
 }

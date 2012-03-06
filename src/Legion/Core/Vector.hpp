@@ -35,10 +35,10 @@ public:
     TYPE y() const;
     TYPE z() const;                                // Only valid for Vector<3,4>
     TYPE w() const;                                // Only valid for Vector<4>
-    TYPE setX( TYPE x );
-    TYPE setY( TYPE y );
-    TYPE setZ( TYPE z );                           // Only valid for Vector<3,4>
-    TYPE setW( TYPE w );                           // Only valid for Vector<3>
+    void setX( TYPE x );
+    void setY( TYPE y );
+    void setZ( TYPE z );                           // Only valid for Vector<3,4>
+    void setW( TYPE w );                           // Only valid for Vector<3>
 
 
     TYPE  operator[]( unsigned idx ) const;
@@ -187,20 +187,20 @@ inline TYPE Vector<DIM, TYPE>::w() const
 
 
 template<unsigned DIM, typename TYPE>
-TYPE Vector<DIM, TYPE>::setX( TYPE x )
+void Vector<DIM, TYPE>::setX( TYPE x )
 {
     m_v[0] = x;
 }      
 
 
 template<unsigned DIM, typename TYPE>
-TYPE Vector<DIM, TYPE>::setY( TYPE y )
+void Vector<DIM, TYPE>::setY( TYPE y )
 { 
     m_v[1] = y;
 }
 
 template<unsigned DIM, typename TYPE>
-TYPE Vector<DIM, TYPE>::setZ( TYPE z )
+void Vector<DIM, TYPE>::setZ( TYPE z )
 {
     LEGION_STATIC_ASSERT( DIM > 2 );
     m_v[2] = z;
@@ -208,7 +208,7 @@ TYPE Vector<DIM, TYPE>::setZ( TYPE z )
 
 
 template<unsigned DIM, typename TYPE>
-TYPE Vector<DIM, TYPE>::setW( TYPE w )
+void Vector<DIM, TYPE>::setW( TYPE w )
 {
     LEGION_STATIC_ASSERT( DIM > 3 );
     m_v[3] = w;

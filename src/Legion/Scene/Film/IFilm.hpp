@@ -37,8 +37,8 @@ public:
     ///   \param color          Color of sample
     ///   \param weight         Weight of sample
     virtual void     addSample( const Index2& pixel_index,
-                               const Color& color,
-                               float weight )=0;
+                                float weight,
+                                const Color& color )=0;
 
     /// Retrieve the value of a single pixel
     ///   \param pixel_index   Pixel position
