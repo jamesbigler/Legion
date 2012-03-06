@@ -135,6 +135,7 @@ template < typename RSRay, typename RSResult >
 void RayServer<RSRay, RSResult>::trace( unsigned entry_index,
                                         const std::vector<RSRay>& rays )
 {
+      LLOG_INFO << "rays size is::::::: " << rays.size(); 
     
     if( m_thread.get_id() != boost::thread().get_id() )
         throw Exception( "RayServer::trace() called twice without "
@@ -148,6 +149,10 @@ void RayServer<RSRay, RSResult>::trace( unsigned entry_index,
     ray_buffer->setSize( rays.size() );
     memcpy( ray_buffer->map(), &rays[0], rays.size()*sizeof( RSRay ) );
     ray_buffer->unmap();
+
+      LLOG_INFO << "rays size now is::::::: " << rays.size(); 
+    for( unsigned i = 0; i < rays.size(); ++i )
+      LLOG_INFO << rays[i];
     
     optix::Buffer results = m_optix_context[m_result_buffer_name]->getBuffer();
     results->setSize( rays.size() );
