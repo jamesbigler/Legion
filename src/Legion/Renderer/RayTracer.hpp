@@ -12,9 +12,9 @@
 namespace legion
 {
 
-class Ray;
-class ISurfaceShader;
-class LocalGeometry;
+class  Ray;
+class  ISurfaceShader;
+struct LocalGeometry;
 
 
 class RayTracer

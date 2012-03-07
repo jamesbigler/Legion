@@ -153,15 +153,22 @@ void RayServer<RSRay, RSResult>::trace( unsigned entry_index,
 
     // launch a thread which runs optix::Context::launch
     OptiXLaunch optix_launch( m_optix_context, entry_index, rays.size() );
+#if OPTIX_LAUNCH_IN_THREAD 
     m_thread = boost::thread( optix_launch );
+#else
+    optix_launch();
+#endif
+
 }
 
 
 template < typename RSRay, typename RSResult >
 const RSResult* RayServer<RSRay, RSResult>::getResults()
 {
+#if OPTIX_LAUNCH_IN_THREAD 
     m_thread.join();
     m_thread = boost::thread();
+#endif
     optix::Buffer results = m_optix_context[m_result_buffer_name]->getBuffer();
     m_results_mapped = true;
     return static_cast<const RSResult*>( results->map() );

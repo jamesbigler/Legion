@@ -11,8 +11,8 @@
 namespace legion
 {
 
-class LocalGeometry;
-class Color;
+class  Color;
+struct LocalGeometry;
 
 
 class PointLightShader : public ILightShader 

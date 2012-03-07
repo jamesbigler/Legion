@@ -31,14 +31,13 @@
 #include <map>
 #include <Legion/Core/Color.hpp>
 
-
 namespace legion
 {
 
-class Ray;
-class LocalGeometry;
-class ISurfaceShader;
-class ILightShader;
+class  Ray;
+class  ISurfaceShader;
+class  ILightShader;
+struct LocalGeometry;
 
 class ShadingEngine
 {

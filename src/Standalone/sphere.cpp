@@ -114,7 +114,8 @@ int main( int argc, char** argv )
         ctx.setActiveCamera( &cam );
 
         legion::ImageFilm film( &ctx, "image" );
-        film.setDimensions( legion::Index2( 512u, 512u ) );
+        film.setDimensions( legion::Index2( 1024u, 1024u) );
+        //film.setDimensions( legion::Index2( 512u, 512u ) );
         //film.setDimensions( legion::Index2( 256u, 256u ) );
         //film.setDimensions( legion::Index2( 3u, 3u ) );
         ctx.setActiveFilm( &film );
