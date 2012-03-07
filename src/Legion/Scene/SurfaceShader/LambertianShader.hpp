@@ -11,7 +11,7 @@ namespace legion
 {
 
 
-class LocalGeometry;
+struct LocalGeometry;
 
 
 class LambertianShader : public ISurfaceShader

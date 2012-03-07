@@ -14,8 +14,8 @@
 namespace legion
 {
 
-class Color;
-class LocalGeometry;
+class  Color;
+struct LocalGeometry;
 
 
 /// Pure virtual interface for Surface Shaders

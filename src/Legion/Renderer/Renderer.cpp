@@ -78,8 +78,8 @@ void Renderer::render()
     std::vector<RayScheduler::PixelID> pixel_ids;
     std::vector<Ray>                   rays;
 
-    m_ray_scheduler.setSamplesPerPixel( Index2( 5, 5 ) );
-    //m_ray_scheduler.setSamplesPerPixel( Index2( 1, 1 ) );
+    //m_ray_scheduler.setSamplesPerPixel( Index2( 5, 5 ) );
+    m_ray_scheduler.setSamplesPerPixel( Index2( 2, 2 ) );
 
     //double compilation_time = 0.0;
 
