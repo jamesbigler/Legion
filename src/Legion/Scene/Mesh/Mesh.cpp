@@ -137,5 +137,10 @@ bool Mesh::verticesChanged()const
 
 bool Mesh::facesChanged()const
 {
-    return m_vertices_changed;
+    return m_faces_changed;
+}
+
+void Mesh::acceptChanges()
+{
+    m_vertices_changed = m_faces_changed = false;
 }

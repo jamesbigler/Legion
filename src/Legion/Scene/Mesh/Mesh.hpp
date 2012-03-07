@@ -75,6 +75,7 @@ public:
 
     bool verticesChanged()const;
     bool facesChanged()const;
+    void acceptChanges();
 
 private:
 

@@ -5,8 +5,51 @@
 #include <Legion/Scene/Camera/ICamera.hpp>
 #include <Legion/Scene/Film/IFilm.hpp>
 #include <Legion/Common/Util/Logger.hpp>
+#include <Legion/Common/Util/Timer.hpp>
+
 
 using namespace legion;
+
+
+namespace
+{
+
+struct TimerInfo
+{
+    TimerInfo( const std::string& name ) 
+        : name( name ),
+          iterations( 0u ),
+          max_time( 0.0 ),
+          total_time( 0.0 )
+    {}
+
+    void operator()( double time_elapsed )
+    { 
+        ++iterations;
+        max_time = std::max( max_time, time_elapsed );
+        total_time += time_elapsed;
+    }
+
+    void log()
+    {
+        LLOG_INFO << std::fixed
+                  << name << "  max: " << max_time << " avg: "
+                  << averageTime();
+    }
+
+    double averageTime()const
+    { 
+        return total_time / static_cast<double>( iterations );
+    }
+
+    std::string name;
+    unsigned    iterations; 
+    double      max_time;
+    double      total_time;
+};
+
+}
+
 
 
 Renderer::Renderer()
@@ -40,25 +83,59 @@ void Renderer::render()
 
     //double compilation_time = 0.0;
 
+    TimerInfo   scheduling_time( "    Scheduling rays" );
+    TimerInfo   trace_time     ( "    Tracing rays   " );
+    TimerInfo   shading_time   ( "    Shading        " ); 
+    TimerInfo   film_time      ( "    Film splatting " ); 
+
+    Timer total_time;
+    total_time.start();
+    m_ray_tracer.preprocess();
+
     while( !m_ray_scheduler.finished() )
     {
-        m_ray_scheduler.getPass( rays, pixel_ids );
-        m_ray_tracer.traceRays( RayTracer::CLOSEST_HIT, rays );
-        const LocalGeometry* trace_results = m_ray_tracer.getResults();
-
-        m_shading_engine.shade( rays, trace_results );
-
-        const std::vector<Color>& shading_results=m_shading_engine.getResults();
-
-        for( unsigned int i = 0; i < pixel_ids.size(); ++i )
         {
-            m_film->addSample( pixel_ids[i].pixel,
-                               pixel_ids[i].weight,
-                               shading_results[i] );
+            AutoTimerRef<TimerInfo> schedule_timer( scheduling_time );
+            m_ray_scheduler.getPass( rays, pixel_ids );
         }
 
-        m_film->passComplete();
+        {
+            AutoTimerRef<TimerInfo> trace_timer( trace_time );
+            m_ray_tracer.trace( RayTracer::CLOSEST_HIT, rays );
+            m_ray_tracer.join(); // Finish async tracing
+        }
+
+        {
+            AutoTimerRef<TimerInfo> shading_timer( shading_time );
+            const LocalGeometry* trace_results = m_ray_tracer.getResults();
+            m_shading_engine.shade( rays, trace_results );
+        }
+
+        {
+            AutoTimerRef<TimerInfo> shading_timer( film_time );
+            const std::vector<Color>& shading_results = 
+                m_shading_engine.getResults();
+
+            for( unsigned int i = 0; i < pixel_ids.size(); ++i )
+            {
+                m_film->addSample( pixel_ids[i].pixel,
+                                   pixel_ids[i].weight,
+                                   shading_results[i] );
+            }
+            m_film->passComplete();
+        }
     }
+    total_time.stop();
+
+    LLOG_INFO << "Total render time: " << total_time.getTimeElapsed();
+    scheduling_time.log();
+    trace_time.log();
+    shading_time.log();
+    film_time.log();
+    LLOG_INFO << "    Summed totals: " << scheduling_time.total_time  + 
+                                          trace_time.total_time       + 
+                                          shading_time.total_time     + 
+                                          film_time.total_time;
 
     m_film->shutterClose();
 }

@@ -81,7 +81,11 @@ public:
     void setRayBufferName   ( const std::string& name );
     void setResultBufferName( const std::string& name );
 
+    void preprocess();
+
     void trace( unsigned entry_index, const std::vector<RSRay>& rays );
+
+    void join();
 
     const RSResult* getResults();
 
@@ -96,6 +100,7 @@ private:
     boost::thread        m_thread;
     boost::mutex         m_mutex;
 };
+
 
 template < typename RSRay, typename RSResult >
 RayServer<RSRay, RSResult>::RayServer()
@@ -132,6 +137,14 @@ void RayServer<RSRay, RSResult>::setResultBufferName( const std::string& name )
 
 
 template < typename RSRay, typename RSResult >
+void RayServer<RSRay, RSResult>::preprocess()
+{
+    m_optix_context->compile();
+    m_optix_context->launch( 0, 0 );
+}
+
+
+template < typename RSRay, typename RSResult >
 void RayServer<RSRay, RSResult>::trace( unsigned entry_index,
                                         const std::vector<RSRay>& rays )
 {
@@ -158,10 +171,17 @@ void RayServer<RSRay, RSResult>::trace( unsigned entry_index,
 
 
 template < typename RSRay, typename RSResult >
-const RSResult* RayServer<RSRay, RSResult>::getResults()
+void RayServer<RSRay, RSResult>::join()
 {
     m_thread.join();
     m_thread = boost::thread();
+}
+
+
+template < typename RSRay, typename RSResult >
+const RSResult* RayServer<RSRay, RSResult>::getResults()
+{
+    join();
     optix::Buffer results = m_optix_context[m_result_buffer_name]->getBuffer();
     m_results_mapped = true;
     return static_cast<const RSResult*>( results->map() );

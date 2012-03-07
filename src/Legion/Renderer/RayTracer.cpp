@@ -168,7 +168,24 @@ void RayTracer::removeMesh( legion::Mesh* mesh )
 }
 
     
-void RayTracer::traceRays( RayType type, const std::vector<Ray>& rays )
+void RayTracer::preprocess()
+{
+    for( MeshList::iterator it = m_meshes.begin();
+         it != m_meshes.end();
+         ++it )
+    {
+        Mesh* mesh = it->first;
+        if( mesh->verticesChanged() || mesh->facesChanged() )
+            it->second->getAcceleration()->markDirty();
+        mesh->acceptChanges();
+    }
+
+    m_ray_server.preprocess();
+
+}
+
+
+void RayTracer::trace( RayType type, const std::vector<Ray>& rays )
 {
     try
     {
@@ -179,25 +196,26 @@ void RayTracer::traceRays( RayType type, const std::vector<Ray>& rays )
             Mesh* mesh = it->first;
             if( mesh->verticesChanged() || mesh->facesChanged() )
                 it->second->getAcceleration()->markDirty();
+            mesh->acceptChanges();
         }
-        
+            
         m_optix_context[ "ray_type" ]->setUint( static_cast<unsigned>( type ) );
-
-        LLOG_INFO << "RayTracer::traceRays(): Compiling OptiX context...";
         m_optix_context->compile();
-        LLOG_INFO << "    Finished.";
-
-        LLOG_INFO << "RayTracer::traceRays(): Launching OptiX ...";
         m_ray_server.trace( OPTIX_ENTRY_POINT_INDEX, rays );
-        LLOG_INFO << "    Finished.";
     }
     OPTIX_CATCH_RETHROW;
 }
 
 
-const LocalGeometry*RayTracer::getResults()
+const LocalGeometry* RayTracer::getResults()
 {
     return m_ray_server.getResults();
+}
+
+
+void RayTracer::join()
+{
+    return m_ray_server.join();
 }
 
 

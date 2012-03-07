@@ -26,7 +26,7 @@
 #ifndef LEGION_COMMON_UTIL_TIMER_H_
 #define LEGION_COMMON_UTIL_TIMER_H_
 
-namespace Legion
+namespace legion
 {
 
 ///

@@ -34,7 +34,9 @@ public:
     void removeMesh( legion::Mesh* mesh );
 
 
-    void traceRays( RayType type, const std::vector<Ray>& rays );
+    void preprocess();
+    void trace( RayType type, const std::vector<Ray>& rays );
+    void join();
 
     const LocalGeometry* getResults();
 

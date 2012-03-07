@@ -1,6 +1,9 @@
 
-#include "Timer.h"
+#include <Legion/Common/Util/Timer.hpp>
 #include <cassert>
+
+
+using namespace legion;
 
 
 #if defined( __linux__ )

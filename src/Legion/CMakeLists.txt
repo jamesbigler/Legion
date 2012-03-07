@@ -31,6 +31,8 @@ add_library( legion SHARED
     Common/Util/Singleton.hpp
     Common/Util/Stream.cpp
     Common/Util/Stream.hpp
+    Common/Util/Timer.cpp
+    Common/Util/Timer.hpp
     Common/Util/TypeConversion.cpp
     Common/Util/TypeConversion.hpp
     Core/APIBase.cpp
