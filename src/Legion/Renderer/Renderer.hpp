@@ -23,7 +23,11 @@ public:
     void render();
 
     void setFilm( IFilm* film );
+
     void setCamera( ICamera* camera);
+
+
+    void setSamplesPerPixel( const Index2& spp  );
 
     void addLight( const ILightShader* light_shader );
 
@@ -37,6 +41,8 @@ private:
     ShadingEngine  m_shading_engine;
     RayScheduler   m_ray_scheduler;
     RayTracer      m_ray_tracer;
+
+    Index2         m_spp;
 
     IFilm*         m_film;
     ICamera*       m_camera;

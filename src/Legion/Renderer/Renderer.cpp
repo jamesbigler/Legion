@@ -53,6 +53,7 @@ struct TimerInfo
 
 
 Renderer::Renderer()
+    : m_spp( 1, 1 )
 {
 }
 
@@ -71,6 +72,12 @@ void Renderer::setFilm( IFilm* film )
 }
 
 
+void Renderer::setSamplesPerPixel( const Index2& spp  )
+{
+    m_spp = spp;
+}
+
+
 void Renderer::render()
 {
     m_film->shutterOpen();
@@ -79,7 +86,7 @@ void Renderer::render()
     std::vector<Ray>                   rays;
 
     //m_ray_scheduler.setSamplesPerPixel( Index2( 5, 5 ) );
-    m_ray_scheduler.setSamplesPerPixel( Index2( 2, 2 ) );
+    m_ray_scheduler.setSamplesPerPixel( m_spp );
 
     //double compilation_time = 0.0;
 
@@ -136,6 +143,10 @@ void Renderer::render()
                                           trace_time.total_time       + 
                                           shading_time.total_time     + 
                                           film_time.total_time;
+    LLOG_INFO << "    Summed avgs  : " << scheduling_time.averageTime()  + 
+                                          trace_time.averageTime()       + 
+                                          shading_time.averageTime()     + 
+                                          film_time.averageTime();
 
     m_film->shutterClose();
 }

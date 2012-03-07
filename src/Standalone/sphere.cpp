@@ -17,6 +17,7 @@ void generateSphere( std::vector<legion::Mesh::Vertex>& verts,
     const float PIf = static_cast<float>( M_PI );
     const unsigned num_verts = ( lat_div - 1 ) * (long_div+1) + 2;
     const unsigned num_tris  = ( lat_div - 2 ) * long_div * 2 + 2*long_div;
+    LLOG_INFO << "sphere - ntris: " << num_tris << " nverts: " << num_verts;
 
     // generate vertices
     verts.resize( num_verts );
@@ -76,10 +77,18 @@ void generateSphere( std::vector<legion::Mesh::Vertex>& verts,
 
 int main( int argc, char** argv )
 {
+    unsigned sspp = 2;
+    if( argc > 1 )
+    {
+        sspp = atoi( argv[ 1 ] );
+    }
+
     try
     {
         legion::Context ctx( "legion_simple" );
         legion::Log::setReportingLevel( legion::Log::INFO );
+
+        ctx.setSamplesPerPixel( legion::Index2( sspp, sspp ) );
 
         LLOG_INFO << "Starting ***********";
         
@@ -91,7 +100,7 @@ int main( int argc, char** argv )
        
         std::vector<legion::Mesh::Vertex> verts;
         std::vector<legion::Index3> indices;
-        generateSphere( verts, indices, 5, 10, 0.5f, 
+        generateSphere( verts, indices, 10, 20, 0.5f, 
                         legion::Vector3(0.0f, 0.0f, -1.0f) );
 
         legion::Mesh square( &ctx, "sphere" );
@@ -114,8 +123,8 @@ int main( int argc, char** argv )
         ctx.setActiveCamera( &cam );
 
         legion::ImageFilm film( &ctx, "image" );
-        film.setDimensions( legion::Index2( 1024u, 1024u) );
-        //film.setDimensions( legion::Index2( 512u, 512u ) );
+        //film.setDimensions( legion::Index2( 1024u, 1024u) );
+        film.setDimensions( legion::Index2( 512u, 512u ) );
         //film.setDimensions( legion::Index2( 256u, 256u ) );
         //film.setDimensions( legion::Index2( 3u, 3u ) );
         ctx.setActiveFilm( &film );

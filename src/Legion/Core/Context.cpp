@@ -90,6 +90,18 @@ void Context::setActiveFilm( IFilm* film )
 }
 
 
+void Context::setPixelFIlter( FilterType type )
+{
+    LEGION_TODO();
+}
+
+
+void Context::setSamplesPerPixel( const Index2& spp  )
+{
+    m_renderer.setSamplesPerPixel( spp );
+}
+
+
 void Context::render()
 {
     LLOG_INFO << "rendering ....";
