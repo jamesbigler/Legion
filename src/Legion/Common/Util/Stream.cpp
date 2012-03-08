@@ -15,8 +15,7 @@ std::ostream& legion::operator<<( std::ostream& out, const legion::Color& c )
     out << "[" 
         << c.red()   << ", " 
         << c.green() << ", " 
-        << c.blue()  << ", " 
-        << c.alpha()
+        << c.blue()
         << "]";
     return out;
 }

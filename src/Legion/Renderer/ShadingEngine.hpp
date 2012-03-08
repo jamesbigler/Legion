@@ -43,9 +43,11 @@ struct LocalGeometry;
 class ShadingEngine
 {
 public:
+    typedef std::vector<Color> Results;
+
+
     ShadingEngine( RayTracer& ray_tracer );
 
-    typedef std::vector< Color > Results;
     void shade( const std::vector<Ray>& rays,
                 const std::vector<LocalGeometry>& local_geom );
 
@@ -58,8 +60,11 @@ public:
 private:
     typedef std::map<unsigned, const ISurfaceShader*> ShaderMap;
     typedef std::vector<const ILightShader*>          LightList;
+    typedef std::vector<Vector3>                      LightPoints;
 
     Results          m_results;
+    LightPoints      m_light_points;
+
     ShaderMap        m_shaders;
     LightList        m_lights;
 

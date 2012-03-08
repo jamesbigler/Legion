@@ -47,19 +47,25 @@ void ShadingEngine::shade( const std::vector<Ray>& rays,
     const unsigned num_rays = rays.size();
 
     m_results.resize( num_rays );
+    m_light_points.resize( num_rays );
 
+    // TODO: dont trace shadow rays for rays that hit background!!!!
     // Trace shadow rays
     std::vector<Ray> shadow_rays( rays.size() );
     for( unsigned i = 0; i < num_rays; ++i )
     {
         // Pick point on light
+        m_light_points[ i ] = Vector3( 9.0f, 9.0f, -9.0f );
 
         // Create ray
-        shadow_rays[i] = Ray( toVector3( local_geom[i].position ),
-                              normalize( Vector3( -0.25f, 1.0f, 0.25f ) ),
+        const Vector3 p = toVector3( local_geom[i].position );
+        shadow_rays[i] = Ray( p,
+                              normalize( m_light_points[i] - p ),
                               1e8f,
                               rays[i].time() );
     }
+
+    // Trace shdow rays
     m_ray_tracer.trace( RayTracer::ANY_HIT, shadow_rays );
     m_ray_tracer.join();  // TODO: REMOVE THIS.  maximize overlap of trace/shade
     std::vector<LocalGeometry> shadow_results;
@@ -69,10 +75,39 @@ void ShadingEngine::shade( const std::vector<Ray>& rays,
     // Shade while shadow rays are tracing
     for( unsigned i = 0; i < num_rays; ++i )
     {
-        float lit = static_cast<float>( shadow_results[i].material_id == -1);
-        //float lit = 1.0f;
-        m_results[i] = toColor( local_geom[i].geometric_normal ) * Color( lit );
+        int material_id = local_geom[i].material_id;
+        if( material_id == -1 )
+        {
+            m_results[i] = Color( 0.0f ); 
+            continue;
+        }
+
         // shadow and shade
+        bool is_lit = shadow_results[i].material_id == -1;
+        if( !is_lit ) 
+        {
+            m_results[i] = Color( 0.0f ); 
+            continue;
+        }
+
+        float light = static_cast<float>( is_lit );
+        //float lit = 1.0f;
+        //m_results[i] = toColor(local_geom[i].geometric_normal) * Color( lit );
+        const Vector3 p     = toVector3( local_geom[i].position );
+        const Vector3 w_in  = normalize( m_light_points[i] - p );
+        const Vector3 w_out = -rays[i].direction();
+        //LLOG_INFO << " win : "<< w_in;
+        //LLOG_INFO << " wout: "<< w_out;
+        const ISurfaceShader* shader = m_shaders[ material_id ];
+        if( !shader )
+        {
+            LLOG_INFO << "no shader found for id: " << material_id;
+            m_results[i] = Color( 0.0f ); 
+            continue;
+        }
+        
+        m_results[i] = light*shader->evaluateBSDF( w_out, local_geom[i], w_in );
+        //LLOG_INFO << "   bsdf: " << m_results[i] << " light: " << light;
     }
     
 
@@ -107,6 +142,7 @@ const ShadingEngine::Results& ShadingEngine::getResults()const
 
 void ShadingEngine::addSurfaceShader( const ISurfaceShader* shader )
 {
+    LLOG_INFO << __func__ << ": adding shader " << shader->getID();
     m_shaders[ shader->getID() ] = shader;
 }
 

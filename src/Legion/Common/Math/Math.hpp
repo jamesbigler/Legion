@@ -9,6 +9,10 @@
 
 namespace legion
 {
+    const float TWO_PI     = static_cast<float>( M_PI ) * 2.0f;
+    const float ONE_DIV_PI = 1.0f / static_cast<float>( M_PI );
+
+
     inline float lerp( float a, float b, float t )
     {
         return a + t*(b-a);

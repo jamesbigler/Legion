@@ -109,7 +109,7 @@ void ImageFilm::shutterOpen()
 void ImageFilm::shutterClose()
 {
     LLOG_INFO << "ImageFilm::shutterClose()";
-    writeOpenEXR( "output.exr", m_dimensions.x(), m_dimensions.y(), 4,
+    writeOpenEXR( "output.exr", m_dimensions.x(), m_dimensions.y(), 3,
                   reinterpret_cast<float*>( m_data ) );
 }
 

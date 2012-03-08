@@ -97,7 +97,7 @@ int main( int argc, char** argv )
         // params.add( "Kd", legion::Color( 0.5f, 0.5f, 0.5f ) );
         // legion::createSurfaceShader( "Lambertian", "material", params );
         legion::LambertianShader mtl( &ctx, "material" );
-        mtl.setKd( legion::Color(  0.5f, 0.5f, 0.5f ) );
+        mtl.setKd( legion::Color(  1.0f, 0.5f, 0.5f ) );
        
        
         std::vector<legion::Mesh*> meshes( num_spheres+1 );
