@@ -27,17 +27,58 @@
 #include <Legion/Core/Color.hpp>
 #include <Legion/Core/Ray.hpp>
 #include <Legion/Renderer/Cuda/Shared.hpp>
+#include <Legion/Renderer/RayTracer.hpp>
 #include <Legion/Renderer/ShadingEngine.hpp>
 #include <Legion/Scene/SurfaceShader/ISurfaceShader.hpp>
 
 
 using namespace legion;
 
+ShadingEngine::ShadingEngine( RayTracer& ray_tracer )
+    : m_ray_tracer( ray_tracer )
+{
+}
     
 
 void ShadingEngine::shade( const std::vector<Ray>& rays,
-                           const LocalGeometry* local_geom )
+                           const std::vector<LocalGeometry>& local_geom )
 {
+    assert( rays.size() == local_geom.size() );
+    const unsigned num_rays = rays.size();
+
+    m_results.resize( num_rays );
+
+    // Trace shadow rays
+    std::vector<Ray> shadow_rays( rays.size() );
+    for( unsigned i = 0; i < num_rays; ++i )
+    {
+        // Pick point on light
+
+        // Create ray
+        shadow_rays[i] = Ray( toVector3( local_geom[i].position ),
+                              Vector3( -1.0f, 0.25f, 0.25f ),
+                              1e8f,
+                              rays[i].time() );
+    }
+    m_ray_tracer.trace( RayTracer::ANY_HIT, shadow_rays );
+    m_ray_tracer.join();  // TODO: REMOVE THIS.  maximize overlap of trace/shade
+    std::vector<LocalGeometry> shadow_results;
+    m_ray_tracer.getResults( shadow_results );
+     
+
+    // Shade while shadow rays are tracing
+    for( unsigned i = 0; i < num_rays; ++i )
+    {
+        float lit = static_cast<float>( shadow_results[i].material_id != -1);
+        //float lit = 1.0f;
+        m_results[i] = toColor( local_geom[i].geometric_normal ) * Color( lit );
+        // shadow and shade
+    }
+    
+
+    // Trace shadow rays
+
+    /*
     const unsigned num_rays = rays.size();
     m_results.resize( num_rays );
     for( unsigned i = 0; i < num_rays; ++i )
@@ -55,6 +96,7 @@ void ShadingEngine::shade( const std::vector<Ray>& rays,
 
         m_results[i] = toColor( local_geom[i].geometric_normal ); 
     }
+    */
 }
 
 const ShadingEngine::Results& ShadingEngine::getResults()const

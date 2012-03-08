@@ -2,6 +2,7 @@
 #include <Legion/Core/Ray.hpp>
 #include <Legion/Renderer/RayScheduler.hpp>
 #include <Legion/Renderer/Renderer.hpp>
+#include <Legion/Renderer/Cuda/Shared.hpp>
 #include <Legion/Scene/Camera/ICamera.hpp>
 #include <Legion/Scene/Film/IFilm.hpp>
 #include <Legion/Common/Util/Logger.hpp>
@@ -53,7 +54,8 @@ struct TimerInfo
 
 
 Renderer::Renderer()
-    : m_spp( 1, 1 )
+    : m_shading_engine( m_ray_tracer ),
+      m_spp( 1, 1 )
 {
 }
 
@@ -114,7 +116,8 @@ void Renderer::render()
 
         {
             AutoTimerRef<TimerInfo> shading_timer( shading_time );
-            const LocalGeometry* trace_results = m_ray_tracer.getResults();
+            std::vector<LocalGeometry> trace_results;
+            m_ray_tracer.getResults( trace_results );
             m_shading_engine.shade( rays, trace_results );
         }
 

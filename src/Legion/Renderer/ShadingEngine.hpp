@@ -34,17 +34,20 @@
 namespace legion
 {
 
-class  Ray;
-class  ISurfaceShader;
 class  ILightShader;
+class  ISurfaceShader;
+class  Ray;
+class  RayTracer;
 struct LocalGeometry;
 
 class ShadingEngine
 {
 public:
+    ShadingEngine( RayTracer& ray_tracer );
+
     typedef std::vector< Color > Results;
     void shade( const std::vector<Ray>& rays,
-                const LocalGeometry* local_geom );
+                const std::vector<LocalGeometry>& local_geom );
 
     const Results& getResults()const;
 
@@ -59,6 +62,8 @@ private:
     Results          m_results;
     ShaderMap        m_shaders;
     LightList        m_lights;
+
+    RayTracer&       m_ray_tracer;
 
 };
 

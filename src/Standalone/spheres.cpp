@@ -83,7 +83,7 @@ int main( int argc, char** argv )
         legion::Context ctx( "legion_simple" );
         legion::Log::setReportingLevel( legion::Log::INFO );
 
-        ctx.setSamplesPerPixel( legion::Index2( 3, 3 ) );
+        ctx.setSamplesPerPixel( legion::Index2( 2, 2 ) );
 
         LLOG_INFO << "Starting ***********";
         

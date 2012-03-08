@@ -22,6 +22,7 @@
 
 //
 // TODO:
+//     * new design obviates templating on RSResult -- get rid of it
 //     * Lots o' error checking still needed to ensure that internal state
 //       is always consistent (mapped buffers, etc) and that buffers are 
 //       declared.
@@ -87,7 +88,7 @@ public:
 
     void join();
 
-    const RSResult* getResults();
+    optix::Buffer  getResults();
 
 
 private:
@@ -179,12 +180,11 @@ void RayServer<RSRay, RSResult>::join()
 
 
 template < typename RSRay, typename RSResult >
-const RSResult* RayServer<RSRay, RSResult>::getResults()
+optix::Buffer RayServer<RSRay, RSResult>::getResults()
 {
     join();
     optix::Buffer results = m_optix_context[m_result_buffer_name]->getBuffer();
-    m_results_mapped = true;
-    return static_cast<const RSResult*>( results->map() );
+    return results;
 }
 
 

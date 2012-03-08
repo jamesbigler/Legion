@@ -38,9 +38,9 @@ public:
     optix::Buffer createBuffer();
 private:
 
-    ShadingEngine  m_shading_engine;
     RayScheduler   m_ray_scheduler;
     RayTracer      m_ray_tracer;
+    ShadingEngine  m_shading_engine;
 
     Index2         m_spp;
 

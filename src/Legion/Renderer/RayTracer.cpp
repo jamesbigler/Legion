@@ -210,9 +210,18 @@ void RayTracer::trace( RayType type, const std::vector<Ray>& rays )
 }
 
 
-const LocalGeometry* RayTracer::getResults()
+void RayTracer::getResults( std::vector<LocalGeometry>& results )
 {
-    return m_ray_server.getResults();
+    
+    optix::Buffer result_buffer  = m_ray_server.getResults();
+
+    RTsize num_results;
+    result_buffer->getSize( num_results );
+    LocalGeometry* data = static_cast<LocalGeometry*>( result_buffer->map() );
+
+    results.assign( data, data+num_results );
+
+    result_buffer->unmap();
 }
 
 

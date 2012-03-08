@@ -38,7 +38,7 @@ public:
     void trace( RayType type, const std::vector<Ray>& rays );
     void join();
 
-    const LocalGeometry* getResults();
+    void getResults( std::vector<LocalGeometry>& results );
 
     static void updateVertexBuffer( optix::Buffer buffer,
                                     unsigned num_verts,
