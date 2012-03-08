@@ -4,3 +4,7 @@ target_link_libraries( simple legion )
 
 add_executable( sphere sphere.cpp )
 target_link_libraries( sphere legion)
+
+
+add_executable( spheres spheres.cpp )
+target_link_libraries( spheres legion)

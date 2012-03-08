@@ -20,45 +20,28 @@ namespace legion
     }
 
 
-
     inline legion::Vector2 squareToDisk( const legion::Vector2& sample )
     {
-        float phi, r;
+        const float PI_4 = static_cast<float>( M_PI ) / 4.0f;
+        const float PI_2 = static_cast<float>( M_PI ) / 2.0f;
 
         const float a = 2.0f * sample.x() - 1.0f;
         const float b = 2.0f * sample.y() - 1.0f;
-
-        if (a > -b)
+        
+        float phi,r;
+        if( a*a > b*b ) 
         {
-            if (a > b)
-            {
-                r = a;
-                phi = static_cast<float>( M_PI ) / 4.0f * (b/a);
-            }
-            else
-            {
-                r = b;
-                phi = static_cast<float>( M_PI ) / 4.0f * ( 2.0f - (a/b) );
-            }
+            r = a;
+            phi = PI_4 * ( b/a );
         }
         else
         {
-            if (a < b)
-            {
-                r = -a;
-                phi = static_cast<float>( M_PI ) / 4.0f * ( 4.0f + (b/a) );
-            }
-            else
-            {
-                r = -b;
-                phi = b ? static_cast<float>( M_PI ) / 4.0f * ( 6.0f - (a/b) ) : 0.0f;
-            }
+            r = b;
+            phi =  b ? PI_4 *( a/b ) + PI_2 : 0.0f;
         }
 
-        return legion::Vector2( r * cosf(phi), r * sinf(phi) );
+        return Vector2( r*cosf( phi ), r*sinf( phi ) );
     }
-
- 
 }
 
 #endif //LEGION_COMMON_MATH_MATH_HPP_

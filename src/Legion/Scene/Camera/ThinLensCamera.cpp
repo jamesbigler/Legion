@@ -52,7 +52,7 @@ void ThinLensCamera::generateCameraSpaceRay( const CameraSample& sample,
 {
     Vector3 on_viewplane( legion::lerp( m_left, m_right, sample.screen.x() ),
                           legion::lerp( m_bottom, m_top, sample.screen.y() ),
-                          -1.0f );
+                          -m_focal_distance );
 
     Vector2 on_lens( legion::squareToDisk( sample.lens ) * m_lens_radius );
 

@@ -13,6 +13,9 @@
 
 using namespace legion;
 
+// TODO: This requires identical gpus
+#define BUFFER_PARTITIONED ((1u << 16) | (1u << 17))
+
 #define OPTIX_CATCH_RETHROW                                                    \
     catch ( optix::Exception& e )                                              \
     {                                                                          \
@@ -257,13 +260,15 @@ void RayTracer::initializeOptixContext()
         m_optix_context->setRayGenerationProgram( OPTIX_ENTRY_POINT_INDEX,
                                                   m_trace_rays );
 
-        m_ray_buffer = m_optix_context->createBuffer( RT_BUFFER_INPUT );
+        m_ray_buffer = m_optix_context->createBuffer( RT_BUFFER_INPUT | 
+                                                      BUFFER_PARTITIONED );
         m_ray_buffer->setFormat( RT_FORMAT_USER );
         m_ray_buffer->setElementSize( sizeof( Ray ) );
         m_ray_buffer->setSize( 0 );
         m_optix_context[ "rays" ]->set( m_ray_buffer );
 
-        m_result_buffer = m_optix_context->createBuffer( RT_BUFFER_OUTPUT );
+        m_result_buffer = m_optix_context->createBuffer( RT_BUFFER_OUTPUT |
+                                                         BUFFER_PARTITIONED );
         m_result_buffer->setFormat( RT_FORMAT_USER );
         m_result_buffer->setElementSize( sizeof( LocalGeometry ) );
         m_result_buffer->setSize( 0 );

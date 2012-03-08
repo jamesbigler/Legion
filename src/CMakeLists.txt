@@ -1,13 +1,21 @@
 
 #TODO: Move plugins into separate library and load dynamically
 
+if( NOT CMAKE_BUILD_TYPE )
+    set( CMAKE_BUILD_TYPE "Release" CACHE STRING
+         "Choose the type of build, options are: Debug Release RelWithDebInfo MinSizeRel."
+         FORCE )
+endif( NOT CMAKE_BUILD_TYPE )
+
+add_definitions( -Wall -Werror )
+add_definitions( -DLLOG_MAX_LEVEL=legion::Log::DEBUG )
+
 find_package( OptiX REQUIRED )
 find_package( CUDA 4.0 REQUIRED )
 find_package( CUDA 4.0 REQUIRED )
 find_package( OPENEXR REQUIRED )
 find_package( Boost COMPONENTS thread REQUIRED )
 
-add_definitions( -DLLOG_MAX_LEVEL=legion::Log::DEBUG )
 
 # Add the path to the OptiX headers to our include paths.
 include_directories(

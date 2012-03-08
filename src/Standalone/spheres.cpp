@@ -77,18 +77,13 @@ void generateSphere( std::vector<legion::Mesh::Vertex>& verts,
 
 int main( int argc, char** argv )
 {
-    unsigned sspp = 2;
-    if( argc > 1 )
-    {
-        sspp = atoi( argv[ 1 ] );
-    }
-
+    const unsigned num_spheres = 4;
     try
     {
         legion::Context ctx( "legion_simple" );
         legion::Log::setReportingLevel( legion::Log::INFO );
 
-        ctx.setSamplesPerPixel( legion::Index2( sspp, sspp ) );
+        ctx.setSamplesPerPixel( legion::Index2( 3, 3 ) );
 
         LLOG_INFO << "Starting ***********";
         
@@ -98,17 +93,45 @@ int main( int argc, char** argv )
         legion::LambertianShader mtl( &ctx, "material" );
         mtl.setKd( legion::Color(  0.5f, 0.5f, 0.5f ) );
        
-        std::vector<legion::Mesh::Vertex> verts;
-        std::vector<legion::Index3> indices;
-        //generateSphere( verts, indices, 10, 20, 0.5f, 
-        generateSphere( verts, indices, 100, 200, 0.5f, 
-                        legion::Vector3(0.0f, 0.0f, -1.0f) );
+       
+        std::vector<legion::Mesh*> meshes( num_spheres+1 );
+        for( unsigned i = 0; i < num_spheres; ++i )
+        {
+            std::vector<legion::Mesh::Vertex> verts;
+            std::vector<legion::Index3> indices;
+            //generateSphere( verts, indices, 10, 20, 0.5f, 
+            generateSphere( verts, indices, 10, 20, 0.25f, 
+                            legion::Vector3(-0.75f + i*0.5f, 0.0f, -5.0f) );
 
-        legion::Mesh square( &ctx, "sphere" );
-        square.setVertices( verts.size(), &verts[0] );
-        square.setTransform( legion::Matrix4x4::identity() );
-        square.setFaces( indices.size(), &indices[0], &mtl );
-        ctx.addMesh( &square );
+            meshes[i] = new legion::Mesh( &ctx, "sphere" );
+            meshes[i]->setVertices( verts.size(), &verts[0] );
+            meshes[i]->setTransform( legion::Matrix4x4::identity() );
+            meshes[i]->setFaces( indices.size(), &indices[0], &mtl );
+            ctx.addMesh( meshes[i] );
+        }
+
+        // Plane
+        std::vector<legion::Mesh::Vertex> verts(4);
+        std::vector<legion::Index3> indices(2);
+        verts[ 0 ].position = legion::Vector3( -1.5f, -0.25f, -3.0f );
+        verts[ 0 ].normal   = legion::Vector3(  0.0f,  1.0f,   0.0f );
+        verts[ 0 ].texcoord = legion::Vector2(  0.0f,  0.0f );
+        verts[ 1 ].position = legion::Vector3( -1.5f, -0.25f, -7.0f );
+        verts[ 1 ].normal   = legion::Vector3(  0.0f,  1.0f,   0.0f );
+        verts[ 1 ].texcoord = legion::Vector2(  0.0f,  1.0f );
+        verts[ 2 ].position = legion::Vector3(  1.5f, -0.25f, -7.0f );
+        verts[ 2 ].normal   = legion::Vector3(  0.0f,  1.0f,   0.0f );
+        verts[ 2 ].texcoord = legion::Vector2(  1.0f,  1.0f );
+        verts[ 3 ].position = legion::Vector3(  1.5f, -0.25f, -3.0f );
+        verts[ 3 ].normal   = legion::Vector3(  0.0f,  1.0f,   0.0f );
+        verts[ 3 ].texcoord = legion::Vector2(  1.0f,  0.0f );
+        indices[0] = legion::Index3( 0, 2, 1 );
+        indices[1] = legion::Index3( 0, 3, 2 );
+        meshes[num_spheres] = new legion::Mesh( &ctx, "plane" );
+        meshes[num_spheres]->setVertices( verts.size(), &verts[0] );
+        meshes[num_spheres]->setTransform( legion::Matrix4x4::identity() );
+        meshes[num_spheres]->setFaces( indices.size(), &indices[0], &mtl );
+        ctx.addMesh( meshes[num_spheres] );
 
         legion::PointLightShader light( &ctx, "lshader" );
         light.setPosition( legion::Vector3( 1.0f, 1.0f, 1.0f ) );
@@ -117,14 +140,14 @@ int main( int argc, char** argv )
         //ctx.addAreaLigth(...); 
 
         legion::ThinLensCamera cam( &ctx, "camera" );
-        cam.setViewPlane( -1.0f, 1.0f, 1.0f, -1.0f );
+        cam.setViewPlane( -1.0f, 1.0f, 0.75f, -0.75f );
         cam.setShutterOpenClose( 0.0f, 0.005f );
-        cam.setFocalDistance( 1.0f );
+        cam.setFocalDistance( 5.0f );
         cam.setLensRadius( 0.0f );
         ctx.setActiveCamera( &cam );
 
         legion::ImageFilm film( &ctx, "image" );
-        film.setDimensions( legion::Index2( 1024u, 1024u) );
+        film.setDimensions( legion::Index2( 1024u, 768u) );
         //film.setDimensions( legion::Index2( 512u, 512u ) );
         //film.setDimensions( legion::Index2( 256u, 256u ) );
         //film.setDimensions( legion::Index2( 3u, 3u ) );
