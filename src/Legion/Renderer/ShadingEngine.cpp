@@ -56,7 +56,7 @@ void ShadingEngine::shade( const std::vector<Ray>& rays,
 
         // Create ray
         shadow_rays[i] = Ray( toVector3( local_geom[i].position ),
-                              Vector3( -1.0f, 0.25f, 0.25f ),
+                              normalize( Vector3( -0.25f, 1.0f, 0.25f ) ),
                               1e8f,
                               rays[i].time() );
     }
@@ -69,7 +69,7 @@ void ShadingEngine::shade( const std::vector<Ray>& rays,
     // Shade while shadow rays are tracing
     for( unsigned i = 0; i < num_rays; ++i )
     {
-        float lit = static_cast<float>( shadow_results[i].material_id != -1);
+        float lit = static_cast<float>( shadow_results[i].material_id == -1);
         //float lit = 1.0f;
         m_results[i] = toColor( local_geom[i].geometric_normal ) * Color( lit );
         // shadow and shade
