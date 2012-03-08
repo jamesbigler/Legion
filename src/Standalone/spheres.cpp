@@ -96,8 +96,8 @@ int main( int argc, char** argv )
         // Parameters params;
         // params.add( "Kd", legion::Color( 0.5f, 0.5f, 0.5f ) );
         // legion::createSurfaceShader( "Lambertian", "material", params );
-        legion::LambertianShader mtl( &ctx, "material" );
-        mtl.setKd( legion::Color(  1.0f, 0.5f, 0.5f ) );
+        legion::LambertianShader mtl0( &ctx, "material" );
+        mtl0.setKd( legion::Color(  1.0f, 0.5f, 0.5f ) );
        
        
         std::vector<legion::Mesh*> meshes( num_spheres+1 );
@@ -112,11 +112,13 @@ int main( int argc, char** argv )
             meshes[i] = new legion::Mesh( &ctx, "sphere" );
             meshes[i]->setVertices( verts.size(), &verts[0] );
             meshes[i]->setTransform( legion::Matrix4x4::identity() );
-            meshes[i]->setFaces( indices.size(), &indices[0], &mtl );
+            meshes[i]->setFaces( indices.size(), &indices[0], &mtl0 );
             ctx.addMesh( meshes[i] );
         }
 
         // Plane
+        legion::LambertianShader mtl1( &ctx, "material" );
+        mtl1.setKd( legion::Color(  0.7f, 0.7f, 0.7f ) );
         std::vector<legion::Mesh::Vertex> verts(4);
         std::vector<legion::Index3> indices(2);
         verts[ 0 ].position = legion::Vector3( -1.5f, -0.25f, -3.0f );
@@ -136,7 +138,7 @@ int main( int argc, char** argv )
         meshes[num_spheres] = new legion::Mesh( &ctx, "plane" );
         meshes[num_spheres]->setVertices( verts.size(), &verts[0] );
         meshes[num_spheres]->setTransform( legion::Matrix4x4::identity() );
-        meshes[num_spheres]->setFaces( indices.size(), &indices[0], &mtl );
+        meshes[num_spheres]->setFaces( indices.size(), &indices[0], &mtl1 );
         ctx.addMesh( meshes[num_spheres] );
 
         legion::PointLightShader light( &ctx, "lshader" );

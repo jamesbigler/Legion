@@ -90,7 +90,7 @@ void ShadingEngine::shade( const std::vector<Ray>& rays,
             continue;
         }
 
-        float light = static_cast<float>( is_lit );
+        float light = 5.0f * static_cast<float>( is_lit );
         //float lit = 1.0f;
         //m_results[i] = toColor(local_geom[i].geometric_normal) * Color( lit );
         const Vector3 p     = toVector3( local_geom[i].position );
