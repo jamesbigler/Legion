@@ -9,8 +9,6 @@
 #include <Legion/Scene/Camera/ICamera.hpp>
 #include <Legion/Scene/Film/IFilm.hpp>
 
-#include <cstdlib> // drand
-
 using namespace legion;
 
 RayScheduler::RayScheduler() 
@@ -70,17 +68,17 @@ void RayScheduler::getPass( std::vector<Ray>& rays,
     {
         for( unsigned j = 0; j < film_dims.y(); ++j )
         {
-            Vector2 pixel_coord( drand48(), drand48() );
+            Vector2 pixel_coord( m_rnd(), m_rnd() );
             Vector2 screen_coord( cur_x + pixel_width  / pixel_coord.x(),
                                   cur_y + pixel_height / pixel_coord.y() ); 
 
             CameraSample sample;
             sample.screen = Vector2( cur_x + pixel_coord.x()*pixel_width,
                                      cur_y + pixel_coord.y()*pixel_height ); 
-            sample.lens   = Vector2( drand48(), drand48() ); 
+            sample.lens   = Vector2( m_rnd(), m_rnd() ); 
             sample.time   = lerp( m_time_interval.x(),
                                   m_time_interval.y(),
-                                  drand48() );
+                                  m_rnd() );
 
             m_camera->generateRay( sample, rays[ ray_index ] );
             pixel_ids[ ray_index ].weight = 1.0f;

@@ -30,13 +30,13 @@
 #include <vector>
 #include <map>
 #include <Legion/Core/Color.hpp>
+#include <Legion/Core/Ray.hpp>
 
 namespace legion
 {
 
 class  ILightShader;
 class  ISurfaceShader;
-class  Ray;
 class  RayTracer;
 struct LocalGeometry;
 
@@ -58,12 +58,24 @@ public:
     void addLight( const ILightShader* shader );
 
 private:
+    struct Closure
+    {
+        Closure() {}
+        Closure( const Vector3& lp ) 
+          : light_point( lp ) {}
+
+        Vector3   light_point;
+    };
+
+
     typedef std::map<unsigned, const ISurfaceShader*> ShaderMap;
     typedef std::vector<const ILightShader*>          LightList;
-    typedef std::vector<Vector3>                      LightPoints;
+    typedef std::vector<Closure>                      Closures;
+    typedef std::vector<Ray>                          Rays;
 
     Results          m_results;
-    LightPoints      m_light_points;
+    Closures         m_closures;
+    Rays             m_secondary_rays;
 
     ShaderMap        m_shaders;
     LightList        m_lights;

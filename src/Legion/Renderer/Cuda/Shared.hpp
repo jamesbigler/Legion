@@ -36,6 +36,8 @@ struct LocalGeometry
 #endif
     }
 
+    bool isValidHit()const { return material_id != -1; }
+
     optix::float3   position;
     optix::float3   position_object;
     optix::float3   geometric_normal;

@@ -22,6 +22,8 @@ add_library( legion SHARED
     Common/Math/Filter.hpp
     Common/Math/Math.cpp
     Common/Math/Math.hpp
+    Common/Math/MTRand.cpp
+    Common/Math/MTRand.hpp
     Common/Math/ONB.hpp
     Common/Util/Assert.hpp
     Common/Util/Image.cpp

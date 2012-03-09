@@ -5,6 +5,7 @@
 #include <vector>
 #include <optixu/optixpp_namespace.h>
 #include <Legion/Core/Vector.hpp>
+#include <Legion/Common/Math/MTRand.hpp>
 
 namespace legion
 {
@@ -42,6 +43,8 @@ private:
     Index2    m_spp;
     Index2    m_current_sample;
     Vector2   m_time_interval;
+
+    MTRand32  m_rnd;
 };
 
 }
