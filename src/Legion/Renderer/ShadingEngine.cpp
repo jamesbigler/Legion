@@ -23,6 +23,7 @@
 
 #include <Legion/Common/Util/Logger.hpp>
 #include <Legion/Common/Util/Stream.hpp>
+#include <Legion/Common/Util/Timer.hpp>
 #include <Legion/Common/Util/TypeConversion.hpp>
 #include <Legion/Core/Color.hpp>
 #include <Legion/Core/Ray.hpp>
@@ -36,10 +37,29 @@
 using namespace legion;
 
 ShadingEngine::ShadingEngine( RayTracer& ray_tracer )
-    : m_ray_tracer( ray_tracer )
+    : m_ray_tracer( ray_tracer ),
+      m_shadow_ray_gen  ( "        Shadow ray gen   " ),
+      m_shadow_ray_trace( "        Shadow ray trace " ),
+      m_light_loop      ( "        Light loop       " )
 {
 }
     
+
+void ShadingEngine::reset()
+{
+    m_shadow_ray_gen.reset();
+    m_shadow_ray_trace.reset();
+    m_light_loop.reset();
+}
+
+
+void ShadingEngine::logTimerInfo()
+{
+    m_shadow_ray_gen.log();
+    m_shadow_ray_trace.log();
+    m_light_loop.log();
+}
+
 
 void ShadingEngine::shade( const std::vector<Ray>& rays,
                            const std::vector<LocalGeometry>& local_geom )
@@ -53,78 +73,87 @@ void ShadingEngine::shade( const std::vector<Ray>& rays,
     // 
     // Calculate shadow rays for all valid intersections 
     //
-    m_closures.resize( num_rays );
-    m_secondary_rays.resize( num_rays );
-
-    for( unsigned i = 0; i < num_rays; ++i )
     {
-        if( !local_geom[i].isValidHit() )
+        AutoTimerRef<LoopTimerInfo> ray_gen_timer( m_shadow_ray_gen );
+        m_closures.resize( num_rays );
+        m_secondary_rays.resize( num_rays );
+
+        for( unsigned i = 0; i < num_rays; ++i )
         {
-            m_secondary_rays[i].setDirection( Vector3( 0.0f, 0.0f, 0.0f ) );
-            continue;
+            if( !local_geom[i].isValidHit() )
+            {
+                m_secondary_rays[i].setDirection( Vector3( 0.0f ) );
+                continue;
+            }
+                
+            // TODO: Pick point on light
+            Vector3 on_light( 9.0f, 9.0f, -9.0f );
+
+            // Create ray
+            const Vector3 p = toVector3( local_geom[i].position );
+            const Vector3 l = normalize( on_light - p );
+
+            m_secondary_rays[i] = Ray( p, l, 1e8f, rays[i].time() );
+            m_closures[i]       = Closure( on_light );
         }
-            
-        // TODO: Pick point on light
-        Vector3 on_light( 9.0f, 9.0f, -9.0f );
-
-        // Create ray
-        const Vector3 p = toVector3( local_geom[i].position );
-        const Vector3 l = normalize( on_light - p );
-
-        m_secondary_rays[i] = Ray( p, l, 1e8f, rays[i].time() );
-        m_closures[i]       = Closure( on_light );
     }
 
     //
     // Trace shdow rays
     //
-    m_ray_tracer.trace( RayTracer::ANY_HIT, m_secondary_rays );
-    m_ray_tracer.join();  // TODO: REMOVE THIS.  maximize overlap of trace/shade
     std::vector<LocalGeometry> shadow_results;
-    m_ray_tracer.getResults( shadow_results );
+    {
+        AutoTimerRef<LoopTimerInfo> ray_trace_timer( m_shadow_ray_trace );
+        m_ray_tracer.trace( RayTracer::ANY_HIT, m_secondary_rays );
+        m_ray_tracer.join();  // TODO: REMOVE:  maximize trace/shade overlap 
+        m_ray_tracer.getResults( shadow_results );
+    }
      
     //
     // Shade all rays 
     //
-    for( unsigned i = 0; i < num_rays; ++i )
     {
-        if( !local_geom[i].isValidHit() )
+        AutoTimerRef<LoopTimerInfo> light_loop_timer( m_light_loop ) ;
+        for( unsigned i = 0; i < num_rays; ++i )
         {
-            // TODO: Env map queries
-            m_results[i] = Color( 0.0f );
-            continue;
+            if( !local_geom[i].isValidHit() )
+            {
+                // TODO: Env map queries
+                m_results[i] = Color( 0.0f );
+                continue;
+            }
+
+            const bool is_lit = !shadow_results[i].isValidHit();
+
+            if( !is_lit ) 
+            {
+                m_results[ i ] = Color( 0.01f ); 
+                continue;
+            }
+
+            // TODO: get actual light value
+            float light = 5.0f * static_cast<float>( is_lit );
+
+            const LocalGeometry& lgeom = local_geom[ i ];
+
+            // Evaluate bsdf
+            const Vector3 p     = toVector3( lgeom.position );
+            const Vector3 w_in  = normalize( m_closures[i].light_point - p );
+            const Vector3 w_out = -rays[ i ].direction();
+
+            const ISurfaceShader* shader = m_shaders[ lgeom.material_id ];
+            if( !shader )
+            {
+                LLOG_INFO << "no shader found for id: " << lgeom.material_id;
+                m_results[ i ] = Color( 0.0f, 1.0f, 0.0f ); 
+                continue;
+            }
+            
+            Color bsdf_val = shader->evaluateBSDF( w_out, local_geom[i], w_in );
+            m_results[i] = light * bsdf_val;
+
+            //LLOG_INFO << "   bsdf: " << m_results[i] << " light: " << light;
         }
-
-        const bool is_lit = !shadow_results[i].isValidHit();
-
-        if( !is_lit ) 
-        {
-            m_results[ i ] = Color( 0.01f ); 
-            continue;
-        }
-
-        // TODO: get actual light value
-        float light = 5.0f * static_cast<float>( is_lit );
-
-        const LocalGeometry& lgeom = local_geom[ i ];
-
-        // Evaluate bsdf
-        const Vector3 p     = toVector3( lgeom.position );
-        const Vector3 w_in  = normalize( m_closures[i].light_point - p );
-        const Vector3 w_out = -rays[ i ].direction();
-
-        const ISurfaceShader* shader = m_shaders[ lgeom.material_id ];
-        if( !shader )
-        {
-            LLOG_INFO << "no shader found for id: " << lgeom.material_id;
-            m_results[ i ] = Color( 0.0f, 1.0f, 0.0f ); 
-            continue;
-        }
-        
-        Color bsdf_val = shader->evaluateBSDF( w_out, local_geom[i], w_in );
-        m_results[i] = light * bsdf_val;
-
-        //LLOG_INFO << "   bsdf: " << m_results[i] << " light: " << light;
     }
 }
 

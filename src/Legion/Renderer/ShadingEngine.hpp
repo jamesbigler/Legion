@@ -31,6 +31,7 @@
 #include <map>
 #include <Legion/Core/Color.hpp>
 #include <Legion/Core/Ray.hpp>
+#include <Legion/Common/Util/AutoTimerHelpers.hpp>
 
 namespace legion
 {
@@ -45,8 +46,10 @@ class ShadingEngine
 public:
     typedef std::vector<Color> Results;
 
-
     ShadingEngine( RayTracer& ray_tracer );
+
+    void reset();
+    void logTimerInfo();
 
     void shade( const std::vector<Ray>& rays,
                 const std::vector<LocalGeometry>& local_geom );
@@ -82,6 +85,9 @@ private:
 
     RayTracer&       m_ray_tracer;
 
+    LoopTimerInfo    m_shadow_ray_gen;
+    LoopTimerInfo    m_shadow_ray_trace;
+    LoopTimerInfo    m_light_loop;
 };
 
 

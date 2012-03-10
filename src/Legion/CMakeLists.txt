@@ -25,6 +25,7 @@ add_library( legion SHARED
     Common/Math/MTRand.cpp
     Common/Math/MTRand.hpp
     Common/Math/ONB.hpp
+    Common/Util/AutoTimerHelpers.hpp
     Common/Util/Assert.hpp
     Common/Util/Image.cpp
     Common/Util/Image.hpp
