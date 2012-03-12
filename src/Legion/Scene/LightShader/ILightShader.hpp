@@ -47,15 +47,15 @@ public:
 
     /// Query the total power emitted by this light
     ///   \returns  The emitted power
-    virtual Color   getPower()const=0;
+    virtual Color   power()const=0;
 
-    /// Evaluate the incident radiance from the light towards the given surface 
+    /// Evaluate the exitant radiance from the light towards the given surface 
     /// geometry.  Should perform no occlusion testing
     ///   \param p     The local geometry info of the surface being shaded
     ///   \param w_in  Direction towards the light
     ///   \returns The incident radiance
-    virtual Color   getRadiance( const LocalGeometry& p,
-                                 const Vector3& w_in )const=0;
+    virtual Color   radianceExitance( const LocalGeometry& p,
+                                      const Vector3& w_in )const=0;
 };
 
 

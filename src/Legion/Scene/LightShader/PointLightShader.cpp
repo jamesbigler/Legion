@@ -2,6 +2,7 @@
 
 #include <Legion/Scene/LightShader/PointLightShader.hpp>
 #include <Legion/Core/Color.hpp>
+#include <Legion/Common/Math/Math.hpp>
 
 using namespace legion;
 
@@ -36,15 +37,16 @@ float PointLightShader::pdf( const LocalGeometry& p, const Vector3& w_in )const
 }
 
 
-float PointLightShader::getPower()const
+Color PointLightShader::getPower()const
 {
-    return 0.0f;
+    return 4.0f * legion::PI * m_rflux;
 }
 
 
-Color PointLightShader::getRadiance( const LocalGeometry& p, const Vector3& w_in )const
+Color PointLightShader::getRadiance( const LocalGeometry& p,
+                                     const Vector3& w_in )const
 {
-    return rflux;
+    return m_rflux;
 }
     
 
