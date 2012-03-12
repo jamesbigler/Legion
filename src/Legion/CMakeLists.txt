@@ -52,6 +52,8 @@ add_library( legion SHARED
     Core/Ray.hpp
     Core/Vector.hpp
     Legion.hpp
+    Renderer/LightSet.cpp
+    Renderer/LightSet.hpp
     Renderer/Renderer.cpp
     Renderer/Renderer.hpp
     Renderer/RayScheduler.cpp

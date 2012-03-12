@@ -2,10 +2,11 @@
 #ifndef LEGION_RENDERER_RENDERER_HPP_
 #define LEGION_RENDERER_RENDERER_HPP_
 
+#include <Legion/Common/Util/Noncopyable.hpp>
+#include <Legion/Renderer/LightSet.hpp>
 #include <Legion/Renderer/RayScheduler.hpp>
 #include <Legion/Renderer/RayTracer.hpp>
 #include <Legion/Renderer/ShadingEngine.hpp>
-#include <Legion/Common/Util/Noncopyable.hpp>
 
 namespace legion
 {
@@ -41,6 +42,7 @@ private:
     RayScheduler   m_ray_scheduler;
     RayTracer      m_ray_tracer;
     ShadingEngine  m_shading_engine;
+    LightSet       m_light_set;
 
     Index2         m_spp;
 

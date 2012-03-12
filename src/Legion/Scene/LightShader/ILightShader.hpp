@@ -29,23 +29,25 @@ public:
     virtual         ~ILightShader();
 
     /// Sample the solid angle subtended by the light from the given point 
-    ///   \param  p     The local geometry of the surface being shaded
-    ///   \param  w_in  The sampled direction to the light 
-    ///   \param  pdf   The PDF of the given sample direction
-    virtual void    sample( const LocalGeometry& p,
-                            Vector3& w_in,
-                            float& pdf )=0;
+    ///   \param  seed      Sampling seed 
+    ///   \param  p         The local geometry of the surface being shaded
+    ///   \param  on_light  The sampled position on light 
+    ///   \param  pdf       The PDF of the given sample direction
+    virtual void    sample( const Vector2& seed,
+                            const LocalGeometry& p,
+                            Vector3& on_light,
+                            float& pdf )const=0;
 
     /// Query the pdf of a given to-light direction.
     ///   \param  p     The local geometry of the surface being shaded
     ///   \param  w_in  The direction to the light 
     ///   \returns the pdf
-    virtual float   pdf( const LocalGeometry& p, const Vector3& w_in )=0;
+    virtual float   pdf( const LocalGeometry& p, const Vector3& w_in )const=0;
 
 
     /// Query the total power emitted by this light
     ///   \returns  The emitted power
-    virtual float   getPower()const=0;
+    virtual Color   getPower()const=0;
 
     /// Evaluate the incident radiance from the light towards the given surface 
     /// geometry.  Should perform no occlusion testing
@@ -53,7 +55,7 @@ public:
     ///   \param w_in  Direction towards the light
     ///   \returns The incident radiance
     virtual Color   getRadiance( const LocalGeometry& p,
-                                 const Vector3& w_in )=0;
+                                 const Vector3& w_in )const=0;
 };
 
 

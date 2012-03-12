@@ -7,7 +7,10 @@ using namespace legion;
 
 
 PointLightShader::PointLightShader( Context* context, const std::string& name )
-  : ILightShader( context, name )
+  : ILightShader( context, name ),
+    m_rflux( 0.0f ),
+    m_position( 0.0f )
+
 {
 }
 
@@ -17,12 +20,17 @@ PointLightShader::~PointLightShader()
 }
 
 
-void PointLightShader::sample( const LocalGeometry& p, Vector3& w_in, float& pdf )
+void PointLightShader::sample( const Vector2& seed,
+                               const LocalGeometry& p,
+                               Vector3& on_light,
+                               float& pdf )const
 {
+    on_light =  m_position;
+    pdf = 1.0f;
 }
 
 
-float PointLightShader::pdf( const LocalGeometry& p, const Vector3& w_in )
+float PointLightShader::pdf( const LocalGeometry& p, const Vector3& w_in )const
 {
     return 0.0f;
 }
@@ -34,17 +42,19 @@ float PointLightShader::getPower()const
 }
 
 
-Color PointLightShader::getRadiance( const LocalGeometry& p, const Vector3& w_in )
+Color PointLightShader::getRadiance( const LocalGeometry& p, const Vector3& w_in )const
 {
-    return Color( 0.0f, 0.0f, 0.0f );
+    return rflux;
 }
     
 
-void PointLightShader::setRadiantFlux( const Color& kd )
+void PointLightShader::setRadiantFlux( const Color& rflux )
 {
+    m_rflux = rflux;
 }
 
 
-void PointLightShader::setPosition( const Vector3& kd )
+void PointLightShader::setPosition( const Vector3& position )
 {
+    m_position = position;
 }

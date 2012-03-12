@@ -31,6 +31,7 @@
 #include <Legion/Renderer/RayTracer.hpp>
 #include <Legion/Renderer/ShadingEngine.hpp>
 #include <Legion/Scene/SurfaceShader/ISurfaceShader.hpp>
+#include <Legion/Scene/LightShader/ILightShader.hpp>
 
 
 
@@ -70,43 +71,61 @@ void ShadingEngine::shade( const std::vector<Ray>& rays,
 
     m_results.resize( num_rays );
 
-    // 
-    // Calculate shadow rays for all valid intersections 
-    //
-    {
-        AutoTimerRef<LoopTimerInfo> ray_gen_timer( m_shadow_ray_gen );
-        m_closures.resize( num_rays );
-        m_secondary_rays.resize( num_rays );
+    std::vector<LocalGeometry> shadow_results; // TODO: make persistant 
+    bool have_lights = m_light_set.numLights() != 0;
 
-        for( unsigned i = 0; i < num_rays; ++i )
+    if( have_lights )
+    {
+        // 
+        // Calculate shadow rays for all valid intersections 
+        //
         {
-            if( !local_geom[i].isValidHit() )
+            AutoTimerRef<LoopTimerInfo> ray_gen_timer( m_shadow_ray_gen );
+            m_closures.resize( num_rays );
+            m_secondary_rays.resize( num_rays );
+
+            for( unsigned i = 0; i < num_rays; ++i )
             {
-                m_secondary_rays[i].setDirection( Vector3( 0.0f ) );
-                continue;
+                if( !local_geom[i].isValidHit() )
+                {
+                    m_secondary_rays[i].setDirection( Vector3( 0.0f ) );
+                    continue;
+                }
+                    
+                // Choose a light
+                const ILightShader* light;
+                float               light_select_pdf;
+                m_light_set.selectLight( static_cast<float>( drand48() ),
+                                         light,
+                                         light_select_pdf );
+                                                                
+                // Choose a point on the light
+                float light_sample_pdf;
+                Vector3 on_light;
+                light->sample( Vector2( drand48(), drand48() ),
+                               local_geom[i],
+                               on_light,
+                               light_sample_pdf );
+
+                // Create ray
+                const Vector3 p = toVector3( local_geom[i].position );
+                Vector3 l( on_light - p );
+                float dist = l.normalize();
+
+                m_secondary_rays[i] = Ray( p, l, dist - 0.001f, rays[i].time());
+                m_closures[i]       = Closure( on_light, light );
             }
-                
-            // TODO: Pick point on light
-            Vector3 on_light( 9.0f, 9.0f, -9.0f );
-
-            // Create ray
-            const Vector3 p = toVector3( local_geom[i].position );
-            const Vector3 l = normalize( on_light - p );
-
-            m_secondary_rays[i] = Ray( p, l, 1e8f, rays[i].time() );
-            m_closures[i]       = Closure( on_light );
         }
-    }
 
-    //
-    // Trace shdow rays
-    //
-    std::vector<LocalGeometry> shadow_results;
-    {
-        AutoTimerRef<LoopTimerInfo> ray_trace_timer( m_shadow_ray_trace );
-        m_ray_tracer.trace( RayTracer::ANY_HIT, m_secondary_rays );
-        m_ray_tracer.join();  // TODO: REMOVE:  maximize trace/shade overlap 
-        m_ray_tracer.getResults( shadow_results );
+        //
+        // Trace shdow rays
+        //
+        {
+            AutoTimerRef<LoopTimerInfo> ray_trace_timer( m_shadow_ray_trace );
+            m_ray_tracer.trace( RayTracer::ANY_HIT, m_secondary_rays );
+            m_ray_tracer.join();  // TODO: REMOVE:  maximize trace/shade overlap
+            m_ray_tracer.getResults( shadow_results );
+        }
     }
      
     //
@@ -123,7 +142,7 @@ void ShadingEngine::shade( const std::vector<Ray>& rays,
                 continue;
             }
 
-            const bool is_lit = !shadow_results[i].isValidHit();
+            const bool is_lit = have_lights && !shadow_results[i].isValidHit();
 
             if( !is_lit ) 
             {
@@ -171,6 +190,6 @@ void ShadingEngine::addSurfaceShader( const ISurfaceShader* shader )
 
 void ShadingEngine::addLight( const ILightShader* shader )
 {
-    m_lights.push_back( shader );
+    m_light_set.addLight( shader );
 }
 

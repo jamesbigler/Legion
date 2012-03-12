@@ -282,7 +282,8 @@ inline Vector<DIM, TYPE>& Vector<DIM, TYPE>::operator*=( TYPE rhs )
 template<unsigned DIM, typename TYPE>
 inline Vector<DIM, TYPE>& Vector<DIM, TYPE>::operator/=( TYPE rhs )
 {
-    for( unsigned i = 0; i < DIM; ++i ) m_v[i] /= rhs;
+    TYPE inv = static_cast<TYPE>( 1.0 ) / rhs;
+    for( unsigned i = 0; i < DIM; ++i ) m_v[i] *= inv;
     return *this;
 }
 

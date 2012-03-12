@@ -27,11 +27,14 @@
 #ifndef LEGION_RENDERER_SHADINGENGINE_HPP_
 #define LEGION_RENDERER_SHADINGENGINE_HPP_
 
-#include <vector>
-#include <map>
+#include <Legion/Common/Util/AutoTimerHelpers.hpp>
 #include <Legion/Core/Color.hpp>
 #include <Legion/Core/Ray.hpp>
-#include <Legion/Common/Util/AutoTimerHelpers.hpp>
+#include <Legion/Renderer/LightSet.hpp>
+
+#include <map>
+#include <vector>
+
 
 namespace legion
 {
@@ -64,15 +67,15 @@ private:
     struct Closure
     {
         Closure() {}
-        Closure( const Vector3& lp ) 
-          : light_point( lp ) {}
+        Closure( const Vector3& light_point, const ILightShader* light ) 
+          : light_point( light_point ), light( light ) {}
 
-        Vector3   light_point;
+        Vector3             light_point;
+        const ILightShader* light;
     };
 
 
     typedef std::map<unsigned, const ISurfaceShader*> ShaderMap;
-    typedef std::vector<const ILightShader*>          LightList;
     typedef std::vector<Closure>                      Closures;
     typedef std::vector<Ray>                          Rays;
 
@@ -80,10 +83,9 @@ private:
     Closures         m_closures;
     Rays             m_secondary_rays;
 
-    ShaderMap        m_shaders;
-    LightList        m_lights;
-
     RayTracer&       m_ray_tracer;
+    LightSet         m_light_set;
+    ShaderMap        m_shaders;
 
     LoopTimerInfo    m_shadow_ray_gen;
     LoopTimerInfo    m_shadow_ray_trace;
