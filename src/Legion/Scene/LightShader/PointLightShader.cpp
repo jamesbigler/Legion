@@ -9,7 +9,7 @@ using namespace legion;
 
 PointLightShader::PointLightShader( Context* context, const std::string& name )
   : ILightShader( context, name ),
-    m_rflux( 0.0f ),
+    m_intensity( 0.0f ),
     m_position( 0.0f )
 
 {
@@ -22,7 +22,6 @@ PointLightShader::~PointLightShader()
 
 
 void PointLightShader::sample( const Vector2& seed,
-                               const LocalGeometry& p,
                                Vector3& on_light,
                                float& pdf )const
 {
@@ -31,28 +30,28 @@ void PointLightShader::sample( const Vector2& seed,
 }
 
 
-float PointLightShader::pdf( const LocalGeometry& p, const Vector3& w_in )const
+bool PointLightShader::isSingular()const
 {
-    return 0.0f;
+    return true;
 }
 
 
-Color PointLightShader::getPower()const
+Color PointLightShader::power()const
 {
-    return 4.0f * legion::PI * m_rflux;
+    return 4.0f * legion::PI * m_intensity;
 }
 
 
-Color PointLightShader::getRadiance( const LocalGeometry& p,
-                                     const Vector3& w_in )const
+Color PointLightShader::emittance( const LocalGeometry& light_geom,
+                                   const Vector3& w_in )const
 {
-    return m_rflux;
+    return m_intensity;
 }
     
 
-void PointLightShader::setRadiantFlux( const Color& rflux )
+void PointLightShader::setIntensity( const Color& intensity )
 {
-    m_rflux = rflux;
+    m_intensity = intensity;
 }
 
 

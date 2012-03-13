@@ -24,27 +24,23 @@ public:
     //--------------------------------------------------------------------------
     // ILightShader interface
     //--------------------------------------------------------------------------
-    void    sample( const Vector2& seed,
-                    const LocalGeometry& p,
-                    Vector3& on_light,
-                    float& pdf )const;
+    void    sample( const Vector2&  seed, Vector3& on_light, float& pdf )const;
 
-    float   pdf( const LocalGeometry& p, const Vector3& w_in )const;
+    bool    isSingular()const;
 
+    Color   power()const;
 
-    Color   getPower()const;
-
-    Color   getRadiance( const LocalGeometry& p,
-                         const Vector3& w_in )const;
+    Color   emittance( const LocalGeometry& light_geom,
+                       const Vector3& w_in )const;
 
     //--------------------------------------------------------------------------
     // PointLightShader specific interface
     //--------------------------------------------------------------------------
-    void setRadiantFlux( const Color& rflux );
+    void setIntensity( const Color& intensity );
     void setPosition( const Vector3& position );
 
 private:
-    Color   m_rflux;
+    Color   m_intensity;
     Vector3 m_position;
 
 };

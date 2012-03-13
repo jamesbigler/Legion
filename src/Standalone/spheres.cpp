@@ -143,7 +143,7 @@ int main( int argc, char** argv )
 
         legion::PointLightShader light( &ctx, "lshader" );
         light.setPosition( legion::Vector3( 1.0f, 5.0f, -5.0f ) );
-        light.setRadiantFlux( legion::Color( 1.0f, 1.0f, 1.0f ) );
+        light.setIntensity( legion::Color( 1.0f, 1.0f, 1.0f ) );
         ctx.addLight( &light );
         //ctx.addAreaLigth(...); 
 

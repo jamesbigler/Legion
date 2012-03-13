@@ -103,7 +103,6 @@ void ShadingEngine::shade( const std::vector<Ray>& rays,
                 float light_sample_pdf;
                 Vector3 on_light;
                 light->sample( Vector2( drand48(), drand48() ),
-                               local_geom[i],
                                on_light,
                                light_sample_pdf );
 
