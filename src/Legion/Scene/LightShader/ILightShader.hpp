@@ -29,14 +29,16 @@ public:
     virtual         ~ILightShader();
 
     /// Sample the solid angle subtended by the light from the given point 
-    ///   \param  seed      Sampling seed 
-    ///   \param  p         The local geometry of the surface being shaded
-    ///   \param  on_light  The sampled position on light 
-    ///   \param  pdf       The PDF of the given sample direction
-    virtual void    sample( const Vector2& seed,
+    ///   \param  seed       Sampling seed 
+    ///   \param  p          Local geometry of the surface being shaded
+    ///   \param  on_light   Sampled position on light 
+    ///   \param  pdf        PDF of the given sample direction
+    virtual void    sample( const Vector2&       seed,
                             const LocalGeometry& p,
                             Vector3& on_light,
-                            float& pdf )const=0;
+                            float&   pdf )const=0;
+
+    virtual void    isSingular()const=0;
 
     /// Query the pdf of a given to-light direction.
     ///   \param  p     The local geometry of the surface being shaded
@@ -44,18 +46,18 @@ public:
     ///   \returns the pdf
     virtual float   pdf( const LocalGeometry& p, const Vector3& w_in )const=0;
 
-
     /// Query the total power emitted by this light
     ///   \returns  The emitted power
     virtual Color   power()const=0;
 
+    /// TODO: this should evaluate the exitant radiance with regard to the surface info
     /// Evaluate the exitant radiance from the light towards the given surface 
     /// geometry.  Should perform no occlusion testing
-    ///   \param p     The local geometry info of the surface being shaded
+    ///   \param p     The geometry info of a point on the light
     ///   \param w_in  Direction towards the light
-    ///   \returns The incident radiance
-    virtual Color   radianceExitance( const LocalGeometry& p,
-                                      const Vector3& w_in )const=0;
+    ///   \returns The exitant radiance
+    virtual Color   radiantExitance( const LocalGeometry& p,
+                                     const Vector3& w_in )const=0;
 };
 
 

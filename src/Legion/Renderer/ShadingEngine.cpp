@@ -99,7 +99,7 @@ void ShadingEngine::shade( const std::vector<Ray>& rays,
                                          light,
                                          light_select_pdf );
                                                                 
-                // Choose a point on the light
+                // Choose a point on the light by sampling light Area
                 float light_sample_pdf;
                 Vector3 on_light;
                 light->sample( Vector2( drand48(), drand48() ),
@@ -107,6 +107,7 @@ void ShadingEngine::shade( const std::vector<Ray>& rays,
                                on_light,
                                light_sample_pdf );
 
+                // TODO: store away the light ID so we can test for occlusion below
                 // Create ray
                 const Vector3 p = toVector3( local_geom[i].position );
                 Vector3 l( on_light - p );
@@ -121,6 +122,7 @@ void ShadingEngine::shade( const std::vector<Ray>& rays,
         // Trace shdow rays
         //
         {
+            // TODO: switch to closestHit so we can return light surface info
             AutoTimerRef<LoopTimerInfo> ray_trace_timer( m_shadow_ray_trace );
             m_ray_tracer.trace( RayTracer::ANY_HIT, m_secondary_rays );
             m_ray_tracer.join();  // TODO: REMOVE:  maximize trace/shade overlap
@@ -130,6 +132,9 @@ void ShadingEngine::shade( const std::vector<Ray>& rays,
      
     //
     // Shade all rays 
+    // TODO: now we need to convert from pdf w/ respect to area to pdf w/
+    //       respect to solid angle and shade. see pbr2 page 717
+    //
     //
     {
         AutoTimerRef<LoopTimerInfo> light_loop_timer( m_light_loop ) ;
