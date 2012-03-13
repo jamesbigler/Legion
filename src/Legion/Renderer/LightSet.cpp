@@ -24,6 +24,7 @@
 #include <Legion/Renderer/LightSet.hpp>
 
 #include <algorithm>
+#include <cmath>
 
 using namespace legion;
 
@@ -70,8 +71,10 @@ void LightSet::selectLight( float rnd,
         return;
     }
 
-    float    num_lights_f = static_cast<float>( m_lights.size() ); 
-    unsigned idx = rnd * num_lights_f; 
+    size_t   num_lights   = m_lights.size();
+    float    num_lights_f = static_cast<float>( num_lights ); 
+    unsigned idx = std::min( static_cast<unsigned>( rnd * num_lights_f ),
+                             static_cast<unsigned>( num_lights-1 ) ); 
     light = m_lights[ idx ];
     pdf   = 1.0f / num_lights_f;
 }

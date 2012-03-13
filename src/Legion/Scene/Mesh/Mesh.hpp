@@ -12,6 +12,7 @@
 namespace legion
 {
 
+class ILightShader;
 class ISurfaceShader;
 class Matrix4x4;
 
@@ -47,13 +48,15 @@ public:
     void setVertices( unsigned num_samples,  const float* times,
                       unsigned num_vertices, const Vertex** vertices );
 
-    void setFaces( unsigned num_faces,
-                   const Index3* tris,
-                   const ISurfaceShader* shader );
+    void setFaces( unsigned              num_faces,
+                   const Index3*         tris,
+                   const ISurfaceShader* sshader,
+                   const ILightShader*   lshader = 0u );
 
     void setFaces( unsigned num_faces,
                    const Index4* quads,
-                   const ISurfaceShader* shader );
+                   const ISurfaceShader* sshader,
+                   const ILightShader*   lshader = 0u );
 
     unsigned  getVertexCount();
     unsigned  getFaceCount();

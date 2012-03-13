@@ -53,19 +53,21 @@ void Mesh::setVertices( unsigned num_samples,  const float* times,
 }
 
 
-void Mesh::setFaces( unsigned num_faces,
-                     const Index3* tris,
-                     const ISurfaceShader* shader )
+void Mesh::setFaces( unsigned              num_faces,
+                     const Index3*         tris,
+                     const ISurfaceShader* sshader,
+                     const ILightShader*   lshader)
 {
-    RayTracer::updateFaceBuffer( m_faces, num_faces, tris, shader );
+    RayTracer::updateFaceBuffer( m_faces, num_faces, tris, sshader, lshader );
     m_faces_changed = true;
-    m_shader = shader;
+    m_shader = sshader; // TODO: needed?
 }
 
 
-void Mesh::setFaces( unsigned num_faces,
-                     const Index4* quads,
-                     const ISurfaceShader* shader )
+void Mesh::setFaces( unsigned              num_faces,
+                     const Index4*         quads,
+                     const ISurfaceShader* shader,
+                     const ILightShader*   lshader)
 {
 }
 

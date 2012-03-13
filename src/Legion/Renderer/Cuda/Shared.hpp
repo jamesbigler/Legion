@@ -32,7 +32,7 @@ struct LocalGeometry
                  = shading_normal 
                  = optix::make_float3( -1.0f );
         texcoord = optix::make_float2( -1.0f );
-        padding  = ~0;
+        light_id = -1;
 #endif
     }
 
@@ -43,8 +43,8 @@ struct LocalGeometry
     optix::float3   geometric_normal;
     optix::float3   shading_normal;
     optix::float2   texcoord;
-    int             material_id;
-    unsigned        padding;
+    int             material_id; // Can be shorts if necessary
+    int             light_id;
 };
 
 

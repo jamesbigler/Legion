@@ -7,7 +7,7 @@ if( NOT CMAKE_BUILD_TYPE )
          FORCE )
 endif( NOT CMAKE_BUILD_TYPE )
 
-add_definitions( -Wall -Werror )
+add_definitions( -Wall -Werror  -funroll-loops -floop-optimize -ffast-math )
 add_definitions( -DLLOG_MAX_LEVEL=legion::Log::DEBUG )
 
 find_package( OptiX REQUIRED )

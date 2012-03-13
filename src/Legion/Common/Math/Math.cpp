@@ -30,6 +30,7 @@ namespace
     const float PI_2 = static_cast<float>( M_PI ) / 2.0f;
 }
 
+
 /*
 legion::Vector2 legion::squareToDisk( const legion::Vector2& sample )
 {
@@ -39,35 +40,18 @@ legion::Vector2 legion::squareToDisk( const legion::Vector2& sample )
     const float a = 2.0f * sample.x() - 1.0f;
     const float b = 2.0f * sample.y() - 1.0f;
 
-    float phi = PI_4 * ( b/a );
-    float r   = a;
-    //if( a*a > b*b ) 
-    if( abs( a ) <= abs( b ) ) 
-    {
-        r = b;
-        phi = PI_4 * ( a/b ) + PI_2;
-    }
-    return Vector2( r*cosf( phi ), r*sinf( phi ) );
-}
-*/
-/*
-legion::Vector2 legion::squareToDisk( const legion::Vector2& sample )
-{
-    const float a = 2.0f * sample.x() - 1.0f;
-    const float b = 2.0f * sample.y() - 1.0f;
-
     float phi,r;
-    //if( a*a > b*b ) 
-    if( abs( a ) > abs( b ) ) 
+    if( a*a > b*b ) 
     {
         r = a;
         phi = PI_4 * ( b/a );
     }
-    else 
+    else
     {
         r = b;
-        phi = PI_4 * ( a/b ) + PI_2;
+        phi =  b ? PI_4 *( a/b ) + PI_2 : 0.0f;
     }
+
     return Vector2( r*cosf( phi ), r*sinf( phi ) );
 }
 */

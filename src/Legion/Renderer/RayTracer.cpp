@@ -8,6 +8,7 @@
 #include <Legion/Renderer/Cuda/Shared.hpp>
 #include <Legion/Renderer/RayTracer.hpp>
 #include <Legion/Scene/Mesh/Mesh.hpp>
+#include <Legion/Scene/LightShader/ILightShader.hpp>
 #include <Legion/Scene/SurfaceShader/ISurfaceShader.hpp>
 
 
@@ -50,25 +51,15 @@ using namespace legion;
 namespace
 {
 
-struct OptiXLaunch
-{
-    OptiXLaunch( optix::Context context,
-                 unsigned entry_point_index,
-                 unsigned num_rays )
-        : m_context( context ),
-          m_entry_point_index( entry_point_index ),
-          m_num_rays( num_rays )
-    {}
-
-    void operator()()
+    inline unsigned packShaderIDs( const ISurfaceShader* sshader,
+                                   const ILightShader*   lshader )
     {
-        m_context->launch( m_entry_point_index, m_num_rays );
+        // TODO: bounds checking on ids
+        unsigned sid = sshader ? sshader->getID() : 0u;
+        unsigned lid = lshader ? lshader->getID() : 0u;
+        unsigned packed = sid | (lid << 16);
+        return packed;
     }
-
-    optix::Context m_context;
-    unsigned       m_entry_point_index;
-    unsigned       m_num_rays;
-};
 }
 
 
@@ -105,20 +96,20 @@ void RayTracer::updateVertexBuffer( optix::Buffer buffer,
 }
 
 
-void RayTracer::updateFaceBuffer( optix::Buffer buffer,
-                                  unsigned num_faces,
-                                  const Index3* tris,
-                                  const ISurfaceShader* shader )
+void RayTracer::updateFaceBuffer( optix::Buffer         buffer,
+                                  unsigned              num_faces,
+                                  const Index3*         tris,
+                                  const ISurfaceShader* sshader,
+                                  const ILightShader*   lshader )
 {
     try
     {
         buffer->setFormat( RT_FORMAT_UNSIGNED_INT4 );
         buffer->setSize( num_faces  );
 
-        unsigned shader_id = shader->getID();
         Index4* buffer_data = static_cast<Index4*>( buffer->map() );
         for( unsigned i = 0; i < num_faces; ++i )
-            buffer_data[i] = Index4( tris[i], shader_id );
+            buffer_data[i] = Index4( tris[i], packShaderIDs( sshader, lshader ) );
 
         buffer->unmap();
     }
@@ -219,6 +210,8 @@ void RayTracer::getResults( std::vector<LocalGeometry>& results )
     result_buffer->getSize( num_results );
     LocalGeometry* data = static_cast<LocalGeometry*>( result_buffer->map() );
 
+    // TODO: this is a hotspot.  However, we would need multiple results buffers
+    // to avoid this copy and allow users to take the mapped result_buffer 
     results.assign( data, data+num_results );
 
     result_buffer->unmap();

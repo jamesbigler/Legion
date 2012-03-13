@@ -95,7 +95,8 @@ void ShadingEngine::shade( const std::vector<Ray>& rays,
                 // Choose a light
                 const ILightShader* light;
                 float               light_select_pdf;
-                m_light_set.selectLight( static_cast<float>( drand48() ),
+                float               sample_seed = static_cast<float>( drand48() );
+                m_light_set.selectLight( sample_seed,
                                          light,
                                          light_select_pdf );
                                                                 
@@ -106,14 +107,16 @@ void ShadingEngine::shade( const std::vector<Ray>& rays,
                                on_light,
                                light_sample_pdf );
 
-                // TODO: store away the light ID so we can test for occlusion below
                 // Create ray
                 const Vector3 p = toVector3( local_geom[i].position );
                 Vector3 l( on_light - p );
                 float dist = l.normalize();
 
-                m_secondary_rays[i] = Ray( p, l, dist - 0.001f, rays[i].time());
-                m_closures[i]       = Closure( on_light, light );
+                // TODO: this might be too inefficient to trace to max_dist
+                // TODO: can do away with Closure::on_light??
+                const float max_dist = light->isSingular() ? dist : 1e15f;
+                m_secondary_rays[i]  = Ray( p, l, max_dist, rays[i].time());
+                m_closures[i]        = Closure( on_light, light );
             }
         }
 
@@ -121,9 +124,8 @@ void ShadingEngine::shade( const std::vector<Ray>& rays,
         // Trace shdow rays
         //
         {
-            // TODO: switch to closestHit so we can return light surface info
             AutoTimerRef<LoopTimerInfo> ray_trace_timer( m_shadow_ray_trace );
-            m_ray_tracer.trace( RayTracer::ANY_HIT, m_secondary_rays );
+            m_ray_tracer.trace( RayTracer::CLOSEST_HIT, m_secondary_rays );
             m_ray_tracer.join();  // TODO: REMOVE:  maximize trace/shade overlap
             m_ray_tracer.getResults( shadow_results );
         }
@@ -139,31 +141,46 @@ void ShadingEngine::shade( const std::vector<Ray>& rays,
         AutoTimerRef<LoopTimerInfo> light_loop_timer( m_light_loop ) ;
         for( unsigned i = 0; i < num_rays; ++i )
         {
+            //
+            // Light from environment
+            //
             if( !local_geom[i].isValidHit() )
             {
-                // TODO: Env map queries
-                m_results[i] = Color( 0.0f );
+                m_results[i] = Color( 0.0f ); // TODO: Env map queries
                 continue;
             }
 
-            const bool is_lit = have_lights && !shadow_results[i].isValidHit();
-
-            if( !is_lit ) 
+            //
+            // Determine occlusion
+            //
+            const ILightShader* light = m_closures[i].light;
+            const bool is_singular_light = light->isSingular();
+            if( is_singular_light && !shadow_results[i].isValidHit() )
             {
-                m_results[ i ] = Color( 0.01f ); 
+                // we have unoccluded light
+            }
+            else if( !is_singular_light &&
+                     shadow_results[i].light_id == static_cast<int>( light->getID() ) )
+            {
+                // we have unoccluded light
+            }
+            else
+            {
+                // Light sample is occluded
+                m_results[ i ] = Color( 0.0f ); // TODO remove this
                 continue;
             }
-
-            // TODO: get actual light value
-            float light = 5.0f * static_cast<float>( is_lit );
 
             const LocalGeometry& lgeom = local_geom[ i ];
-
-            // Evaluate bsdf
-            const Vector3 p     = toVector3( lgeom.position );
-            const Vector3 w_in  = normalize( m_closures[i].light_point - p );
+            const Vector3 surface_p( toVector3( lgeom.position ) );
+            const Vector3 light_p( m_closures[i].light_point );
+            const Vector3 w_in( normalize( light_p - surface_p ) );
             const Vector3 w_out = -rays[ i ].direction();
 
+            // 
+            Color emittance = light->emittance( shadow_results[ i ], w_in ); 
+
+            // Evaluate bsdf
             const ISurfaceShader* shader = m_shaders[ lgeom.material_id ];
             if( !shader )
             {
@@ -172,8 +189,9 @@ void ShadingEngine::shade( const std::vector<Ray>& rays,
                 continue;
             }
             
-            Color bsdf_val = shader->evaluateBSDF( w_out, local_geom[i], w_in );
-            m_results[i] = light * bsdf_val;
+            float inv_dist2 = 1.0f / ( surface_p - light_p ).lengthSquared();
+            Color bsdf_val = shader->evaluateBSDF( w_out, lgeom, w_in );
+            m_results[i] = emittance * bsdf_val * inv_dist2;
 
             //LLOG_INFO << "   bsdf: " << m_results[i] << " light: " << light;
         }

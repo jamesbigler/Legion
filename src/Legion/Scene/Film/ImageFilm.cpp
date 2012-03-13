@@ -102,13 +102,11 @@ Color* ImageFilm::getPixels()const
 
 void ImageFilm::shutterOpen()
 {
-    LLOG_INFO << "ImageFilm::shutterOpen()";
 }
 
 
 void ImageFilm::shutterClose()
 {
-    LLOG_INFO << "ImageFilm::shutterClose()";
     writeOpenEXR( "output.exr", m_dimensions.x(), m_dimensions.y(), 3,
                   reinterpret_cast<float*>( m_data ) );
 }
@@ -116,7 +114,6 @@ void ImageFilm::shutterClose()
 
 void ImageFilm::passComplete()
 {
-    LLOG_INFO << "ImageFilm::passComplete()";
 }
 
 

@@ -44,10 +44,11 @@ public:
                                     unsigned num_verts,
                                     const Mesh::Vertex* verts );
 
-    static void updateFaceBuffer( optix::Buffer buffer,
-                                  unsigned num_tris,
-                                  const Index3* tris,
-                                  const ISurfaceShader* shader);
+    static void updateFaceBuffer( optix::Buffer         buffer,
+                                  unsigned              num_tris,
+                                  const Index3*         tris,
+                                  const ISurfaceShader* shader,
+                                  const ILightShader*   lshader );
 
 
 private:

@@ -97,7 +97,7 @@ int main( int argc, char** argv )
         // params.add( "Kd", legion::Color( 0.5f, 0.5f, 0.5f ) );
         // legion::createSurfaceShader( "Lambertian", "material", params );
         legion::LambertianShader mtl0( &ctx, "material" );
-        mtl0.setKd( legion::Color(  1.0f, 0.5f, 0.5f ) );
+        mtl0.setKd( legion::Color(  1.0f, 1.0f, 1.0f ) );
        
        
         std::vector<legion::Mesh*> meshes( num_spheres+1 );
@@ -141,10 +141,15 @@ int main( int argc, char** argv )
         meshes[num_spheres]->setFaces( indices.size(), &indices[0], &mtl1 );
         ctx.addMesh( meshes[num_spheres] );
 
-        legion::PointLightShader light( &ctx, "lshader" );
-        light.setPosition( legion::Vector3( 1.0f, 5.0f, -5.0f ) );
-        light.setIntensity( legion::Color( 1.0f, 1.0f, 1.0f ) );
-        ctx.addLight( &light );
+        legion::PointLightShader light0( &ctx, "lshader0" );
+        light0.setPosition( legion::Vector3( 1.0f, 2.0f, -6.0f ) );
+        light0.setIntensity( legion::Color( 10.0f, 10.0f, 20.0f ) );
+        ctx.addLight( &light0 );
+
+        legion::PointLightShader light1( &ctx, "lshader1" );
+        light1.setPosition( legion::Vector3( -1.0f, 2.0f, -4.0f ) );
+        light1.setIntensity( legion::Color( 15.0f, 15.0f, 8.0f ) );
+        ctx.addLight( &light1 );
         //ctx.addAreaLigth(...); 
 
         legion::ThinLensCamera cam( &ctx, "camera" );

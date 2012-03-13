@@ -42,7 +42,8 @@ RT_PROGRAM void polyMeshIntersect( int prim_index )
           lg.texcoord         = alpha*v0.tex    +
                                 beta*v1.tex     +
                                 gamma*v2.tex;
-          lg.material_id      = triangle.w;
+          lg.material_id      = triangle.w & 0x0000FFFF;
+          lg.light_id         = triangle.w >> 16;
           lgeom = lg;
 
           rtReportIntersection( 0 );
