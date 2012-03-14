@@ -54,8 +54,8 @@ public:
     void reset();
     void logTimerInfo();
 
-    void shade( const std::vector<Ray>& rays,
-                const std::vector<LocalGeometry>& local_geom );
+    void shade( std::vector<Ray>& rays,
+                std::vector<LocalGeometry>& local_geom );
 
     const Results& getResults()const;
 
@@ -64,6 +64,9 @@ public:
     void addLight( const ILightShader* shader );
 
 private:
+    void shade( std::vector<Ray>&           rays,
+                std::vector<LocalGeometry>& local_geom,
+                std::vector<float>&         ray_attenuation );
     struct Closure
     {
         Closure() {}

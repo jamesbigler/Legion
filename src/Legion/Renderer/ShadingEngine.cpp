@@ -62,8 +62,8 @@ void ShadingEngine::logTimerInfo()
 }
 
 
-void ShadingEngine::shade( const std::vector<Ray>& rays,
-                           const std::vector<LocalGeometry>& local_geom )
+void ShadingEngine::shade( std::vector<Ray>& rays,
+                           std::vector<LocalGeometry>& local_geom )
 {
     assert( rays.size() == local_geom.size() );
 
@@ -192,8 +192,6 @@ void ShadingEngine::shade( const std::vector<Ray>& rays,
             float inv_dist2 = 1.0f / ( surface_p - light_p ).lengthSquared();
             Color bsdf_val = shader->evaluateBSDF( w_out, lgeom, w_in );
             m_results[i] = emittance * bsdf_val * inv_dist2;
-
-            //LLOG_INFO << "   bsdf: " << m_results[i] << " light: " << light;
         }
     }
 }
