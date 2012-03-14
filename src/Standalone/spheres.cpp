@@ -111,7 +111,7 @@ int main( int argc, char** argv )
 
             meshes[i] = new legion::Mesh( &ctx, "sphere" );
             meshes[i]->setVertices( verts.size(), &verts[0] );
-            meshes[i]->setTransform( legion::Matrix4x4::identity() );
+            meshes[i]->setTransform( legion::Matrix::identity() );
             meshes[i]->setFaces( indices.size(), &indices[0], &mtl0 );
             ctx.addMesh( meshes[i] );
         }
@@ -137,7 +137,7 @@ int main( int argc, char** argv )
         indices[1] = legion::Index3( 0, 3, 2 );
         meshes[num_spheres] = new legion::Mesh( &ctx, "plane" );
         meshes[num_spheres]->setVertices( verts.size(), &verts[0] );
-        meshes[num_spheres]->setTransform( legion::Matrix4x4::identity() );
+        meshes[num_spheres]->setTransform( legion::Matrix::identity() );
         meshes[num_spheres]->setFaces( indices.size(), &indices[0], &mtl1 );
         ctx.addMesh( meshes[num_spheres] );
 

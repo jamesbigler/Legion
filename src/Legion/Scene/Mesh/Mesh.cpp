@@ -26,7 +26,7 @@ Mesh::~Mesh()
 }
    
 
-void Mesh::setTransform( const Matrix4x4& transform )
+void Mesh::setTransform( const Matrix& transform )
 {
     m_transform.clear();
     m_transform.push_back( transform );
@@ -34,7 +34,7 @@ void Mesh::setTransform( const Matrix4x4& transform )
 }
 
 
-void Mesh::setTransform( unsigned num_samples, const Matrix4x4* transform )
+void Mesh::setTransform( unsigned num_samples, const Matrix* transform )
 {
     m_transform.assign( transform, transform+num_samples );
 }
@@ -125,7 +125,7 @@ const ISurfaceShader* Mesh::getShader()const
 }
 
 
-const std::vector<Matrix4x4>& Mesh::getTransform()const
+const std::vector<Matrix>& Mesh::getTransform()const
 {
     return m_transform;
 }

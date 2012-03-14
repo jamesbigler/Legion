@@ -14,7 +14,7 @@ namespace legion
 
 class ILightShader;
 class ISurfaceShader;
-class Matrix4x4;
+class Matrix;
 
 class Mesh : public APIBase
 {
@@ -40,8 +40,8 @@ public:
 
 
     
-    void setTransform( const Matrix4x4& transform );
-    void setTransform( unsigned num_samples, const Matrix4x4* transform );
+    void setTransform( const Matrix& transform );
+    void setTransform( unsigned num_samples, const Matrix* transform );
 
     void setVertices( unsigned num_vertices, const Vertex* vertices );
 
@@ -74,7 +74,7 @@ public:
 
     const ISurfaceShader* getShader()const;
   
-    const std::vector<Matrix4x4>& getTransform()const;
+    const std::vector<Matrix>& getTransform()const;
 
     bool verticesChanged()const;
     bool facesChanged()const;
@@ -84,7 +84,7 @@ private:
 
     bool                     m_subdivision_enabled;
 
-    std::vector<Matrix4x4>   m_transform;
+    std::vector<Matrix>   m_transform;
 
     optix::Buffer            m_vertices;
     optix::Buffer            m_faces;

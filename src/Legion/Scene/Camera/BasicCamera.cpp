@@ -17,7 +17,7 @@ BasicCamera::~BasicCamera()
 }
 
 
-void BasicCamera::setTransform( const Matrix4x4& matrix, float time )
+void BasicCamera::setTransform( const Matrix& matrix, float time )
 {
 }
 

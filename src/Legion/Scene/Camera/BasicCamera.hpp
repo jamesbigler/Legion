@@ -33,7 +33,7 @@ public:
     /// Set the Camera-to-World transform associated with a given time
     /// \param matrix   The transform matrix 
     /// \param time     The time associated with this transform 
-    void setTransform( const Matrix4x4& matrix, float time );
+    void setTransform( const Matrix& matrix, float time );
 
     /// Set the shutter open and close time.  If not called the default values
     /// zero, and zero are used.

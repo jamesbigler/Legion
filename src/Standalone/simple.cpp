@@ -41,7 +41,7 @@ int main( int argc, char** argv )
 
         legion::Mesh square( &ctx, "square" );
         square.setVertices( verts.size(), &verts[0] );
-        square.setTransform( legion::Matrix4x4::identity() );
+        square.setTransform( legion::Matrix::identity() );
         square.setFaces( indices.size(), &indices[0], &mtl );
         ctx.addMesh( &square );
 

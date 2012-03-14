@@ -15,7 +15,7 @@ namespace legion
 
 class Context;
 class Ray;
-class Matrix4x4;
+class Matrix;
 
 
 /// Contains the necessary sample information to generate a Camera ray
@@ -43,7 +43,7 @@ public:
     /// Set camera-to-world transform at the given time.
     /// \param matrix  The camera-to-world transform
     /// \param time    Time associated with the tranform
-    virtual void       setTransform( const Matrix4x4& matrix, float time )=0;
+    virtual void       setTransform( const Matrix& matrix, float time )=0;
 
     /// Set times of shutter open and close
     /// \param open  Time of shutter open
