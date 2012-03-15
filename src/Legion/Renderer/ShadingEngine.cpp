@@ -41,9 +41,10 @@ using namespace legion;
 
 ShadingEngine::ShadingEngine( RayTracer& ray_tracer )
     : m_ray_tracer( ray_tracer ),
-      m_shadow_ray_gen  ( "        Shadow ray gen   " ),
-      m_shadow_ray_trace( "        Shadow ray trace " ),
-      m_light_loop      ( "        Light loop       " )
+      m_shadow_ray_gen( "        Shadow ray gen     " ),
+      m_shadow_trace  ( "        Shadow ray trace   " ),
+      m_radiance_trace( "        Radiance ray trace " ),
+      m_light_loop    ( "        Light loop         " )
 {
 }
     
@@ -51,7 +52,8 @@ ShadingEngine::ShadingEngine( RayTracer& ray_tracer )
 void ShadingEngine::reset()
 {
     m_shadow_ray_gen.reset();
-    m_shadow_ray_trace.reset();
+    m_shadow_trace.reset();
+    m_radiance_trace.reset();
     m_light_loop.reset();
 }
 
@@ -59,13 +61,13 @@ void ShadingEngine::reset()
 void ShadingEngine::logTimerInfo()
 {
     m_shadow_ray_gen.log();
-    m_shadow_ray_trace.log();
+    m_shadow_trace.log();
+    m_radiance_trace.log();
     m_light_loop.log();
 }
 
 
-void ShadingEngine::shade( std::vector<Ray>& rays,
-                           std::vector<LocalGeometry>& local_geom )
+void ShadingEngine::shade( std::vector<Ray>& rays )
 {
     assert( rays.size() == local_geom.size() );
 
@@ -73,13 +75,14 @@ void ShadingEngine::shade( std::vector<Ray>& rays,
     m_results.assign( num_rays, Color( 0.0f ) );
     std::vector<Color> ray_attenuation( num_rays, Color( 1.0f ) );
 
-    for( int i = 0; i < 3; ++i )
+    std::vector<LocalGeometry> lgeom;
+    for( int i = 0; i < 3; ++i ) // TODO: magic #
     {
-        std::vector<LocalGeometry> lgeom;
-        m_ray_tracer.trace( RayTracer::CLOSEST_HIT, rays );
-        m_ray_tracer.join(); // Finish async tracing
-
-        m_ray_tracer.getResults( lgeom );
+        {
+            AutoTimerRef<LoopTimerInfo> radiance_ray_timer( m_radiance_trace ) ;
+            m_ray_tracer.trace( RayTracer::CLOSEST_HIT, rays );
+            m_ray_tracer.getResults( lgeom );
+        }
 
         shade( rays, lgeom, ray_attenuation );
     }
@@ -146,7 +149,7 @@ void ShadingEngine::shade( std::vector<Ray>&           rays,
         // Trace shadow rays
         //
         {
-            AutoTimerRef<LoopTimerInfo> ray_trace_timer( m_shadow_ray_trace );
+            AutoTimerRef<LoopTimerInfo> ray_trace_timer( m_shadow_trace );
             m_ray_tracer.trace( RayTracer::CLOSEST_HIT, m_secondary_rays );
             m_ray_tracer.join();  // TODO: REMOVE:  maximize trace/shade overlap
             m_ray_tracer.getResults( shadow_results );

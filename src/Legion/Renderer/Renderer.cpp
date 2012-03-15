@@ -52,7 +52,6 @@ void Renderer::render()
     m_shading_engine.reset();
 
     LoopTimerInfo   scheduling_time( "    Scheduling rays" );
-    LoopTimerInfo   trace_time     ( "    Tracing rays   " );
     LoopTimerInfo   shading_time   ( "    Shading        " ); 
     LoopTimerInfo   film_time      ( "    Film splatting " ); 
 
@@ -68,31 +67,19 @@ void Renderer::render()
         }
 
         {
-          /*
-            AutoTimerRef<LoopTimerInfo> trace_timer( trace_time );
-            m_ray_tracer.trace( RayTracer::CLOSEST_HIT, rays );
-            m_ray_tracer.join(); // Finish async tracing
-        }
-
-        {
             AutoTimerRef<LoopTimerInfo> shading_timer( shading_time );
-            std::vector<LocalGeometry> trace_results;
-            m_ray_tracer.getResults( trace_results );
-            */
-            std::vector<LocalGeometry> trace_results; ////////////////////////////////////////////
-            m_shading_engine.shade( rays, trace_results );
+            m_shading_engine.shade( rays );
         }
 
         {
             AutoTimerRef<LoopTimerInfo> shading_timer( film_time );
-            const std::vector<Color>& shading_results = 
-                m_shading_engine.getResults();
+            const ShadingEngine::Results& results = m_shading_engine.getResults();
 
             for( unsigned int i = 0; i < pixel_ids.size(); ++i )
             {
                 m_film->addSample( pixel_ids[i].pixel,
                                    pixel_ids[i].weight,
-                                   shading_results[i] );
+                                   results[i] );
             }
             m_film->passComplete();
         }
@@ -101,16 +88,13 @@ void Renderer::render()
 
     LLOG_INFO << "Total render time: " << total_time.getTimeElapsed();
     scheduling_time.log();
-    trace_time.log();
     shading_time.log();
     m_shading_engine.logTimerInfo();
     film_time.log();
     LLOG_INFO << "    Summed totals: " << scheduling_time.total_time  + 
-                                          trace_time.total_time       + 
                                           shading_time.total_time     + 
                                           film_time.total_time;
     LLOG_INFO << "    Summed avgs  : " << scheduling_time.averageTime()  + 
-                                          trace_time.averageTime()       + 
                                           shading_time.averageTime()     + 
                                           film_time.averageTime();
 

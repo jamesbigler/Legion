@@ -96,8 +96,6 @@ private:
     std::string          m_ray_buffer_name;
     std::string          m_result_buffer_name;
 
-    bool                 m_results_mapped;
-
     boost::thread        m_thread;
     boost::mutex         m_mutex;
 };
@@ -105,7 +103,6 @@ private:
 
 template < typename RSRay, typename RSResult >
 RayServer<RSRay, RSResult>::RayServer()
-    : m_results_mapped( false )
 {
 }
 
@@ -152,9 +149,6 @@ void RayServer<RSRay, RSResult>::trace( unsigned entry_index,
     if( m_thread.get_id() != boost::thread().get_id() )
         throw Exception( "RayServer::trace() called twice without "
                          "calling RayServer::getResults()" );
-
-    if( m_results_mapped )
-        m_optix_context[ m_result_buffer_name ]->getBuffer()->unmap();
 
     // Copy ray data into buffer
     optix::Buffer ray_buffer = m_optix_context[m_ray_buffer_name]->getBuffer();

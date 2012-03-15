@@ -54,8 +54,7 @@ public:
     void reset();
     void logTimerInfo();
 
-    void shade( std::vector<Ray>& rays,
-                std::vector<LocalGeometry>& local_geom );
+    void shade( std::vector<Ray>& rays );
 
     const Results& getResults()const;
 
@@ -91,7 +90,8 @@ private:
     ShaderMap        m_shaders;
 
     LoopTimerInfo    m_shadow_ray_gen;
-    LoopTimerInfo    m_shadow_ray_trace;
+    LoopTimerInfo    m_shadow_trace;
+    LoopTimerInfo    m_radiance_trace;
     LoopTimerInfo    m_light_loop;
 };
 
