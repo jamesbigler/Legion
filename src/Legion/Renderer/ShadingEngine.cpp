@@ -34,6 +34,8 @@
 #include <Legion/Scene/LightShader/ILightShader.hpp>
 
 
+// TODO: make LocalGeometry use legion::Vector3 rather than float3
+
 
 using namespace legion;
 
@@ -68,8 +70,28 @@ void ShadingEngine::shade( std::vector<Ray>& rays,
     assert( rays.size() == local_geom.size() );
 
     const unsigned num_rays = rays.size();
+    m_results.assign( num_rays, Color( 0.0f ) );
+    std::vector<Color> ray_attenuation( num_rays, Color( 1.0f ) );
 
-    m_results.resize( num_rays );
+    for( int i = 0; i < 3; ++i )
+    {
+        std::vector<LocalGeometry> lgeom;
+        m_ray_tracer.trace( RayTracer::CLOSEST_HIT, rays );
+        m_ray_tracer.join(); // Finish async tracing
+
+        m_ray_tracer.getResults( lgeom );
+
+        shade( rays, lgeom, ray_attenuation );
+    }
+}
+
+
+void ShadingEngine::shade( std::vector<Ray>&           rays,
+                           std::vector<LocalGeometry>& local_geom,
+                           std::vector<Color>&         ray_attenuation )
+{
+    
+    const unsigned num_rays = rays.size();
 
     std::vector<LocalGeometry> shadow_results; // TODO: make persistant 
     bool have_lights = m_light_set.numLights() != 0;
@@ -121,7 +143,7 @@ void ShadingEngine::shade( std::vector<Ray>& rays,
         }
 
         //
-        // Trace shdow rays
+        // Trace shadow rays
         //
         {
             AutoTimerRef<LoopTimerInfo> ray_trace_timer( m_shadow_ray_trace );
@@ -138,6 +160,7 @@ void ShadingEngine::shade( std::vector<Ray>& rays,
     //
     //
     {
+        LLOG_INFO << " Here ------------------------> ";
         AutoTimerRef<LoopTimerInfo> light_loop_timer( m_light_loop ) ;
         for( unsigned i = 0; i < num_rays; ++i )
         {
@@ -146,28 +169,8 @@ void ShadingEngine::shade( std::vector<Ray>& rays,
             //
             if( !local_geom[i].isValidHit() )
             {
-                m_results[i] = Color( 0.0f ); // TODO: Env map queries
-                continue;
-            }
-
-            //
-            // Determine occlusion
-            //
-            const ILightShader* light = m_closures[i].light;
-            const bool is_singular_light = light->isSingular();
-            if( is_singular_light && !shadow_results[i].isValidHit() )
-            {
-                // we have unoccluded light
-            }
-            else if( !is_singular_light &&
-                     shadow_results[i].light_id == static_cast<int>( light->getID() ) )
-            {
-                // we have unoccluded light
-            }
-            else
-            {
-                // Light sample is occluded
-                m_results[ i ] = Color( 0.0f ); // TODO remove this
+                m_results[i] += ray_attenuation[i]*Color( 0.0f ); // TODO: Env map queries
+                ray_attenuation[i] = Color( 0.0f ); // TODO: more efficient to mask out these cases?
                 continue;
             }
 
@@ -177,8 +180,19 @@ void ShadingEngine::shade( std::vector<Ray>& rays,
             const Vector3 w_in( normalize( light_p - surface_p ) );
             const Vector3 w_out = -rays[ i ].direction();
 
-            // 
-            Color emittance = light->emittance( shadow_results[ i ], w_in ); 
+            //
+            // Determine occlusion
+            //
+            const ILightShader* light = m_closures[i].light;
+            const bool is_singular_light = light->isSingular();
+            Color emittance( 0.0f );
+            if( ( is_singular_light && !shadow_results[i].isValidHit() ) || 
+                ( !is_singular_light && shadow_results[i].light_id == static_cast<int>( light->getID() ) ) )
+            {
+                // we have unoccluded light
+                emittance = light->emittance( shadow_results[ i ], w_in ); 
+            }
+
 
             // Evaluate bsdf
             const ISurfaceShader* shader = m_shaders[ lgeom.material_id ];
@@ -189,12 +203,30 @@ void ShadingEngine::shade( std::vector<Ray>& rays,
                 continue;
             }
             
-            float inv_dist2 = 1.0f / ( surface_p - light_p ).lengthSquared();
-            Color bsdf_val = shader->evaluateBSDF( w_out, lgeom, w_in );
-            m_results[i] = emittance * bsdf_val * inv_dist2;
+            const float  ns_dot_w_in = fmaxf( 0.0f, dot( toVector3( lgeom.shading_normal ), w_in ) );
+
+            const float inv_dist2 = 1.0f / ( surface_p - light_p ).lengthSquared();
+            Color bsdf_val = shader->evaluateBSDF( w_out, lgeom, w_in ) * ns_dot_w_in;
+            m_results[i] += emittance * inv_dist2 * bsdf_val * ray_attenuation[i];
+
+
+            Vector3 new_w_in;
+            Color f_over_pdf;
+            shader->sampleBSDF( Vector2(drand48(), drand48()), w_out, lgeom, new_w_in, f_over_pdf);
+            ray_attenuation[i] *= f_over_pdf * fabs( dot( toVector3( lgeom.shading_normal ), new_w_in ) );
+            rays[i] = Ray( surface_p + 0.0001f* toVector3( lgeom.geometric_normal), new_w_in, 1e15f, rays[i].time() );
+
+            //LLOG_INFO << "Tracing new ray " << rays[i];
+            //LLOG_INFO << "From " << lgeom;
+
+
+            //ray_attenuation[i] *= bsdf_val;
         }
     }
+
+
 }
+
 
 const ShadingEngine::Results& ShadingEngine::getResults()const
 {

@@ -66,7 +66,7 @@ public:
 private:
     void shade( std::vector<Ray>&           rays,
                 std::vector<LocalGeometry>& local_geom,
-                std::vector<float>&         ray_attenuation );
+                std::vector<Color>&         ray_attenuation );
     struct Closure
     {
         Closure() {}

@@ -33,7 +33,7 @@ void LambertianShader::sampleBSDF( const Vector2& seed,
                                    const Vector3& w_out,
                                    const LocalGeometry& p,
                                    Vector3& w_in,
-                                   float& pdf )const
+                                   Color& f_over_pdf )const
 {
     // sample hemisphere with cosine density by uniformly sampling
     // unit disk and projecting up to hemisphere
@@ -49,7 +49,14 @@ void LambertianShader::sampleBSDF( const Vector2& seed,
     w_in = onb.inverseTransform( Vector3( x, y, z ) );
 
     // calculate pdf
-    pdf = z * ONE_DIV_PI;
+    float pdf_inv  = 1.0f / z * ONE_DIV_PI;
+    f_over_pdf = pdf_inv * ONE_DIV_PI * m_kd;
+}
+
+
+bool LambertianShader::isSingular()const
+{
+    return false;
 }
 
 

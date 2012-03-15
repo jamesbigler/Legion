@@ -38,7 +38,9 @@ public:
                                 const Vector3& w_out,
                                 const LocalGeometry& p,
                                 Vector3& w_in,
-                                float& pdf )const=0;
+                                Color& f_over_pdf )const=0;
+
+    virtual bool    isSingular()const=0;
 
 
     /// Compute the PDF value for the given incoming/outgoing direction pair

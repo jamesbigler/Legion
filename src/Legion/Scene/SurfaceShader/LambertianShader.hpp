@@ -28,7 +28,9 @@ public:
                        const Vector3& w_out,
                        const LocalGeometry& p,
                        Vector3& w_in,
-                       float& pdf )const;
+                       Color& f_over_pdf )const;
+
+    bool isSingular()const;
 
 
     float   pdf( const Vector3& w_out,

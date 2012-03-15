@@ -68,6 +68,7 @@ void Renderer::render()
         }
 
         {
+          /*
             AutoTimerRef<LoopTimerInfo> trace_timer( trace_time );
             m_ray_tracer.trace( RayTracer::CLOSEST_HIT, rays );
             m_ray_tracer.join(); // Finish async tracing
@@ -77,6 +78,8 @@ void Renderer::render()
             AutoTimerRef<LoopTimerInfo> shading_timer( shading_time );
             std::vector<LocalGeometry> trace_results;
             m_ray_tracer.getResults( trace_results );
+            */
+            std::vector<LocalGeometry> trace_results; ////////////////////////////////////////////
             m_shading_engine.shade( rays, trace_results );
         }
 
