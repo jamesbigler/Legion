@@ -98,7 +98,8 @@ private:
     const ISurfaceShader*    m_shader;
 
     float                    m_area;
-    unsigned                 m_num_faces;
+    std::vector<Vector3>     m_vertex_data;
+    std::vector<Index3>      m_face_data;
 
 };
 

@@ -11,11 +11,11 @@ using namespace legion;
 
 namespace
 {
-    float getArea( const Mesh::Vertex* vertices, const Index3& tris )
+    float getArea( const std::vector<Vector3>& vertices, const Index3& tris )
     {
-        const Vector3 p0 = vertices[ tris.x() ].position;
-        const Vector3 p1 = vertices[ tris.y() ].position;
-        const Vector3 p2 = vertices[ tris.z() ].position;
+        const Vector3 p0 = vertices[ tris.x() ];
+        const Vector3 p1 = vertices[ tris.y() ];
+        const Vector3 p2 = vertices[ tris.z() ];
 
         return length( cross( p1-p0, p2-p0) ) * 0.5f;
     }
@@ -29,8 +29,7 @@ Mesh::Mesh( Context* context, const std::string& name )
       m_vertices_changed( true ),
       m_faces_changed( true ),
       m_shader( 0u ),
-      m_area( 0.0f ),
-      m_num_faces( 0u )
+      m_area( 0.0f )
 {
     m_vertices = context->createOptixBuffer();
     m_faces    = context->createOptixBuffer();
@@ -61,6 +60,10 @@ void Mesh::setTransform( unsigned num_samples, const Matrix* transform )
 void Mesh::setVertices( unsigned num_vertices, const Vertex* vertices )
 {
     RayTracer::updateVertexBuffer( m_vertices, num_vertices, vertices );
+    m_vertex_data.resize( num_vertices );
+    for( unsigned i = 0u; i < num_vertices; ++i )
+        m_vertex_data[i] = vertices[i].position;
+
     m_vertices_changed = true;
 }
 
@@ -78,15 +81,13 @@ void Mesh::setFaces( unsigned              num_faces,
 {
 
     m_faces_changed = true;
-    m_num_faces     = num_faces;
+    m_face_data.assign( tris, tris+num_faces );
     m_area          = 0.0f;
 
     if( lshader ) 
     {
-        const Vertex* vertices = static_cast<const Vertex*>( m_vertices->map() );
         for( unsigned i = 0; i < num_faces; ++i )
-            m_area += getArea( vertices, tris[i] );
-        m_vertices->unmap();
+            m_area += getArea( m_vertex_data, tris[i] );
 
         // TODO: resource mgmt
         ILightShader* mesh_light = new MeshLight( &getContext(), lshader->getName(), this, lshader );
@@ -193,27 +194,21 @@ void Mesh::sample( const Vector2& seed,
                    float&         pdf )
 {
     // TODO: need seed for object selection
-    float oseed = drand48();
-
-    unsigned idx = oseed * m_num_faces;
-    idx = std::min( idx, m_num_faces-1 );
+    const float    oseed     = drand48();
+    const unsigned num_faces = m_face_data.size();
+    unsigned       idx       = oseed * num_faces;
+    idx = std::min( idx, num_faces-1 );
 
     const float t = sqrtf( seed.x() );
     const float alpha = 1.0f - t;
     const float beta  = seed.y() * t;
     const float gamma = 1.0f - alpha - beta;
 
-    const Vertex* vertices = static_cast<const Vertex*>( m_vertices->map() );
-    const Index4* tris     = static_cast<const Index4*>( m_faces->map() );
-    const Index4  tri      = tris[ idx ];
-    on_light = alpha * vertices[ tri.x() ].position +
-               beta  * vertices[ tri.y() ].position +
-               gamma * vertices[ tri.z() ].position;
+    const Index3  tri = m_face_data[ idx ];
+    on_light = alpha * m_vertex_data[ tri.x() ] +
+               beta  * m_vertex_data[ tri.y() ] +
+               gamma * m_vertex_data[ tri.z() ];
     
-    pdf = 1.0f / ( static_cast<float>( m_num_faces ) * 
-                 getArea( vertices, Index3( tri.x(), tri.y(), tri.z() ) ) );
-
-    m_vertices->unmap();
-    m_faces->unmap();
-
+    pdf = 1.0f / ( static_cast<float>( num_faces ) * 
+                 getArea( m_vertex_data, Index3( tri.x(), tri.y(), tri.z() ) ) );
 }

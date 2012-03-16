@@ -149,6 +149,7 @@ int main( int argc, char** argv )
         meshes[num_spheres]->setVertices( verts.size(), &verts[0] );
         meshes[num_spheres]->setTransform( legion::Matrix::identity() );
         meshes[num_spheres]->setFaces( indices.size(), &indices[0], &mtl1, &light1 );
+        //meshes[num_spheres]->setFaces( indices.size(), &indices[0], &mtl1 );
         ctx.addMesh( meshes[num_spheres] );
 
 
