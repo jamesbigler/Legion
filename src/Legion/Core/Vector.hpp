@@ -70,6 +70,7 @@ TEMPLATE_DECL Vector<DIM, TYPE> operator*( const Vector<DIM, TYPE>& v, TYPE f );
 TEMPLATE_DECL Vector<DIM, TYPE> operator/( const Vector<DIM, TYPE>& v, TYPE f );
 TEMPLATE_DECL Vector<DIM, TYPE> operator-( const Vector<DIM, TYPE>& v );
 TEMPLATE_DECL Vector<DIM, TYPE> normalize( const Vector<DIM, TYPE>& v );
+TEMPLATE_DECL TYPE length( const Vector<DIM, TYPE>& v );
 TEMPLATE_DECL TYPE dot( const Vector<DIM, TYPE>& v0, const Vector<DIM, TYPE>& v1 );
 #undef TEMPLATE_DECL
 
@@ -422,6 +423,11 @@ inline Vector<DIM, TYPE> normalize( const Vector<DIM, TYPE>& v )
     return temp;
 }
 
+template<unsigned DIM, typename TYPE>
+inline TYPE length( const Vector<DIM, TYPE>& v )
+{
+    return v.length();
+}
 
 template<typename TYPE>
 inline Vector<3, TYPE> cross( const Vector<3, TYPE>& v0, const Vector<3, TYPE>& v1 )

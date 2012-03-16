@@ -76,6 +76,8 @@ add_library( legion SHARED
     Scene/Film/ImageFilm.hpp
     Scene/LightShader/ILightShader.cpp
     Scene/LightShader/ILightShader.hpp
+    Scene/LightShader/MeshLight.cpp
+    Scene/LightShader/MeshLight.hpp
     Scene/LightShader/PointLightShader.cpp
     Scene/LightShader/PointLightShader.hpp
     Scene/Mesh/Mesh.cpp

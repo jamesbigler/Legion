@@ -80,11 +80,15 @@ public:
     bool facesChanged()const;
     void acceptChanges();
 
+    void sample( const Vector2& seed,
+                 Vector3&       on_light,
+                 float&         pdf );
+
 private:
 
     bool                     m_subdivision_enabled;
 
-    std::vector<Matrix>   m_transform;
+    std::vector<Matrix>      m_transform;
 
     optix::Buffer            m_vertices;
     optix::Buffer            m_faces;
@@ -92,6 +96,9 @@ private:
     bool                     m_faces_changed;
 
     const ISurfaceShader*    m_shader;
+
+    float                    m_area;
+    unsigned                 m_num_faces;
 
 };
 

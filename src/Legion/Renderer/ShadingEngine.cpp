@@ -76,7 +76,7 @@ void ShadingEngine::shade( std::vector<Ray>& rays )
     std::vector<Color> ray_attenuation( num_rays, Color( 1.0f ) );
 
     std::vector<LocalGeometry> lgeom;
-    for( int i = 0; i < 3; ++i ) // TODO: magic #
+    for( int i = 0; i < 1; ++i ) // TODO: magic #
     {
         {
             AutoTimerRef<LoopTimerInfo> radiance_ray_timer( m_radiance_trace ) ;
@@ -163,7 +163,6 @@ void ShadingEngine::shade( std::vector<Ray>&           rays,
     //
     //
     {
-        LLOG_INFO << " Here ------------------------> ";
         AutoTimerRef<LoopTimerInfo> light_loop_timer( m_light_loop ) ;
         for( unsigned i = 0; i < num_rays; ++i )
         {

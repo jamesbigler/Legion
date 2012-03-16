@@ -93,6 +93,16 @@ int main( int argc, char** argv )
 
         LLOG_INFO << "Starting ***********";
         
+        legion::PointLightShader light0( &ctx, "lshader0" );
+        light0.setPosition( legion::Vector3( 1.0f, 2.0f, -6.0f ) );
+        light0.setIntensity( legion::Color( 10.0f, 10.0f, 20.0f ) );
+        ctx.addLight( &light0 );
+
+        legion::PointLightShader light1( &ctx, "lshader1" );
+        light1.setPosition( legion::Vector3( -1.0f, 2.0f, -4.0f ) );
+        light1.setIntensity( legion::Color( 15.0f, 15.0f, 8.0f ) );
+        ctx.addLight( &light1 );
+
         // Parameters params;
         // params.add( "Kd", legion::Color( 0.5f, 0.5f, 0.5f ) );
         // legion::createSurfaceShader( "Lambertian", "material", params );
@@ -138,19 +148,9 @@ int main( int argc, char** argv )
         meshes[num_spheres] = new legion::Mesh( &ctx, "plane" );
         meshes[num_spheres]->setVertices( verts.size(), &verts[0] );
         meshes[num_spheres]->setTransform( legion::Matrix::identity() );
-        meshes[num_spheres]->setFaces( indices.size(), &indices[0], &mtl1 );
+        meshes[num_spheres]->setFaces( indices.size(), &indices[0], &mtl1, &light1 );
         ctx.addMesh( meshes[num_spheres] );
 
-        legion::PointLightShader light0( &ctx, "lshader0" );
-        light0.setPosition( legion::Vector3( 1.0f, 2.0f, -6.0f ) );
-        light0.setIntensity( legion::Color( 10.0f, 10.0f, 20.0f ) );
-        ctx.addLight( &light0 );
-
-        legion::PointLightShader light1( &ctx, "lshader1" );
-        light1.setPosition( legion::Vector3( -1.0f, 2.0f, -4.0f ) );
-        light1.setIntensity( legion::Color( 15.0f, 15.0f, 8.0f ) );
-        ctx.addLight( &light1 );
-        //ctx.addAreaLigth(...); 
 
         legion::ThinLensCamera cam( &ctx, "camera" );
         cam.setViewPlane( -1.0f, 1.0f, 0.75f, -0.75f );
