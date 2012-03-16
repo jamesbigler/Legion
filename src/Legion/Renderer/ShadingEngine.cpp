@@ -44,7 +44,8 @@ ShadingEngine::ShadingEngine( RayTracer& ray_tracer )
       m_shadow_ray_gen( "        Shadow ray gen     " ),
       m_shadow_trace  ( "        Shadow ray trace   " ),
       m_radiance_trace( "        Radiance ray trace " ),
-      m_light_loop    ( "        Light loop         " )
+      m_light_loop    ( "        Light loop         " ),
+      m_rnd( 1234321u )
 {
 }
     
@@ -69,14 +70,12 @@ void ShadingEngine::logTimerInfo()
 
 void ShadingEngine::shade( std::vector<Ray>& rays )
 {
-    assert( rays.size() == local_geom.size() );
-
     const unsigned num_rays = rays.size();
     m_results.assign( num_rays, Color( 0.0f ) );
     std::vector<Color> ray_attenuation( num_rays, Color( 1.0f ) );
 
     std::vector<LocalGeometry> lgeom;
-    for( int i = 0; i < 1; ++i ) // TODO: magic #
+    for( int i = 0; i < 3; ++i ) // TODO: magic #
     {
         {
             AutoTimerRef<LoopTimerInfo> radiance_ray_timer( m_radiance_trace ) ;
@@ -111,7 +110,8 @@ void ShadingEngine::shade( std::vector<Ray>&           rays,
 
             for( unsigned i = 0; i < num_rays; ++i )
             {
-                if( !local_geom[i].isValidHit() )
+                if( ray_attenuation[i].sum() < 0.0001f ||
+                    !local_geom[i].isValidHit() ) 
                 {
                     m_secondary_rays[i].setDirection( Vector3( 0.0f ) );
                     continue;
@@ -120,7 +120,7 @@ void ShadingEngine::shade( std::vector<Ray>&           rays,
                 // Choose a light
                 const ILightShader* light;
                 float               light_select_pdf;
-                float               sample_seed = static_cast<float>( drand48() );
+                float               sample_seed = static_cast<float>( m_rnd() );
                 m_light_set.selectLight( sample_seed,
                                          light,
                                          light_select_pdf );
@@ -128,7 +128,7 @@ void ShadingEngine::shade( std::vector<Ray>&           rays,
                 // Choose a point on the light by sampling light Area
                 float light_sample_pdf;
                 Vector3 on_light;
-                light->sample( Vector2( drand48(), drand48() ),
+                light->sample( Vector2( m_rnd(), m_rnd() ),
                                on_light,
                                light_sample_pdf );
 
@@ -178,26 +178,39 @@ void ShadingEngine::shade( std::vector<Ray>&           rays,
 
             const LocalGeometry& lgeom = local_geom[ i ];
             const Vector3 surface_p( toVector3( lgeom.position ) );
-            const Vector3 light_p( m_closures[i].light_point );
-            const Vector3 w_in( normalize( light_p - surface_p ) );
             const Vector3 w_out = -rays[ i ].direction();
 
+            const ILightShader* light = m_closures[i].light;
+
+            //
+            // Emission
+            //
+
+            Color emission( 0.0f ); 
+            {
+                const ILightShader* light_shader = m_light_shaders[ lgeom.light_id ];
+                if( light_shader )
+                    emission = light_shader->emittance( lgeom, w_out );
+            }
+            
             //
             // Determine occlusion
             //
-            const ILightShader* light = m_closures[i].light;
+            // TODO: handle case where have_lights == false
+            const Vector3 light_p( m_closures[i].light_point );
+            const Vector3 w_in( normalize( light_p - surface_p ) );
             const bool is_singular_light = light->isSingular();
-            Color emittance( 0.0f );
+            Color direct_light( 0.0f );
             if( ( is_singular_light && !shadow_results[i].isValidHit() ) || 
                 ( !is_singular_light && shadow_results[i].light_id == static_cast<int>( light->getID() ) ) )
             {
                 // we have unoccluded light
-                emittance = light->emittance( shadow_results[ i ], w_in ); 
+                direct_light = light->emittance( shadow_results[ i ], w_in ); 
             }
 
 
             // Evaluate bsdf
-            const ISurfaceShader* shader = m_shaders[ lgeom.material_id ];
+            const ISurfaceShader* shader = m_surface_shaders[ lgeom.material_id ];
             if( !shader )
             {
                 LLOG_INFO << "no shader found for id: " << lgeom.material_id;
@@ -209,12 +222,12 @@ void ShadingEngine::shade( std::vector<Ray>&           rays,
 
             const float inv_dist2 = 1.0f / ( surface_p - light_p ).lengthSquared();
             Color bsdf_val = shader->evaluateBSDF( w_out, lgeom, w_in ) * ns_dot_w_in;
-            m_results[i] += emittance * inv_dist2 * bsdf_val * ray_attenuation[i];
+            m_results[i] += emission + direct_light * inv_dist2 * bsdf_val * ray_attenuation[i];
 
 
             Vector3 new_w_in;
             Color f_over_pdf;
-            shader->sampleBSDF( Vector2(drand48(), drand48()), w_out, lgeom, new_w_in, f_over_pdf);
+            shader->sampleBSDF( Vector2(m_rnd(), m_rnd()), w_out, lgeom, new_w_in, f_over_pdf);
             ray_attenuation[i] *= f_over_pdf * fabs( dot( toVector3( lgeom.shading_normal ), new_w_in ) );
             rays[i] = Ray( surface_p + 0.0001f* toVector3( lgeom.geometric_normal), new_w_in, 1e15f, rays[i].time() );
 
@@ -238,12 +251,14 @@ const ShadingEngine::Results& ShadingEngine::getResults()const
 
 void ShadingEngine::addSurfaceShader( const ISurfaceShader* shader )
 {
-    LLOG_INFO << __func__ << ": adding shader " << shader->getID();
-    m_shaders[ shader->getID() ] = shader;
+    LLOG_INFO << __func__ << ": adding surface shader " << shader->getID();
+    m_surface_shaders[ shader->getID() ] = shader;
 }
 
 void ShadingEngine::addLight( const ILightShader* shader )
 {
+    LLOG_INFO << __func__ << ": adding light shader " << shader->getID();
+    m_light_shaders[ shader->getID() ] = shader;
     m_light_set.addLight( shader );
 }
 

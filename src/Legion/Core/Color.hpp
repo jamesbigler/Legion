@@ -32,6 +32,7 @@ public:
     Color& operator/=( float rhs );
 
     float luminance()const;
+    float sum()const;
 private:
 
     float m_c[3];
@@ -115,6 +116,19 @@ inline Color& Color::operator/=( float rhs )
     m_c[2] /= rhs;
     return *this;
 }
+
+inline float Color::luminance()const
+{
+    return 0.2126f*m_c[0] + 0.7152f*m_c[1] + 0.0722f*m_c[2]; 
+}
+
+
+inline float Color::sum()const
+{
+    return m_c[0] + m_c[1] + m_c[2]; 
+}
+
+
 
 /******************************************************************************\
  *

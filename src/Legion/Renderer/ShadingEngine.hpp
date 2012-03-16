@@ -27,6 +27,7 @@
 #ifndef LEGION_RENDERER_SHADINGENGINE_HPP_
 #define LEGION_RENDERER_SHADINGENGINE_HPP_
 
+#include <Legion/Common/Math/MTRand.hpp>
 #include <Legion/Common/Util/AutoTimerHelpers.hpp>
 #include <Legion/Core/Color.hpp>
 #include <Legion/Core/Ray.hpp>
@@ -77,7 +78,8 @@ private:
     };
 
 
-    typedef std::map<unsigned, const ISurfaceShader*> ShaderMap;
+    typedef std::map<unsigned, const ISurfaceShader*> SurfaceShaderMap;
+    typedef std::map<unsigned, const ILightShader*>   LightShaderMap;
     typedef std::vector<Closure>                      Closures;
     typedef std::vector<Ray>                          Rays;
 
@@ -87,12 +89,15 @@ private:
 
     RayTracer&       m_ray_tracer;
     LightSet         m_light_set;
-    ShaderMap        m_shaders;
+    SurfaceShaderMap m_surface_shaders;
+    LightShaderMap   m_light_shaders;   // TODO:Move this into LightSet
 
     LoopTimerInfo    m_shadow_ray_gen;
     LoopTimerInfo    m_shadow_trace;
     LoopTimerInfo    m_radiance_trace;
     LoopTimerInfo    m_light_loop;
+
+    MTRand32         m_rnd;
 };
 
 
