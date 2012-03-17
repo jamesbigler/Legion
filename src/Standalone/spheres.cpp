@@ -1,6 +1,5 @@
 
 #include <Legion/Legion.hpp>
-#include <Legion/Core/Vector.hpp>
 #include <vector>
 #include <iomanip>
 
@@ -103,8 +102,11 @@ int main( int argc, char** argv )
         light1.setIntensity( legion::Color( 15.0f, 15.0f, 8.0f ) );
         ctx.addLight( &light1 );
 
-        // Parameters params;
-        // params.add( "Kd", legion::Color( 0.5f, 0.5f, 0.5f ) );
+        // TODO: make this a DiffuseLight
+        legion::PointLightShader light2( &ctx, "lshader2" );
+        light1.setPosition( legion::Vector3( -1.0f, 2.0f, -4.0f ) );
+        light2.setIntensity( legion::Color( 1.0f, 1.0f, 1.0f ) );
+
         // legion::createSurfaceShader( "Lambertian", "material", params );
         legion::LambertianShader mtl0( &ctx, "material" );
         mtl0.setKd( legion::Color(  1.0f, 1.0f, 1.0f ) );
@@ -122,7 +124,8 @@ int main( int argc, char** argv )
             meshes[i] = new legion::Mesh( &ctx, "sphere" );
             meshes[i]->setVertices( verts.size(), &verts[0] );
             meshes[i]->setTransform( legion::Matrix::identity() );
-            meshes[i]->setFaces( indices.size(), &indices[0], &mtl0 );
+            meshes[i]->setFaces( indices.size(), &indices[0], &mtl0,
+                                 i == 2 ? &light2 : 0u );
             ctx.addMesh( meshes[i] );
         }
 
@@ -148,8 +151,7 @@ int main( int argc, char** argv )
         meshes[num_spheres] = new legion::Mesh( &ctx, "plane" );
         meshes[num_spheres]->setVertices( verts.size(), &verts[0] );
         meshes[num_spheres]->setTransform( legion::Matrix::identity() );
-        meshes[num_spheres]->setFaces( indices.size(), &indices[0], &mtl1, &light1 );
-        //meshes[num_spheres]->setFaces( indices.size(), &indices[0], &mtl1 );
+        meshes[num_spheres]->setFaces( indices.size(), &indices[0], &mtl1 );
         ctx.addMesh( meshes[num_spheres] );
 
 

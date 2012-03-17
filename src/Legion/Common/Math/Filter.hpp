@@ -5,7 +5,7 @@
 #ifndef LEGION_COMMON_MATH_FILTER_HPP_
 #define LEGION_COMMON_MATH_FILTER_HPP_
 
-#include <Legion/Core/Vector.hpp>
+#include <Legion/Common/Math/Vector.hpp>
 
 namespace legion 
 {

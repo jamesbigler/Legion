@@ -28,7 +28,7 @@
 #define LEGION_TYPECONVERSION_HPP_
 
 #include <Legion/Core/Color.hpp>
-#include <Legion/Core/Vector.hpp>
+#include <Legion/Common/Math/Vector.hpp>
 #include <optixu/optixu_vector_types.h>
 
 namespace legion

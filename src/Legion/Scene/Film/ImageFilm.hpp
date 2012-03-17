@@ -3,7 +3,7 @@
 #define LEGION_SCENE_FILM_IMAGEFILM_H_
 
 #include <Legion/Scene/Film/IFilm.hpp>
-#include <Legion/Core/Vector.hpp>
+#include <Legion/Common/Math/Vector.hpp>
 #include <Legion/Core/Color.hpp>
 #include <Legion/Common/Util/Noncopyable.hpp>
 //#include <tr1/memory>

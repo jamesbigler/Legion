@@ -6,7 +6,7 @@
 
 
 #include <Legion/Core/APIBase.hpp>
-#include <Legion/Core/Vector.hpp>
+#include <Legion/Common/Math/Vector.hpp>
 
 
 namespace legion

@@ -3,7 +3,7 @@
 #define LEGION_COMMON_MATH_MATH_HPP_
 
 #include <Legion/Core/Color.hpp>
-#include <Legion/Core/Vector.hpp>
+#include <Legion/Common/Math/Vector.hpp>
 #include <cmath>
 
 

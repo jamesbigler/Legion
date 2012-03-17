@@ -5,7 +5,7 @@
 
 #include <Legion/Scene/LightShader/ILightShader.hpp>
 #include <Legion/Core/Color.hpp>
-#include <Legion/Core/Vector.hpp>
+#include <Legion/Common/Math/Vector.hpp>
 #include <tr1/memory>
 
 

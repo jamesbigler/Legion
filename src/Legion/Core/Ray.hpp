@@ -2,7 +2,7 @@
 #ifndef LEGION_CORE_RAY_HPP_
 #define LEGION_CORE_RAY_HPP_
 
-#include <Legion/Core/Vector.hpp>
+#include <Legion/Common/Math/Vector.hpp>
 
 namespace legion
 {

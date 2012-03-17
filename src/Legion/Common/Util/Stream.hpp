@@ -2,7 +2,7 @@
 #ifndef LEGION_COMMON_UTIL_STREAM_HPP_
 #define LEGION_COMMON_UTIL_STREAM_HPP_
 
-#include <Legion/Core/Vector.hpp>
+#include <Legion/Common/Math/Vector.hpp>
 #include <Legion/Renderer/Cuda/Shared.hpp>
 #include <ostream>
 

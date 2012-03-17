@@ -4,7 +4,7 @@
 
 #include <vector>
 #include <optixu/optixpp_namespace.h>
-#include <Legion/Core/Vector.hpp>
+#include <Legion/Common/Math/Vector.hpp>
 #include <Legion/Common/Math/MTRand.hpp>
 
 namespace legion

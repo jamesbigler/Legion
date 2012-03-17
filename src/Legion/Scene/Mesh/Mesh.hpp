@@ -4,7 +4,7 @@
 
 
 #include <Legion/Core/APIBase.hpp>
-#include <Legion/Core/Vector.hpp>
+#include <Legion/Common/Math/Vector.hpp>
 #include <tr1/memory>
 
 #include <optixu/optixpp_namespace.h>

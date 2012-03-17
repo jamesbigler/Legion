@@ -2,7 +2,7 @@
 #ifndef LEGION_RAYTRACER_RAYTRACER_HPP_
 #define LEGION_RAYTRACER_RAYTRACER_HPP_
 
-#include <Legion/Core/Vector.hpp>
+#include <Legion/Common/Math/Vector.hpp>
 #include <Legion/Renderer/RayServer.hpp>
 #include <Legion/Scene/Mesh/Mesh.hpp>
 

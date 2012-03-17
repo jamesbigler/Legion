@@ -1,8 +1,8 @@
 
 /// \file Vector.hpp
 /// Vector (numeric tuple) class of arbitrary dimension and element type
-#ifndef LEGION_CORE_VECTOR_H_
-#define LEGION_CORE_VECTOR_H_
+#ifndef LEGION_COMMON_MATH_VECTOR_H_
+#define LEGION_COMMON_MATH_VECTOR_H_
 
 #include <cmath>
 #include <Legion/Common/Util/Assert.hpp>
@@ -61,24 +61,28 @@ private:
 
 
 #define TEMPLATE_DECL template<unsigned DIM, typename TYPE> 
-TEMPLATE_DECL Vector<DIM, TYPE> operator*( const Vector<DIM, TYPE>& v0, const Vector<DIM, TYPE>& v1 );
-TEMPLATE_DECL Vector<DIM, TYPE> operator/( const Vector<DIM, TYPE>& v0, const Vector<DIM, TYPE>& v1 );
-TEMPLATE_DECL Vector<DIM, TYPE> operator+( const Vector<DIM, TYPE>& v0, const Vector<DIM, TYPE>& v1 );
-TEMPLATE_DECL Vector<DIM, TYPE> operator-( const Vector<DIM, TYPE>& v0, const Vector<DIM, TYPE>& v1 );
+TEMPLATE_DECL Vector<DIM, TYPE> operator*( const Vector<DIM, TYPE>& v0,
+                                           const Vector<DIM, TYPE>& v1 );
+TEMPLATE_DECL Vector<DIM, TYPE> operator/( const Vector<DIM, TYPE>& v0,
+                                           const Vector<DIM, TYPE>& v1 );
+TEMPLATE_DECL Vector<DIM, TYPE> operator+( const Vector<DIM, TYPE>& v0,
+                                           const Vector<DIM, TYPE>& v1 );
+TEMPLATE_DECL Vector<DIM, TYPE> operator-( const Vector<DIM, TYPE>& v0,
+                                           const Vector<DIM, TYPE>& v1 );
 TEMPLATE_DECL Vector<DIM, TYPE> operator*( TYPE f, const Vector<DIM, TYPE>& v );
 TEMPLATE_DECL Vector<DIM, TYPE> operator*( const Vector<DIM, TYPE>& v, TYPE f );
 TEMPLATE_DECL Vector<DIM, TYPE> operator/( const Vector<DIM, TYPE>& v, TYPE f );
 TEMPLATE_DECL Vector<DIM, TYPE> operator-( const Vector<DIM, TYPE>& v );
 TEMPLATE_DECL Vector<DIM, TYPE> normalize( const Vector<DIM, TYPE>& v );
 TEMPLATE_DECL TYPE length( const Vector<DIM, TYPE>& v );
-TEMPLATE_DECL TYPE dot( const Vector<DIM, TYPE>& v0, const Vector<DIM, TYPE>& v1 );
+TEMPLATE_DECL TYPE dot( const Vector<DIM, TYPE>& v0,
+                        const Vector<DIM, TYPE>& v1 );
 #undef TEMPLATE_DECL
 
-template<typename TYPE> Vector<3, TYPE> cross( const Vector<3, TYPE>& v0, const Vector<3, TYPE>& v1 );
+template<typename TYPE> Vector<3, TYPE> cross( const Vector<3, TYPE>& v0,
+                                               const Vector<3, TYPE>& v1 );
 
 
-
-// TODO: #include <Private/Vector.impl>
 
 
     
@@ -219,7 +223,6 @@ void Vector<DIM, TYPE>::setW( TYPE w )
 template<unsigned DIM, typename TYPE>
 TYPE Vector<DIM, TYPE>::operator[]( unsigned idx ) const
 {
-    // TODO: legion::Assert( 0 <= idx && idx < DIM );
     return m_v[idx];
 }
 
@@ -227,13 +230,13 @@ TYPE Vector<DIM, TYPE>::operator[]( unsigned idx ) const
 template<unsigned DIM, typename TYPE>
 TYPE& Vector<DIM, TYPE>::operator[]( unsigned idx )
 {
-    // TODO: legion::Assert( 0 <= idx && idx < DIM );
     return m_v[idx];
 }
 
 
 template<unsigned DIM, typename TYPE>
-inline Vector<DIM, TYPE>& Vector<DIM, TYPE>::operator=( const Vector<DIM, TYPE>& rhs )
+inline Vector<DIM, TYPE>&
+Vector<DIM, TYPE>::operator=( const Vector<DIM, TYPE>& rhs )
 {
     for( unsigned i = 0; i < DIM; ++i ) m_v[i] = rhs[i];
     return *this;
@@ -241,7 +244,8 @@ inline Vector<DIM, TYPE>& Vector<DIM, TYPE>::operator=( const Vector<DIM, TYPE>&
 
 
 template<unsigned DIM, typename TYPE>
-inline Vector<DIM, TYPE>& Vector<DIM, TYPE>::operator*=( const Vector<DIM, TYPE>& rhs )
+inline Vector<DIM, TYPE>&
+Vector<DIM, TYPE>::operator*=( const Vector<DIM, TYPE>& rhs )
 {
     for( unsigned i = 0; i < DIM; ++i ) m_v[i] *= rhs[i];
     return *this;
@@ -249,7 +253,8 @@ inline Vector<DIM, TYPE>& Vector<DIM, TYPE>::operator*=( const Vector<DIM, TYPE>
 
 
 template<unsigned DIM, typename TYPE>
-inline Vector<DIM, TYPE>& Vector<DIM, TYPE>::operator/=( const Vector<DIM, TYPE>& rhs )
+inline Vector<DIM, TYPE>&
+Vector<DIM, TYPE>::operator/=( const Vector<DIM, TYPE>& rhs )
 {
     for( unsigned i = 0; i < DIM; ++i ) m_v[i] /= rhs[i];
     return *this;
@@ -257,7 +262,8 @@ inline Vector<DIM, TYPE>& Vector<DIM, TYPE>::operator/=( const Vector<DIM, TYPE>
 
 
 template<unsigned DIM, typename TYPE>
-inline Vector<DIM, TYPE>& Vector<DIM, TYPE>::operator+=( const Vector<DIM, TYPE>& rhs )
+inline Vector<DIM, TYPE>&
+Vector<DIM, TYPE>::operator+=( const Vector<DIM, TYPE>& rhs )
 {
     for( unsigned i = 0; i < DIM; ++i ) m_v[i] += rhs[i];
     return *this;
@@ -265,7 +271,8 @@ inline Vector<DIM, TYPE>& Vector<DIM, TYPE>::operator+=( const Vector<DIM, TYPE>
 
 
 template<unsigned DIM, typename TYPE>
-inline Vector<DIM, TYPE>& Vector<DIM, TYPE>::operator-=( const Vector<DIM, TYPE>& rhs )
+inline Vector<DIM, TYPE>&
+Vector<DIM, TYPE>::operator-=( const Vector<DIM, TYPE>& rhs )
 {
     for( unsigned i = 0; i < DIM; ++i ) m_v[i] -= rhs[i];
     return *this;
@@ -308,7 +315,6 @@ inline TYPE Vector<DIM, TYPE>::lengthSquared() const
 template<unsigned DIM, typename TYPE>
 inline TYPE Vector<DIM, TYPE>::normalize()
 {
-    // TODO: check out the resulting assembly on this
     TYPE len = length();
     *this /= len;
     return len;
@@ -448,4 +454,4 @@ typedef Vector<4, unsigned> Index4;
 
 }
 
-#endif // LEGION_CORE_VECTOR_H_
+#endif // LEGION_COMMON_MATH_VECTOR_H_

@@ -7,7 +7,7 @@
 #define LEGION_SCENE_FILM_IFILM_HPP_
 
 #include <Legion/Core/APIBase.hpp>
-#include <Legion/Core/Vector.hpp>
+#include <Legion/Common/Math/Vector.hpp>
 #include <Legion/Core/Color.hpp>
 
 namespace legion

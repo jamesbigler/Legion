@@ -1,5 +1,4 @@
  
-
 // Copyright (C) 2011 R. Keith Morley
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -24,12 +23,11 @@
 /// \file ONB.hpp
 /// ONB
 
-// TODO: move Vector.hpp to Common/Math 
-//
+
 #ifndef LEGION_COMMON_MATH_ONB_HPP_
 #define LEGION_COMMON_MATH_ONB_HPP_
 
-#include <Legion/Core/Vector.hpp>
+#include <Legion/Common/Math/Vector.hpp>
 
 namespace legion
 {

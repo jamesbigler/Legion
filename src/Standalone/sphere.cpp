@@ -1,6 +1,6 @@
 
 #include <Legion/Legion.hpp>
-#include <Legion/Core/Vector.hpp>
+
 #include <vector>
 #include <iomanip>
 

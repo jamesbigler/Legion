@@ -8,7 +8,7 @@
 #define LEGION_SCENE_CAMERA_ICAMERA_H_
 
 #include <Legion/Core/APIBase.hpp>
-#include <Legion/Core/Vector.hpp>
+#include <Legion/Common/Math/Vector.hpp>
 
 namespace legion
 {
