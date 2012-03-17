@@ -20,13 +20,15 @@ configure_file( "${CMAKE_CURRENT_SOURCE_DIR}/Core/config.hpp.in"
 add_library( legion SHARED
     ${ptx_files}
     Common/Math/Filter.hpp
-    Common/Math/Math.cpp
-    Common/Math/Math.hpp
     Common/Math/MTRand.cpp
     Common/Math/MTRand.hpp
+    Common/Math/Math.cpp
+    Common/Math/Math.hpp
+    Common/Math/Matrix.hpp
     Common/Math/ONB.hpp
-    Common/Util/AutoTimerHelpers.hpp
+    Common/Math/Vector.hpp
     Common/Util/Assert.hpp
+    Common/Util/AutoTimerHelpers.hpp
     Common/Util/Image.cpp
     Common/Util/Image.hpp
     Common/Util/Logger.cpp
@@ -47,20 +49,17 @@ add_library( legion SHARED
     Core/Declarations.hpp
     Core/Exception.cpp
     Core/Exception.hpp
-    Core/Light.hpp
-    Core/Matrix.hpp
     Core/Ray.hpp
-    Core/Vector.hpp
     Legion.hpp
     Renderer/LightSet.cpp
     Renderer/LightSet.hpp
-    Renderer/Renderer.cpp
-    Renderer/Renderer.hpp
     Renderer/RayScheduler.cpp
     Renderer/RayScheduler.hpp
     Renderer/RayServer.hpp
     Renderer/RayTracer.cpp
     Renderer/RayTracer.hpp
+    Renderer/Renderer.cpp
+    Renderer/Renderer.hpp
     Renderer/ShadingEngine.cpp
     Renderer/ShadingEngine.hpp
     Scene/Camera/BasicCamera.cpp
@@ -74,6 +73,8 @@ add_library( legion SHARED
     Scene/Film/IFilm.hpp
     Scene/Film/ImageFilm.cpp
     Scene/Film/ImageFilm.hpp
+    Scene/LightShader/DiffuseLight.cpp
+    Scene/LightShader/DiffuseLight.hpp
     Scene/LightShader/ILightShader.cpp
     Scene/LightShader/ILightShader.hpp
     Scene/LightShader/MeshLight.cpp

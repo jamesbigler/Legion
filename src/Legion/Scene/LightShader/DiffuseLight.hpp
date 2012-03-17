@@ -1,4 +1,4 @@
-
+ 
 // Copyright (C) 2011 R. Keith Morley
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -20,46 +20,36 @@
 // IN THE SOFTWARE.
 // (MIT/X11 License)
 
-#include <Legion/Common/Util/Assert.hpp>
-#include <Legion/Common/Util/Logger.hpp>
-#include <Legion/Common/Util/Stream.hpp>
-#include <Legion/Core/Color.hpp>
+/// \file DiffuseLight.hpp
+/// DiffuseLight
+
+#ifndef LEGION_DIFFUSELIGHT_HPP_
+#define LEGION_DIFFUSELIGHT_HPP_
+
 #include <Legion/Scene/LightShader/MeshLight.hpp>
-#include <Legion/Scene/Mesh/Mesh.hpp>
 
-using namespace legion;
-
-
-MeshLight::MeshLight( Context* context,
-                      const std::string& name )
-  : ILightShader( context, name ),
-    m_mesh( 0u )
-
+namespace legion
 {
-}
 
-
-MeshLight::~MeshLight()
+class DiffuseLight : public MeshLight
 {
-}
-
-
-void MeshLight::sample( const Vector2& seed,
-                               Vector3& on_light,
-                               float& pdf )const
-{
-    m_mesh->sample( seed, on_light, pdf );
-}
-
-
-bool MeshLight::isSingular()const
-{
-    return false;
-}
-
-
-void MeshLight::setMesh( Mesh* mesh )
-{
-    m_mesh = mesh;
-}
+public:
+    DiffuseLight( Context* context, const std::string& name );
     
+    ~DiffuseLight();
+
+    Color power()const;
+
+    Color emittance( const LocalGeometry& light_geom,
+                     const Vector3& w_in )const;
+
+private:
+
+    
+};
+
+
+}
+
+
+#endif // LEGION_DIFFUSELIGHT_HPP_

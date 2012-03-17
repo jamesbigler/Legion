@@ -22,7 +22,9 @@
 #include <Legion/Scene/Film/Film.hpp>
 #include <Legion/Scene/Film/IFilm.hpp>
 #include <Legion/Scene/Film/ImageFilm.hpp>
+#include <Legion/Scene/LightShader/DiffuseLight.hpp>
 #include <Legion/Scene/LightShader/ILightShader.hpp>
+#include <Legion/Scene/LightShader/MeshLight.hpp>
 #include <Legion/Scene/LightShader/PointLightshader.hpp>
 #include <Legion/Scene/Mesh/Mesh.hpp>
 #include <Legion/Scene/SurfaceShader/ISurfaceShader.hpp>

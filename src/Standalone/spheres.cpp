@@ -103,9 +103,7 @@ int main( int argc, char** argv )
         ctx.addLight( &light1 );
 
         // TODO: make this a DiffuseLight
-        legion::PointLightShader light2( &ctx, "lshader2" );
-        light1.setPosition( legion::Vector3( -1.0f, 2.0f, -4.0f ) );
-        light2.setIntensity( legion::Color( 1.0f, 1.0f, 1.0f ) );
+        legion::DiffuseLight diffuse_light( &ctx, "diffuse_light" );
 
         // legion::createSurfaceShader( "Lambertian", "material", params );
         legion::LambertianShader mtl0( &ctx, "material" );
@@ -125,7 +123,7 @@ int main( int argc, char** argv )
             meshes[i]->setVertices( verts.size(), &verts[0] );
             meshes[i]->setTransform( legion::Matrix::identity() );
             meshes[i]->setFaces( indices.size(), &indices[0], &mtl0,
-                                 i == 2 ? &light2 : 0u );
+                                 i == 2 ? &diffuse_light : 0u );
             ctx.addMesh( meshes[i] );
         }
 

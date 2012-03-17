@@ -14,6 +14,7 @@ namespace legion
 
 class  Ray;
 class  ISurfaceShader;
+class  ILightShader;
 struct LocalGeometry;
 
 

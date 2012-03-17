@@ -28,41 +28,44 @@
 
 #include <Legion/Scene/LightShader/ILightShader.hpp>
 
+
+// TODO: change name to IMeshLightShader and same for IBasicCamera
 namespace legion
 {
-// TODO: add an AreaLight interface which users can inherit from
-//       MeshLight should still inherit from ILightShader
 
+class Context;
 class Mesh;
 
 class MeshLight : public  ILightShader
 {
 public:
-    MeshLight( Context* context,
-               const std::string& name,
-               Mesh* mesh,
-               /*const AreaLight* */ const ILightShader* light_shader );
-
-
-    virtual ~MeshLight();
+    MeshLight( Context* context, const std::string& name );
 
     //--------------------------------------------------------------------------
     // ILightShader interface
     //--------------------------------------------------------------------------
+
+    virtual ~MeshLight();
+    
+    /// Samples the associated mesh
     void    sample( const Vector2&  seed, Vector3& on_light, float& pdf )const;
 
+    /// Returns true
     bool    isSingular()const;
 
-    Color   power()const;
+    virtual Color power()const=0;
 
-    Color   emittance( const LocalGeometry& light_geom,
-                       const Vector3& w_in )const;
+    virtual Color emittance( const LocalGeometry& light_geom,
+                             const Vector3& w_in )const=0;
+
+
+    //--------------------------------------------------------------------------
+    // INTERNAL interface.  PIMPLed in future
+    //--------------------------------------------------------------------------
+    void setMesh( Mesh* mesh );
 
 private:
-
-    Mesh*               m_mesh; // Mapping of buffers discards qualifier
-    const ILightShader* m_light_shader;
-
+    Mesh*   m_mesh; // TODO: PIMPL
 };
 
 

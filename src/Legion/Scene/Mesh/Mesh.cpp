@@ -1,4 +1,25 @@
 
+// Copyright (C) 2011 R. Keith Morley 
+// 
+// (MIT/X11 License)
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to
+// deal in the Software without restriction, including without limitation the
+// rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+// sell copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+// IN THE SOFTWARE.
+
 #include <Legion/Common/Math/Matrix.hpp>
 #include <Legion/Common/Util/Logger.hpp>
 #include <Legion/Common/Util/Stream.hpp>
@@ -77,37 +98,29 @@ void Mesh::setVertices( unsigned num_samples,  const float* times,
 void Mesh::setFaces( unsigned              num_faces,
                      const Index3*         tris,
                      const ISurfaceShader* sshader,
-                     const ILightShader*   lshader)
+                     MeshLight*            lshader)
 {
 
     m_faces_changed = true;
-    m_face_data.assign( tris, tris+num_faces );
     m_area          = 0.0f;
+    m_face_data.assign( tris, tris+num_faces );
 
     if( lshader ) 
     {
+        lshader->setMesh( this );
+        getContext().addLight( lshader ); 
         for( unsigned i = 0; i < num_faces; ++i )
             m_area += getArea( m_vertex_data, tris[i] );
-
-        // TODO: resource mgmt
-        ILightShader* mesh_light = new MeshLight( &getContext(), lshader->getName(), this, lshader );
-        getContext().addLight( mesh_light ); 
-
-        RayTracer::updateFaceBuffer( m_faces, num_faces, tris, sshader, mesh_light );
-    }
-    else
-    {
-        RayTracer::updateFaceBuffer( m_faces, num_faces, tris, sshader, lshader );
     }
 
-    m_shader = sshader; // TODO: needed?
+    RayTracer::updateFaceBuffer( m_faces, num_faces, tris, sshader, lshader );
 }
 
 
 void Mesh::setFaces( unsigned              num_faces,
                      const Index4*         quads,
                      const ISurfaceShader* shader,
-                     const ILightShader*   lshader)
+                     MeshLight*            lshader)
 {
 }
 
