@@ -114,6 +114,8 @@ void Mesh::setFaces( unsigned              num_faces,
     }
 
     RayTracer::updateFaceBuffer( m_faces, num_faces, tris, sshader, lshader );
+
+    m_shader = sshader;
 }
 
 
