@@ -31,6 +31,7 @@
 #include <Legion/Common/Util/AutoTimerHelpers.hpp>
 #include <Legion/Core/Color.hpp>
 #include <Legion/Core/Ray.hpp>
+#include <Legion/Renderer/Cuda/Shared.hpp>
 #include <Legion/Renderer/LightSet.hpp>
 
 #include <map>
@@ -43,7 +44,6 @@ namespace legion
 class  ILightShader;
 class  ISurfaceShader;
 class  RayTracer;
-struct LocalGeometry;
 
 class ShadingEngine
 {
@@ -63,10 +63,15 @@ public:
 
     void addLight( const ILightShader* shader );
 
+    void     setMaxRayDepth( unsigned max_depth );
+    unsigned maxRayDepth()const; 
+
 private:
     void shade( std::vector<Ray>&           rays,
                 std::vector<LocalGeometry>& local_geom,
                 std::vector<Color>&         ray_attenuation );
+
+
     struct Closure
     {
         Closure() {}
@@ -82,20 +87,23 @@ private:
     typedef std::map<unsigned, const ILightShader*>   LightShaderMap;
     typedef std::vector<Closure>                      Closures;
     typedef std::vector<Ray>                          Rays;
+    typedef std::vector<LocalGeometry>                LocalGeometries;
 
     Results          m_results;
     Closures         m_closures;
     Rays             m_secondary_rays;
+    LocalGeometries  m_shadow_results;
 
     RayTracer&       m_ray_tracer;
     LightSet         m_light_set;
     SurfaceShaderMap m_surface_shaders;
-    LightShaderMap   m_light_shaders;   // TODO:Move this into LightSet
 
     LoopTimerInfo    m_shadow_ray_gen;
     LoopTimerInfo    m_shadow_trace;
     LoopTimerInfo    m_radiance_trace;
     LoopTimerInfo    m_light_loop;
+
+    unsigned         m_max_ray_depth;
 
     MTRand32         m_rnd;
 };

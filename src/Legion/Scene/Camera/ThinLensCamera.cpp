@@ -11,9 +11,15 @@ using namespace legion;
 
 
 ThinLensCamera::ThinLensCamera( Context* context, const std::string& name )
-  : BasicCamera( context, name )
+  : IBasicCamera( context, name ),
+    m_left  ( -0.5f ),
+    m_right (  0.5f ),
+    m_bottom( -0.5f ),
+    m_top   (  0.5f ),
+    m_focal_distance( 2.0f ),
+    m_lens_radius( 0.0f )
+
 {
-    // TODO: give default values to all params
 }
 
 

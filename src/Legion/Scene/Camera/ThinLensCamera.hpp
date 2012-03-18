@@ -2,7 +2,7 @@
 #ifndef LEGION_SCENE_CAMERA_THINLENSCAMERA_HPP_
 #define LEGION_SCENE_CAMERA_THINLENSCAMERA_HPP_
 
-#include <Legion/Scene/Camera/BasicCamera.hpp>
+#include <Legion/Scene/Camera/IBasicCamera.hpp>
 
 
 namespace legion
@@ -10,7 +10,7 @@ namespace legion
 
 /// A basic thin lens camera implementation.  Supports depth-of-field with a
 /// round lens model.
-class ThinLensCamera : public BasicCamera
+class ThinLensCamera : public IBasicCamera
 {
 public:
 

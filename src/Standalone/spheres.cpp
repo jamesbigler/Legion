@@ -81,6 +81,12 @@ int main( int argc, char** argv )
     {
         sspp = atoi( argv[ 1 ] );
     }
+    
+    unsigned ray_depth = 2;
+    if( argc > 2 )
+    {
+        ray_depth = atoi( argv[ 2 ] );
+    }
 
     const unsigned num_spheres = 4;
     try
@@ -89,6 +95,7 @@ int main( int argc, char** argv )
         legion::Log::setReportingLevel( legion::Log::INFO );
 
         ctx.setSamplesPerPixel( legion::Index2( sspp, sspp ) );
+        ctx.setMaxRayDepth( ray_depth );
 
         LLOG_INFO << "Starting ***********";
         
@@ -107,7 +114,7 @@ int main( int argc, char** argv )
         diffuse_light.setEmittance( legion::Color( 1.0f ) );
 
         // legion::createSurfaceShader( "Lambertian", "material", params );
-        legion::LambertianShader mtl0( &ctx, "material" );
+        legion::Lambertian mtl0( &ctx, "material" );
         mtl0.setKd( legion::Color(  1.0f, 1.0f, 1.0f ) );
        
        
@@ -129,7 +136,7 @@ int main( int argc, char** argv )
         }
 
         // Plane
-        legion::LambertianShader mtl1( &ctx, "material" );
+        legion::Lambertian mtl1( &ctx, "material" );
         mtl1.setKd( legion::Color(  0.7f, 0.7f, 0.7f ) );
         std::vector<legion::Mesh::Vertex> verts(4);
         std::vector<legion::Index3> indices(2);
@@ -158,6 +165,11 @@ int main( int argc, char** argv )
         cam.setViewPlane( -1.0f, 1.0f, 0.75f, -0.75f );
         cam.setShutterOpenClose( 0.0f, 0.005f );
         cam.setFocalDistance( 5.0f );
+        legion::Matrix c2w = 
+            legion::Matrix::translate( legion::Vector3(0.0f, 1.0f, 0.0f) ) *
+            legion::Matrix::rotate( 0.2f, legion::Vector3( -1.0f, 0.0f, 0.0f) );
+        LLOG_INFO << c2w;
+        cam.setTransform( c2w, 0.0f );
         cam.setLensRadius( 0.0f );
         ctx.setActiveCamera( &cam );
 

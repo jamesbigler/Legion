@@ -102,6 +102,12 @@ void Context::setSamplesPerPixel( const Index2& spp  )
 }
 
 
+void Context::setMaxRayDepth( unsigned max_depth  )
+{
+    m_renderer.setMaxRayDepth( max_depth );
+}
+
+
 void Context::render()
 {
     LLOG_INFO << "rendering ....";

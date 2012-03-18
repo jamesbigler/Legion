@@ -14,11 +14,11 @@ namespace legion
 struct LocalGeometry;
 
 
-class LambertianShader : public ISurfaceShader
+class Lambertian : public ISurfaceShader
 {
 public:
-    LambertianShader( Context* context, const std::string& name );
-    ~LambertianShader();
+    Lambertian( Context* context, const std::string& name );
+    ~Lambertian();
     
     
     void setKd( const Color& kd );

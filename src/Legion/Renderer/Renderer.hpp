@@ -36,6 +36,9 @@ public:
 
     void removeMesh( Mesh* mesh );
 
+    void     setMaxRayDepth( unsigned );
+    unsigned maxRayDepth()const;
+
     optix::Buffer createBuffer();
 private:
 

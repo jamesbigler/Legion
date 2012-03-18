@@ -28,6 +28,7 @@
 #define LEGION_RENDERER_LIGHTSET_HPP_
 
 #include <vector>
+#include <map>
 
 namespace legion
 {
@@ -42,18 +43,26 @@ public:
     LightSet();
     ~LightSet();
 
-    void addLight   ( const ILightShader* light );
-    void removeLight( const ILightShader* light );
+    void   addLight   ( const ILightShader* light );
+    void   removeLight( const ILightShader* light );
 
     size_t numLights()const;
 
-    void selectLight( float rnd, const ILightShader*& light , float& pdf )const;
+    void   selectLight( float rnd,
+                        const ILightShader*& light,
+                        float& pdf )const;
+
+    const ILightShader* lookupLight( unsigned id )const;
 
 private:
 
-    typedef std::vector<const ILightShader*> Lights;
+    /// Used for randomly choosing lights
+    typedef std::vector<const ILightShader*>        LightVec;
+    typedef std::map<unsigned, const ILightShader*> LightMap;
 
-    Lights   m_lights;
+    /// Used for lookup via ID
+    LightVec      m_light_vec;
+    LightMap      m_light_map;
 };
 
 

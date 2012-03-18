@@ -2,6 +2,7 @@
 #ifndef LEGION_COMMON_UTIL_STREAM_HPP_
 #define LEGION_COMMON_UTIL_STREAM_HPP_
 
+#include <Legion/Common/Math/Matrix.hpp>
 #include <Legion/Common/Math/Vector.hpp>
 #include <Legion/Renderer/Cuda/Shared.hpp>
 #include <ostream>
@@ -10,6 +11,7 @@ namespace legion
 {
     class Color;
     class Ray;
+    class Matrix;
 
     template<unsigned DIM, typename TYPE>
     std::ostream& operator<<( std::ostream& out,
@@ -19,6 +21,8 @@ namespace legion
 
     std::ostream& operator<<( std::ostream& out, const legion::Ray& ray ); 
     
+    std::ostream& operator<<( std::ostream& out, const legion::Matrix& m ); 
+
     std::ostream& operator<<( std::ostream& out,
                               const legion::LocalGeometry& lgeom );
 

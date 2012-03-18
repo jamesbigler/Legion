@@ -126,3 +126,15 @@ optix::Buffer Renderer::createBuffer()
     return m_ray_tracer.createBuffer();
 }
 
+
+void Renderer::setMaxRayDepth( unsigned max_depth )
+{
+    m_shading_engine.setMaxRayDepth( max_depth ); 
+}
+
+
+unsigned Renderer::maxRayDepth()const
+{
+    return m_shading_engine.maxRayDepth(); 
+}
+

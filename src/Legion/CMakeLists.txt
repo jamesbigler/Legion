@@ -62,8 +62,8 @@ add_library( legion SHARED
     Renderer/Renderer.hpp
     Renderer/ShadingEngine.cpp
     Renderer/ShadingEngine.hpp
-    Scene/Camera/BasicCamera.cpp
-    Scene/Camera/BasicCamera.hpp
+    Scene/Camera/IBasicCamera.cpp
+    Scene/Camera/IBasicCamera.hpp
     Scene/Camera/ICamera.cpp
     Scene/Camera/ICamera.hpp
     Scene/Camera/ThinLensCamera.cpp
@@ -85,8 +85,8 @@ add_library( legion SHARED
     Scene/Mesh/Mesh.hpp
     Scene/SurfaceShader/ISurfaceShader.cpp
     Scene/SurfaceShader/ISurfaceShader.hpp
-    Scene/SurfaceShader/LambertianShader.cpp
-    Scene/SurfaceShader/LambertianShader.hpp
+    Scene/SurfaceShader/Lambertian.cpp
+    Scene/SurfaceShader/Lambertian.hpp
     )
 
 # Link against optix

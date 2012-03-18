@@ -2,10 +2,13 @@
 #ifndef LEGION_CUDA_SHARED_HPP_
 #define LEGION_CUDA_SHARED_HPP_
 
-#include <optix.h>
-#include <optixu/optixu_math_namespace.h>
+#include <Legion/Common/Math/Vector.hpp>
 
-#define HOST_DEVICE __host__ __device__
+#ifdef __CUDACC__
+#    define HOST_DEVICE __host__ __device__
+#else
+#    define HOST_DEVICE
+#endif
 
 namespace legion
 {
@@ -13,47 +16,63 @@ namespace legion
 /// Must match layout and size of legion::Mesh::Vertex
 struct Vertex
 {
-    optix::float3   position;
-    optix::float3   normal;
-    optix::float2   tex;
+#ifdef __CUDACC__
+    typedef optix::float3   VECTOR3;
+    typedef optix::float2   VECTOR2;
+#else
+    typedef legion::Vector3 VECTOR3; 
+    typedef legion::Vector2 VECTOR2; 
+#endif
+
+    VECTOR3   position;
+    VECTOR3   normal;
+    VECTOR2   tex;
 };
 
 
 struct LocalGeometry 
 {
+#ifdef __CUDACC__
+    typedef optix::float3   VECTOR3;
+    typedef optix::float2   VECTOR2;
+#else
+    typedef legion::Vector3 VECTOR3; 
+    typedef legion::Vector2 VECTOR2; 
+#endif
     HOST_DEVICE LocalGeometry() {} 
 
     HOST_DEVICE LocalGeometry( int material_id ) 
         : material_id( material_id ) 
     {
-#if 1
-        position = position_object 
-                 = geometric_normal 
-                 = shading_normal 
-                 = optix::make_float3( -1.0f );
-        texcoord = optix::make_float2( -1.0f );
-        light_id = -1;
-#endif
     }
 
     bool isValidHit()const { return material_id != -1; }
 
-    optix::float3   position;
-    optix::float3   position_object;
-    optix::float3   geometric_normal;
-    optix::float3   shading_normal;
-    optix::float2   texcoord;
-    int             material_id; // Can be shorts if necessary
-    int             light_id;
+
+    VECTOR3   position;
+    VECTOR3   position_object;
+    VECTOR3   geometric_normal;
+    VECTOR3   shading_normal;
+    VECTOR2   texcoord;
+    int       material_id; // Can be shorts if necessary
+    int       light_id;
 };
 
 
 struct RayInfo
 {
-    optix::float3   origin;
-    optix::float3   direction;
-    float           tmax;
-    float           time;
+#ifdef __CUDACC__
+    typedef optix::float3   VECTOR3;
+    typedef optix::float2   VECTOR2;
+#else
+    typedef legion::Vector3 VECTOR3; 
+    typedef legion::Vector2 VECTOR2; 
+#endif
+
+    VECTOR3   origin;
+    VECTOR3   direction;
+    float     tmax;
+    float     time;
 };
 
 

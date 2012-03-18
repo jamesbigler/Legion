@@ -1,6 +1,6 @@
 
 
-#include <Legion/Scene/SurfaceShader/LambertianShader.hpp>
+#include <Legion/Scene/SurfaceShader/Lambertian.hpp>
 #include <Legion/Renderer/Cuda/Shared.hpp>
 #include <Legion/Common/Math/Math.hpp>
 #include <Legion/Common/Math/ONB.hpp>
@@ -9,27 +9,26 @@
 using namespace legion;
 
 // TODO: rename surfaceshader to material
-// TODO: rename LambertianShader to Lambertian
 
-LambertianShader::LambertianShader( Context* context, const std::string& name )
+Lambertian::Lambertian( Context* context, const std::string& name )
   : ISurfaceShader( context, name )
 {
 }
 
 
-LambertianShader::~LambertianShader()
+Lambertian::~Lambertian()
 {
 }
 
 
-void LambertianShader::setKd( const Color& kd )
+void Lambertian::setKd( const Color& kd )
 {
     m_kd = kd;
 }
     
 
 
-void LambertianShader::sampleBSDF( const Vector2& seed, 
+void Lambertian::sampleBSDF( const Vector2& seed, 
                                    const Vector3& w_out,
                                    const LocalGeometry& p,
                                    Vector3& w_in,
@@ -37,15 +36,15 @@ void LambertianShader::sampleBSDF( const Vector2& seed,
 {
     // sample hemisphere with cosine density by uniformly sampling
     // unit disk and projecting up to hemisphere
-    // TODO: use concentric disc map and project up
-    float phi = TWO_PI * seed.x();
-    float r   = sqrtf( seed.y() );
-    float x   = r * cosf( phi );
-    float y   = r * sinf( phi );
-    float z   = 1.0f - x*x -y*y;
-    z         = z > 0.0f ? sqrtf( z ) : 0.0f;
+    Vector2 on_disk( squareToDisk( seed ) );
+    const float x = on_disk.x();
+    const float y = on_disk.y();
+          float z = 1.0f - x*x -y*y;
 
-    ONB onb( toVector3( p.shading_normal ) );
+    z = z > 0.0f ? sqrtf( z ) : 0.0f;
+
+    // Transform into world space
+    ONB onb( p.shading_normal );
     w_in = onb.inverseTransform( Vector3( x, y, z ) );
 
     // calculate pdf
@@ -54,27 +53,27 @@ void LambertianShader::sampleBSDF( const Vector2& seed,
 }
 
 
-bool LambertianShader::isSingular()const
+bool Lambertian::isSingular()const
 {
     return false;
 }
 
 
-float LambertianShader::pdf( const Vector3& w_out,
+float Lambertian::pdf( const Vector3& w_out,
                              const LocalGeometry& p,
                              const Vector3& w_in )const
 {
-    float cosine = std::max( 0.0f, dot( w_in, toVector3( p.shading_normal ) ) );
+    float cosine = std::max( 0.0f, dot( w_in, p.shading_normal ) );
     return cosine * ONE_DIV_PI;
 }
 
 
-Color LambertianShader::evaluateBSDF( const Vector3& w_out,
+Color Lambertian::evaluateBSDF( const Vector3& w_out,
                                       const LocalGeometry& p,
                                       const Vector3& w_in )const
 {
     
-    float cosine = std::max( 0.0f, dot( w_in, toVector3( p.shading_normal ) ) );
+    float cosine = std::max( 0.0f, dot( w_in, p.shading_normal ) );
     return cosine * ONE_DIV_PI * m_kd;
 }
     

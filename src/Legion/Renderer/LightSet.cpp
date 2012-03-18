@@ -1,5 +1,4 @@
  
-
 // Copyright (C) 2011 R. Keith Morley
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,6 +21,7 @@
 // (MIT/X11 License)
 
 #include <Legion/Renderer/LightSet.hpp>
+#include <Legion/Scene/LightShader/ILightShader.hpp>
 
 #include <algorithm>
 #include <cmath>
@@ -41,22 +41,25 @@ LightSet::~LightSet()
 
 void LightSet::addLight( const ILightShader* light )
 {
-    m_lights.push_back( light );
+    m_light_vec.push_back( light );
+    m_light_map.insert( std::make_pair( light->getID(), light ) );
 }
 
 
 void LightSet::removeLight( const ILightShader* light )
 {
-    Lights::iterator it = std::remove( m_lights.begin(),
-                                       m_lights.end(),
-                                       light );
-    m_lights.erase( it, m_lights.end() );
+    LightVec::iterator it = std::remove( m_light_vec.begin(),
+                                         m_light_vec.end(),
+                                         light );
+    m_light_vec.erase( it, m_light_vec.end() );
+
+    m_light_map.erase( light->getID() );
 }
 
 
 size_t LightSet::numLights()const
 {
-    return m_lights.size();
+    return m_light_vec.size();
 }
 
 
@@ -64,18 +67,25 @@ void LightSet::selectLight( float rnd,
                             const ILightShader*& light,
                             float& pdf )const
 {
-    if( m_lights.empty() )
+    if( m_light_vec.empty() )
     {
         light = 0u;
         pdf   = 0.0f;
         return;
     }
 
-    size_t   num_lights   = m_lights.size();
+    size_t   num_lights   = m_light_vec.size();
     float    num_lights_f = static_cast<float>( num_lights ); 
     unsigned idx = std::min( static_cast<unsigned>( rnd * num_lights_f ),
                              static_cast<unsigned>( num_lights-1 ) ); 
-    light = m_lights[ idx ];
+    light = m_light_vec[ idx ];
     pdf   = 1.0f / num_lights_f;
+}
+
+
+const ILightShader* LightSet::lookupLight( unsigned id )const
+{
+    LightMap::const_iterator it = m_light_map.find( id );
+    return (it == m_light_map.end() )? 0u : it->second;
 }
 

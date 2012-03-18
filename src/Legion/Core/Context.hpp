@@ -60,6 +60,7 @@ public:
     void setPixelFIlter( FilterType type );
 
     void setSamplesPerPixel( const Index2& spp  );
+    void setMaxRayDepth( unsigned max_depth );
 
     void render();
 

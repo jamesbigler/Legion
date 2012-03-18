@@ -80,6 +80,9 @@ public:
 
     Matrix        inverse()const;
 
+    Vector3       transformPoint( const Vector3& p )const;
+    Vector3       transformVector( const Vector3& v )const;
+
     static Matrix rotate( float radians, const Vector3& axis );
 
     static Matrix translate( const Vector3& vec );
@@ -87,6 +90,7 @@ public:
     static Matrix scale( const Vector3& vec );
 
     static Matrix identity();
+
 
     // Ordered comparison operator so Matrix can be used in an STL container.
     bool          operator<( const Matrix& rhs ) const;
@@ -416,6 +420,22 @@ inline Matrix Matrix::inverse()const
                    m[ 4] * (m[ 9] * m[ 2] - m[ 1] * m[10]) +
                    m[ 8] * (m[ 1] * m[ 6] - m[ 5] * m[ 2]));
     return dst;
+}
+
+
+inline Vector3 Matrix::transformPoint( const Vector3& p )const
+{
+    Vector4 p4( p, 1.0f );
+    p4 = *this * p4;
+    return Vector3( p4.x(), p4.y(), p4.z() );
+}
+
+
+inline Vector3 Matrix::transformVector( const Vector3& v )const
+{
+    Vector4 v4( v, 0.0f );
+    v4 = *this * v4;
+    return Vector3( v4.x(), v4.y(), v4.z() );
 }
 
 

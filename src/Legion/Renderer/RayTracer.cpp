@@ -14,7 +14,7 @@
 
 using namespace legion;
 
-// TODO: This requires identical gpus
+// TODO: This requires identical gpus. Put in checks before doing this 
 #define BUFFER_PARTITIONED ((1u << 16) | (1u << 17))
 
 #define OPTIX_CATCH_RETHROW                                                    \
@@ -54,9 +54,16 @@ namespace
     inline unsigned packShaderIDs( const ISurfaceShader* sshader,
                                    const ILightShader*   lshader )
     {
-        // TODO: bounds checking on ids
         unsigned sid = sshader ? sshader->getID() : 0u;
         unsigned lid = lshader ? lshader->getID() : 0u;
+
+        // Ensure that ids are in [0, 2^16-1]
+        if( sid > ( 1 << 16 - 1 ) )
+            throw Exception( "ISurfaceShader ID cannot fit in 16 bits" );
+        
+        if( lid > ( 1 << 16 - 1 ) )
+            throw Exception( "ILightShader ID out cannot fit in 16 bits" );
+
         unsigned packed = sid | (lid << 16);
         return packed;
     }

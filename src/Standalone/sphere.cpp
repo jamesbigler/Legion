@@ -95,7 +95,7 @@ int main( int argc, char** argv )
         // Parameters params;
         // params.add( "Kd", legion::Color( 0.5f, 0.5f, 0.5f ) );
         // legion::createSurfaceShader( "Lambertian", "material", params );
-        legion::LambertianShader mtl( &ctx, "material" );
+        legion::Lambertian mtl( &ctx, "material" );
         mtl.setKd( legion::Color(  0.5f, 0.5f, 0.5f ) );
        
         std::vector<legion::Mesh::Vertex> verts;
@@ -117,14 +117,14 @@ int main( int argc, char** argv )
         //ctx.addAreaLigth(...); 
 
         legion::ThinLensCamera cam( &ctx, "camera" );
-        cam.setViewPlane( -1.0f, 1.0f, 1.0f, -1.0f );
+        cam.setViewPlane( -1.0f, 1.0f, 0.75f, -0.75f );
         cam.setShutterOpenClose( 0.0f, 0.005f );
         cam.setFocalDistance( 1.0f );
         cam.setLensRadius( 0.0f );
         ctx.setActiveCamera( &cam );
 
         legion::ImageFilm film( &ctx, "image" );
-        film.setDimensions( legion::Index2( 1024u, 1024u) );
+        film.setDimensions( legion::Index2( 1024u, 768u ) );
         //film.setDimensions( legion::Index2( 512u, 512u ) );
         //film.setDimensions( legion::Index2( 256u, 256u ) );
         //film.setDimensions( legion::Index2( 3u, 3u ) );
