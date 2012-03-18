@@ -94,16 +94,17 @@ int main( int argc, char** argv )
         
         legion::PointLightShader light0( &ctx, "lshader0" );
         light0.setPosition( legion::Vector3( 1.0f, 2.0f, -6.0f ) );
-        light0.setIntensity( legion::Color( 10.0f, 10.0f, 20.0f ) );
+        light0.setIntensity( legion::Color( 5.0f, 5.0f, 20.0f ) );
         ctx.addLight( &light0 );
 
         legion::PointLightShader light1( &ctx, "lshader1" );
         light1.setPosition( legion::Vector3( -1.0f, 2.0f, -4.0f ) );
-        light1.setIntensity( legion::Color( 15.0f, 15.0f, 8.0f ) );
+        light1.setIntensity( legion::Color( 15.0f, 12.0f, 5.0f ) );
         ctx.addLight( &light1 );
 
         // TODO: make this a DiffuseLight
         legion::DiffuseLight diffuse_light( &ctx, "diffuse_light" );
+        diffuse_light.setEmittance( legion::Color( 1.0f ) );
 
         // legion::createSurfaceShader( "Lambertian", "material", params );
         legion::LambertianShader mtl0( &ctx, "material" );

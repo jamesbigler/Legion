@@ -29,7 +29,8 @@ using namespace legion;
 
 
 DiffuseLight::DiffuseLight( Context* context, const std::string& name )
-    : MeshLight( context, name )
+    : MeshLight( context, name ),
+      m_emittance( 0.0f )
 {
 }
 
@@ -48,7 +49,11 @@ Color DiffuseLight::power()const
 Color DiffuseLight::emittance( const LocalGeometry& light_geom,
                             const Vector3& w_in )const
 {
-    LEGION_TODO();
+    return m_emittance;;
 }
 
 
+void DiffuseLight::setEmittance( const Color& emittance )
+{
+    m_emittance = emittance;
+}

@@ -12,6 +12,7 @@
 namespace legion
 {
 
+// TODO: need to work out ownership of mesh's surfaceshader and MeshLightShader
 class MeshLight;
 class ISurfaceShader;
 class Matrix;

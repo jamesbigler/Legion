@@ -27,9 +27,11 @@
 #define LEGION_DIFFUSELIGHT_HPP_
 
 #include <Legion/Scene/LightShader/MeshLight.hpp>
+#include <Legion/Core/Color.hpp>
 
 namespace legion
 {
+
 
 class DiffuseLight : public MeshLight
 {
@@ -43,9 +45,11 @@ public:
     Color emittance( const LocalGeometry& light_geom,
                      const Vector3& w_in )const;
 
+    void setEmittance( const Color& color );
+
 private:
 
-    
+    Color m_emittance;
 };
 
 
