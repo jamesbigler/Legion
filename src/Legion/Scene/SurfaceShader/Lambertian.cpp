@@ -8,7 +8,7 @@
 
 using namespace legion;
 
-// TODO: rename surfaceshader to material
+
 
 Lambertian::Lambertian( Context* context, const std::string& name )
   : ISurfaceShader( context, name )

@@ -168,7 +168,6 @@ int main( int argc, char** argv )
         legion::Matrix c2w = 
             legion::Matrix::translate( legion::Vector3(0.0f, 1.0f, 0.0f) ) *
             legion::Matrix::rotate( 0.2f, legion::Vector3( -1.0f, 0.0f, 0.0f) );
-        LLOG_INFO << c2w;
         cam.setTransform( c2w, 0.0f );
         cam.setLensRadius( 0.0f );
         ctx.setActiveCamera( &cam );
