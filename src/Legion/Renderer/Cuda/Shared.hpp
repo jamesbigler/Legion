@@ -39,12 +39,8 @@ struct LocalGeometry
     typedef legion::Vector3 VECTOR3; 
     typedef legion::Vector2 VECTOR2; 
 #endif
-    HOST_DEVICE LocalGeometry() {} 
-
-    HOST_DEVICE LocalGeometry( int material_id ) 
-        : material_id( material_id ) 
-    {
-    }
+    HOST_DEVICE void reset()
+    { material_id = light_id = -1; } 
 
     bool isValidHit()const { return material_id != -1; }
 

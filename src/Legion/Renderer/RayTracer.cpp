@@ -54,8 +54,9 @@ namespace
     inline unsigned packShaderIDs( const ISurfaceShader* sshader,
                                    const ILightShader*   lshader )
     {
-        unsigned sid = sshader ? sshader->getID() : 0u;
-        unsigned lid = lshader ? lshader->getID() : 0u;
+        int sid = sshader ? sshader->getID() : -1u;
+        int lid = lshader ? lshader->getID() : -1u;
+        const unsigned RIGHT = 0xFFFF;
 
         // Ensure that ids are in [0, 2^16-1]
         if( sid > ( 1 << 16 - 1 ) )
@@ -64,7 +65,7 @@ namespace
         if( lid > ( 1 << 16 - 1 ) )
             throw Exception( "ILightShader ID out cannot fit in 16 bits" );
 
-        unsigned packed = sid | (lid << 16);
+        unsigned packed = (lid << 16) | (sid & RIGHT);
         return packed;
     }
 }

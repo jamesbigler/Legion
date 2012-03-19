@@ -69,7 +69,8 @@ public:
 private:
     void shade( std::vector<Ray>&           rays,
                 std::vector<LocalGeometry>& local_geom,
-                std::vector<Color>&         ray_attenuation );
+                std::vector<Color>&         ray_attenuation,
+                bool                        count_emission );
 
 
     struct Closure

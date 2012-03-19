@@ -33,6 +33,8 @@
 #include <Legion/Scene/SurfaceShader/ISurfaceShader.hpp>
 #include <Legion/Scene/LightShader/ILightShader.hpp>
 
+#include <iomanip>
+
 
 using namespace legion;
 
@@ -81,14 +83,15 @@ void ShadingEngine::shade( std::vector<Ray>& rays )
             m_ray_tracer.getResults( lgeom );
         }
 
-        shade( rays, lgeom, ray_attenuation );
+        shade( rays, lgeom, ray_attenuation, i == 0u );
     }
 }
 
 
 void ShadingEngine::shade( std::vector<Ray>&           rays,
                            std::vector<LocalGeometry>& local_geom,
-                           std::vector<Color>&         ray_attenuation )
+                           std::vector<Color>&         ray_attenuation,
+                           bool                        count_emission )
 {
     
     const unsigned num_rays = rays.size();
@@ -186,8 +189,8 @@ void ShadingEngine::shade( std::vector<Ray>&           rays,
             {
                 const ILightShader* lshader = 
                     m_light_set.lookupLight( lgeom.light_id );
-                if( lshader )
-                    emission = lshader->emittance( lgeom, w_out );
+                if( lshader && count_emission )
+                    emission = lshader->emittance( lgeom, -w_out );
             }
             
             //
@@ -198,13 +201,22 @@ void ShadingEngine::shade( std::vector<Ray>&           rays,
             const Vector3 light_p( m_closures[i].light_point );
             const Vector3 w_in( normalize( light_p - surface_p ) );
             const bool is_singular_light = light->isSingular();
-            Color direct_light( 0.0f );
+            Color direct_light( 0.001f );
             if( ( is_singular_light && !m_shadow_results[i].isValidHit() ) || 
                 ( !is_singular_light && m_shadow_results[i].light_id ==
                   static_cast<int>( light->getID() ) ) )
             {
                 // we have unoccluded light
                 direct_light = light->emittance( m_shadow_results[ i ], w_in ); 
+            }
+            {
+                /*
+                LLOG_INFO << "singular: " << is_singular_light
+                          << " shadow_id: " << m_shadow_results[i].light_id
+                          << " new_id: " << light->getID()
+                          << " shadow_hit_p: " << m_shadow_results[i].position
+                          << " shading_p: " << surface_p; 
+                          */
             }
 
 
@@ -226,6 +238,8 @@ void ShadingEngine::shade( std::vector<Ray>&           rays,
 
             m_results[i] += emission + direct_light * inv_dist2 * bsdf_val *
                             ray_attenuation[i];
+            
+            //LLOG_INFO << std::fixed << i/10 << "," << i%10 << " " << m_results[i] << " d: " << direct_light << " dist: " << inv_dist2 << " b: " << bsdf_val << " e: " << emission ;
 
 
             Vector3 new_w_in;

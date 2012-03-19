@@ -21,7 +21,7 @@ void addQuad( std::vector<legion::Mesh::Vertex>& verts,
     verts.push_back( Mesh::Vertex( p2, n, legion::Vector2( 0.0f, 0.0f ) ) );
     verts.push_back( Mesh::Vertex( p3, n, legion::Vector2( 0.0f, 0.0f ) ) );
 
-    faces.push_back( legion::Index3( sidx+0, sidx+1, sidx+2 ) );
+    faces.push_back( legion::Index3( sidx+0, sidx+2, sidx+1 ) );
     faces.push_back( legion::Index3( sidx+0, sidx+2, sidx+3 ) );
 }
 
@@ -46,6 +46,7 @@ int main( int argc, char** argv )
         legion::Log::setReportingLevel( legion::Log::INFO );
 
         ctx.setSamplesPerPixel( legion::Index2( sspp, sspp ) );
+        ctx.setMaxRayDepth( ray_depth );
 
         //
         // Set up materials
@@ -63,7 +64,7 @@ int main( int argc, char** argv )
         white.setKd( legion::Color( 0.80f, 0.80f, 0.80f ) );
         
         legion::DiffuseLight diffuse_light( &ctx, "diffuse_light" );
-        diffuse_light.setEmittance( legion::Color( 1000.0f ) );
+        diffuse_light.setEmittance( legion::Color( 100000.0f ) );
 
         //
         // Set up geometry
@@ -74,10 +75,10 @@ int main( int argc, char** argv )
         // Light geometry
         legion::Mesh light_mesh( &ctx, "light" );
         addQuad( verts, faces,
-                 legion::Vector3( 343.0f, 548.8f, 227.0f ),
-                 legion::Vector3( 343.0f, 548.8f, 332.0f ),
-                 legion::Vector3( 213.0f, 548.8f, 332.0f ),
-                 legion::Vector3( 213.0f, 548.8f, 227.0f ) ); 
+                 legion::Vector3( 343.0f, 548.7f, 227.0f ),
+                 legion::Vector3( 343.0f, 548.7f, 332.0f ),
+                 legion::Vector3( 213.0f, 548.7f, 332.0f ),
+                 legion::Vector3( 213.0f, 548.7f, 227.0f ) ); 
         light_mesh.setVertices( verts.size(), &verts[0] );
         light_mesh.setFaces( faces.size(), &faces[0], &black, &diffuse_light );
         ctx.addMesh( &light_mesh );
@@ -106,6 +107,7 @@ int main( int argc, char** argv )
                 legion::Vector3( 0.0f, 548.8, 559.2 ),
                 legion::Vector3( 556.0f, 548.8, 559.2 ) ); 
 
+        /*
         // Short block
         addQuad( verts, faces,
                 legion::Vector3( 130.0f, 165.0f, 65.0f ),
@@ -159,6 +161,7 @@ int main( int argc, char** argv )
                 legion::Vector3( 265.0f, 330.0f, 296.0f ),
                 legion::Vector3( 423.0f, 330.0f, 247.0f ),
                 legion::Vector3( 423.0f, 0.0f, 247.0f ) ); 
+                */
 
         white_mesh.setVertices( verts.size(), &verts[0] );
         white_mesh.setFaces( faces.size(), &faces[0], &white );
@@ -190,15 +193,6 @@ int main( int argc, char** argv )
         left_wall_mesh.setFaces( faces.size(), &faces[0], &red);
         ctx.addMesh( &left_wall_mesh);
 
-       
-
-        /*
-        legion::PointLightShader light( &ctx, "lshader" );
-        light.setPosition( legion::Vector3( 343.0f, 540.8f, 332.0f ) );
-        light.setIntensity( legion::Color( 10000.0f, 10000.0f, 10000.0f ) );
-        ctx.addLight( &light );
-        */
-
         legion::ThinLensCamera cam( &ctx, "camera" );
         cam.setViewPlane( -1.0f, 1.0f, -1.0f, 1.0f );
         cam.setShutterOpenClose( 0.0f, 0.005f );
@@ -211,8 +205,10 @@ int main( int argc, char** argv )
         ctx.setActiveCamera( &cam );
 
         legion::ImageFilm film( &ctx, "image" );
-        //film.setDimensions( legion::Index2( 512u, 512u ) );
-        film.setDimensions( legion::Index2( 32u, 32u ) );
+        film.setDimensions( legion::Index2( 512u, 512u ) );
+        //film.setDimensions( legion::Index2( 64u, 64u ) );
+        //film.setDimensions( legion::Index2( 40u, 40u ) );
+        //film.setDimensions( legion::Index2( 10u, 10u ) );
         ctx.setActiveFilm( &film );
 
         ctx.render();

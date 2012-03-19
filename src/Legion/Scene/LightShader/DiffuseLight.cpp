@@ -21,8 +21,9 @@
 // (MIT/X11 License)
 
 
-#include <Legion/Scene/LightShader/DiffuseLight.hpp>
 #include <Legion/Core/Color.hpp>
+#include <Legion/Renderer/Cuda/Shared.hpp>
+#include <Legion/Scene/LightShader/DiffuseLight.hpp>
 
 
 using namespace legion;
@@ -49,7 +50,7 @@ Color DiffuseLight::power()const
 Color DiffuseLight::emittance( const LocalGeometry& light_geom,
                             const Vector3& w_in )const
 {
-    return m_emittance;;
+    return m_emittance * fmaxf( 0.0f,  dot( light_geom.shading_normal, -w_in ) );
 }
 
 

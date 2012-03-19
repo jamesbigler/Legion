@@ -34,7 +34,7 @@ RT_PROGRAM void polyMeshIntersect( int prim_index )
       {
           const float alpha = 1.0f - beta - gamma;
           legion::LocalGeometry lg;
-          lg.position_object  = ray.origin + ray.direction*t;
+          lg.position_object  = ray.origin + t*ray.direction,
           lg.geometric_normal = geometric_normal; 
           lg.shading_normal   = alpha*v0.normal +
                                 beta*v1.normal  +
@@ -46,6 +46,14 @@ RT_PROGRAM void polyMeshIntersect( int prim_index )
           lg.light_id         = triangle.w >> 16;
           lgeom = lg;
 
+          /*
+          refine_and_offset_hitpoint( lg.object_p,
+                                      ray.direction, 
+                                      lg.geometric_normal,
+                                      v0.position,
+                                      lg.front_p,
+                                      lg.back_p );
+                                      */
           rtReportIntersection( 0 );
       }
   }
