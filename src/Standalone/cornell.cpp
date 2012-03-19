@@ -21,8 +21,8 @@ void addQuad( std::vector<legion::Mesh::Vertex>& verts,
     verts.push_back( Mesh::Vertex( p2, n, legion::Vector2( 0.0f, 0.0f ) ) );
     verts.push_back( Mesh::Vertex( p3, n, legion::Vector2( 0.0f, 0.0f ) ) );
 
-    faces.push_back( legion::Index3( sidx+0, sidx+2, sidx+1 ) );
-    faces.push_back( legion::Index3( sidx+0, sidx+2, sidx+3 ) );
+    faces.push_back( legion::Index3( sidx+0, sidx+1, sidx+2 ) );
+    faces.push_back( legion::Index3( sidx+2, sidx+3, sidx+0 ) );
 }
 
 
@@ -107,7 +107,6 @@ int main( int argc, char** argv )
                 legion::Vector3( 0.0f, 548.8, 559.2 ),
                 legion::Vector3( 556.0f, 548.8, 559.2 ) ); 
 
-        /*
         // Short block
         addQuad( verts, faces,
                 legion::Vector3( 130.0f, 165.0f, 65.0f ),
@@ -161,7 +160,6 @@ int main( int argc, char** argv )
                 legion::Vector3( 265.0f, 330.0f, 296.0f ),
                 legion::Vector3( 423.0f, 330.0f, 247.0f ),
                 legion::Vector3( 423.0f, 0.0f, 247.0f ) ); 
-                */
 
         white_mesh.setVertices( verts.size(), &verts[0] );
         white_mesh.setFaces( faces.size(), &faces[0], &white );
@@ -172,10 +170,10 @@ int main( int argc, char** argv )
         faces.clear();
         legion::Mesh right_wall_mesh( &ctx, "right_wall" );
         addQuad( verts, faces,
-                legion::Vector3( 0.0f, 0.0f, 559.2 ),
+                legion::Vector3( 0.0f, 0.0f, 559.2f ),
                 legion::Vector3( 0.0f, 0.0f, 0.0f ),
-                legion::Vector3( 0.0f, 548.8, 0.0f ),
-                legion::Vector3( 0.0f, 548.8, 559.2 ) ); 
+                legion::Vector3( 0.0f, 548.8f, 0.0f ),
+                legion::Vector3( 0.0f, 548.8f, 559.2f ) ); 
         right_wall_mesh.setVertices( verts.size(), &verts[0] );
         right_wall_mesh.setFaces( faces.size(), &faces[0], &green );
         ctx.addMesh( &right_wall_mesh);
@@ -185,10 +183,10 @@ int main( int argc, char** argv )
         faces.clear();
         legion::Mesh left_wall_mesh( &ctx, "left_wall" );
         addQuad( verts, faces,
-                legion::Vector3( 552.8, 0.0f, 0.0f ),
-                legion::Vector3( 549.6, 0.0f, 559.2 ),
-                legion::Vector3( 556.0f, 548.8, 559.2 ),
-                legion::Vector3( 556.0f, 548.8, 0.0f ) ); 
+                legion::Vector3( 552.8f, 0.0f, 0.0f ),
+                legion::Vector3( 549.6f, 0.0f, 559.2f ),
+                legion::Vector3( 556.0f, 548.8f, 559.2f ),
+                legion::Vector3( 556.0f, 548.8f, 0.0f ) ); 
         left_wall_mesh.setVertices( verts.size(), &verts[0] );
         left_wall_mesh.setFaces( faces.size(), &faces[0], &red);
         ctx.addMesh( &left_wall_mesh);

@@ -229,7 +229,7 @@ void ShadingEngine::shade( std::vector<Ray>&           rays,
                 continue;
             }
             
-            const float ns_dot_w_in = fmaxf( 0.0f, dot( lgeom.shading_normal,
+            const float ns_dot_w_in = fmaxf( 0.0f, dot( lgeom.geometric_normal,
                                                         w_in ) );
 
             const float inv_dist2 = 1.0f / (surface_p-light_p).lengthSquared();
@@ -246,7 +246,7 @@ void ShadingEngine::shade( std::vector<Ray>&           rays,
             Color f_over_pdf;
             const Vector2 bsdf_seed( m_rnd(), m_rnd() );
             shader->sampleBSDF( bsdf_seed, w_out, lgeom, new_w_in, f_over_pdf);
-            ray_attenuation[i] *= f_over_pdf * fabs( dot( lgeom.shading_normal,
+            ray_attenuation[i] *= f_over_pdf * fabs( dot( lgeom.geometric_normal,
                                                           new_w_in ) );
             rays[i] = Ray( surface_p + 0.0001f*lgeom.geometric_normal,
                            new_w_in, 
