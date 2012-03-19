@@ -209,6 +209,8 @@ void Mesh::sample( const Vector2& seed,
                    float&         pdf )
 {
     // TODO: need seed for object selection
+    // TODO: need to build up CDF over area of tris and sample that
+    //       pdf is then 1.0f / m_area;
     const float    oseed     = drand48();
     const unsigned num_faces = m_face_data.size();
     unsigned       idx       = oseed * num_faces;

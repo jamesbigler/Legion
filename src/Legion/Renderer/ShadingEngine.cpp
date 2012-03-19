@@ -62,8 +62,8 @@ void ShadingEngine::reset()
 void ShadingEngine::logTimerInfo()
 {
     m_shadow_ray_gen.log();
-    m_shadow_trace.log();
     m_radiance_trace.log();
+    m_shadow_trace.log();
     m_light_loop.log();
 }
 
@@ -157,7 +157,7 @@ void ShadingEngine::shade( std::vector<Ray>&           rays,
     //
     // Shade all rays 
     // TODO: now we need to convert from pdf w/ respect to area to pdf w/
-    //       respect to solid angle and shade. see pbr2 page 717
+    //       respect to solid angle. see pbr2 page 717
     //
     //
     {
@@ -221,7 +221,7 @@ void ShadingEngine::shade( std::vector<Ray>&           rays,
 
 
             // Evaluate bsdf
-            const ISurfaceShader* shader = m_surface_shaders[ lgeom.material_id ];
+            const ISurfaceShader* shader = m_surface_shaders[lgeom.material_id];
             if( !shader )
             {
                 LLOG_INFO << "no shader found for id: " << lgeom.material_id;
