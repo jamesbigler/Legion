@@ -507,6 +507,24 @@ Also see [[AdvancedOptions]]</pre>
 </div>
 <!--POST-SHADOWAREA-->
 <div id="storeArea">
+<div title="ColorPalette" creator="Keith" modifier="Keith" created="201203191709" modified="201203191711" changecount="4">
+<pre>Background: #fff
+Foreground: #000
+PrimaryPale: #7ae
+PrimaryLight: #18f
+PrimaryMid: #04b
+PrimaryDark: #014
+SecondaryPale: #ffc
+SecondaryLight: #fe8
+SecondaryMid: #db4
+SecondaryDark: #841
+TertiaryPale: #eee
+TertiaryLight: #ccc
+TertiaryMid: #999
+TertiaryDark: #666
+Error: #f88
+</pre>
+</div>
 <div title="DefaultTiddlers" creator="YourName" modifier="YourName" created="201203182200" modified="201203182221" changecount="2">
 <pre>[[TODO]]
 [[Explorations]]
@@ -533,20 +551,24 @@ Things explored:
 <div title="SiteTitle" creator="YourName" modifier="YourName" created="201203182152" modified="201203182153" changecount="3">
 <pre>Legion Renderer</pre>
 </div>
-<div title="TODO" creator="YourName" modifier="Keith" created="201203182219" modified="201203182228" changecount="2">
-<pre>* Camera
-* Film
-* LightShader
-* Mesh
-* SurfaceShader
-* UI
-* Design
-** Create public interface for the legion API
-*** Move all user-facing headers into separate include directory (src/Legion/include)
-*** PIMPLify all user-facing classes which are not pure-virtual
-*** Limit object creation to factory methods
-**** Will need user-facing factory registration methods
-* Parser of some sort </pre>
+<div title="TODO" creator="YourName" modifier="Keith" created="201203182219" modified="201203191726" changecount="5">
+<pre>!!!Camera
+!!!Film
+!!!Light Shader
+!!!Mesh
+* Allow multiple materials per mesh
+!!!Surface Shader
+!!!UI
+!!!Design
+!!!! Create public interface for the legion API
+* Move all user-facing headers into separate include directory (src/Legion/include)
+* PIMPLify all user-facing classes which are not pure-virtual
+* Limit object creation to factory methods
+** Will need user-facing factory registration methods
+!!!! Need to switch to a delayed processing model
+* All scene processing needs to occur at render time
+* User should be able to add any api object to scene graph, then modify it, then render, then modify
+!!!! Parser of some sort </pre>
 </div>
 </div>
 <!--POST-STOREAREA-->

@@ -162,7 +162,7 @@ int main( int argc, char** argv )
 
 
         legion::ThinLensCamera cam( &ctx, "camera" );
-        cam.setViewPlane( -1.0f, 1.0f, 0.75f, -0.75f );
+        cam.setViewPlane( -1.0f, 1.0f, -0.75f, 0.75f );
         cam.setShutterOpenClose( 0.0f, 0.005f );
         cam.setFocalDistance( 5.0f );
         legion::Matrix c2w = 
