@@ -13,7 +13,8 @@
 rtBuffer<legion::Vertex> vertices;     
 rtBuffer<optix::int4>    triangles;
 
-rtDeclareVariable( legion::LocalGeometry, lgeom, attribute surface_info, );
+rtDeclareVariable( legion::LocalGeometry, lgeom,    attribute surface_info, );
+rtDeclareVariable( optix::float3,         on_plane, attribute on_plane, );
 rtDeclareVariable( optix::Ray,            ray,   rtCurrentRay, );
 
 RT_PROGRAM void polyMeshIntersect( int prim_index )
@@ -45,6 +46,8 @@ RT_PROGRAM void polyMeshIntersect( int prim_index )
           lg.material_id      = triangle.w & 0x0000FFFF;
           lg.light_id         = triangle.w >> 16;
           lgeom = lg;
+
+          on_plane = v0.position;
 
           /*
           refine_and_offset_hitpoint( lg.object_p,
