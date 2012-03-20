@@ -44,7 +44,8 @@ ShadingEngine::ShadingEngine( RayTracer& ray_tracer )
       m_shadow_trace  ( "        Shadow ray trace   " ),
       m_radiance_trace( "        Radiance ray trace " ),
       m_light_loop    ( "        Light loop         " ),
-      m_max_ray_depth( 2 ),
+      m_max_ray_depth( 2u ),
+      m_pass_number( 0u ),
       m_rnd( 1234321u )
 {
 }
@@ -52,6 +53,7 @@ ShadingEngine::ShadingEngine( RayTracer& ray_tracer )
 
 void ShadingEngine::reset()
 {
+    m_pass_number = 0u;
     m_shadow_ray_gen.reset();
     m_shadow_trace.reset();
     m_radiance_trace.reset();
@@ -85,13 +87,15 @@ void ShadingEngine::shade( std::vector<Ray>& rays )
 
         shade( rays, lgeom, ray_attenuation, i == 0u );
     }
+
+    m_pass_number++;
 }
 
 
 void ShadingEngine::shade( std::vector<Ray>&           rays,
                            std::vector<LocalGeometry>& local_geom,
                            std::vector<Color>&         ray_attenuation,
-                           bool                        count_emission )
+                           bool                        primary_rays )
 {
     
     const unsigned num_rays = rays.size();
@@ -189,7 +193,7 @@ void ShadingEngine::shade( std::vector<Ray>&           rays,
             {
                 const ILightShader* lshader = 
                     m_light_set.lookupLight( lgeom.light_id );
-                if( lshader && count_emission )
+                if( lshader && primary_rays )
                     emission = lshader->emittance( lgeom, -w_out );
             }
             

@@ -105,6 +105,7 @@ private:
     LoopTimerInfo    m_light_loop;
 
     unsigned         m_max_ray_depth;
+    unsigned         m_pass_number;
 
     MTRand32         m_rnd;
 };
