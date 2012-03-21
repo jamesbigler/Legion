@@ -37,6 +37,7 @@ void Renderer::setFilm( IFilm* film )
 void Renderer::setSamplesPerPixel( const Index2& spp  )
 {
     m_spp = spp;
+    m_shading_engine.setSamplesPerPixel( spp );
 }
 
 

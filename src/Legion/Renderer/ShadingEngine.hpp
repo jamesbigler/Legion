@@ -66,6 +66,8 @@ public:
     void     setMaxRayDepth( unsigned max_depth );
     unsigned maxRayDepth()const; 
 
+    void     setSamplesPerPixel( const Index2& spp );
+
 private:
     void shade( std::vector<Ray>&           rays,
                 std::vector<LocalGeometry>& local_geom,
@@ -106,8 +108,13 @@ private:
 
     unsigned         m_max_ray_depth;
     unsigned         m_pass_number;
+    Index2           m_spp;
 
     MTRand32         m_rnd;
+
+
+
+    std::vector<Vector2> m_sample_offsets;
 };
 
 

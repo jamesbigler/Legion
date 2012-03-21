@@ -47,6 +47,7 @@ ShadingEngine::ShadingEngine( RayTracer& ray_tracer )
       m_light_loop    ( "        Light loop         " ),
       m_max_ray_depth( 2u ),
       m_pass_number( 0u ),
+      m_spp( 0u, 0u ),
       m_rnd( 1234321u )
 {
 }
@@ -76,6 +77,11 @@ void ShadingEngine::shade( std::vector<Ray>& rays )
     const unsigned num_rays = rays.size();
     m_results.assign( num_rays, Color( 0.0f ) );
     std::vector<Color> ray_attenuation( num_rays, Color( 1.0f ) );
+
+    m_sample_offsets.resize( num_rays );
+    for( std::vector<Vector2>::iterator it = m_sample_offsets.begin(); it != m_sample_offsets.end(); ++it )
+      *it = Vector2( m_rnd(), m_rnd() );
+
 
     std::vector<LocalGeometry> lgeom;
     for( unsigned i = 0u; i < m_max_ray_depth; ++i )
@@ -131,9 +137,40 @@ void ShadingEngine::shade( std::vector<Ray>&           rays,
                                          light_select_pdf );
                                                                 
                 // Choose a point on the light by sampling light Area
+                Vector2 bsdf_seed;
+                if( primary_rays )
+                {
+                    /*
+                    unsigned  scramble = i;
+                    scramble  = lcg( scramble )
+                    bsdf_seed = sobol( m_pass_number, scramble );
+                    bsdf_seed += m_sample_offsets[i];
+                    bsdf_seed.setX( bsdf_seed.x() < 1.0f ? bsdf_seed.x() : bsdf_seed.x() - 1.0f );
+                    bsdf_seed.setY( bsdf_seed.y() < 1.0f ? bsdf_seed.y() : bsdf_seed.y() - 1.0f );
+                    */
+                    unsigned scramble = i;
+                    scramble  = lcg( scramble );
+                    bsdf_seed = sobol( m_pass_number, scramble );
+                    
+                    /*
+                    Vector2 bin( m_pass_number / m_spp.x(), m_pass_number % m_spp.x() );
+                    bin /= m_spp.x();
+                    float step = 1.0f / m_spp.x();
+                    bsdf_seed  =  bin + Vector2( m_rnd()*step, m_rnd()*step );
+                    */
+
+                    //bsdf_seed = hammersley( m_pass_number, m_spp.x() * m_spp.y(), 0 );
+
+                    //bsdf_seed = Vector2( m_rnd(), m_rnd() );
+                }
+                else
+                {
+                    bsdf_seed = Vector2( m_rnd(), m_rnd() );
+                }
+
                 float light_sample_pdf;
                 Vector3 on_light;
-                light->sample( Vector2( m_rnd(), m_rnd() ),
+                light->sample( bsdf_seed, 
                                on_light,
                                light_sample_pdf );
 
@@ -249,7 +286,26 @@ void ShadingEngine::shade( std::vector<Ray>&           rays,
 
             Vector3 new_w_in;
             Color f_over_pdf;
-            const Vector2 bsdf_seed( m_rnd(), m_rnd() );
+            
+            Vector2 bsdf_seed;
+            if( primary_rays )
+            {
+                /*
+                bsdf_seed = sobol( m_pass_number, i );
+                bsdf_seed += m_sample_offsets[i];
+                bsdf_seed.setX( bsdf_seed.x() < 1.0f ? bsdf_seed.x() : bsdf_seed.x() - 1.0f );
+                bsdf_seed.setY( bsdf_seed.y() < 1.0f ? bsdf_seed.y() : bsdf_seed.y() - 1.0f );
+                */
+                
+                Vector2 bin( m_pass_number / m_spp.x(), m_pass_number % m_spp.x() );
+                bin /= m_spp.x();
+                float step = 1.0f / m_spp.x();
+                bsdf_seed  =  bin + Vector2( m_rnd()*step, m_rnd()*step );
+            }
+            else
+            {
+               bsdf_seed = Vector2( m_rnd(), m_rnd() );
+            }
             shader->sampleBSDF( bsdf_seed, w_out, lgeom, new_w_in, f_over_pdf);
             ray_attenuation[i] *= f_over_pdf * fabs( dot(lgeom.geometric_normal,
                                                          new_w_in ) );
@@ -291,5 +347,12 @@ void ShadingEngine::setMaxRayDepth( unsigned max_depth )
 unsigned ShadingEngine::maxRayDepth()const
 {
     return m_max_ray_depth;
+}
+
+
+
+void ShadingEngine::setSamplesPerPixel( const Index2& spp  )
+{
+    m_spp = spp;
 }
 
