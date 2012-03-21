@@ -78,11 +78,15 @@ void ShadingEngine::shade( std::vector<Ray>& rays )
     m_results.assign( num_rays, Color( 0.0f ) );
     std::vector<Color> ray_attenuation( num_rays, Color( 1.0f ) );
 
-    m_sample_offsets.resize( num_rays );
-    for( std::vector<Vector2>::iterator it = m_sample_offsets.begin(); it != m_sample_offsets.end(); ++it )
-      *it = Vector2( m_rnd(), m_rnd() );
-
-
+    
+    static bool init = false;
+    if( !init )
+    {
+        m_sample_offsets.resize( num_rays );
+        for( std::vector<Vector2>::iterator it = m_sample_offsets.begin(); it != m_sample_offsets.end(); ++it )
+          *it = Vector2( m_rnd(), m_rnd() );
+        init = true;
+    }
     std::vector<LocalGeometry> lgeom;
     for( unsigned i = 0u; i < m_max_ray_depth; ++i )
     {
@@ -148,9 +152,12 @@ void ShadingEngine::shade( std::vector<Ray>&           rays,
                     bsdf_seed.setX( bsdf_seed.x() < 1.0f ? bsdf_seed.x() : bsdf_seed.x() - 1.0f );
                     bsdf_seed.setY( bsdf_seed.y() < 1.0f ? bsdf_seed.y() : bsdf_seed.y() - 1.0f );
                     */
+                  
+                    /*
                     unsigned scramble = i;
                     scramble  = lcg( scramble );
                     bsdf_seed = sobol( m_pass_number, scramble );
+                    */
                     
                     /*
                     Vector2 bin( m_pass_number / m_spp.x(), m_pass_number % m_spp.x() );
@@ -159,7 +166,10 @@ void ShadingEngine::shade( std::vector<Ray>&           rays,
                     bsdf_seed  =  bin + Vector2( m_rnd()*step, m_rnd()*step );
                     */
 
-                    //bsdf_seed = hammersley( m_pass_number, m_spp.x() * m_spp.y(), 0 );
+                    bsdf_seed = hammersley( m_pass_number, m_spp.x() * m_spp.y(), 1234 );
+                    if( bsdf_seed.x() < 0.0f || bsdf_seed.x() >= 1.0f ||
+                        bsdf_seed.y() < 0.0f || bsdf_seed.y() >= 1.0f )
+                        LLOG_INFO << "bad";
 
                     //bsdf_seed = Vector2( m_rnd(), m_rnd() );
                 }
@@ -290,17 +300,17 @@ void ShadingEngine::shade( std::vector<Ray>&           rays,
             Vector2 bsdf_seed;
             if( primary_rays )
             {
-                /*
-                bsdf_seed = sobol( m_pass_number, i );
+                bsdf_seed = sobol( m_pass_number, 0 );
                 bsdf_seed += m_sample_offsets[i];
                 bsdf_seed.setX( bsdf_seed.x() < 1.0f ? bsdf_seed.x() : bsdf_seed.x() - 1.0f );
                 bsdf_seed.setY( bsdf_seed.y() < 1.0f ? bsdf_seed.y() : bsdf_seed.y() - 1.0f );
-                */
                 
+                /*
                 Vector2 bin( m_pass_number / m_spp.x(), m_pass_number % m_spp.x() );
                 bin /= m_spp.x();
                 float step = 1.0f / m_spp.x();
                 bsdf_seed  =  bin + Vector2( m_rnd()*step, m_rnd()*step );
+                */
             }
             else
             {

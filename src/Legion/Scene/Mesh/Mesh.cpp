@@ -216,7 +216,7 @@ void Mesh::sample( const Vector2& seed,
     unsigned       idx       = oseed * num_faces;
     idx = std::min( idx, num_faces-1 );
 
-    const float t = sqrtf( seed.x() );
+    const float t = seed.x() == 0.0f ? 0.0f : sqrtf( seed.x() );
     const float alpha = 1.0f - t;
     const float beta  = seed.y() * t;
     const float gamma = 1.0f - alpha - beta;
