@@ -21,6 +21,7 @@
 // IN THE SOFTWARE.
 // (MIT/X11 License)
 
+#include <Legion/Common/Math/QMC.hpp>
 #include <Legion/Common/Util/Logger.hpp>
 #include <Legion/Common/Util/Stream.hpp>
 #include <Legion/Common/Util/Timer.hpp>
@@ -250,8 +251,8 @@ void ShadingEngine::shade( std::vector<Ray>&           rays,
             Color f_over_pdf;
             const Vector2 bsdf_seed( m_rnd(), m_rnd() );
             shader->sampleBSDF( bsdf_seed, w_out, lgeom, new_w_in, f_over_pdf);
-            ray_attenuation[i] *= f_over_pdf * fabs( dot( lgeom.geometric_normal,
-                                                          new_w_in ) );
+            ray_attenuation[i] *= f_over_pdf * fabs( dot(lgeom.geometric_normal,
+                                                         new_w_in ) );
             rays[i] = Ray( surface_p + 0.0001f*lgeom.geometric_normal,
                            new_w_in, 
                            1e15f, 
