@@ -21,7 +21,7 @@
 // IN THE SOFTWARE.
 // (MIT/X11 License)
 
-#include <Legion/Common/Math/QMC.hpp>
+#include <Legion/Common/Math/Sobol.hpp>
 #include <Legion/Common/Util/Logger.hpp>
 #include <Legion/Common/Util/Stream.hpp>
 #include <Legion/Common/Util/Timer.hpp>
@@ -145,33 +145,14 @@ void ShadingEngine::shade( std::vector<Ray>&           rays,
                 if( primary_rays )
                 {
                     /*
-                    unsigned  scramble = i;
-                    scramble  = lcg( scramble )
-                    bsdf_seed = sobol( m_pass_number, scramble );
-                    bsdf_seed += m_sample_offsets[i];
-                    bsdf_seed.setX( bsdf_seed.x() < 1.0f ? bsdf_seed.x() : bsdf_seed.x() - 1.0f );
-                    bsdf_seed.setY( bsdf_seed.y() < 1.0f ? bsdf_seed.y() : bsdf_seed.y() - 1.0f );
-                    */
-                  
-                    /*
-                    unsigned scramble = i;
-                    scramble  = lcg( scramble );
-                    bsdf_seed = sobol( m_pass_number, scramble );
-                    */
-                    
-                    /*
                     Vector2 bin( m_pass_number / m_spp.x(), m_pass_number % m_spp.x() );
                     bin /= m_spp.x();
                     float step = 1.0f / m_spp.x();
                     bsdf_seed  =  bin + Vector2( m_rnd()*step, m_rnd()*step );
                     */
 
-                    bsdf_seed = hammersley( m_pass_number, m_spp.x() * m_spp.y(), 1234 );
-                    if( bsdf_seed.x() < 0.0f || bsdf_seed.x() >= 1.0f ||
-                        bsdf_seed.y() < 0.0f || bsdf_seed.y() >= 1.0f )
-                        LLOG_INFO << "bad";
-
-                    //bsdf_seed = Vector2( m_rnd(), m_rnd() );
+                    bsdf_seed = Vector2( Sobol::gen( m_pass_number, 0, i ),
+                                         Sobol::gen( m_pass_number, 1, i ) );
                 }
                 else
                 {
@@ -300,17 +281,14 @@ void ShadingEngine::shade( std::vector<Ray>&           rays,
             Vector2 bsdf_seed;
             if( primary_rays )
             {
-                bsdf_seed = sobol( m_pass_number, 0 );
-                bsdf_seed += m_sample_offsets[i];
-                bsdf_seed.setX( bsdf_seed.x() < 1.0f ? bsdf_seed.x() : bsdf_seed.x() - 1.0f );
-                bsdf_seed.setY( bsdf_seed.y() < 1.0f ? bsdf_seed.y() : bsdf_seed.y() - 1.0f );
-                
-                /*
+              /*
+                    bsdf_seed = Vector2( Sobol::gen( m_pass_number, 2, i ),
+                                         Sobol::gen( m_pass_number, 3, i ) );
+                                         */
                 Vector2 bin( m_pass_number / m_spp.x(), m_pass_number % m_spp.x() );
                 bin /= m_spp.x();
                 float step = 1.0f / m_spp.x();
                 bsdf_seed  =  bin + Vector2( m_rnd()*step, m_rnd()*step );
-                */
             }
             else
             {
