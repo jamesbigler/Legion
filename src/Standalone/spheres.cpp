@@ -123,7 +123,6 @@ int main( int argc, char** argv )
         {
             std::vector<legion::Mesh::Vertex> verts;
             std::vector<legion::Index3> indices;
-            //generateSphere( verts, indices, 10, 20, 0.5f, 
             generateSphere( verts, indices, 100, 200, 0.25f, 
                             legion::Vector3(-0.75f + i*0.5f, 0.0f, -5.0f) );
 

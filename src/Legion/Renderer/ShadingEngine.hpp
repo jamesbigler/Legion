@@ -78,11 +78,23 @@ private:
     struct Closure
     {
         Closure() {}
-        Closure( const Vector3& light_point, const ILightShader* light ) 
-          : light_point( light_point ), light( light ) {}
+        Closure( float light_select_pdf,
+                 float light_sample_pdf,
+                 const Vector3& light_point,
+                 const ILightShader* light ) 
+            : light_select_pdf( light_select_pdf ),
+              light_sample_pdf( light_sample_pdf ),
+              light_point( light_point ),
+              light( light )
+        {
+        }
 
+        
+        float               light_select_pdf;
+        float               light_sample_pdf;
         Vector3             light_point;
         const ILightShader* light;
+
     };
 
 

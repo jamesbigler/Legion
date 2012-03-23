@@ -99,6 +99,8 @@ private:
     const ISurfaceShader*    m_shader;
 
     float                    m_area;
+    std::vector<float>       m_area_cdf;
+
     std::vector<Vector3>     m_vertex_data;
     std::vector<Index3>      m_face_data;
 

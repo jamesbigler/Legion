@@ -28,6 +28,10 @@
 #include <Legion/Scene/LightShader/MeshLight.hpp>
 #include <Legion/Scene/Mesh/Mesh.hpp>
 
+#include <algorithm>
+#include <iterator>
+
+
 using namespace legion;
 
 namespace
@@ -107,10 +111,19 @@ void Mesh::setFaces( unsigned              num_faces,
 
     if( lshader ) 
     {
+        m_area_cdf.resize( num_faces );
         lshader->setMesh( this );
         getContext().addLight( lshader ); 
         for( unsigned i = 0; i < num_faces; ++i )
-            m_area += getArea( m_vertex_data, tris[i] );
+        {
+            const float tri_area = getArea( m_vertex_data, tris[i] );
+            m_area += tri_area;
+            m_area_cdf[i] = m_area;
+        }
+        std::transform( m_area_cdf.begin(),
+                        m_area_cdf.end(),
+                        m_area_cdf.begin(),
+                        std::bind2nd( std::divides<float>(), m_area ) );
     }
 
     RayTracer::updateFaceBuffer( m_faces, num_faces, tris, sshader, lshader );
@@ -208,13 +221,34 @@ void Mesh::sample( const Vector2& seed,
                    Vector3&       on_light,
                    float&         pdf )
 {
+    
+    // TODO: handle empty light set more robustly -- should never be called
+    //       in this case tho
     // TODO: need seed for object selection
-    // TODO: need to build up CDF over area of tris and sample that
-    //       pdf is then 1.0f / m_area;
-    const float    oseed     = drand48();
+    // TODO: move CDF codes into util class or functions 
     const unsigned num_faces = m_face_data.size();
-    unsigned       idx       = oseed * num_faces;
-    idx = std::min( idx, num_faces-1 );
+    const float    oseed     = drand48();
+
+    unsigned idx = num_faces/2;
+    unsigned min_idx = 0u;
+    unsigned max_idx = num_faces-1u;
+    for(;;)
+    {
+        //std::cerr << "min: " << min_idx << " idx: " << idx << " max: " << max_idx << std::endl;
+
+        if( oseed > m_area_cdf[idx] )
+        {
+            min_idx = idx;
+            idx = ( max_idx + idx + 1 /* round up */ ) >> 1;
+        }
+        else
+        {
+            if( idx == min_idx  || oseed > m_area_cdf[ idx-1u ] ) break;
+            max_idx = idx;
+            idx = ( idx + min_idx ) >> 1;
+        }
+
+    }
 
     const float t = seed.x() == 0.0f ? 0.0f : sqrtf( seed.x() );
     const float alpha = 1.0f - t;
@@ -226,6 +260,6 @@ void Mesh::sample( const Vector2& seed,
                beta  * m_vertex_data[ tri.y() ] +
                gamma * m_vertex_data[ tri.z() ];
     
-    pdf = 1.0f / ( static_cast<float>( num_faces ) * 
-                 getArea( m_vertex_data, Index3( tri.x(), tri.y(), tri.z() ) ) );
+    pdf = 1.0f / m_area; 
+                
 }

@@ -141,27 +141,20 @@ void ShadingEngine::shade( std::vector<Ray>&           rays,
                                          light_select_pdf );
                                                                 
                 // Choose a point on the light by sampling light Area
-                Vector2 bsdf_seed;
+                Vector2 shadow_seed;
                 if( primary_rays )
                 {
-                    /*
-                    Vector2 bin( m_pass_number / m_spp.x(), m_pass_number % m_spp.x() );
-                    bin /= m_spp.x();
-                    float step = 1.0f / m_spp.x();
-                    bsdf_seed  =  bin + Vector2( m_rnd()*step, m_rnd()*step );
-                    */
-
-                    bsdf_seed = Vector2( Sobol::gen( m_pass_number, 0, i ),
-                                         Sobol::gen( m_pass_number, 1, i ) );
+                    shadow_seed = Vector2( Sobol::gen( m_pass_number, 0, i ),
+                                           Sobol::gen( m_pass_number, 1, i ) );
                 }
                 else
                 {
-                    bsdf_seed = Vector2( m_rnd(), m_rnd() );
+                    shadow_seed = Vector2( m_rnd(), m_rnd() );
                 }
 
                 float light_sample_pdf;
                 Vector3 on_light;
-                light->sample( bsdf_seed, 
+                light->sample( shadow_seed, 
                                on_light,
                                light_sample_pdf );
 
@@ -172,7 +165,7 @@ void ShadingEngine::shade( std::vector<Ray>&           rays,
 
                 const float max_dist = light->isSingular() ? dist : dist + 1.0f;
                 m_secondary_rays[i]  = Ray( p, l, max_dist, rays[i].time());
-                m_closures[i]        = Closure( on_light, light );
+                m_closures[i]        = Closure( light_select_pdf, light_sample_pdf, on_light, light );
             }
         }
 
@@ -230,28 +223,30 @@ void ShadingEngine::shade( std::vector<Ray>&           rays,
             // Determine occlusion
             //
             // TODO: handle case where have_lights == false
-            const ILightShader* light = m_closures[i].light;
-            const Vector3 light_p( m_closures[i].light_point );
-            const Vector3 w_in( normalize( light_p - surface_p ) );
+            Color direct_light( 0.000f );
+
+            const ILightShader* light    = m_closures[i].light;
             const bool is_singular_light = light->isSingular();
-            Color direct_light( 0.001f );
-            if( ( is_singular_light && !m_shadow_results[i].isValidHit() ) || 
-                ( !is_singular_light && m_shadow_results[i].light_id ==
-                  static_cast<int>( light->getID() ) ) )
+            const Vector3 light_p( is_singular_light ? 
+                                   m_closures[i].light_point :
+                                   m_shadow_results[i].position );
+            const Vector3 light_n( m_shadow_results[i].shading_normal );
+            const Vector3 w_in   ( normalize( light_p - surface_p ) );
+
+            if( (  is_singular_light && !m_shadow_results[i].isValidHit() ) || 
+                ( !is_singular_light &&  m_shadow_results[i].light_id ==
+                      static_cast<int>( light->getID() ) ) )
             {
                 // we have unoccluded light
-                direct_light = light->emittance( m_shadow_results[ i ], w_in ); 
-            }
-            {
-                /*
-                LLOG_INFO << "singular: " << is_singular_light
-                          << " shadow_id: " << m_shadow_results[i].light_id
-                          << " new_id: " << light->getID()
-                          << " shadow_hit_p: " << m_shadow_results[i].position
-                          << " shading_p: " << surface_p; 
-                          */
-            }
+                const float select_pdf       = m_closures[i].light_select_pdf;
+                const float area_sample_pdf  = m_closures[i].light_sample_pdf; 
+                const float d2               = ( light_p - surface_p ).lengthSquared();
+                const float cos_theta        = fabs( dot( light_n, -w_out ) ); 
+                const float angle_sample_pdf = area_sample_pdf * d2 / cos_theta;
 
+                direct_light = light->emittance( m_shadow_results[ i ], w_in ) /
+                               ( select_pdf * angle_sample_pdf ); 
+            }
 
             // Evaluate bsdf
             const ISurfaceShader* shader = m_surface_shaders[lgeom.material_id];
@@ -265,30 +260,19 @@ void ShadingEngine::shade( std::vector<Ray>&           rays,
             const float ns_dot_w_in = fmaxf( 0.0f, dot( lgeom.geometric_normal,
                                                         w_in ) );
 
-            const float inv_dist2 = 1.0f / (surface_p-light_p).lengthSquared();
             Color bsdf_val = shader->evaluateBSDF( w_out, lgeom, w_in ) *
                              ns_dot_w_in;
 
-            m_results[i] += emission + direct_light * inv_dist2 * bsdf_val *
-                            ray_attenuation[i];
+            m_results[i] += emission + direct_light * bsdf_val * ray_attenuation[i];
             
-            //LLOG_INFO << std::fixed << i/10 << "," << i%10 << " " << m_results[i] << " d: " << direct_light << " dist: " << inv_dist2 << " b: " << bsdf_val << " e: " << emission ;
-
-
             Vector3 new_w_in;
             Color f_over_pdf;
             
             Vector2 bsdf_seed;
             if( primary_rays )
             {
-              /*
-                    bsdf_seed = Vector2( Sobol::gen( m_pass_number, 2, i ),
-                                         Sobol::gen( m_pass_number, 3, i ) );
-                                         */
-                Vector2 bin( m_pass_number / m_spp.x(), m_pass_number % m_spp.x() );
-                bin /= m_spp.x();
-                float step = 1.0f / m_spp.x();
-                bsdf_seed  =  bin + Vector2( m_rnd()*step, m_rnd()*step );
+                bsdf_seed = Vector2( Sobol::gen( m_pass_number, 2, i ),
+                                     Sobol::gen( m_pass_number, 3, i ) );
             }
             else
             {

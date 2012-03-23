@@ -43,6 +43,7 @@ add_library( legion SHARED
     Common/Util/Timer.hpp
     Common/Util/TypeConversion.cpp
     Common/Util/TypeConversion.hpp
+    Common/Util/Util.hpp
     Core/APIBase.cpp
     Core/APIBase.hpp
     Core/Color.hpp

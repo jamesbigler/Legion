@@ -11,6 +11,8 @@ class Sobol
 {
 public:
     
+    /// Generate an single element A_i,dim of the Sobol sequence which is the
+    /// dimth dimension of the ith sobol vector. 
     static float gen( unsigned i, unsigned dim,  unsigned pixel_index = 0u )
     {
         const unsigned scramble = lcg( pixel_index ); 
