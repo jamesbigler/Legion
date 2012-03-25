@@ -123,10 +123,6 @@ private:
     Index2           m_spp;
 
     MTRand32         m_rnd;
-
-
-
-    std::vector<Vector2> m_sample_offsets;
 };
 
 

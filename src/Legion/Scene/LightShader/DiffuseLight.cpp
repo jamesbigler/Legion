@@ -50,7 +50,7 @@ Color DiffuseLight::power()const
 Color DiffuseLight::emittance( const LocalGeometry& light_geom,
                             const Vector3& w_in )const
 {
-    return m_emittance * fmaxf( 0.0f,  dot( light_geom.shading_normal, -w_in ) );
+    return m_emittance;// * fmaxf( 0.0f,  dot( light_geom.shading_normal, -w_in ) );
 }
 
 

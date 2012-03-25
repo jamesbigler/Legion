@@ -78,15 +78,6 @@ void ShadingEngine::shade( std::vector<Ray>& rays )
     m_results.assign( num_rays, Color( 0.0f ) );
     std::vector<Color> ray_attenuation( num_rays, Color( 1.0f ) );
 
-    
-    static bool init = false;
-    if( !init )
-    {
-        m_sample_offsets.resize( num_rays );
-        for( std::vector<Vector2>::iterator it = m_sample_offsets.begin(); it != m_sample_offsets.end(); ++it )
-          *it = Vector2( m_rnd(), m_rnd() );
-        init = true;
-    }
     std::vector<LocalGeometry> lgeom;
     for( unsigned i = 0u; i < m_max_ray_depth; ++i )
     {
@@ -155,17 +146,20 @@ void ShadingEngine::shade( std::vector<Ray>&           rays,
                 float light_sample_pdf;
                 Vector3 on_light;
                 light->sample( shadow_seed, 
+                               local_geom[i],
                                on_light,
                                light_sample_pdf );
 
                 // Create ray
                 const Vector3 p = local_geom[i].position;
                 Vector3 l( on_light - p );
-                float dist = l.normalize();
+                const float max_dist = l.normalize();
 
-                const float max_dist = light->isSingular() ? dist : dist + 1.0f;
                 m_secondary_rays[i]  = Ray( p, l, max_dist, rays[i].time());
-                m_closures[i]        = Closure( light_select_pdf, light_sample_pdf, on_light, light );
+                m_closures[i]        = Closure( light_select_pdf,
+                                                light_sample_pdf,
+                                                on_light,
+                                                light );
             }
         }
 
@@ -174,7 +168,7 @@ void ShadingEngine::shade( std::vector<Ray>&           rays,
         //
         {
             AutoTimerRef<LoopTimerInfo> ray_trace_timer( m_shadow_trace );
-            m_ray_tracer.trace( RayTracer::CLOSEST_HIT, m_secondary_rays );
+            m_ray_tracer.trace( RayTracer::ANY_HIT, m_secondary_rays );
             m_ray_tracer.join();
             m_ray_tracer.getResults( m_shadow_results );
         }
@@ -206,7 +200,6 @@ void ShadingEngine::shade( std::vector<Ray>&           rays,
             const Vector3 surface_p( lgeom.position );
             const Vector3 w_out = -rays[ i ].direction();
 
-
             //
             // Emission
             //
@@ -223,42 +216,32 @@ void ShadingEngine::shade( std::vector<Ray>&           rays,
             // Determine occlusion
             //
             // TODO: handle case where have_lights == false
-            Color direct_light( 0.000f );
+            Color direct_light( 0.0f );
 
             const ILightShader* light    = m_closures[i].light;
-            const bool is_singular_light = light->isSingular();
-            const Vector3 light_p( is_singular_light ? 
-                                   m_closures[i].light_point :
-                                   m_shadow_results[i].position );
-            const Vector3 light_n( m_shadow_results[i].shading_normal );
+            const Vector3 light_p( m_closures[i].light_point );
             const Vector3 w_in   ( normalize( light_p - surface_p ) );
 
-            if( (  is_singular_light && !m_shadow_results[i].isValidHit() ) || 
-                ( !is_singular_light &&  m_shadow_results[i].light_id ==
-                      static_cast<int>( light->getID() ) ) )
+            if( !m_shadow_results[i].isValidHit() ) 
             {
                 // we have unoccluded light
-                const float select_pdf       = m_closures[i].light_select_pdf;
-                const float area_sample_pdf  = m_closures[i].light_sample_pdf; 
-                const float d2               = ( light_p - surface_p ).lengthSquared();
-                const float cos_theta        = fabs( dot( light_n, -w_out ) ); 
-                const float angle_sample_pdf = area_sample_pdf * d2 / cos_theta;
+                float select_pdf = m_closures[i].light_select_pdf;
+                float sample_pdf = m_closures[i].light_sample_pdf; 
 
                 direct_light = light->emittance( m_shadow_results[ i ], w_in ) /
-                               ( select_pdf * angle_sample_pdf ); 
+                               ( select_pdf * sample_pdf ); 
             }
 
             // Evaluate bsdf
             const ISurfaceShader* shader = m_surface_shaders[lgeom.material_id];
             if( !shader )
             {
-                LLOG_INFO << "no shader found for id: " << lgeom.material_id;
+                LLOG_ERROR << "no shader found for id: " << lgeom.material_id;
                 m_results[ i ] = Color( 0.0f, 1.0f, 0.0f ); 
                 continue;
             }
             
-            const float ns_dot_w_in = fmaxf( 0.0f, dot( lgeom.geometric_normal,
-                                                        w_in ) );
+            float ns_dot_w_in = fmaxf( 0.0f, dot( lgeom.shading_normal, w_in ));
 
             Color bsdf_val = shader->evaluateBSDF( w_out, lgeom, w_in ) *
                              ns_dot_w_in;

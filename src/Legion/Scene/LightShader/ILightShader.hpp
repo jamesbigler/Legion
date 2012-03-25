@@ -30,11 +30,13 @@ public:
     /// Sample the light source based on area.  The renderer will convert this
     /// to a solid-angle based sample and pdf internally
     ///   \param  seed       Sampling seed 
+    ///   \param  geom       Shading surface geometry
     ///   \param  on_light   Sampled position on light 
     ///   \param  pdf        PDF of the given sample direction
-    virtual void    sample( const Vector2& seed,
-                            Vector3&       on_light,
-                            float&         pdf )const=0;
+    virtual void    sample( const Vector2&       seed,
+                            const LocalGeometry& geom,
+                            Vector3&             on_light,
+                            float&               pdf )const=0;
 
 
     virtual bool    isSingular()const=0;

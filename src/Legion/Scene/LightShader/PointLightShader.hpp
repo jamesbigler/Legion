@@ -24,7 +24,10 @@ public:
     //--------------------------------------------------------------------------
     // ILightShader interface
     //--------------------------------------------------------------------------
-    void    sample( const Vector2&  seed, Vector3& on_light, float& pdf )const;
+    void    sample( const Vector2& seed,
+                    const LocalGeometry& geom,
+                    Vector3& on_light,
+                    float& pdf )const;
 
     bool    isSingular()const;
 

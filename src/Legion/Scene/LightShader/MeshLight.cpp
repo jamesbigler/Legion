@@ -45,10 +45,11 @@ MeshLight::~MeshLight()
 
 
 void MeshLight::sample( const Vector2& seed,
-                               Vector3& on_light,
-                               float& pdf )const
+                        const LocalGeometry& p, 
+                        Vector3& on_light,
+                        float& pdf )const
 {
-    m_mesh->sample( seed, on_light, pdf );
+    m_mesh->sample( seed, p, on_light, pdf );
 }
 
 

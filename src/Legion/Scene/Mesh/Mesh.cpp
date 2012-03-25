@@ -217,9 +217,10 @@ void Mesh::acceptChanges()
 }
 
 
-void Mesh::sample( const Vector2& seed,
-                   Vector3&       on_light,
-                   float&         pdf )
+void Mesh::sample( const Vector2&       seed,
+                   const LocalGeometry& p,
+                   Vector3&             on_light,
+                   float&               pdf )
 {
     
     // TODO: handle empty light set more robustly -- should never be called
@@ -256,10 +257,16 @@ void Mesh::sample( const Vector2& seed,
     const float gamma = 1.0f - alpha - beta;
 
     const Index3  tri = m_face_data[ idx ];
-    on_light = alpha * m_vertex_data[ tri.x() ] +
-               beta  * m_vertex_data[ tri.y() ] +
-               gamma * m_vertex_data[ tri.z() ];
+    const Vector3 p0 = m_vertex_data[ tri.x() ];
+    const Vector3 p1 = m_vertex_data[ tri.y() ];
+    const Vector3 p2 = m_vertex_data[ tri.z() ];
+    on_light = alpha*p0 + beta*p1 + gamma*p2; 
+
+    // TODO: use shading normal
+    Vector3 light_normal = normalize( cross( p1-p0, p2-p0 ) );
+
+    const float dist2     = ( on_light - p.position ).lengthSquared();
+    const float cos_theta = fabs( dot( p.shading_normal, light_normal ) );
     
-    pdf = 1.0f / m_area; 
-                
+    pdf = dist2 / ( m_area * cos_theta ); 
 }

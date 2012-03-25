@@ -16,6 +16,7 @@ namespace legion
 class MeshLight;
 class ISurfaceShader;
 class Matrix;
+class LocalGeometry;
 
 class Mesh : public APIBase
 {
@@ -81,9 +82,10 @@ public:
     bool facesChanged()const;
     void acceptChanges();
 
-    void sample( const Vector2& seed,
-                 Vector3&       on_light,
-                 float&         pdf );
+    void sample( const Vector2&       seed,
+                 const LocalGeometry& p,
+                 Vector3&             on_light,
+                 float&               pdf );
 
 private:
 

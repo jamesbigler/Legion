@@ -5,6 +5,8 @@
 #include <Legion/Common/Math/Math.hpp>
 #include <Legion/Common/Math/ONB.hpp>
 #include <Legion/Common/Util/TypeConversion.hpp>
+#include <Legion/Common/Util/Logger.hpp>
+#include <Legion/Common/Util/Stream.hpp>
 
 using namespace legion;
 
@@ -48,7 +50,7 @@ void Lambertian::sampleBSDF( const Vector2& seed,
     w_in = onb.inverseTransform( Vector3( x, y, z ) );
 
     // calculate pdf
-    float pdf_inv  = 1.0f / z * ONE_DIV_PI;
+    float pdf_inv  = PI / z;
     f_over_pdf = pdf_inv * ONE_DIV_PI * m_kd;
 }
 

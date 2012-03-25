@@ -35,6 +35,7 @@ namespace legion
 
 class Context;
 class Mesh;
+struct LocalGeometry;
 
 class MeshLight : public  ILightShader
 {
@@ -48,7 +49,10 @@ public:
     virtual ~MeshLight();
     
     /// Samples the associated mesh
-    void    sample( const Vector2&  seed, Vector3& on_light, float& pdf )const;
+    void    sample( const Vector2& seed,
+                    const LocalGeometry& lgeom,
+                    Vector3& on_light,
+                    float& pdf )const;
 
     /// Returns true
     bool    isSingular()const;

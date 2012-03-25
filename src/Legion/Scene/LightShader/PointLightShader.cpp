@@ -22,6 +22,7 @@ PointLightShader::~PointLightShader()
 
 
 void PointLightShader::sample( const Vector2& seed,
+                               const LocalGeometry& geom,
                                Vector3& on_light,
                                float& pdf )const
 {

@@ -99,6 +99,7 @@ int main( int argc, char** argv )
 
         LLOG_INFO << "Starting ***********";
         
+        /*
         legion::PointLightShader light0( &ctx, "lshader0" );
         light0.setPosition( legion::Vector3( 1.0f, 2.0f, -6.0f ) );
         light0.setIntensity( legion::Color( 5.0f, 5.0f, 20.0f ) );
@@ -108,6 +109,7 @@ int main( int argc, char** argv )
         light1.setPosition( legion::Vector3( -1.0f, 2.0f, -4.0f ) );
         light1.setIntensity( legion::Color( 15.0f, 12.0f, 5.0f ) );
         ctx.addLight( &light1 );
+        */
 
         // TODO: make this a DiffuseLight
         legion::DiffuseLight diffuse_light( &ctx, "diffuse_light" );
@@ -161,6 +163,7 @@ int main( int argc, char** argv )
 
 
         legion::ThinLensCamera cam( &ctx, "camera" );
+        //cam.setViewPlane( -1.0f, 1.0f, -0.75f, 0.75f );
         cam.setViewPlane( -1.0f, 1.0f, -0.75f, 0.75f );
         cam.setShutterOpenClose( 0.0f, 0.005f );
         cam.setFocalDistance( 5.0f );
@@ -175,7 +178,7 @@ int main( int argc, char** argv )
         film.setDimensions( legion::Index2( 1024u, 768u) );
         //film.setDimensions( legion::Index2( 512u, 512u ) );
         //film.setDimensions( legion::Index2( 256u, 256u ) );
-        //film.setDimensions( legion::Index2( 3u, 3u ) );
+        //film.setDimensions( legion::Index2( 8u, 8u ) );
         ctx.setActiveFilm( &film );
 
         ctx.render();

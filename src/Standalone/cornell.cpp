@@ -64,9 +64,7 @@ int main( int argc, char** argv )
         white.setKd( legion::Color( 0.80f, 0.80f, 0.80f ) );
         
         legion::DiffuseLight diffuse_light( &ctx, "diffuse_light" );
-        diffuse_light.setEmittance( legion::Color( 1500000.0f,
-                                                   1500000.0f,
-                                                    500000.0f ) );
+        diffuse_light.setEmittance( legion::Color( 15.0f, 15.0f, 5.0f ) );
 
         //
         // Set up geometry
