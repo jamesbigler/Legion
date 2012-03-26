@@ -20,6 +20,7 @@ using namespace legion;
 #define OPTIX_CATCH_RETHROW                                                    \
     catch ( optix::Exception& e )                                              \
     {                                                                          \
+        LLOG_INFO << "optix failure\n\n\n";\
         throw legion::Exception( std::string("OPTIX_EXCEPTION: ")+e.what() );  \
     }                                                                          \
     catch ( std::exception& e )                                                \
@@ -135,6 +136,7 @@ void RayTracer::addMesh( legion::Mesh* mesh )
         geom->setPrimitiveCount( mesh->getFaceCount() );
         geom[ "vertices"  ]->set( mesh->getVertexBuffer() );
         geom[ "triangles" ]->set( mesh->getFaceBuffer() );
+        geom[ "area"      ]->setFloat( mesh->getArea() );
 
         optix::GeometryInstance gi = m_optix_context->createGeometryInstance();
         gi->setGeometry( geom );
@@ -212,17 +214,21 @@ void RayTracer::trace( RayType type, const std::vector<Ray>& rays )
 void RayTracer::getResults( std::vector<LocalGeometry>& results )
 {
     
-    optix::Buffer result_buffer  = m_ray_server.getResults();
+    try
+    {
+        optix::Buffer result_buffer  = m_ray_server.getResults();
 
-    RTsize num_results;
-    result_buffer->getSize( num_results );
-    LocalGeometry* data = static_cast<LocalGeometry*>( result_buffer->map() );
+        RTsize num_results;
+        result_buffer->getSize( num_results );
+        LocalGeometry* data = static_cast<LocalGeometry*>( result_buffer->map() );
 
-    // TODO: this is a hotspot.  However, we would need multiple results buffers
-    // to avoid this copy and allow users to take the mapped result_buffer 
-    results.assign( data, data+num_results );
+        // TODO: this is a hotspot.  However, we would need multiple results buffers
+        // to avoid this copy and allow users to take the mapped result_buffer 
+        results.assign( data, data+num_results );
 
-    result_buffer->unmap();
+        result_buffer->unmap();
+    }
+    OPTIX_CATCH_RETHROW;
 }
 
 
@@ -293,7 +299,6 @@ void RayTracer::initializeOptixContext()
         m_material = m_optix_context->createMaterial();
         m_material->setClosestHitProgram( CLOSEST_HIT, m_closest_hit );
         m_material->setAnyHitProgram    ( ANY_HIT,     m_any_hit );
-
 
         m_ray_server.setContext( m_optix_context );
         m_ray_server.setRayBufferName( "rays" );

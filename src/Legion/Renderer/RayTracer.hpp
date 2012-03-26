@@ -30,6 +30,7 @@ public:
     RayTracer();
 
     optix::Buffer createBuffer();
+    optix::Context getOptixContext() { return m_optix_context; }
 
     void addMesh(    legion::Mesh* mesh );
     void removeMesh( legion::Mesh* mesh );

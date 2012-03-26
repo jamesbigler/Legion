@@ -87,6 +87,8 @@ public:
                  Vector3&             on_light,
                  float&               pdf );
 
+    float getArea()const;
+
 private:
 
     bool                     m_subdivision_enabled;

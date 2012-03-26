@@ -18,6 +18,7 @@ RT_PROGRAM void traceRays()
 
     legion::LocalGeometry prd;
     prd.reset();
+    prd.texcoord.x = 1e25f; // TODO
 
     if( ray_info.direction.x != 0.0f || 
         ray_info.direction.y != 0.0f || 

@@ -13,9 +13,14 @@
 rtBuffer<legion::Vertex> vertices;     
 rtBuffer<optix::int4>    triangles;
 
-rtDeclareVariable( legion::LocalGeometry, lgeom,    attribute surface_info, );
-rtDeclareVariable( optix::float3,         on_plane, attribute on_plane, );
-rtDeclareVariable( optix::Ray,            ray,   rtCurrentRay, );
+rtDeclareVariable( float, area, , );
+
+rtDeclareVariable( legion::LocalGeometry, lgeom,     attribute surface_info, );
+rtDeclareVariable( optix::float3,         on_plane,  attribute on_plane, );
+rtDeclareVariable( float,                 mesh_area, attribute mesh_area, );
+rtDeclareVariable( optix::Ray,            ray,       rtCurrentRay, );
+
+
 
 RT_PROGRAM void polyMeshIntersect( int prim_index )
 {
@@ -34,29 +39,25 @@ RT_PROGRAM void polyMeshIntersect( int prim_index )
       if(  rtPotentialIntersection( t ) )
       {
           const float alpha = 1.0f - beta - gamma;
+        
+          // Fill in a localgeometry
           legion::LocalGeometry lg;
           lg.position_object  = ray.origin + t*ray.direction,
           lg.geometric_normal = geometric_normal; 
-          lg.shading_normal   = alpha*v0.normal +
-                                beta*v1.normal  +
-                                gamma*v2.normal;
-          lg.texcoord         = alpha*v0.tex    +
-                                beta*v1.tex     +
-                                gamma*v2.tex;
+          lg.shading_normal   = v0.normal*alpha +
+                                v1.normal*beta  +
+                                v2.normal*gamma;
+          lg.texcoord         = v0.tex*alpha    +
+                                v1.tex*beta     +
+                                v2.tex*gamma;
           lg.material_id      = triangle.w & 0x0000FFFF;
           lg.light_id         = triangle.w >> 16;
-          lgeom = lg;
 
-          on_plane = v0.position;
+          // Assign to attributes
+          lgeom     =  lg;
+          mesh_area = area;
+          on_plane  = v0.position;
 
-          /*
-          refine_and_offset_hitpoint( lg.object_p,
-                                      ray.direction, 
-                                      lg.geometric_normal,
-                                      v0.position,
-                                      lg.front_p,
-                                      lg.back_p );
-                                      */
           rtReportIntersection( 0 );
       }
   }

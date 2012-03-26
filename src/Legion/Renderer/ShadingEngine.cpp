@@ -21,6 +21,7 @@
 // IN THE SOFTWARE.
 // (MIT/X11 License)
 
+#include <Legion/Common/Math/Math.hpp>
 #include <Legion/Common/Math/Sobol.hpp>
 #include <Legion/Common/Util/Logger.hpp>
 #include <Legion/Common/Util/Stream.hpp>
@@ -114,6 +115,15 @@ void ShadingEngine::shade( std::vector<Ray>&           rays,
             m_closures.resize( num_rays );
             m_secondary_rays.resize( num_rays );
 
+            const ILightShader* light;
+            float               light_select_pdf;
+            float               sample_seed = static_cast<float>( m_rnd() );
+            m_light_set.selectLight( sample_seed,
+                                     light,
+                                     light_select_pdf );
+            m_ray_tracer.getOptixContext()[ "light_id"   ]->setUint( light->getID() );
+            m_ray_tracer.getOptixContext()[ "light_area" ]->setFloat( 4.0f*PI*0.25*0.25 ); /////////////////////////////////////////////////////////////
+
             for( unsigned i = 0; i < num_rays; ++i )
             {
                 if( ray_attenuation[i].sum() < 0.0001f ||
@@ -124,12 +134,6 @@ void ShadingEngine::shade( std::vector<Ray>&           rays,
                 }
                     
                 // Choose a light
-                const ILightShader* light;
-                float               light_select_pdf;
-                float               sample_seed = static_cast<float>( m_rnd() );
-                m_light_set.selectLight( sample_seed,
-                                         light,
-                                         light_select_pdf );
                                                                 
                 // Choose a point on the light by sampling light Area
                 Vector2 shadow_seed;
@@ -153,7 +157,9 @@ void ShadingEngine::shade( std::vector<Ray>&           rays,
                 // Create ray
                 const Vector3 p = local_geom[i].position;
                 Vector3 l( on_light - p );
-                const float max_dist = l.normalize();
+                float dist_to_light = l.normalize();
+                //const float max_dist = light->isSingular() ? dist_to_light : dist_to_light + 0.001f; 
+                const float max_dist = light->isSingular() ? dist_to_light : 1e25f; 
 
                 m_secondary_rays[i]  = Ray( p, l, max_dist, rays[i].time());
                 m_closures[i]        = Closure( light_select_pdf,
@@ -217,19 +223,36 @@ void ShadingEngine::shade( std::vector<Ray>&           rays,
             //
             // TODO: handle case where have_lights == false
             Color direct_light( 0.0f );
+            Vector3 w_in( 0.0f );
 
-            const ILightShader* light    = m_closures[i].light;
-            const Vector3 light_p( m_closures[i].light_point );
-            const Vector3 w_in   ( normalize( light_p - surface_p ) );
-
-            if( !m_shadow_results[i].isValidHit() ) 
+            const ILightShader* light = m_closures[i].light;
+            const bool singular       = light->isSingular();
+            const bool shadow_hit     = m_shadow_results[i].isValidHit();
+            if( singular && !shadow_hit )
             {
-                // we have unoccluded light
+                const Vector3 light_p( m_closures[i].light_point );
                 float select_pdf = m_closures[i].light_select_pdf;
-                float sample_pdf = m_closures[i].light_sample_pdf; 
+                
+                w_in = normalize( light_p - surface_p );
 
-                direct_light = light->emittance( m_shadow_results[ i ], w_in ) /
-                               ( select_pdf * sample_pdf ); 
+                direct_light = light->emittance( LocalGeometry(), w_in ) /
+                               select_pdf; 
+            }
+            else if( shadow_hit && m_shadow_results[i].light_id == (int)light->getID() ) 
+            {
+                const Vector3 light_p( m_shadow_results[i].position );
+                float select_pdf = m_closures[i].light_select_pdf;
+                float sample_pdf = m_shadow_results[i].light_pdf; 
+                
+                w_in = normalize( light_p - surface_p );
+
+                direct_light = light->emittance( LocalGeometry(), w_in ) /
+                               ( select_pdf*sample_pdf ); 
+
+                /*
+                LLOG_INFO << "light_p: " << light_p << " selpdf: " << select_pdf << " sampdf: " << sample_pdf
+                          << " L: " << direct_light;
+                          */
             }
 
             // Evaluate bsdf

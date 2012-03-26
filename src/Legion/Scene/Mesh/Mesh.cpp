@@ -116,7 +116,7 @@ void Mesh::setFaces( unsigned              num_faces,
         getContext().addLight( lshader ); 
         for( unsigned i = 0; i < num_faces; ++i )
         {
-            const float tri_area = getArea( m_vertex_data, tris[i] );
+            const float tri_area = ::getArea( m_vertex_data, tris[i] );
             m_area += tri_area;
             m_area_cdf[i] = m_area;
         }
@@ -269,4 +269,10 @@ void Mesh::sample( const Vector2&       seed,
     const float cos_theta = fabs( dot( p.shading_normal, light_normal ) );
     
     pdf = dist2 / ( m_area * cos_theta ); 
+}
+
+
+float Mesh::getArea()const
+{
+    return m_area;
 }

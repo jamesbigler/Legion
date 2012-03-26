@@ -30,6 +30,8 @@ struct Vertex
 };
 
 
+// TODO: experiment with making 2 separate PRD types for shadow and radiance
+//       queries
 struct LocalGeometry 
 {
 #ifdef __CUDACC__
@@ -39,19 +41,21 @@ struct LocalGeometry
     typedef legion::Vector3 VECTOR3; 
     typedef legion::Vector2 VECTOR2; 
 #endif
+
     HOST_DEVICE void reset()
-    { material_id = light_id = -1; } 
+    { material_id = light_id = -1;  light_pdf = 0.0f; } 
 
-    bool isValidHit()const { return material_id != -1; }
-
+    bool isValidHit()const
+    { return material_id != -1; }
 
     VECTOR3   position;
     VECTOR3   position_object;
     VECTOR3   geometric_normal;
     VECTOR3   shading_normal;
     VECTOR2   texcoord;
-    int       material_id; // Can be shorts if necessary
-    int       light_id;
+    float     light_pdf;
+    short     material_id;
+    short     light_id;
 };
 
 
