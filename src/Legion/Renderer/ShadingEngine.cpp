@@ -115,6 +115,7 @@ void ShadingEngine::shade( std::vector<Ray>&           rays,
             m_closures.resize( num_rays );
             m_secondary_rays.resize( num_rays );
 
+            // TODO: make light selection happen at pixel level (not pass)
             const ILightShader* light;
             float               light_select_pdf;
             float               sample_seed = static_cast<float>( m_rnd() );
@@ -122,7 +123,6 @@ void ShadingEngine::shade( std::vector<Ray>&           rays,
                                      light,
                                      light_select_pdf );
             m_ray_tracer.getOptixContext()[ "light_id"   ]->setUint( light->getID() );
-            m_ray_tracer.getOptixContext()[ "light_area" ]->setFloat( 4.0f*PI*0.25*0.25 ); /////////////////////////////////////////////////////////////
 
             for( unsigned i = 0; i < num_rays; ++i )
             {
@@ -182,9 +182,6 @@ void ShadingEngine::shade( std::vector<Ray>&           rays,
      
     //
     // Shade all rays 
-    // TODO: now we need to convert from pdf w/ respect to area to pdf w/
-    //       respect to solid angle. see pbr2 page 717
-    //
     //
     {
         AutoTimerRef<LoopTimerInfo> light_loop_timer( m_light_loop ) ;
@@ -233,10 +230,11 @@ void ShadingEngine::shade( std::vector<Ray>&           rays,
                 const Vector3 light_p( m_closures[i].light_point );
                 float select_pdf = m_closures[i].light_select_pdf;
                 
-                w_in = normalize( light_p - surface_p );
+                w_in = light_p - surface_p;
+                float dist = w_in.normalize();
 
                 direct_light = light->emittance( LocalGeometry(), w_in ) /
-                               select_pdf; 
+                               ( select_pdf * dist * dist ); 
             }
             else if( shadow_hit && m_shadow_results[i].light_id == (int)light->getID() ) 
             {
@@ -275,19 +273,20 @@ void ShadingEngine::shade( std::vector<Ray>&           rays,
             Color f_over_pdf;
             
             Vector2 bsdf_seed;
-            if( primary_rays )
+            //if( primary_rays && false ) // TODO: fix this
+            if( primary_rays ) // TODO: fix this
             {
                 bsdf_seed = Vector2( Sobol::gen( m_pass_number, 2, i ),
                                      Sobol::gen( m_pass_number, 3, i ) );
             }
             else
             {
-               bsdf_seed = Vector2( m_rnd(), m_rnd() );
+                bsdf_seed = Vector2( m_rnd(), m_rnd() );
             }
             shader->sampleBSDF( bsdf_seed, w_out, lgeom, new_w_in, f_over_pdf);
             ray_attenuation[i] *= f_over_pdf * fabs( dot(lgeom.geometric_normal,
                                                          new_w_in ) );
-            rays[i] = Ray( surface_p + 0.0001f*lgeom.geometric_normal,
+            rays[i] = Ray( surface_p,
                            new_w_in, 
                            1e15f, 
                            rays[i].time() );
