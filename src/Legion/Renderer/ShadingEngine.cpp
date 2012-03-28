@@ -73,7 +73,8 @@ void ShadingEngine::logTimerInfo()
 }
 
 
-void ShadingEngine::shade( std::vector<Ray>& rays )
+void ShadingEngine::shade( std::vector<Ray>& rays,
+                           const std::vector<RayScheduler::PixelID>& pixel_ids )
 {
     const unsigned num_rays = rays.size();
     m_results.assign( num_rays, Color( 0.0f ) );
@@ -88,7 +89,7 @@ void ShadingEngine::shade( std::vector<Ray>& rays )
             m_ray_tracer.getResults( lgeom );
         }
 
-        shade( rays, lgeom, ray_attenuation, i == 0u );
+        shade( rays, lgeom, ray_attenuation, pixel_ids, i );
     }
 
     m_pass_number++;
@@ -98,7 +99,8 @@ void ShadingEngine::shade( std::vector<Ray>& rays )
 void ShadingEngine::shade( std::vector<Ray>&           rays,
                            std::vector<LocalGeometry>& local_geom,
                            std::vector<Color>&         ray_attenuation,
-                           bool                        primary_rays )
+                           const std::vector<RayScheduler::PixelID>& pixel_ids,
+                           unsigned                    ray_depth )
 {
     
     const unsigned num_rays = rays.size();
@@ -136,16 +138,9 @@ void ShadingEngine::shade( std::vector<Ray>&           rays,
                 // Choose a light
                                                                 
                 // Choose a point on the light by sampling light Area
-                Vector2 shadow_seed;
-                if( primary_rays )
-                {
-                    shadow_seed = Vector2( Sobol::gen( m_pass_number, 0, i ),
-                                           Sobol::gen( m_pass_number, 1, i ) );
-                }
-                else
-                {
-                    shadow_seed = Vector2( m_rnd(), m_rnd() );
-                }
+                Vector2 shadow_seed =
+                    Vector2( Sobol::gen( pixel_ids[ i ].sobol_index, Sobol::DIM_SHADOW_X+ray_depth ),
+                             Sobol::gen( pixel_ids[ i ].sobol_index, Sobol::DIM_SHADOW_Y+ray_depth ) );
 
                 float light_sample_pdf;
                 Vector3 on_light;
@@ -211,7 +206,7 @@ void ShadingEngine::shade( std::vector<Ray>&           rays,
             {
                 const ILightShader* lshader = 
                     m_light_set.lookupLight( lgeom.light_id );
-                if( lshader && primary_rays )
+                if( lshader && ray_depth == 0 )
                     emission = lshader->emittance( lgeom, -w_out );
             }
             
@@ -272,17 +267,10 @@ void ShadingEngine::shade( std::vector<Ray>&           rays,
             Vector3 new_w_in;
             Color f_over_pdf;
             
-            Vector2 bsdf_seed;
-            //if( primary_rays && false ) // TODO: fix this
-            if( primary_rays ) // TODO: fix this
-            {
-                bsdf_seed = Vector2( Sobol::gen( m_pass_number, 2, i ),
-                                     Sobol::gen( m_pass_number, 3, i ) );
-            }
-            else
-            {
-                bsdf_seed = Vector2( m_rnd(), m_rnd() );
-            }
+            Vector2 bsdf_seed =
+              Vector2( Sobol::gen( pixel_ids[ i ].sobol_index, Sobol::DIM_BSDF_X + ray_depth ),
+                       Sobol::gen( pixel_ids[ i ].sobol_index, Sobol::DIM_BSDF_Y + ray_depth) );
+
             shader->sampleBSDF( bsdf_seed, w_out, lgeom, new_w_in, f_over_pdf);
             ray_attenuation[i] *= f_over_pdf * fabs( dot(lgeom.geometric_normal,
                                                          new_w_in ) );

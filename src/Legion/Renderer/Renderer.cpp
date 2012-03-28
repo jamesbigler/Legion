@@ -69,7 +69,7 @@ void Renderer::render()
 
         {
             AutoTimerRef<LoopTimerInfo> shading_timer( shading_time );
-            m_shading_engine.shade( rays );
+            m_shading_engine.shade( rays, pixel_ids );
         }
 
         {

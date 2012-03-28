@@ -52,6 +52,9 @@ public:
     Vector<DIM, TYPE>& operator*=( TYPE rhs );
     Vector<DIM, TYPE>& operator/=( TYPE rhs );
 
+    TYPE max()const;
+    TYPE min()const;
+
     TYPE length() const;
     TYPE lengthSquared() const;
     TYPE normalize();
@@ -300,6 +303,26 @@ template<unsigned DIM, typename TYPE>
 inline TYPE Vector<DIM, TYPE>::length() const
 {
     return sqrtf( lengthSquared() );
+}
+
+
+template<unsigned DIM, typename TYPE>
+inline TYPE Vector<DIM, TYPE>::max()const
+{
+    TYPE max_val = m_v[0];
+    for( unsigned i = 0; i < DIM; ++i )
+        max_val = m_v[1] > max_val ? m_v[1] : max_val;
+    return max_val;
+}
+
+
+template<unsigned DIM, typename TYPE>
+inline TYPE Vector<DIM, TYPE>::min()const
+{
+    TYPE min_val = m_v[0];
+    for( unsigned i = 0; i < DIM; ++i )
+        min_val = m_v[1] < min_val ? m_v[1] : min_val;
+    return min_val;
 }
 
 

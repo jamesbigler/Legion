@@ -33,6 +33,7 @@
 #include <Legion/Core/Ray.hpp>
 #include <Legion/Renderer/Cuda/Shared.hpp>
 #include <Legion/Renderer/LightSet.hpp>
+#include <Legion/Renderer/RayScheduler.hpp>
 
 #include <map>
 #include <vector>
@@ -55,7 +56,7 @@ public:
     void reset();
     void logTimerInfo();
 
-    void shade( std::vector<Ray>& rays );
+    void shade( std::vector<Ray>& rays, const std::vector<RayScheduler::PixelID>& pixel_ids );
 
     const Results& getResults()const;
 
@@ -72,7 +73,8 @@ private:
     void shade( std::vector<Ray>&           rays,
                 std::vector<LocalGeometry>& local_geom,
                 std::vector<Color>&         ray_attenuation,
-                bool                        count_emission );
+                const std::vector<RayScheduler::PixelID>& pixel_ids,
+                unsigned                    ray_depth );
 
 
     struct Closure

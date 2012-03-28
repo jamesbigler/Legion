@@ -19,8 +19,9 @@ class RayScheduler
 public:
     struct PixelID
     {
-        Index2  pixel;
-        float   weight;
+        Index2   pixel;
+        float    weight;
+        unsigned sobol_index;
     };
 
     RayScheduler();

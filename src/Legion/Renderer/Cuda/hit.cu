@@ -30,8 +30,6 @@ RT_PROGRAM void anyHit()
 
         float light_pdf = dist2 / (cosine*mesh_area);
         prd.light_pdf += light_pdf;
-        if( t_hit < closest_hit_so_far )
-           prd.texcoord.y = light_pdf;
     }
 
     if( t_hit < closest_hit_so_far )

@@ -137,8 +137,7 @@ void RayTracer::addMesh( legion::Mesh* mesh )
         geom->setPrimitiveCount( mesh->getFaceCount() );
         geom[ "vertices"  ]->set( mesh->getVertexBuffer() );
         geom[ "triangles" ]->set( mesh->getFaceBuffer() );
-        //geom[ "area"      ]->setFloat( mesh->getArea() );
-        geom[ "area"      ]->setFloat( 4.0f * PI * 0.25f*0.25f );
+        geom[ "area"      ]->setFloat( mesh->getArea() );
 
         optix::GeometryInstance gi = m_optix_context->createGeometryInstance();
         gi->setGeometry( geom );

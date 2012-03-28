@@ -27,12 +27,61 @@
 #include <Legion/Common/Util/Stream.hpp>
 #include <Legion/Common/Util/Util.hpp>
 #include <Legion/Core/Ray.hpp>
+#include <Legion/Renderer/sobol_matrices.hpp>
 #include <Legion/Renderer/RayScheduler.hpp>
 #include <Legion/Renderer/RayTracer.hpp>
 #include <Legion/Scene/Camera/ICamera.hpp>
 #include <Legion/Scene/Film/IFilm.hpp>
 
 using namespace legion;
+
+namespace
+{
+    // This function courtesy of Alex Keller, based on 'Enumerating Quasi-Monte
+    // Carlo Point Sequences in Elementary Intervals', Gruenschloß, Raab, and
+    // Keller
+    inline unsigned lookUpSobolIndex( const unsigned m,
+                                      const unsigned pass,
+                                      const Index2&  pixel )
+    {
+        typedef unsigned int       uint32;
+        typedef unsigned long long uint64;
+        
+        const uint32 m2 = m << 1;
+        uint32 frame = pass;
+        uint64 index = uint64(frame) << m2;
+
+        // TODO: the delta value only depends on frame
+        // and m, thus it can be cached across multiple
+        // function calls, if desired.
+        uint64 delta = 0;
+        for (uint32 c = 0; frame; frame >>= 1, ++c)
+            if (frame & 1) // Add flipped column m + c + 1.
+                delta ^= vdc_sobol_matrices[m - 1][c];
+
+        uint64 b = ((uint64(pixel.x()) << m) | pixel.y()) ^ delta; // flipped b
+
+        for (uint32 c = 0; b; b >>= 1, ++c)
+            if (b & 1) // Add column 2 * m - c.
+                index ^= vdc_sobol_matrices_inv[m - 1][c];
+
+        return index;
+    }
+
+     
+    
+    void getRasterPos( const unsigned m, // 2^m should be > film max_dim
+                       const unsigned pass,
+                       const Index2&  pixel,
+                       Vector2&       raster_pos,
+                       unsigned&      sobol_index )
+    {
+        sobol_index = lookUpSobolIndex( m, pass, pixel );
+        raster_pos.setX( static_cast<float>(Sobol::genu( sobol_index, 0 ) ) / (1U<<(32-m)) );
+        raster_pos.setY( static_cast<float>(Sobol::genu( sobol_index, 1 ) ) / (1U<<(32-m)) );
+    }
+}
+
 
 RayScheduler::RayScheduler() 
     : m_spp( 1u, 1u ),
@@ -77,45 +126,47 @@ void RayScheduler::getPass( std::vector<Ray>& rays,
                             std::vector<PixelID>& pixel_ids )
 {
     LLOG_INFO << "RayScheduler::getPass: sample " << m_current_sample;
-    Index2 film_dims       = m_film->getDimensions();
-    unsigned rays_per_pass = film_dims.x() * film_dims.y();
 
+    Index2  film_dims( m_film->getDimensions() );
+    Vector2 float_film_dims( film_dims.x(), film_dims.y() );
+
+    unsigned max_dim = film_dims.max();
+    unsigned m = 0;
+    while( (1u << m) < max_dim ) ++m;
+
+    unsigned rays_per_pass = film_dims.x() * film_dims.y();
     rays.resize( rays_per_pass );
     pixel_ids.resize( rays_per_pass );
 
     const unsigned sample_index = index2DTo1D( m_current_sample, m_spp ); 
 
-    double pixel_width  = 1.0 / static_cast<double>( film_dims.x() );
-    double pixel_height = 1.0 / static_cast<double>( film_dims.y() );
-    double cur_x = 0.0, cur_y = 0.0;
     unsigned ray_index = 0u;
     for( unsigned i = 0; i < film_dims.x(); ++i )
     {
         for( unsigned j = 0; j < film_dims.y(); ++j )
         {
-            Vector2 pixel_coord ( Sobol::gen( sample_index, 4, ray_index),
-                                  Sobol::gen( sample_index, 5, ray_index ) );
-            Vector2 screen_coord( Sobol::gen( sample_index, 6, ray_index),
-                                  Sobol::gen( sample_index, 7, ray_index ) );
+            
+            Vector2 screen_coord;
+            unsigned sobol_index;
+            getRasterPos( m, sample_index, Index2( i, j ), screen_coord, sobol_index );
+            screen_coord /= float_film_dims;
 
             CameraSample sample;
-            sample.screen = Vector2( cur_x + pixel_coord.x()*pixel_width,
-                                     cur_y + pixel_coord.y()*pixel_height ); 
-            sample.lens   = Vector2( m_rnd(), m_rnd() ); 
+            sample.screen = screen_coord; 
+            sample.lens   = Vector2( Sobol::gen( sobol_index, Sobol::DIM_LENS_X ),
+                                     Sobol::gen( sobol_index, Sobol::DIM_LENS_Y ) ); 
             sample.time   = lerp( m_time_interval.x(),
                                   m_time_interval.y(),
-                                  m_rnd() );
+                                  Sobol::gen( sobol_index, Sobol::DIM_TIME ) ); 
 
             m_camera->generateRay( sample, rays[ ray_index ] );
-            pixel_ids[ ray_index ].weight = 1.0f;
-            pixel_ids[ ray_index ].pixel  = Index2( i, j );
-            ray_index++;
-            
-            cur_y += pixel_height;
+            pixel_ids[ ray_index ].weight      = 1.0f;
+            pixel_ids[ ray_index ].pixel       = Index2( i, j );
+            pixel_ids[ ray_index ].sobol_index = sobol_index;;
 
+            //LLOG_INFO << "Ray: " << rays[ ray_index ];
+            ray_index++;
         }
-        cur_x += pixel_width;
-        cur_y = 0.0;
     }
 
     m_current_sample = index1DTo2D( sample_index+1, m_spp );
