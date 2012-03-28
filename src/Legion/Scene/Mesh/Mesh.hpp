@@ -16,7 +16,7 @@ namespace legion
 class MeshLight;
 class ISurfaceShader;
 class Matrix;
-class LocalGeometry;
+struct LocalGeometry;
 
 class Mesh : public APIBase
 {
