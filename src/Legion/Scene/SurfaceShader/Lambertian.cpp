@@ -51,7 +51,7 @@ void Lambertian::sampleBSDF( const Vector2& seed,
 
     // calculate pdf
     float pdf_inv  = PI / z;
-    f_over_pdf = pdf_inv * ONE_DIV_PI * m_kd;
+    f_over_pdf = pdf_inv * m_kd;
 }
 
 

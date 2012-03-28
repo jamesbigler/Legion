@@ -19,6 +19,7 @@ rtDeclareVariable( unsigned, light_id, , );
 
 RT_PROGRAM void anyHit()
 {
+    float closest_hit_so_far = prd.texcoord.x;
     if( lgeom.light_id == light_id )
     {
         float3 n = rtTransformNormal(RT_OBJECT_TO_WORLD, lgeom.shading_normal);
@@ -27,10 +28,12 @@ RT_PROGRAM void anyHit()
         float  cosine = fabs( optix::dot( n, -ray.direction ) );
         float  dist2  = t_hit*t_hit; // Take advantage of unit direction
 
-        prd.light_pdf += dist2 / (cosine*mesh_area);
+        float light_pdf = dist2 / (cosine*mesh_area);
+        prd.light_pdf += light_pdf;
+        if( t_hit < closest_hit_so_far )
+           prd.texcoord.y = light_pdf;
     }
 
-    float closest_hit_so_far = prd.texcoord.x;
     if( t_hit < closest_hit_so_far )
     {
         prd.position    = ray.origin + t_hit*ray.direction;

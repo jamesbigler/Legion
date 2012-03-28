@@ -244,7 +244,7 @@ void ShadingEngine::shade( std::vector<Ray>&           rays,
                 
                 w_in = normalize( light_p - surface_p );
 
-                direct_light = light->emittance( LocalGeometry(), w_in ) /
+                direct_light = light->emittance( LocalGeometry(), w_in )  /
                                ( select_pdf*sample_pdf ); 
 
                 /*

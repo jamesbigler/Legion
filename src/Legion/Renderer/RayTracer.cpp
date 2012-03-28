@@ -1,4 +1,5 @@
 
+#include <Legion/Common/Math/Math.hpp>
 #include <Legion/Common/Util/Assert.hpp>
 #include <Legion/Common/Util/Logger.hpp>
 #include <Legion/Common/Util/Stream.hpp>
@@ -7,8 +8,8 @@
 #include <Legion/Core/config.hpp>
 #include <Legion/Renderer/Cuda/Shared.hpp>
 #include <Legion/Renderer/RayTracer.hpp>
-#include <Legion/Scene/Mesh/Mesh.hpp>
 #include <Legion/Scene/LightShader/ILightShader.hpp>
+#include <Legion/Scene/Mesh/Mesh.hpp>
 #include <Legion/Scene/SurfaceShader/ISurfaceShader.hpp>
 
 
@@ -136,7 +137,8 @@ void RayTracer::addMesh( legion::Mesh* mesh )
         geom->setPrimitiveCount( mesh->getFaceCount() );
         geom[ "vertices"  ]->set( mesh->getVertexBuffer() );
         geom[ "triangles" ]->set( mesh->getFaceBuffer() );
-        geom[ "area"      ]->setFloat( mesh->getArea() );
+        //geom[ "area"      ]->setFloat( mesh->getArea() );
+        geom[ "area"      ]->setFloat( 4.0f * PI * 0.25f*0.25f );
 
         optix::GeometryInstance gi = m_optix_context->createGeometryInstance();
         gi->setGeometry( geom );
