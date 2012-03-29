@@ -1,4 +1,24 @@
 
+// Copyright (C) 2011 R. Keith Morley 
+// 
+// (MIT/X11 License)
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to
+// deal in the Software without restriction, including without limitation the
+// rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+// sell copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+// IN THE SOFTWARE.
 
 #ifndef LEGION_COMMON_MATH_SOBOL_HPP_
 #define LEGION_COMMON_MATH_SOBOL_HPP_
@@ -25,10 +45,10 @@ public:
         DIM_SHADOW_Y
     };
     
-    /// Generate an single element A_i,dim of the Sobol sequence which is the
+    /// Generate a single element A_i,dim of the Sobol sequence which is the
     /// dimth dimension of the ith sobol vector. Scrambled by s. 
-    static float    gen ( unsigned i, unsigned dim,  unsigned scramble = 0u);
-    static unsigned genu( unsigned i, unsigned dim,  unsigned scramble = 0u);
+    static float    gen ( unsigned i, unsigned dim,  unsigned scramble = 0u );
+    static unsigned genu( unsigned i, unsigned dim,  unsigned scramble = 0u );
 
 
     static const unsigned MAX_DIMS = 256u;
@@ -39,38 +59,6 @@ private:
     Sobol();
 };
 
-
-
-inline unsigned Sobol::genu( unsigned i, unsigned dim,  unsigned s )
-{
-    const unsigned int adr = dim*(52/4);
-    unsigned int result = 0;
-
-    for (unsigned int c = 0; (i != 0); i>>=8, c+=2) {
-
-        const Index4 matrix1 = reinterpret_cast<const Index4*>( MATRICES )[adr + c + 0];
-        const Index4 matrix2 = reinterpret_cast<const Index4*>( MATRICES )[adr + c + 1];
-
-        result ^= (((matrix1.x()&(unsigned)(-((int) i     & 1)))   ^
-                    (matrix1.y()&(unsigned)(-((int)(i>>1) & 1))))  ^
-                   ((matrix1.z()&(unsigned)(-((int)(i>>2) & 1)))   ^
-                    (matrix1.w()&(unsigned)(-((int)(i>>3) & 1))))) ^
-                  (((matrix2.x()&(unsigned)(-((int)(i>>4) & 1)))   ^
-                    (matrix2.y()&(unsigned)(-((int)(i>>5) & 1))))  ^
-                   ((matrix2.z()&(unsigned)(-((int)(i>>6) & 1)))   ^
-                    (matrix2.w()&(unsigned)(-((int)(i>>7) & 1)))));
-    }
-
-    for (unsigned c = 8; ((s != 0) && (c < 13)); s>>=4, ++c) {
-        const Index4 matrix1 = reinterpret_cast<const Index4*>( MATRICES )[adr + c];
-        result ^= (((matrix1.x()&(unsigned)(-((int) s     & 1)))  ^
-                    (matrix1.y()&(unsigned)(-((int)(s>>1) & 1)))) ^
-                   ((matrix1.z()&(unsigned)(-((int)(s>>2) & 1)))  ^
-                    (matrix1.w()&(unsigned)(-((int)(s>>3) & 1)))));
-    }
-
-    return result;
-}
 
 
 inline float Sobol::gen( unsigned i, unsigned dim,  unsigned scramble )

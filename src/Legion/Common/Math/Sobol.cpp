@@ -4,6 +4,49 @@
 using namespace legion;
 
 
+struct uint4
+{
+  unsigned x;
+  unsigned y;
+  unsigned z;
+  unsigned w;
+};
+
+
+unsigned Sobol::genu( unsigned i, unsigned dim,  unsigned s )
+{
+    const unsigned int adr = dim*(52/4);
+    unsigned int result = 0;
+
+    for (unsigned int c = 0; (i != 0); i>>=8, c+=2) {
+
+        //const Index4 matrix1 = reinterpret_cast<const Index4*>( MATRICES )[adr + c + 0];
+        //const Index4 matrix2 = reinterpret_cast<const Index4*>( MATRICES )[adr + c + 1];
+        const uint4 matrix1 = reinterpret_cast<const uint4*>( MATRICES )[adr + c + 0];
+        const uint4 matrix2 = reinterpret_cast<const uint4*>( MATRICES )[adr + c + 1];
+
+        result ^= (((matrix1.x&(unsigned)(-((int) i     & 1)))   ^
+                    (matrix1.y&(unsigned)(-((int)(i>>1) & 1))))  ^
+                   ((matrix1.z&(unsigned)(-((int)(i>>2) & 1)))   ^
+                    (matrix1.w&(unsigned)(-((int)(i>>3) & 1))))) ^
+                  (((matrix2.x&(unsigned)(-((int)(i>>4) & 1)))   ^
+                    (matrix2.y&(unsigned)(-((int)(i>>5) & 1))))  ^
+                   ((matrix2.z&(unsigned)(-((int)(i>>6) & 1)))   ^
+                    (matrix2.w&(unsigned)(-((int)(i>>7) & 1)))));
+    }
+
+    for (unsigned c = 8; ((s != 0) && (c < 13)); s>>=4, ++c) {
+        //const Index4 matrix1 = reinterpret_cast<const Index4*>( MATRICES )[adr + c];
+        const uint4 matrix1 = reinterpret_cast<const uint4*>( MATRICES )[adr + c];
+        result ^= (((matrix1.x&(unsigned)(-((int) s     & 1)))  ^
+                    (matrix1.y&(unsigned)(-((int)(s>>1) & 1)))) ^
+                   ((matrix1.z&(unsigned)(-((int)(s>>2) & 1)))  ^
+                    (matrix1.w&(unsigned)(-((int)(s>>3) & 1)))));
+    }
+
+    return result;
+}
+
 const unsigned Sobol::MATRICES[ MAX_DIMS*52 ] =
 {
     0x80000000UL,
