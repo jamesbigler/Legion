@@ -46,6 +46,7 @@ ShadingEngine::ShadingEngine( RayTracer& ray_tracer )
       m_shadow_trace  ( "        Shadow ray trace   " ),
       m_radiance_trace( "        Radiance ray trace " ),
       m_light_loop    ( "        Light loop         " ),
+      m_result_copies ( "        Result copies      " ),
       m_max_ray_depth( 2u ),
       m_pass_number( 0u ),
       m_spp( 0u, 0u ),
@@ -61,6 +62,7 @@ void ShadingEngine::reset()
     m_shadow_trace.reset();
     m_radiance_trace.reset();
     m_light_loop.reset();
+    m_result_copies.reset();
 }
 
 
@@ -70,6 +72,7 @@ void ShadingEngine::logTimerInfo()
     m_radiance_trace.log();
     m_shadow_trace.log();
     m_light_loop.log();
+    m_result_copies.log();
 }
 
 
@@ -86,6 +89,10 @@ void ShadingEngine::shade( std::vector<Ray>& rays,
         {
             AutoTimerRef<LoopTimerInfo> radiance_ray_timer( m_radiance_trace );
             m_ray_tracer.trace( RayTracer::CLOSEST_HIT, rays );
+            m_ray_tracer.join();
+        }
+        {
+            AutoTimerRef<LoopTimerInfo> result_copy( m_result_copies );
             m_ray_tracer.getResults( lgeom );
         }
 
@@ -100,10 +107,11 @@ void ShadingEngine::shade( std::vector<Ray>&           rays,
                            std::vector<LocalGeometry>& local_geom,
                            std::vector<Color>&         ray_attenuation,
                            const std::vector<RayScheduler::PixelID>& pixel_ids,
-                           unsigned                    ray_depth )
+                           unsigned                    depth )
 {
     
-    const unsigned num_rays = rays.size();
+    const unsigned num_rays   = rays.size();
+    const unsigned dim_offset = depth * Sobol::NUM_DIMS;
 
     bool have_lights = m_light_set.numLights() != 0;
 
@@ -120,11 +128,10 @@ void ShadingEngine::shade( std::vector<Ray>&           rays,
             // TODO: make light selection happen at pixel level (not pass)
             const ILightShader* light;
             float               light_select_pdf;
-            float               sample_seed = static_cast<float>( m_rnd() );
-            m_light_set.selectLight( sample_seed,
-                                     light,
-                                     light_select_pdf );
-            m_ray_tracer.getOptixContext()[ "light_id"   ]->setUint( light->getID() );
+            m_light_set.selectLight( m_rnd(), light, light_select_pdf );
+
+            optix::Context optix_context = m_ray_tracer.getOptixContext();
+            optix_context[ "light_id" ]->setUint( light->getID() );
 
             for( unsigned i = 0; i < num_rays; ++i )
             {
@@ -138,29 +145,30 @@ void ShadingEngine::shade( std::vector<Ray>&           rays,
                 // Choose a light
                                                                 
                 // Choose a point on the light by sampling light Area
-                Vector2 shadow_seed =
-                    Vector2( Sobol::gen( pixel_ids[ i ].sobol_index, Sobol::DIM_SHADOW_X+ray_depth ),
-                             Sobol::gen( pixel_ids[ i ].sobol_index, Sobol::DIM_SHADOW_Y+ray_depth ) );
+                const unsigned sobol_idx = pixel_ids[ i ].sobol_index;
+                Vector2 seed( 
+                        Sobol::gen( sobol_idx, Sobol::DIM_SHADOW_X+dim_offset ),
+                        Sobol::gen( sobol_idx, Sobol::DIM_SHADOW_Y+dim_offset )
+                        );
 
                 float light_sample_pdf;
                 Vector3 on_light;
-                light->sample( shadow_seed, 
-                               local_geom[i],
-                               on_light,
-                               light_sample_pdf );
+                light->sample( seed, local_geom[i], on_light, light_sample_pdf );
 
                 // Create ray
                 const Vector3 p = local_geom[i].position;
                 Vector3 l( on_light - p );
                 float dist_to_light = l.normalize();
-                //const float max_dist = light->isSingular() ? dist_to_light : dist_to_light + 0.001f; 
-                const float max_dist = light->isSingular() ? dist_to_light : 1e25f; 
 
-                m_secondary_rays[i]  = Ray( p, l, max_dist, rays[i].time());
-                m_closures[i]        = Closure( light_select_pdf,
-                                                light_sample_pdf,
-                                                on_light,
-                                                light );
+                const float max_dist = light->isSingular() ?
+                                       dist_to_light       :
+                                       1e25f; 
+
+                m_secondary_rays[i] = Ray( p, l, max_dist, rays[i].time());
+                m_closures[i]       = Closure( light_select_pdf,
+                                               light_sample_pdf,
+                                               on_light,
+                                               light );
             }
         }
 
@@ -171,6 +179,10 @@ void ShadingEngine::shade( std::vector<Ray>&           rays,
             AutoTimerRef<LoopTimerInfo> ray_trace_timer( m_shadow_trace );
             m_ray_tracer.trace( RayTracer::ANY_HIT, m_secondary_rays );
             m_ray_tracer.join();
+        }
+
+        {
+            AutoTimerRef<LoopTimerInfo> result_copy( m_result_copies );
             m_ray_tracer.getResults( m_shadow_results );
         }
     }
@@ -206,7 +218,7 @@ void ShadingEngine::shade( std::vector<Ray>&           rays,
             {
                 const ILightShader* lshader = 
                     m_light_set.lookupLight( lgeom.light_id );
-                if( lshader && ray_depth == 0 )
+                if( lshader && depth == 0 )
                     emission = lshader->emittance( lgeom, -w_out );
             }
             
@@ -268,8 +280,8 @@ void ShadingEngine::shade( std::vector<Ray>&           rays,
             Color f_over_pdf;
             
             Vector2 bsdf_seed =
-              Vector2( Sobol::gen( pixel_ids[ i ].sobol_index, Sobol::DIM_BSDF_X + ray_depth ),
-                       Sobol::gen( pixel_ids[ i ].sobol_index, Sobol::DIM_BSDF_Y + ray_depth) );
+              Vector2( Sobol::gen( pixel_ids[ i ].sobol_index, Sobol::DIM_BSDF_X + depth ),
+                       Sobol::gen( pixel_ids[ i ].sobol_index, Sobol::DIM_BSDF_Y + depth) );
 
             shader->sampleBSDF( bsdf_seed, w_out, lgeom, new_w_in, f_over_pdf);
             ray_attenuation[i] *= f_over_pdf * fabs( dot(lgeom.geometric_normal,

@@ -119,6 +119,7 @@ private:
     LoopTimerInfo    m_shadow_trace;
     LoopTimerInfo    m_radiance_trace;
     LoopTimerInfo    m_light_loop;
+    LoopTimerInfo    m_result_copies;
 
     unsigned         m_max_ray_depth;
     unsigned         m_pass_number;

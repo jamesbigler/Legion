@@ -42,7 +42,8 @@ public:
         DIM_LENS_Y,
         DIM_TIME,
         DIM_SHADOW_X,
-        DIM_SHADOW_Y
+        DIM_SHADOW_Y,
+        NUM_DIMS
     };
     
     /// Generate a single element A_i,dim of the Sobol sequence which is the

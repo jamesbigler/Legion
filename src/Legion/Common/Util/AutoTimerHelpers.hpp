@@ -49,8 +49,10 @@ struct LoopTimerInfo
     void log()
     {
         LLOG_INFO << std::fixed
-                  << name << "  max: " << max_time << " avg: "
-                  << averageTime();
+                  << name 
+                  << " sum: " << total_time 
+                  << " max: " << max_time
+                  << " avg: " << averageTime();
     }
 
     void reset()
