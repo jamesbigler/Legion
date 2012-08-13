@@ -14,7 +14,9 @@ CUDA_COMPILE_PTX( ptx_files
     )
 
 configure_file( "${CMAKE_CURRENT_SOURCE_DIR}/Core/config.hpp.in"
-                "${CMAKE_CURRENT_SOURCE_DIR}/Core/config.hpp" )
+                "${CMAKE_BINARY_DIR}/include/config.hpp" )
+include_directories( "${CMAKE_BINARY_DIR}/include" )
+
 
 # build the library and ptx files
 add_library( legion SHARED

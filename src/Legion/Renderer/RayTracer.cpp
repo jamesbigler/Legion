@@ -5,12 +5,12 @@
 #include <Legion/Common/Util/Stream.hpp>
 #include <Legion/Core/Exception.hpp>
 #include <Legion/Core/Ray.hpp>
-#include <Legion/Core/config.hpp>
 #include <Legion/Renderer/Cuda/Shared.hpp>
 #include <Legion/Renderer/RayTracer.hpp>
 #include <Legion/Scene/LightShader/ILightShader.hpp>
 #include <Legion/Scene/Mesh/Mesh.hpp>
 #include <Legion/Scene/SurfaceShader/ISurfaceShader.hpp>
+#include <config.hpp>
 
 
 using namespace legion;
@@ -246,6 +246,7 @@ optix::Program RayTracer::createProgram( const std::string& cuda_file,
     {
         std::string path = legion::PTX_DIR + "/cuda_compile_ptx_generated_" +
                            cuda_file + ".ptx";
+        LLOG_INFO << "loading: <<<" << path << ">>>" << std::endl;
 
         optix::Program program;
         program = m_optix_context->createProgramFromPTXFile( path, name );

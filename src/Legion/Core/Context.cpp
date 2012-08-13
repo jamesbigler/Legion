@@ -23,12 +23,12 @@
 #include <Legion/Common/Util/Logger.hpp>
 #include <Legion/Common/Util/Preprocessor.hpp>
 #include <Legion/Core/Context.hpp>
-#include <Legion/Core/config.hpp>
 #include <Legion/Core/Exception.hpp>
 #include <Legion/Scene/Camera/ICamera.hpp>
 #include <Legion/Scene/Film/IFilm.hpp>
 #include <Legion/Scene/LightShader/ILightShader.hpp>
 #include <Legion/Scene/SurfaceShader/ISurfaceShader.hpp>
+//#include <config.hpp>
 
 using namespace legion;
 
