@@ -27,28 +27,15 @@ public:
     /// Destroy an ILightShader object
     virtual         ~ILightShader();
 
-    /// Sample the light source based on area.  The renderer will convert this
-    /// to a solid-angle based sample and pdf internally
-    ///   \param  seed       Sampling seed 
-    ///   \param  geom       Shading surface geometry
-    ///   \param  on_light   Sampled position on light 
-    ///   \param  pdf        PDF of the given sample direction
-    virtual void    sample( const Vector2&       seed,
-                            const LocalGeometry& geom,
-                            Vector3&             on_light,
-                            float&               pdf )const=0;
-
+    virtual         isEmitter()const=0;
 
     virtual bool    isSingular()const=0;
-
-    /// Query the total power emitted by this light
-    ///   \returns  The emitted power
-    virtual Color   power()const=0;
 
     // light_p is the geometry of the light, w_in is the incoming direction 
     // to that point on the light
     virtual Color   emittance( const LocalGeometry& light_geom,
-                               const Vector3& w_in )const=0;
+                               const Vector3& w_in );
+
 };
 
 

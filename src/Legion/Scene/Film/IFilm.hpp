@@ -6,23 +6,20 @@
 #ifndef LEGION_SCENE_FILM_IFILM_HPP_
 #define LEGION_SCENE_FILM_IFILM_HPP_
 
-#include <Legion/Core/APIBase.hpp>
-#include <Legion/Common/Math/Vector.hpp>
-#include <Legion/Core/Color.hpp>
-
 namespace legion
 {
 
-class Color;
+class VariableContainer;
 
 /// Interface for all Film classes
-class IFilm : public APIBase
+class IFilm
 {
 public:
+    virtual ~IFilm() {}
 
-    /// Create named Film object
-                     IFilm( Context* context, const std::string& name );
-    
+    virtual void setVariables( VariableContainer& container ) const = 0;
+    /*
+    virtual void setVariables( VariableContainer& container ) const = 0;
     /// Destroy Film object
     virtual          ~IFilm();
     
@@ -58,6 +55,7 @@ public:
     /// Indicate an intermediate pass is complete.
     /// Film can take any intermediate update steps.
     virtual void     passComplete()=0;
+    */
 };
 
 

@@ -7,8 +7,13 @@ if( NOT CMAKE_BUILD_TYPE )
          FORCE )
 endif( NOT CMAKE_BUILD_TYPE )
 
-add_definitions( -Wall -Werror  -funroll-loops -floop-optimize -ffast-math )
 add_definitions( -DLLOG_MAX_LEVEL=legion::Log::DEBUG )
+
+set(CMAKE_CXX_FLAGS                "-Wall -Werror -funroll-loops -floop-optimize -ffast-math -Qunused-arguments -stdlib=libc++" )
+set(CMAKE_CXX_FLAGS_DEBUG          "-g")
+set(CMAKE_CXX_FLAGS_MINSIZEREL     "-Os -DNDEBUG")
+set(CMAKE_CXX_FLAGS_RELEASE        "-O4 -DNDEBUG")
+set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O2 -g")
 
 find_package( OptiX REQUIRED )
 find_package( CUDA 4.0 REQUIRED )

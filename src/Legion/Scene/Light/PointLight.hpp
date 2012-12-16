@@ -1,6 +1,7 @@
 
 // Copyright (C) 2011 R. Keith Morley 
 // 
+// (MIT/X11 License)
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to
 // deal in the Software without restriction, including without limitation the
@@ -20,66 +21,37 @@
 // IN THE SOFTWARE.
 
 
-#include <Legion/Common/Util/Logger.hpp>
-#include <Legion/Common/Util/Preprocessor.hpp>
-#include <Legion/Core/Context.hpp>
-#include <Legion/Core/ContextImpl.hpp>
-#include <Legion/Core/Exception.hpp>
-//#include <config.hpp>
+/// \file PointLight.hpp
+/// Pure virtual interface for all Light classes
 
-using namespace legion;
-
-#define CHECK_NULL( f, ptr )  \
-    if( !ptr ) throw Exception( std::string( f ) + ": " #ptr " param is NULL" );
+#ifndef LEGION_INTERFACE_POINT_LIGHTSHADER_HPP_
+#define LEGION_INTERFACE_POINT_LIGHTSHADER_HPP_
 
 
+#include <Legion/Scene/Light/ILight.hpp>
+#include <Legion/Core/Color.hpp>
+#include <Legion/Common/Math/Vector.hpp>
 
-Context::Context() 
+namespace legion
 {
-    LLOG_INFO << "Creating legion::Context";
+
+
+/// Pure virtual interface for all LightShader classes
+class PointLight : public ILight
+{
+public:
+
+    void setVariables( VariableContainer& container ) const;
+    
+    void setIntensity( const Color& intensity );
+    void setPosition( const Vector3& position );
+
+private:
+    Color   m_intensity;
+    Vector3 m_position;
+};
+
+
 }
 
-
-Context::~Context()
-{
-    LLOG_INFO << "Destroying legion::Context";
-}
-
-
-void Context::setRenderer( IRenderer* renderer )
-{
-}
-
-
-void Context::setCamera( ICamera* camera )
-{
-}
-
-
-void Context::setFilm( IFilm* film )
-{
-}
-
-
-void Context::addGeometry( const IGeometry* geometry )
-{
-}
-
-
-void Context::addLight( const ILight* light )
-{
-}
-
-
-void Context::addAssetPath( const std::string& path )
-{
-}
-
-
-void Context::render()
-{
-}
-
-
-
-
+#endif // LEGION_INTERFACE_POINT_LIGHTSHADER_HPP_

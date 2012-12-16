@@ -24,60 +24,51 @@
 #ifndef LEGION_CORE_CONTEXT_H_
 #define LEGION_CORE_CONTEXT_H_
 
-#include <Legion/Common/Math/Vector.hpp>
-#include <Legion/Common/Util/Noncopyable.hpp>
-#include <Legion/Core/APIBase.hpp>
-#include <Legion/Core/Declarations.hpp>
-#include <Legion/Renderer/Renderer.hpp>
 
-#include <iostream>
+#include <Legion/Common/Util/Noncopyable.hpp>
+#include <memory>
 
 namespace legion
 {
 
 class ICamera;
 class IFilm;
-class ILightShader;
-class Mesh;
+class IGeometry;
+class ILight;
+class IRenderer;
 
-class Context : public APIBase 
+
+class Context : public Noncopyable
 {
 public:
-    //
-    // External interface -- will be wrapped via Pimpl
-    //
-    explicit   Context( const std::string& name );
+    Context();
     ~Context();
+    
+    void setRenderer   ( IRenderer* renderer );
+    void setCamera     ( ICamera* camera );
+    void setFilm       ( IFilm* film );
+//    void setPixelFIlter( FilterType type );
 
-    void addMesh( Mesh* mesh );
+    // eg, TriMesh, Instance, Volume, Sphere ...
+    void addGeometry( const IGeometry* geometry );
 
-    void addLight( const ILightShader* light_shader );
+    void addLight( const ILight* light );
 
-    void setActiveCamera( ICamera* camera );
-
-    void setActiveFilm  ( IFilm* film );
-
-    void setPixelFIlter( FilterType type );
-
-    void setSamplesPerPixel( const Index2& spp  );
-    void setMaxRayDepth( unsigned max_depth );
+    void addAssetPath( const std::string& path );
 
     void render();
 
-    //
-    // Internal interface -- will exist only in Pimpl class
-    //
-    optix::Buffer createOptixBuffer();
-
-
 private:
-
-
+    /*
     std::vector<const Mesh*> m_meshes;
     const ICamera*           m_camera;
     const IFilm*             m_film;
 
     Renderer                 m_renderer;
+    */
+
+    class Impl;
+    std::unique_ptr<Impl> m_impl;
 };
 
 

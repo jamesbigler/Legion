@@ -16,18 +16,15 @@
 #include <Legion/Core/Context.hpp>
 #include <Legion/Core/Exception.hpp>
 #include <Legion/Core/Ray.hpp>
-#include <Legion/Scene/Camera/IBasicCamera.hpp>
 #include <Legion/Scene/Camera/ICamera.hpp>
 #include <Legion/Scene/Camera/ThinLensCamera.hpp>
-#include <Legion/Scene/Film/Film.hpp>
 #include <Legion/Scene/Film/IFilm.hpp>
 #include <Legion/Scene/Film/ImageFilm.hpp>
-#include <Legion/Scene/LightShader/DiffuseLight.hpp>
-#include <Legion/Scene/LightShader/ILightShader.hpp>
-#include <Legion/Scene/LightShader/MeshLight.hpp>
-#include <Legion/Scene/LightShader/PointLightshader.hpp>
-#include <Legion/Scene/Mesh/Mesh.hpp>
 #include <Legion/Scene/SurfaceShader/ISurfaceShader.hpp>
 #include <Legion/Scene/SurfaceShader/Lambertian.hpp>
+#include <Legion/Scene/Geometry/IGeometry.hpp>
+#include <Legion/Scene/Geometry/TriMesh.hpp>
+#include <Legion/Scene/Light/ILight.hpp>
+#include <Legion/Scene/Light/PointLight.hpp>
 
 #endif // LEGION_LEGION_HPP_

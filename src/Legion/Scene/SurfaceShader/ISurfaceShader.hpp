@@ -6,25 +6,33 @@
 #define LEGION_SCENE_SURFACESHADER_ISURFACESHADER_H_
 
 
-#include <Legion/Core/APIBase.hpp>
-#include <Legion/Common/Math/Vector.hpp>
 
 
 
 namespace legion
 {
 
-class  Color;
-struct LocalGeometry;
 
+class VariableContainer;
 
 /// Pure virtual interface for Surface Shaders
-class ISurfaceShader : public APIBase
+class ISurfaceShader 
 {
 public:
-    /// Create named ISurfaceShader object
-                    ISurfaceShader( Context* context, const std::string& name );
+    virtual ~ISurfaceShader() {}
     
+    /// Return the name of this SurfaceShader type
+    /// static std::string name();
+
+    /// Return the name of this Camera's cuda ray generation function 
+    /// static std::string rayGenFunctionName();
+
+    /// Set variables needed by the ray generation function 
+    virtual void setVariables( VariableContainer& container ) const = 0;
+
+
+
+    /*
     /// Destroy ISurfaceShader object
     virtual         ~ISurfaceShader();
 
@@ -61,6 +69,7 @@ public:
     virtual Color   evaluateBSDF( const Vector3& w_out,
                                   const LocalGeometry& p,
                                   const Vector3& w_in )const=0;
+    */
 };
 
 

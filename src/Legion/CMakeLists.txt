@@ -15,7 +15,9 @@ CUDA_COMPILE_PTX( ptx_files
 
 configure_file( "${CMAKE_CURRENT_SOURCE_DIR}/Core/config.hpp.in"
                 "${CMAKE_BINARY_DIR}/include/config.hpp" )
-include_directories( "${CMAKE_BINARY_DIR}/include" )
+include_directories( 
+    "${CMAKE_BINARY_DIR}/include"
+    )
 
 
 # build the library and ptx files
@@ -46,52 +48,67 @@ add_library( legion SHARED
     Common/Util/TypeConversion.cpp
     Common/Util/TypeConversion.hpp
     Common/Util/Util.hpp
-    Core/APIBase.cpp
-    Core/APIBase.hpp
+    #Core/APIBase.cpp
+    #Core/APIBase.hpp
     Core/Color.hpp
     Core/Context.cpp
     Core/Context.hpp
+    Core/ContextImpl.hpp
     Core/Declarations.hpp
     Core/Exception.cpp
     Core/Exception.hpp
     Core/Ray.hpp
+    Core/VariableContainer.cpp
+    Core/VariableContainer.hpp
     Legion.hpp
-    Renderer/LightSet.cpp
-    Renderer/LightSet.hpp
-    Renderer/RayScheduler.cpp
-    Renderer/RayScheduler.hpp
-    Renderer/RayServer.hpp
-    Renderer/RayTracer.cpp
-    Renderer/RayTracer.hpp
-    Renderer/Renderer.cpp
-    Renderer/Renderer.hpp
-    Renderer/ShadingEngine.cpp
-    Renderer/ShadingEngine.hpp
-    Scene/Camera/IBasicCamera.cpp
-    Scene/Camera/IBasicCamera.hpp
-    Scene/Camera/ICamera.cpp
+    #Renderer/LightSet.cpp
+    #Renderer/LightSet.hpp
+    #Renderer/RayScheduler.cpp
+    #Renderer/RayScheduler.hpp
+    #Renderer/RayServer.hpp
+    #Renderer/RayTracer.cpp
+    #Renderer/RayTracer.hpp
+    #Renderer/Renderer.cpp
+    #Renderer/Renderer.hpp
+    #Renderer/ShadingEngine.cpp
+    #Renderer/ShadingEngine.hpp
+    Scene/Geometry/IGeometry.hpp
+    Scene/Geometry/TriMesh.cpp
+    Scene/Geometry/TriMesh.hpp
+    Scene/Light/ILight.hpp
+    Scene/Light/PointLight.cpp
+    Scene/Light/PointLight.hpp
     Scene/Camera/ICamera.hpp
     Scene/Camera/ThinLensCamera.cpp
     Scene/Camera/ThinLensCamera.hpp
-    Scene/Film/Film.hpp
-    Scene/Film/IFilm.cpp
+    Scene/SurfaceShader/Lambertian.cpp
+    Scene/SurfaceShader/Lambertian.hpp
+    Scene/SurfaceShader/ISurfaceShader.hpp
     Scene/Film/IFilm.hpp
     Scene/Film/ImageFilm.cpp
     Scene/Film/ImageFilm.hpp
-    Scene/LightShader/DiffuseLight.cpp
-    Scene/LightShader/DiffuseLight.hpp
-    Scene/LightShader/ILightShader.cpp
-    Scene/LightShader/ILightShader.hpp
-    Scene/LightShader/MeshLight.cpp
-    Scene/LightShader/MeshLight.hpp
-    Scene/LightShader/PointLightShader.cpp
-    Scene/LightShader/PointLightShader.hpp
-    Scene/Mesh/Mesh.cpp
-    Scene/Mesh/Mesh.hpp
-    Scene/SurfaceShader/ISurfaceShader.cpp
-    Scene/SurfaceShader/ISurfaceShader.hpp
-    Scene/SurfaceShader/Lambertian.cpp
-    Scene/SurfaceShader/Lambertian.hpp
+    #Scene/Camera/IBasicCamera.cpp
+    #Scene/Camera/IBasicCamera.hpp
+    #Scene/Camera/ICamera.cpp
+    #Scene/Film/Film.hpp
+    #Scene/Film/IFilm.cpp
+    #Scene/Film/IFilm.hpp
+    #Scene/Film/ImageFilm.cpp
+    #Scene/Film/ImageFilm.hpp
+    #Scene/LightShader/DiffuseLight.cpp
+    #Scene/LightShader/DiffuseLight.hpp
+    #Scene/LightShader/ILightShader.cpp
+    #Scene/LightShader/ILightShader.hpp
+    #Scene/LightShader/MeshLight.cpp
+    #Scene/LightShader/MeshLight.hpp
+    #Scene/LightShader/PointLightShader.cpp
+    #Scene/LightShader/PointLightShader.hpp
+    #Scene/Mesh/Mesh.cpp
+    #Scene/Mesh/Mesh.hpp
+    #Scene/SurfaceShader/ISurfaceShader.cpp
+    #Scene/SurfaceShader/ISurfaceShader.hpp
+    #Scene/SurfaceShader/Lambertian.cpp
+    #Scene/SurfaceShader/Lambertian.hpp
     )
 
 # Link against optix

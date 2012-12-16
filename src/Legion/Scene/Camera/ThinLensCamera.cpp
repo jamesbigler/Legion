@@ -10,14 +10,13 @@
 using namespace legion;
 
 
-ThinLensCamera::ThinLensCamera( Context* context, const std::string& name )
-  : IBasicCamera( context, name ),
-    m_left  ( -0.5f ),
-    m_right (  0.5f ),
-    m_bottom( -0.5f ),
-    m_top   (  0.5f ),
-    m_focal_distance( 2.0f ),
-    m_lens_radius( 0.0f )
+ThinLensCamera::ThinLensCamera() 
+    : m_left  ( -0.5f ),
+      m_right (  0.5f ),
+      m_bottom( -0.5f ),
+      m_top   (  0.5f ),
+      m_focal_distance( 2.0f ),
+      m_lens_radius( 0.0f )
 
 {
 }
@@ -50,8 +49,14 @@ void ThinLensCamera::setLensRadius( float radius )
 {
     m_lens_radius = radius;
 }
+    
+
+void ThinLensCamera::setVariables( VariableContainer& container ) const
+{
+}
 
 
+/*
 void ThinLensCamera::generateCameraSpaceRay( const CameraSample& sample,
                                              Vector3& origin,
                                              Vector3& direction )const
@@ -65,3 +70,4 @@ void ThinLensCamera::generateCameraSpaceRay( const CameraSample& sample,
     origin    = Vector3( on_lens.x(), on_lens.y(), 0.0f );
     direction = legion::normalize( on_viewplane - origin );
 }
+*/

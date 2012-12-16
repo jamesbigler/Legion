@@ -4,6 +4,7 @@
 #ifndef LEGION_COMMON_MATH_VECTOR_H_
 #define LEGION_COMMON_MATH_VECTOR_H_
 
+#include <cstddef>
 #include <cmath>
 #include <Legion/Common/Util/Assert.hpp>
 

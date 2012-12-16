@@ -11,19 +11,22 @@ namespace legion
 {
 
 
-struct LocalGeometry;
+class VariableContainer;
 
 
 class Lambertian : public ISurfaceShader
 {
 public:
-    Lambertian( Context* context, const std::string& name );
+    Lambertian();
     ~Lambertian();
     
     
     void setKd( const Color& kd );
+    
+    void setVariables( VariableContainer& container ) const ;
 
 
+    /*
     void   sampleBSDF( const Vector2& seed,
                        const Vector3& w_out,
                        const LocalGeometry& p,
@@ -42,6 +45,7 @@ public:
                           const LocalGeometry& p,
                           const Vector3& w_in )const;
 
+    */
 private:
     Color m_kd;
 };

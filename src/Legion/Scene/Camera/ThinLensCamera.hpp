@@ -2,7 +2,7 @@
 #ifndef LEGION_SCENE_CAMERA_THINLENSCAMERA_HPP_
 #define LEGION_SCENE_CAMERA_THINLENSCAMERA_HPP_
 
-#include <Legion/Scene/Camera/IBasicCamera.hpp>
+#include <Legion/Scene/Camera/ICamera.hpp>
 
 
 namespace legion
@@ -10,12 +10,12 @@ namespace legion
 
 /// A basic thin lens camera implementation.  Supports depth-of-field with a
 /// round lens model.
-class ThinLensCamera : public IBasicCamera
+class ThinLensCamera : public ICamera
 {
 public:
 
     /// Create a named ThinLensCamera object
-    ThinLensCamera( Context* context, const std::string& name );
+    ThinLensCamera();
 
     /// Destroy a ThinLensCamera object
     ~ThinLensCamera();
@@ -38,12 +38,15 @@ public:
     ///   \param radius  The lens radius
     void setLensRadius( float radius );
 
+    void setVariables( VariableContainer& container ) const;
 private:
 
+    /*
     /// See IBasicCamera::generateCameraSpaceRay.
     void generateCameraSpaceRay( const CameraSample& sample,
                                  Vector3& origin,
                                  Vector3& direction )const;
+                                 */
     
     float m_left;                 ///< Left edge of viewplane in camera coords
     float m_right;                ///< Right edge of viewplane in camera coords

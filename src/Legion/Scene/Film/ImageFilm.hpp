@@ -3,10 +3,6 @@
 #define LEGION_SCENE_FILM_IMAGEFILM_H_
 
 #include <Legion/Scene/Film/IFilm.hpp>
-#include <Legion/Common/Math/Vector.hpp>
-#include <Legion/Core/Color.hpp>
-#include <Legion/Common/Util/Noncopyable.hpp>
-//#include <tr1/memory>
 
 namespace legion
 {
@@ -15,6 +11,10 @@ namespace legion
 class ImageFilm : public IFilm
 {
 public:
+    ImageFilm();
+    
+    void setVariables( VariableContainer& container ) const;
+    /*
     ImageFilm( Context* context, const std::string& name );
     ~ImageFilm();
     
@@ -31,12 +31,15 @@ public:
     void shutterOpen();
     void shutterClose();
     void passComplete();
+    */
 
 private:
 
+    /*
     Index2     m_dimensions;
     Color*     m_data;
     float*     m_weights;
+    */
 
 
 };

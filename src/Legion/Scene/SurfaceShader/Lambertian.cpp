@@ -1,19 +1,12 @@
 
 
 #include <Legion/Scene/SurfaceShader/Lambertian.hpp>
-#include <Legion/Renderer/Cuda/Shared.hpp>
-#include <Legion/Common/Math/Math.hpp>
-#include <Legion/Common/Math/ONB.hpp>
-#include <Legion/Common/Util/TypeConversion.hpp>
-#include <Legion/Common/Util/Logger.hpp>
-#include <Legion/Common/Util/Stream.hpp>
+
 
 using namespace legion;
 
 
-
-Lambertian::Lambertian( Context* context, const std::string& name )
-  : ISurfaceShader( context, name )
+Lambertian::Lambertian()
 {
 }
 
@@ -29,7 +22,12 @@ void Lambertian::setKd( const Color& kd )
 }
     
 
+void Lambertian::setVariables( VariableContainer& container ) const
+{
+}
 
+
+/*
 void Lambertian::sampleBSDF( const Vector2& seed, 
                                    const Vector3& w_out,
                                    const LocalGeometry& p,
@@ -78,4 +76,5 @@ Color Lambertian::evaluateBSDF( const Vector3& w_out,
     float cosine = std::max( 0.0f, dot( w_in, p.shading_normal ) );
     return cosine * ONE_DIV_PI * m_kd;
 }
+*/
     

@@ -1,6 +1,7 @@
 
 // Copyright (C) 2011 R. Keith Morley 
 // 
+// (MIT/X11 License)
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to
 // deal in the Software without restriction, including without limitation the
@@ -20,66 +21,19 @@
 // IN THE SOFTWARE.
 
 
-#include <Legion/Common/Util/Logger.hpp>
-#include <Legion/Common/Util/Preprocessor.hpp>
+#ifndef LEGION_CORE_CONTEXT_IMPL_H_
+#define LEGION_CORE_CONTEXT_IMPL_H_
+
 #include <Legion/Core/Context.hpp>
-#include <Legion/Core/ContextImpl.hpp>
-#include <Legion/Core/Exception.hpp>
-//#include <config.hpp>
 
-using namespace legion;
-
-#define CHECK_NULL( f, ptr )  \
-    if( !ptr ) throw Exception( std::string( f ) + ": " #ptr " param is NULL" );
-
-
-
-Context::Context() 
+namespace legion
 {
-    LLOG_INFO << "Creating legion::Context";
+
+class Context::Impl
+{
+};
+
 }
 
 
-Context::~Context()
-{
-    LLOG_INFO << "Destroying legion::Context";
-}
-
-
-void Context::setRenderer( IRenderer* renderer )
-{
-}
-
-
-void Context::setCamera( ICamera* camera )
-{
-}
-
-
-void Context::setFilm( IFilm* film )
-{
-}
-
-
-void Context::addGeometry( const IGeometry* geometry )
-{
-}
-
-
-void Context::addLight( const ILight* light )
-{
-}
-
-
-void Context::addAssetPath( const std::string& path )
-{
-}
-
-
-void Context::render()
-{
-}
-
-
-
-
+#endif // LEGION_CORE_CONTEXT_IMPL_H_

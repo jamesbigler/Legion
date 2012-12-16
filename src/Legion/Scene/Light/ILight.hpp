@@ -1,6 +1,7 @@
 
 // Copyright (C) 2011 R. Keith Morley 
 // 
+// (MIT/X11 License)
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to
 // deal in the Software without restriction, including without limitation the
@@ -20,66 +21,50 @@
 // IN THE SOFTWARE.
 
 
-#include <Legion/Common/Util/Logger.hpp>
-#include <Legion/Common/Util/Preprocessor.hpp>
-#include <Legion/Core/Context.hpp>
-#include <Legion/Core/ContextImpl.hpp>
-#include <Legion/Core/Exception.hpp>
-//#include <config.hpp>
+/// \file ILight.hpp
+/// Pure virtual interface for all Light classes
 
-using namespace legion;
-
-#define CHECK_NULL( f, ptr )  \
-    if( !ptr ) throw Exception( std::string( f ) + ": " #ptr " param is NULL" );
+#ifndef LEGION_INTERFACE_ILIGHTSHADER_HPP_
+#define LEGION_INTERFACE_ILIGHTSHADER_HPP_
 
 
 
-Context::Context() 
+
+namespace legion
 {
-    LLOG_INFO << "Creating legion::Context";
+
+class VariableContainer;
+
+/// Pure virtual interface for all LightShader classes
+class ILight
+{
+public:
+
+    
+    virtual void setVariables( VariableContainer& container ) const = 0;
+
+
+    /*
+    /// Destroy an ILightShader object
+    virtual         ~ILightShader();
+
+    virtual         isEmitter()const=0;
+
+    virtual bool    isSingular()const=0;
+
+    // light_p is the geometry of the light, w_in is the incoming direction 
+    // to that point on the light
+    virtual Color   emittance( const LocalGeometry& light_geom,
+                               const Vector3& w_in );
+
+    void sample( const Vector2&       seed,
+                 const LocalGeometry& p,
+                 Vector3&             on_light,
+                 float&               pdf );
+    */
+};
+
+
 }
 
-
-Context::~Context()
-{
-    LLOG_INFO << "Destroying legion::Context";
-}
-
-
-void Context::setRenderer( IRenderer* renderer )
-{
-}
-
-
-void Context::setCamera( ICamera* camera )
-{
-}
-
-
-void Context::setFilm( IFilm* film )
-{
-}
-
-
-void Context::addGeometry( const IGeometry* geometry )
-{
-}
-
-
-void Context::addLight( const ILight* light )
-{
-}
-
-
-void Context::addAssetPath( const std::string& path )
-{
-}
-
-
-void Context::render()
-{
-}
-
-
-
-
+#endif // LEGION_INTERFACE_ILIGHTSHADER_HPP_

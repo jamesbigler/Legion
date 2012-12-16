@@ -39,23 +39,17 @@ using namespace legion;
 //------------------------------------------------------------------------------
 
 
-namespace
-{
-    inline unsigned getIndex( const Index2& index2, const Index2& dim  )
-    {
-        return index2.y() * dim.x() + index2.x();
-    }
-}
 
-
-ImageFilm::ImageFilm( Context* context, const std::string& name )
-    : IFilm( context, name ),
-      m_dimensions( 0u, 0u ),
-      m_data( 0u )
+ImageFilm::ImageFilm()
 {
 }
 
 
+void ImageFilm::setVariables( VariableContainer& container ) const
+{
+}
+
+/*
 ImageFilm::~ImageFilm()
 {
     delete [] m_data;
@@ -127,6 +121,7 @@ void ImageFilm::shutterClose()
 void ImageFilm::passComplete()
 {
 }
+*/
 
 
 
