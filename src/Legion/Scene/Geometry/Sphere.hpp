@@ -20,41 +20,30 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
+/// \file Sphere.hpp
 
-#ifndef LEGION_CORE_CONTEXT_IMPL_H_
-#define LEGION_CORE_CONTEXT_IMPL_H_
 
-#include <Legion/Core/Context.hpp>
-#include <Legion/Common/Util/Plugin.hpp>
+#ifndef LEGION_SCENE_GEOMETRY_SPHERE_HPP_
+#define LEGION_SCENE_GEOMETRY_SPHERE_HPP_
+
+#include <Legion/Scene/Geometry/IGeometry.hpp>
 
 namespace legion
 {
 
-class Context::Impl
+class VariableContainer;
+class Parameters;
+
+class Sphere : public IGeometry
 {
 public:
-    Impl();
-    ~Impl();
+    static IGeometry* create( const Parameters& params );
 
-    void setRenderer   ( IRenderer* renderer );
-
-    void setCamera     ( ICamera* camera );
-
-    void setFilm       ( IFilm* film );
-
-    void addGeometry( const IGeometry* geometry );
-
-    void addLight( const ILight* light );
-
-    void addAssetPath( const std::string& path );
-
-    void render();
-
-private:
-    PluginManager   m_plugin_mgr;
+    void setVariables( VariableContainer& container ) const;
 };
+
 
 }
 
 
-#endif // LEGION_CORE_CONTEXT_IMPL_H_
+#endif // LEGION_SCENE_GEOMETRY_SPHERE_HPP_

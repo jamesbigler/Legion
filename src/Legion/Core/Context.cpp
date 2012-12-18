@@ -35,6 +35,7 @@ using namespace legion;
 
 
 Context::Context() 
+    : m_impl( new Impl )
 {
     LLOG_INFO << "Creating legion::Context";
 }
@@ -48,36 +49,43 @@ Context::~Context()
 
 void Context::setRenderer( IRenderer* renderer )
 {
+    m_impl->setRenderer( renderer );
 }
 
 
 void Context::setCamera( ICamera* camera )
 {
+    m_impl->setCamera( camera );
 }
 
 
 void Context::setFilm( IFilm* film )
 {
+    m_impl->setFilm( film );
 }
 
 
 void Context::addGeometry( const IGeometry* geometry )
 {
+    m_impl->addGeometry( geometry );
 }
 
 
 void Context::addLight( const ILight* light )
 {
+    m_impl->addLight( light );
 }
 
 
 void Context::addAssetPath( const std::string& path )
 {
+    m_impl->addAssetPath( path );
 }
 
 
 void Context::render()
 {
+    m_impl->render();
 }
 
 

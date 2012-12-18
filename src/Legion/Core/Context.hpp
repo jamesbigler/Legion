@@ -41,6 +41,8 @@ class IRenderer;
 class Context : public Noncopyable
 {
 public:
+    class Impl;
+
     Context();
     ~Context();
     
@@ -67,7 +69,6 @@ private:
     Renderer                 m_renderer;
     */
 
-    class Impl;
     std::unique_ptr<Impl> m_impl;
 };
 

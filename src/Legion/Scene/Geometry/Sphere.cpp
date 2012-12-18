@@ -20,41 +20,20 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
+/// \file Sphere.cpp
 
-#ifndef LEGION_CORE_CONTEXT_IMPL_H_
-#define LEGION_CORE_CONTEXT_IMPL_H_
+#include <Legion/Scene/Geometry/Sphere.hpp>
 
-#include <Legion/Core/Context.hpp>
-#include <Legion/Common/Util/Plugin.hpp>
 
-namespace legion
+using namespace legion;
+    
+
+IGeometry* Sphere::create( const Parameters& params )
 {
-
-class Context::Impl
-{
-public:
-    Impl();
-    ~Impl();
-
-    void setRenderer   ( IRenderer* renderer );
-
-    void setCamera     ( ICamera* camera );
-
-    void setFilm       ( IFilm* film );
-
-    void addGeometry( const IGeometry* geometry );
-
-    void addLight( const ILight* light );
-
-    void addAssetPath( const std::string& path );
-
-    void render();
-
-private:
-    PluginManager   m_plugin_mgr;
-};
-
+    return 0;
 }
 
 
-#endif // LEGION_CORE_CONTEXT_IMPL_H_
+void Sphere::setVariables( VariableContainer& container ) const
+{
+}

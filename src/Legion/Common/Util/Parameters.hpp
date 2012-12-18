@@ -20,41 +20,24 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
+#ifndef LEGION_COMMON_UTIL_PARAMETERS_H_
+#define LEGION_COMMON_UTIL_PARAMETERS_H_
 
-#ifndef LEGION_CORE_CONTEXT_IMPL_H_
-#define LEGION_CORE_CONTEXT_IMPL_H_
-
-#include <Legion/Core/Context.hpp>
-#include <Legion/Common/Util/Plugin.hpp>
+#include <string>
+#include <memory>
+#include <vector>
 
 namespace legion
 {
 
-class Context::Impl
+
+
+class Parameters
 {
-public:
-    Impl();
-    ~Impl();
+    
 
-    void setRenderer   ( IRenderer* renderer );
-
-    void setCamera     ( ICamera* camera );
-
-    void setFilm       ( IFilm* film );
-
-    void addGeometry( const IGeometry* geometry );
-
-    void addLight( const ILight* light );
-
-    void addAssetPath( const std::string& path );
-
-    void render();
-
-private:
-    PluginManager   m_plugin_mgr;
 };
 
-}
+} // end namespace legion
 
-
-#endif // LEGION_CORE_CONTEXT_IMPL_H_
+#endif // LEGION_COMMON_UTIL_PARAMETERS_H_

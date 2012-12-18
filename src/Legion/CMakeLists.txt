@@ -40,6 +40,10 @@ add_library( legion SHARED
     Common/Util/Logger.cpp
     Common/Util/Logger.hpp
     Common/Util/Noncopyable.hpp
+    Common/Util/Parameters.cpp
+    Common/Util/Parameters.hpp
+    Common/Util/Plugin.cpp
+    Common/Util/Plugin.hpp
     Common/Util/Singleton.hpp
     Common/Util/Stream.cpp
     Common/Util/Stream.hpp
@@ -53,6 +57,7 @@ add_library( legion SHARED
     Core/Color.hpp
     Core/Context.cpp
     Core/Context.hpp
+    Core/ContextImpl.cpp
     Core/ContextImpl.hpp
     Core/Declarations.hpp
     Core/Exception.cpp
@@ -73,6 +78,8 @@ add_library( legion SHARED
     #Renderer/ShadingEngine.cpp
     #Renderer/ShadingEngine.hpp
     Scene/Geometry/IGeometry.hpp
+    Scene/Geometry/Sphere.cpp
+    Scene/Geometry/Sphere.hpp
     Scene/Geometry/TriMesh.cpp
     Scene/Geometry/TriMesh.hpp
     Scene/Light/ILight.hpp

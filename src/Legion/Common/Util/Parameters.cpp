@@ -21,40 +21,6 @@
 // IN THE SOFTWARE.
 
 
-#ifndef LEGION_CORE_CONTEXT_IMPL_H_
-#define LEGION_CORE_CONTEXT_IMPL_H_
+#include <Legion/Common/Util/Parameters.hpp>
 
-#include <Legion/Core/Context.hpp>
-#include <Legion/Common/Util/Plugin.hpp>
-
-namespace legion
-{
-
-class Context::Impl
-{
-public:
-    Impl();
-    ~Impl();
-
-    void setRenderer   ( IRenderer* renderer );
-
-    void setCamera     ( ICamera* camera );
-
-    void setFilm       ( IFilm* film );
-
-    void addGeometry( const IGeometry* geometry );
-
-    void addLight( const ILight* light );
-
-    void addAssetPath( const std::string& path );
-
-    void render();
-
-private:
-    PluginManager   m_plugin_mgr;
-};
-
-}
-
-
-#endif // LEGION_CORE_CONTEXT_IMPL_H_
+using namespace legion;

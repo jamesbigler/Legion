@@ -21,40 +21,60 @@
 // IN THE SOFTWARE.
 
 
-#ifndef LEGION_CORE_CONTEXT_IMPL_H_
-#define LEGION_CORE_CONTEXT_IMPL_H_
+#include <Legion/Core/ContextImpl.hpp>
+#include <Legion/Common/Util/Parameters.hpp>
+#include <Legion/Common/Util/Logger.hpp>
+#include <Legion/Scene/Geometry/Sphere.hpp>
 
-#include <Legion/Core/Context.hpp>
-#include <Legion/Common/Util/Plugin.hpp>
+using namespace legion;
 
-namespace legion
+Context::Impl::Impl() 
 {
+    m_plugin_mgr.registerPlugin<IGeometry>( "Sphere", &Sphere::create );
 
-class Context::Impl
-{
-public:
-    Impl();
-    ~Impl();
-
-    void setRenderer   ( IRenderer* renderer );
-
-    void setCamera     ( ICamera* camera );
-
-    void setFilm       ( IFilm* film );
-
-    void addGeometry( const IGeometry* geometry );
-
-    void addLight( const ILight* light );
-
-    void addAssetPath( const std::string& path );
-
-    void render();
-
-private:
-    PluginManager   m_plugin_mgr;
-};
-
+    Parameters params;
+    IGeometry* geo = m_plugin_mgr.create<IGeometry>( "Sphere", params );
+    LLOG_INFO << "\tSphere: " << geo;
+    //Geometry* geo = ctx->create<Geometry>( "Sphere", properties );
 }
 
 
-#endif // LEGION_CORE_CONTEXT_IMPL_H_
+Context::Impl::~Impl() 
+{
+}
+
+
+void Context::Impl::setRenderer( IRenderer* renderer )
+{
+}
+
+
+void Context::Impl::setCamera( ICamera* camera )
+{
+}
+
+
+void Context::Impl::setFilm( IFilm* film )
+{
+}
+
+
+void Context::Impl::addGeometry( const IGeometry* geometry )
+{
+}
+
+
+void Context::Impl::addLight( const ILight* light )
+{
+}
+
+
+void Context::Impl::addAssetPath( const std::string& path )
+{
+}
+
+
+void Context::Impl::render()
+{
+}
+
