@@ -20,8 +20,8 @@
 #include <Legion/Scene/Camera/ThinLensCamera.hpp>
 #include <Legion/Scene/Film/IFilm.hpp>
 #include <Legion/Scene/Film/ImageFilm.hpp>
-#include <Legion/Scene/SurfaceShader/ISurfaceShader.hpp>
-#include <Legion/Scene/SurfaceShader/Lambertian.hpp>
+#include <Legion/Scene/Surface/ISurface.hpp>
+#include <Legion/Scene/Surface/Lambertian.hpp>
 #include <Legion/Scene/Geometry/IGeometry.hpp>
 #include <Legion/Scene/Geometry/TriMesh.hpp>
 #include <Legion/Scene/Light/ILight.hpp>

@@ -1,9 +1,9 @@
 
-#ifndef LEGION_SCENE_SURFACE_SHADER_LAMBERTIANSHADER_H_
-#define LEGION_SCENE_SURFACE_SHADER_LAMBERTIANSHADER_H_
+#ifndef LEGION_SCENE_SURFACE_LAMBERTIANSHADER_H_
+#define LEGION_SCENE_SURFACE_LAMBERTIANSHADER_H_
 
 
-#include <Legion/Scene/SurfaceShader/ISurfaceShader.hpp>
+#include <Legion/Scene/Surface/ISurface.hpp>
 #include <Legion/Core/Color.hpp>
 
 
@@ -14,7 +14,7 @@ namespace legion
 class VariableContainer;
 
 
-class Lambertian : public ISurfaceShader
+class Lambertian : public ISurface
 {
 public:
     Lambertian();
@@ -53,4 +53,4 @@ private:
 
 }
 
-#endif // LEGION_SCENE_SURFACE_SHADER_LAMBERTIANSHADER_H_
+#endif // LEGION_SCENE_SURFACE_LAMBERTIANSHADER_H_

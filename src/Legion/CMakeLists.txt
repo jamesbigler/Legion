@@ -88,9 +88,9 @@ add_library( legion SHARED
     Scene/Camera/ICamera.hpp
     Scene/Camera/ThinLensCamera.cpp
     Scene/Camera/ThinLensCamera.hpp
-    Scene/SurfaceShader/Lambertian.cpp
-    Scene/SurfaceShader/Lambertian.hpp
-    Scene/SurfaceShader/ISurfaceShader.hpp
+    Scene/Surface/Lambertian.cpp
+    Scene/Surface/Lambertian.hpp
+    Scene/Surface/ISurface.hpp
     Scene/Film/IFilm.hpp
     Scene/Film/ImageFilm.cpp
     Scene/Film/ImageFilm.hpp

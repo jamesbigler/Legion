@@ -112,7 +112,7 @@ void Renderer::addLight( const ILightShader* light_shader )
 void Renderer::addMesh( Mesh* mesh )
 {
     m_ray_tracer.addMesh( mesh );
-    m_shading_engine.addSurfaceShader( mesh->getShader() );
+    m_shading_engine.addSurface( mesh->getShader() );
 }
 
 

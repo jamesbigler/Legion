@@ -101,7 +101,7 @@ void Mesh::setVertices( unsigned num_samples,  const float* times,
 
 void Mesh::setFaces( unsigned              num_faces,
                      const Index3*         tris,
-                     const ISurfaceShader* sshader,
+                     const ISurface* sshader,
                      MeshLight*            lshader)
 {
 
@@ -134,7 +134,7 @@ void Mesh::setFaces( unsigned              num_faces,
 
 void Mesh::setFaces( unsigned              num_faces,
                      const Index4*         quads,
-                     const ISurfaceShader* shader,
+                     const ISurface* shader,
                      MeshLight*            lshader)
 {
 }
@@ -187,7 +187,7 @@ bool Mesh::subdvisionEnabled()const
 }
 
     
-const ISurfaceShader* Mesh::getShader()const
+const ISurface* Mesh::getShader()const
 {
     return m_shader;
 }

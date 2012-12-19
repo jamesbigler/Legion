@@ -43,7 +43,7 @@ namespace legion
 {
 
 class  ILightShader;
-class  ISurfaceShader;
+class  ISurface;
 class  RayTracer;
 
 class ShadingEngine
@@ -60,7 +60,7 @@ public:
 
     const Results& getResults()const;
 
-    void addSurfaceShader( const ISurfaceShader* shader );
+    void addSurface( const ISurface* shader );
 
     void addLight( const ILightShader* shader );
 
@@ -100,7 +100,7 @@ private:
     };
 
 
-    typedef std::map<unsigned, const ISurfaceShader*> SurfaceShaderMap;
+    typedef std::map<unsigned, const ISurface*> SurfaceMap;
     typedef std::map<unsigned, const ILightShader*>   LightShaderMap;
     typedef std::vector<Closure>                      Closures;
     typedef std::vector<Ray>                          Rays;
@@ -113,7 +113,7 @@ private:
 
     RayTracer&       m_ray_tracer;
     LightSet         m_light_set;
-    SurfaceShaderMap m_surface_shaders;
+    SurfaceMap m_surfaces;
 
     LoopTimerInfo    m_shadow_ray_gen;
     LoopTimerInfo    m_shadow_trace;

@@ -14,7 +14,7 @@ namespace legion
 
 // TODO: need to work out ownership of mesh's surfaceshader and MeshLightShader
 class MeshLight;
-class ISurfaceShader;
+class ISurface;
 class Matrix;
 struct LocalGeometry;
 
@@ -52,12 +52,12 @@ public:
 
     void setFaces( unsigned              num_faces,
                    const Index3*         tris,
-                   const ISurfaceShader* sshader,
+                   const ISurface* sshader,
                    MeshLight*            lshader = 0u );
 
     void setFaces( unsigned              num_faces,
                    const Index4*         quads,
-                   const ISurfaceShader* sshader,
+                   const ISurface* sshader,
                    MeshLight*            lshader = 0u );
 
     unsigned  getVertexCount();
@@ -74,7 +74,7 @@ public:
 
     bool subdvisionEnabled()const;
 
-    const ISurfaceShader* getShader()const;
+    const ISurface* getShader()const;
   
     const std::vector<Matrix>& getTransform()const;
 
@@ -100,7 +100,7 @@ private:
     bool                     m_vertices_changed;
     bool                     m_faces_changed;
 
-    const ISurfaceShader*    m_shader;
+    const ISurface*    m_shader;
 
     float                    m_area;
     std::vector<float>       m_area_cdf;

@@ -34,7 +34,7 @@ public:
     typedef IFilm*         (*FilmCreator         )( const Parameters& );
     typedef IGeometry*     (*GeometryCreator     )( const Parameters& );
     typedef ILight*        (*LightCreator        )( const Parameters& );
-    typedef ISurfaceShader*(*SurfaceShaderCreator)( const Parameters& );
+    typedef ISurface*(*SurfaceCreator)( const Parameters& );
 
     Impl() {}
     ~Impl() {}
@@ -43,13 +43,13 @@ public:
     void registerFilm         ( const std::string& name, FilmCreator          );
     void registerGeometry     ( const std::string& name, GeometryCreator      );
     void registerLight        ( const std::string& name, LightCreator         );
-    void registerSurfaceShader( const std::string& name, SurfaceShaderCreator );
+    void registerSurface( const std::string& name, SurfaceCreator );
 
     ICamera*  createCamera    ( const std::string& name, const Parameters& p );
     IFilm* createFilm         ( const std::string& name, const Parameters& p );
     IGeometry* createGeometry ( const std::string& name, const Parameters& p );
     ILight* createLight       ( const std::string& name, const Parameters& p );
-    ISurfaceShader* createSurfaceShader( const std::string& name,
+    ISurface* createSurface( const std::string& name,
                                          const Parameters& p );
 
 private:
@@ -57,13 +57,13 @@ private:
     typedef std::map<std::string, FilmCreator>            FilmCreators;    
     typedef std::map<std::string, GeometryCreator>        GeometryCreators;
     typedef std::map<std::string, LightCreator>           LightCreators;
-    typedef std::map<std::string, SurfaceShaderCreator>   SurfaceShaderCreators;
+    typedef std::map<std::string, SurfaceCreator>   SurfaceCreators;
 
     CameraCreators        m_camera_creators;
     FilmCreators          m_film_creators;
     GeometryCreators      m_geometry_creators;
     LightCreators         m_light_creators;
-    SurfaceShaderCreators m_surface_shader_creators;
+    SurfaceCreators m_surface_creators;
 };
 
 
@@ -111,15 +111,15 @@ void PluginManager::Impl::registerLight(
 }
 
 
-void PluginManager::Impl::registerSurfaceShader(
+void PluginManager::Impl::registerSurface(
         const std::string& name,
-        SurfaceShaderCreator creator )
+        SurfaceCreator creator )
 {
     LEGION_ASSERT( creator != 0 ); 
-    LEGION_ASSERT( m_surface_shader_creators.find( name ) != 
-                   m_surface_shader_creators.end() );
+    LEGION_ASSERT( m_surface_creators.find( name ) != 
+                   m_surface_creators.end() );
 
-    m_surface_shader_creators.insert( std::make_pair( name, creator ) );
+    m_surface_creators.insert( std::make_pair( name, creator ) );
 }
 
 
@@ -167,12 +167,12 @@ ILight* PluginManager::Impl::createLight(
 }
 
 
-ISurfaceShader* PluginManager::Impl::createSurfaceShader(
+ISurface* PluginManager::Impl::createSurface(
         const std::string& name,
         const Parameters& p )
 {
-    SurfaceShaderCreators::iterator it = m_surface_shader_creators.find( name );
-    LEGION_ASSERT( it != m_surface_shader_creators.end() ); 
+    SurfaceCreators::iterator it = m_surface_creators.find( name );
+    LEGION_ASSERT( it != m_surface_creators.end() ); 
 
     return it->second( p );
 }
@@ -231,11 +231,11 @@ void PluginManager::registerPlugin<ILight>(
 
 
 template <>
-void PluginManager::registerPlugin<ISurfaceShader>(
+void PluginManager::registerPlugin<ISurface>(
         const std::string& name,
-        ISurfaceShader* (*create)( const Parameters& params ) )
+        ISurface* (*create)( const Parameters& params ) )
 {
-    m_impl->registerSurfaceShader( name, create );
+    m_impl->registerSurface( name, create );
 }
 
 
@@ -278,9 +278,9 @@ ILight* PluginManager::create<ILight>(
 
 
 template <>
-ISurfaceShader* PluginManager::create<ISurfaceShader>(
+ISurface* PluginManager::create<ISurface>(
         const std::string& plugin_name,
         const Parameters& params )
 {
-    return m_impl->createSurfaceShader( plugin_name, params );
+    return m_impl->createSurface( plugin_name, params );
 }

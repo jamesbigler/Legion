@@ -1,6 +1,6 @@
 
 
-/// \file ISurfaceShader.hpp
+/// \file ISurface.hpp
 /// Pure virtual interface for Surface Shaders
 #ifndef LEGION_SCENE_SURFACESHADER_ISURFACESHADER_H_
 #define LEGION_SCENE_SURFACESHADER_ISURFACESHADER_H_
@@ -16,12 +16,12 @@ namespace legion
 class VariableContainer;
 
 /// Pure virtual interface for Surface Shaders
-class ISurfaceShader 
+class ISurface 
 {
 public:
-    virtual ~ISurfaceShader() {}
+    virtual ~ISurface() {}
     
-    /// Return the name of this SurfaceShader type
+    /// Return the name of this Surface type
     /// static std::string name();
 
     /// Return the name of this Camera's cuda ray generation function 
@@ -33,8 +33,8 @@ public:
 
 
     /*
-    /// Destroy ISurfaceShader object
-    virtual         ~ISurfaceShader();
+    /// Destroy ISurface object
+    virtual         ~ISurface();
 
     /// Sample the BSDF at given local geometry.
     ///   \param      seed   2D sampling seed in [0,1]^2
