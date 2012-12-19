@@ -66,6 +66,7 @@ private:
     SurfaceShaderCreators m_surface_shader_creators;
 };
 
+
 void PluginManager::Impl::registerCamera( 
         const std::string& name,
         CameraCreator creator )
@@ -74,14 +75,17 @@ void PluginManager::Impl::registerCamera(
     LEGION_ASSERT( m_camera_creators.find( name ) != m_camera_creators.end() );
 
     m_camera_creators.insert( std::make_pair( name, creator ) );
-
 }
+
 
 void PluginManager::Impl::registerFilm(
         const std::string& name,
         FilmCreator creator )
 {
-    LEGION_TODO();
+    LEGION_ASSERT( creator != 0 ); 
+    LEGION_ASSERT( m_film_creators.find( name ) != m_film_creators.end() );
+
+    m_film_creators.insert( std::make_pair( name, creator ) );
 }
 
 
@@ -100,7 +104,10 @@ void PluginManager::Impl::registerLight(
         const std::string& name,
         LightCreator creator )
 {
-    LEGION_TODO();
+    LEGION_ASSERT( creator != 0 ); 
+    LEGION_ASSERT( m_light_creators.find( name ) != m_light_creators.end() );
+
+    m_light_creators.insert( std::make_pair( name, creator ) );
 }
 
 
@@ -108,7 +115,11 @@ void PluginManager::Impl::registerSurfaceShader(
         const std::string& name,
         SurfaceShaderCreator creator )
 {
-    LEGION_TODO();
+    LEGION_ASSERT( creator != 0 ); 
+    LEGION_ASSERT( m_surface_shader_creators.find( name ) != 
+                   m_surface_shader_creators.end() );
+
+    m_surface_shader_creators.insert( std::make_pair( name, creator ) );
 }
 
 
@@ -116,7 +127,10 @@ ICamera* PluginManager::Impl::createCamera(
         const std::string& name, 
         const Parameters& p )
 {
-    LEGION_TODO();
+    CameraCreators::iterator it = m_camera_creators.find( name );
+    LEGION_ASSERT( it != m_camera_creators.end() ); 
+
+    return it->second( p );
 }
 
 
@@ -124,7 +138,10 @@ IFilm* PluginManager::Impl::createFilm(
         const std::string& name, 
         const Parameters& p )
 {
-    LEGION_TODO();
+    FilmCreators::iterator it = m_film_creators.find( name );
+    LEGION_ASSERT( it != m_film_creators.end() ); 
+
+    return it->second( p );
 }
 
 
@@ -143,7 +160,10 @@ ILight* PluginManager::Impl::createLight(
         const std::string& name,
         const Parameters& p )
 {
-    LEGION_TODO();
+    LightCreators::iterator it = m_light_creators.find( name );
+    LEGION_ASSERT( it != m_light_creators.end() ); 
+
+    return it->second( p );
 }
 
 
@@ -151,7 +171,10 @@ ISurfaceShader* PluginManager::Impl::createSurfaceShader(
         const std::string& name,
         const Parameters& p )
 {
-    LEGION_TODO();
+    SurfaceShaderCreators::iterator it = m_surface_shader_creators.find( name );
+    LEGION_ASSERT( it != m_surface_shader_creators.end() ); 
+
+    return it->second( p );
 }
 
 
@@ -221,7 +244,7 @@ ICamera* PluginManager::create<ICamera>(
         const std::string& plugin_name,
         const Parameters& params )
 {
-    return 0;
+    return m_impl->createCamera( plugin_name, params );
 }
 
 template <>
@@ -229,7 +252,7 @@ IFilm* PluginManager::create<IFilm>(
         const std::string& plugin_name,
         const Parameters& params )
 {
-    return 0;
+    return m_impl->createFilm( plugin_name, params );
 }
 
 
@@ -249,7 +272,7 @@ ILight* PluginManager::create<ILight>(
         const std::string& plugin_name,
         const Parameters& params )
 {
-    return 0;
+    return m_impl->createLight( plugin_name, params );
 }
 
 
@@ -259,5 +282,5 @@ ISurfaceShader* PluginManager::create<ISurfaceShader>(
         const std::string& plugin_name,
         const Parameters& params )
 {
-    return 0;
+    return m_impl->createSurfaceShader( plugin_name, params );
 }
