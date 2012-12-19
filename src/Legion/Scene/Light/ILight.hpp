@@ -27,22 +27,20 @@
 #ifndef LEGION_INTERFACE_ILIGHTSHADER_HPP_
 #define LEGION_INTERFACE_ILIGHTSHADER_HPP_
 
-
-
+#include <Legion/Scene/ISceneObject.hpp>
 
 namespace legion
 {
 
-class VariableContainer;
 
-/// Pure virtual interface for all LightShader classes
-class ILight
+/// Pure virtual interface for all Light classes
+class ILight : public ISceneObject
 {
 public:
 
-    
-    virtual void setVariables( VariableContainer& container ) const = 0;
+    virtual ~ILight() {}
 
+    
 
     /*
     /// Destroy an ILightShader object

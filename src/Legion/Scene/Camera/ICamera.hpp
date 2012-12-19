@@ -28,10 +28,10 @@
 #ifndef LEGION_SCENE_CAMERA_ICAMERA_H_
 #define LEGION_SCENE_CAMERA_ICAMERA_H_
 
+#include <Legion/Scene/ISceneObject.hpp>
 
 namespace legion
 {
-
 
 /// Contains the necessary sample information to generate a Camera ray
 /*
@@ -43,20 +43,18 @@ struct CameraSample
 };
 */
 
-class VariableContainer;
-
 /// Pure virtual interface for Camera objects
-class ICamera
+class ICamera : public ISceneObject
 {
 public:
+
+    virtual ~ICamera() {}
+
     /// Return the name of this Camera type
     /// static std::string name();
 
     /// Return the name of this Camera's cuda ray generation function 
     /// static std::string rayGenFunctionName();
-
-    /// Set variables needed by the ray generation function 
-    virtual void setVariables( VariableContainer& container ) const = 0;
 
     /*
     /// Create named camera object

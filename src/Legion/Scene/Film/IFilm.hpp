@@ -6,18 +6,20 @@
 #ifndef LEGION_SCENE_FILM_IFILM_HPP_
 #define LEGION_SCENE_FILM_IFILM_HPP_
 
+
+#include <Legion/Scene/ISceneObject.hpp>
+
+
 namespace legion
 {
 
-class VariableContainer;
 
 /// Interface for all Film classes
-class IFilm
+class IFilm : public ISceneObject
 {
 public:
     virtual ~IFilm() {}
 
-    virtual void setVariables( VariableContainer& container ) const = 0;
     /*
     virtual void setVariables( VariableContainer& container ) const = 0;
     /// Destroy Film object

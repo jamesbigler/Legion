@@ -5,18 +5,14 @@
 #ifndef LEGION_SCENE_SURFACESHADER_ISURFACESHADER_H_
 #define LEGION_SCENE_SURFACESHADER_ISURFACESHADER_H_
 
-
-
+#include <Legion/Scene/ISceneObject.hpp>
 
 
 namespace legion
 {
 
-
-class VariableContainer;
-
-/// Pure virtual interface for Surface Shaders
-class ISurface 
+/// Pure virtual interface for Surfaces
+class ISurface : public ISceneObject
 {
 public:
     virtual ~ISurface() {}
@@ -26,10 +22,6 @@ public:
 
     /// Return the name of this Camera's cuda ray generation function 
     /// static std::string rayGenFunctionName();
-
-    /// Set variables needed by the ray generation function 
-    virtual void setVariables( VariableContainer& container ) const = 0;
-
 
 
     /*

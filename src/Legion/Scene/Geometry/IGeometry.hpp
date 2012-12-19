@@ -27,22 +27,18 @@
 #ifndef LEGION_SCENE_GEOMETRY_IGEOMETRY_H_
 #define LEGION_SCENE_GEOMETRY_IGEOMETRY_H_
 
+#include <Legion/Scene/ISceneObject.hpp>
 
 namespace legion
 {
 
-
-
-class VariableContainer;
-
 /// Pure virtual interface for Geometry objects
-class IGeometry
+class IGeometry : public ISceneObject
 {
 public:
     virtual ~IGeometry() {}
 
     /// Set variables needed by the ray generation function 
-    virtual void setVariables( VariableContainer& container ) const = 0;
 };
 
 
