@@ -11,9 +11,16 @@ class Exception : public std::runtime_error
 {
 public:
     Exception();
-    Exception( const std::string& mssg );
+    explicit Exception( const std::string& mssg );
 };
 
+
+class AssertionFailure : public Exception
+{
+public:
+    AssertionFailure();
+    explicit AssertionFailure( const std::string& mssg );
+};
 
 }
 

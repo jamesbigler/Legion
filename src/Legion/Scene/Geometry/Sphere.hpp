@@ -27,6 +27,7 @@
 #define LEGION_SCENE_GEOMETRY_SPHERE_HPP_
 
 #include <Legion/Scene/Geometry/IGeometry.hpp>
+#include <Legion/Common/Math/Vector.hpp>
 
 namespace legion
 {
@@ -39,7 +40,15 @@ class Sphere : public IGeometry
 public:
     static IGeometry* create( const Parameters& params );
 
+
+    Sphere();
+    Sphere( const Parameters& params );
+
     void setVariables( VariableContainer& container ) const;
+
+private:
+    float     m_radius;
+    Vector3   m_center;
 };
 
 

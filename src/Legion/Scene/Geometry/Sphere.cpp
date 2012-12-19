@@ -23,6 +23,7 @@
 /// \file Sphere.cpp
 
 #include <Legion/Scene/Geometry/Sphere.hpp>
+#include <Legion/Common/Util/Logger.hpp>
 
 
 using namespace legion;
@@ -30,7 +31,21 @@ using namespace legion;
 
 IGeometry* Sphere::create( const Parameters& params )
 {
-    return 0;
+    return new Sphere( params );
+}
+
+Sphere::Sphere()
+    : m_radius( 1.0f ),
+      m_center( 0.0f, 0.0f, 0.0f )
+{
+}
+
+
+Sphere::Sphere( const Parameters& params)
+    : m_radius( 1.0f ),
+      m_center( 0.0f, 0.0f, 0.0f )
+{
+    LLOG_INFO << "\t\tSphere::Sphere( params );";
 }
 
 

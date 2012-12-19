@@ -5,6 +5,7 @@
 
 #include <Legion/Core/Exception.hpp>
 #include <string>
+#include <sstream>
 
 /// The global namespace for the Legion API
 namespace legion 
@@ -40,6 +41,23 @@ template<size_t> struct StaticAssertionChecker       {};
 #define LEGION_TODO()                                                          \
     throw Exception( std::string( __PRETTY_FUNCTION__ ) +                      \
                      ": Unimplemented code path taken (TODO)");
+
+
+//------------------------------------------------------------------------------
+//
+//  LEGION_ASSERT. triggers exception.
+//
+//------------------------------------------------------------------------------
+#define LEGION_ASSERT( cond )                                                  \
+    do                                                                         \
+    {                                                                          \
+        if( !(cond) )                                                          \
+        {                                                                      \
+            std::stringstream ss;                                              \
+            ss << __FILE__ << " (" << __LINE__ << "): " << #cond;              \
+            throw AssertionFailure( ss.str() );                                \
+        }                                                                      \
+    } while( 0 )
 
 }
 

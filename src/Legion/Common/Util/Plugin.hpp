@@ -53,7 +53,7 @@ public:
     std::vector<std::string> registeredPluginNames()const;
 
     template <typename PType>
-    bool registerPlugin( const std::string& name, 
+    void registerPlugin( const std::string& name, 
                          PType* (*create)( const Parameters& params ) );
 
     template <typename PType>
@@ -66,7 +66,7 @@ private:
 
 #define FORWARD_DECLARE_PLUGIN_SPECIALIZATIONS( PLUGIN_TYPE )                  \
     template<>                                                                 \
-    bool PluginManager::registerPlugin< PLUGIN_TYPE >(                         \
+    void PluginManager::registerPlugin< PLUGIN_TYPE >(                         \
             const std::string& plugin_name,                                    \
             PLUGIN_TYPE* (*create)( const Parameters& params ) );              \
                                                                                \
@@ -82,40 +82,6 @@ FORWARD_DECLARE_PLUGIN_SPECIALIZATIONS( ILight         )
 FORWARD_DECLARE_PLUGIN_SPECIALIZATIONS( ISurfaceShader )
 
 #undef FORWARD_DECLARE_PLUGIN_SPECIALIZATIONS
-
-    /*
-template <>
-bool PluginManager::registerPlugin<ICamera>(
-        const std::string& name,
-        ICamera* (*create)( const Parameters& )
-        );
-
-template <>
-bool PluginManager::registerPlugin<IFilm>         ( const std::string& name );
-template <>
-bool PluginManager::registerPlugin<IGeometry>     ( const std::string& name );
-template <>
-bool PluginManager::registerPlugin<ILight>        ( const std::string& name );
-template <>
-bool PluginManager::registerPlugin<ISurfaceShader>( const std::string& name );
-
-
-template <>
-ICamera* PluginManager::create<ICamera>    ( const std::string& name,
-                                             const Parameters& params );
-template <>
-IFilm*   PluginManager::create<IFilm>      ( const std::string& name,
-                                             const Parameters& params );
-template <>
-IGeometry* PluginManager::create<IGeometry>( const std::string& name,
-                                             const Parameters& params );
-template <>
-ILight* PluginManager::create<ILight>      ( const std::string& name,
-                                             const Parameters& params );
-template <>
-ISurfaceShader* PluginManager::create<ISurfaceShader>( const std::string& name,
-                                             const Parameters& params );
-                                             */
 
 }
 
