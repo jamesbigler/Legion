@@ -1,6 +1,7 @@
 
-// Copyright (C) 2011 R. Keith Morley
-//
+// Copyright (C) 2011 R. Keith Morley 
+// 
+// (MIT/X11 License)
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to
 // deal in the Software without restriction, including without limitation the
@@ -18,54 +19,27 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
-// (MIT/X11 License)
 
-/// \file LightSet.hpp
-/// LightSet
+#include <optix.h>
 
-#ifndef LEGION_RENDERER_LIGHTSET_HPP_
-#define LEGION_RENDERER_LIGHTSET_HPP_
+rtDeclareVariable(uint2, launch_index, rtLaunchIndex, );
+rtDeclareVariable(uint2, launch_dim,   rtLaunchDim, );
 
-#include <vector>
-#include <map>
+rtBuffer<float4, 2> output_buffer;
 
-namespace legion
+RT_PROGRAM void legionCamera()
 {
+    const float r = static_cast<float>( launch_index.x ) /
+                    static_cast<float>( launch_dim.x );
+    const float g = static_cast<float>( launch_index.y ) /
+                    static_cast<float>( launch_dim.y );
 
 
-class ILightShader;
-
-
-class LightSet
-{
-public:
-    LightSet();
-    ~LightSet();
-
-    void   addLight   ( const ILightShader* light );
-    void   removeLight( const ILightShader* light );
-
-    size_t numLights()const;
-
-    void   selectLight( float rnd,
-                        const ILightShader*& light,
-                        float& pdf )const;
-
-    const ILightShader* lookupLight( unsigned id )const;
-
-private:
-
-    /// Used for randomly choosing lights
-    typedef std::vector<const ILightShader*>        LightVec;
-    typedef std::map<unsigned, const ILightShader*> LightMap;
-
-    /// Used for lookup via ID
-    LightVec      m_light_vec;
-    LightMap      m_light_map;
-};
-
-
+    output_buffer[ launch_index ] = make_float4( r, g, 0.0f, 1.0f );
 }
 
 
-#endif // LEGION_RENDERER_LIGHTSET_HPP_
+
+
+
+

@@ -1,6 +1,7 @@
 
-// Copyright (C) 2011 R. Keith Morley
-//
+// Copyright (C) 2011 R. Keith Morley 
+// 
+// (MIT/X11 License)
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to
 // deal in the Software without restriction, including without limitation the
@@ -18,54 +19,25 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
-// (MIT/X11 License)
 
-/// \file LightSet.hpp
-/// LightSet
 
-#ifndef LEGION_RENDERER_LIGHTSET_HPP_
-#define LEGION_RENDERER_LIGHTSET_HPP_
-
-#include <vector>
-#include <map>
+#ifndef LEGION_SCENE_ISCENE_OBJECT_HPP
+#define LEGION_SCENE_ISCENE_OBJECT_HPP
 
 namespace legion
 {
 
+class VariableContainer;
 
-class ILightShader;
-
-
-class LightSet
+class ISceneObject
 {
 public:
-    LightSet();
-    ~LightSet();
+    virtual ~ISceneObject() {}
 
-    void   addLight   ( const ILightShader* light );
-    void   removeLight( const ILightShader* light );
-
-    size_t numLights()const;
-
-    void   selectLight( float rnd,
-                        const ILightShader*& light,
-                        float& pdf )const;
-
-    const ILightShader* lookupLight( unsigned id )const;
-
-private:
-
-    /// Used for randomly choosing lights
-    typedef std::vector<const ILightShader*>        LightVec;
-    typedef std::map<unsigned, const ILightShader*> LightMap;
-
-    /// Used for lookup via ID
-    LightVec      m_light_vec;
-    LightMap      m_light_map;
+    virtual void setVariables( VariableContainer& container ) const = 0;
 };
-
 
 }
 
 
-#endif // LEGION_RENDERER_LIGHTSET_HPP_
+#endif // LEGION_SCENE_ISCENE_OBJECT_HPP

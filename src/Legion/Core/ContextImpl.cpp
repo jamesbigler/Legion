@@ -51,6 +51,7 @@ void Context::Impl::setRenderer( IRenderer* renderer )
 
 void Context::Impl::setCamera( ICamera* camera )
 {
+    m_camera = camera;
 }
 
 
@@ -76,5 +77,6 @@ void Context::Impl::addAssetPath( const std::string& path )
 
 void Context::Impl::render()
 {
+    m_optix_scene.renderPass();
 }
 

@@ -26,9 +26,12 @@
 
 #include <Legion/Core/Context.hpp>
 #include <Legion/Common/Util/Plugin.hpp>
+#include <Legion/Renderer/OptixScene.hpp>
 
 namespace legion
 {
+
+class ICamera;
 
 class Context::Impl
 {
@@ -52,6 +55,10 @@ public:
 
 private:
     PluginManager   m_plugin_mgr;
+    OptiXScene      m_optix_scene;
+
+    ICamera* m_camera;
+
 };
 
 }

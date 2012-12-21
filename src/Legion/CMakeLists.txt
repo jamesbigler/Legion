@@ -8,9 +8,7 @@ set( CUDA_GENERATED_OUTPUT_DIR ${PTX_OUTPUT_DIR} )
 
 # Set up build .cu -> .ptx build 
 CUDA_COMPILE_PTX( ptx_files
-    Renderer/Cuda/hit.cu
-    Renderer/Cuda/raygen.cu
-    Renderer/Cuda/trimesh.cu
+    Scene/Camera/CUDA/camera.cu
     )
 
 configure_file( "${CMAKE_CURRENT_SOURCE_DIR}/Core/config.hpp.in"
@@ -66,6 +64,8 @@ add_library( legion SHARED
     Core/VariableContainer.cpp
     Core/VariableContainer.hpp
     Legion.hpp
+    Renderer/OptiXScene.cpp
+    Renderer/OptiXScene.hpp
     #Renderer/LightSet.cpp
     #Renderer/LightSet.hpp
     #Renderer/RayScheduler.cpp

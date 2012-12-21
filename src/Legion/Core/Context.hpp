@@ -20,10 +20,8 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-
 #ifndef LEGION_CORE_CONTEXT_H_
 #define LEGION_CORE_CONTEXT_H_
-
 
 #include <Legion/Common/Util/Noncopyable.hpp>
 #include <memory>

@@ -20,52 +20,38 @@
 // IN THE SOFTWARE.
 // (MIT/X11 License)
 
-/// \file LightSet.hpp
-/// LightSet
+#ifndef LEGION_RENDERER_OPTIX_SCENE_HPP_
+#define LEGION_RENDERER_OPTIX_SCENE_HPP_
 
-#ifndef LEGION_RENDERER_LIGHTSET_HPP_
-#define LEGION_RENDERER_LIGHTSET_HPP_
-
-#include <vector>
-#include <map>
+#include <optixu/optixpp_namespace.h>
 
 namespace legion
 {
 
-
-class ILightShader;
-
-
-class LightSet
+class OptiXScene
 {
 public:
-    LightSet();
-    ~LightSet();
+    OptiXScene();
+    ~OptiXScene();
 
-    void   addLight   ( const ILightShader* light );
-    void   removeLight( const ILightShader* light );
-
-    size_t numLights()const;
-
-    void   selectLight( float rnd,
-                        const ILightShader*& light,
-                        float& pdf )const;
-
-    const ILightShader* lookupLight( unsigned id )const;
+    void resetFrame();
+    void renderPass();
+    optix::Buffer getOutputBuffer();
 
 private:
+    optix::Context m_optix_context;
+    optix::Program m_camera;
+    optix::Buffer  m_output_buffer;
 
-    /// Used for randomly choosing lights
-    typedef std::vector<const ILightShader*>        LightVec;
-    typedef std::map<unsigned, const ILightShader*> LightMap;
-
-    /// Used for lookup via ID
-    LightVec      m_light_vec;
-    LightMap      m_light_map;
+    // INFO: optixscene should own an IFilm.  The IFilm will have a cuda-side
+    //       function that takes a val and writes it to output_buffer (which it
+    //       owns).
+    //
+    //       optixscene will then map that buffer and pass map data to an
+    //       IDiaplay
 };
 
 
 }
 
-
-#endif // LEGION_RENDERER_LIGHTSET_HPP_
+#endif // LEGION_RENDERER_OPTIX_SCENE_HPP_
