@@ -23,6 +23,7 @@
 #include <Legion/Scene/Surface/ISurface.hpp>
 #include <Legion/Scene/Surface/Lambertian.hpp>
 #include <Legion/Scene/Geometry/IGeometry.hpp>
+#include <Legion/Scene/Geometry/Sphere.hpp>
 #include <Legion/Scene/Geometry/TriMesh.hpp>
 #include <Legion/Scene/Light/ILight.hpp>
 #include <Legion/Scene/Light/PointLight.hpp>

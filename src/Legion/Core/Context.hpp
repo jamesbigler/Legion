@@ -34,6 +34,7 @@ class IFilm;
 class IGeometry;
 class ILight;
 class IRenderer;
+class ISurface;
 
 
 class Context : public Noncopyable

@@ -66,7 +66,9 @@ optix::Buffer OptiXScene::getOutputBuffer()
 }
 
 
-void OptiXScene::renderPass()
+void OptiXScene::renderPass( const Index2& min,
+                             const Index2& max,
+                             unsigned spp )
 {
     m_optix_context->launch( 0, 512, 512 );
     const std::string filename = "test.exr";

@@ -35,20 +35,62 @@ IGeometry* Sphere::create( const Parameters& params )
 }
 
 Sphere::Sphere()
-    : m_radius( 1.0f ),
-      m_center( 0.0f, 0.0f, 0.0f )
+    : m_transform( Matrix::identity() ),
+      m_radius( 1.0f ),
+      m_center( 0.0f, 0.0f, 0.0f ),
+      m_surface( 0 )
 {
 }
 
 
 Sphere::Sphere( const Parameters& params)
-    : m_radius( 1.0f ),
-      m_center( 0.0f, 0.0f, 0.0f )
+    : m_transform( Matrix::identity() ),
+      m_radius( 1.0f ),
+      m_center( 0.0f, 0.0f, 0.0f ),
+      m_surface( 0 )
 {
     LLOG_INFO << "\t\tSphere::Sphere( params );";
 }
 
 
+std::string Sphere::getIntersectionName()const
+{
+    return "sphereIntersect";
+}
+
+
+std::string Sphere::getBoundingBoxName()const
+{
+    return "sphereBoundingBox";
+}
+
+
+void Sphere::setTransform( const Matrix& transform )
+{
+    m_transform = transform;
+}
+
+
+Matrix Sphere::getTransform() const
+{
+    return m_transform;
+}
+
+
+void Sphere::setSurface( ISurface* surface )
+{
+    m_surface = surface;
+}
+
+
+ISurface* Sphere::getSurface()const
+{
+    return m_surface;
+}
+
+
 void Sphere::setVariables( VariableContainer& container ) const
 {
+    //containter.setFloat( "center", m_center );
+    //containter.setFloat( "radius", m_radius );
 }

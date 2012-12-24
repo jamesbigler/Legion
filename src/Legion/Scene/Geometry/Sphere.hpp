@@ -34,21 +34,31 @@ namespace legion
 
 class VariableContainer;
 class Parameters;
+class ISurface;
 
 class Sphere : public IGeometry
 {
 public:
     static IGeometry* create( const Parameters& params );
-
-
     Sphere();
     Sphere( const Parameters& params );
+    
+    std::string getIntersectionName()const;
+    std::string getBoundingBoxName()const;
+
+    void        setTransform( const Matrix& transform );
+    Matrix      getTransform() const;
+
+    void        setSurface( ISurface* surface );
+    ISurface*   getSurface()const;
 
     void setVariables( VariableContainer& container ) const;
 
 private:
+    Matrix    m_transform;
     float     m_radius;
     Vector3   m_center;
+    ISurface* m_surface;
 };
 
 

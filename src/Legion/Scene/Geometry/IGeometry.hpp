@@ -28,9 +28,13 @@
 #define LEGION_SCENE_GEOMETRY_IGEOMETRY_H_
 
 #include <Legion/Scene/ISceneObject.hpp>
+#include <string>
 
 namespace legion
 {
+
+class Matrix;
+class ISurface;
 
 /// Pure virtual interface for Geometry objects
 class IGeometry : public ISceneObject
@@ -38,9 +42,60 @@ class IGeometry : public ISceneObject
 public:
     virtual ~IGeometry() {}
 
-    /// Set variables needed by the ray generation function 
+    virtual std::string getIntersectionName()const=0;
+    virtual std::string getBoundingBoxName()const=0;
+
+    virtual void        setTransform( const Matrix& transform )=0;
+    virtual Matrix      getTransform() const=0;
+
+    virtual void        setSurface( ISurface* surface )=0;
+    virtual ISurface*   getSurface()const = 0 ;
 };
 
+}
+
+
+#include <Legion/Common/Math/Matrix.hpp>
+
+namespace legion
+{
+
+class ISurface;
+
+class Instance : public IGeometry
+{
+public:
+    Instance( IGeometry* child, const Matrix& transform )
+        : m_transform( transform ), 
+          m_child( child ),
+          m_surface( 0 )
+    {}
+
+    ~Instance() {}
+
+    std::string  getIntersectionName()const
+    { return m_child->getIntersectionName(); }
+
+    std::string  getBoundingBoxName()const
+    { return m_child->getBoundingBoxName(); }
+
+    void setTransform( const Matrix& transform )
+    { m_transform = transform; }
+
+    Matrix getTransform() const
+    { return m_transform * m_child->getTransform(); }
+
+    void setSurface( ISurface* surface )
+    { m_surface = surface; }
+    
+    ISurface* getSurface()const 
+    { return m_surface ? m_surface : m_child->getSurface(); }
+
+private:
+    Matrix     m_transform;
+    IGeometry* m_child;
+    ISurface*  m_surface;
+};
 
 }
 

@@ -45,14 +45,15 @@ int main( int argc, char** argv )
         indices.push_back( legion::Index3( 0, 2, 3 ) );
         */
 
-        legion::TriMesh square;
+        legion::Sphere sphere;
+        sphere.setSurface( &mtl );
         /*
         square.setVertices( verts.size(), &verts[0] );
         //square.setVertices( verts.begin(), verts.end() );
         square.setFaces( indices.size(), &indices[0], &mtl );
         //square.setFaces( indices.begin(), indices.end() );
         */
-        ctx.addGeometry( &square );
+        ctx.addGeometry( &sphere );
 
         legion::PointLight light;
         light.setPosition( legion::Vector3( 1.0f, 1.0f, 1.0f ) );

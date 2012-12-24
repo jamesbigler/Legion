@@ -24,9 +24,15 @@
 #define LEGION_RENDERER_OPTIX_SCENE_HPP_
 
 #include <optixu/optixpp_namespace.h>
+#include <Legion/Common/Math/Vector.hpp>
 
 namespace legion
 {
+
+class ICamera;
+class IFilm;
+class IGeometry;
+class ILight;
 
 class OptiXScene
 {
@@ -35,8 +41,17 @@ public:
     ~OptiXScene();
 
     void resetFrame();
-    void renderPass();
+    void renderPass( const Index2& min, const Index2& max, unsigned spp );
     optix::Buffer getOutputBuffer();
+
+    void setCamera( ICamera* camera );
+    void setFilm( IFilm* film );
+    void addGeometry( IGeometry* geometry );
+    void addLight( ILight* light );
+
+    void clearScene();
+
+    // TODO: removers?
 
 private:
     optix::Context m_optix_context;

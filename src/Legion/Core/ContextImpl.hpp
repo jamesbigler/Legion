@@ -28,6 +28,8 @@
 #include <Legion/Common/Util/Plugin.hpp>
 #include <Legion/Renderer/OptixScene.hpp>
 
+#include <vector>
+
 namespace legion
 {
 
@@ -58,7 +60,8 @@ private:
     OptiXScene      m_optix_scene;
 
     ICamera* m_camera;
-
+    IFilm*   m_film;
+    std::vector<IGeometry*> m_geometry;
 };
 
 }

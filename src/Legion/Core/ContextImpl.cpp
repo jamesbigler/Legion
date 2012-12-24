@@ -77,6 +77,6 @@ void Context::Impl::addAssetPath( const std::string& path )
 
 void Context::Impl::render()
 {
-    m_optix_scene.renderPass();
+    m_optix_scene.renderPass( Index2( 0u, 0u ), Index2( 0u, 0u ), 1u );
 }
 
