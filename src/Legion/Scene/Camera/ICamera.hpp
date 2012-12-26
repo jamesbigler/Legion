@@ -33,6 +33,7 @@
 namespace legion
 {
 
+class Matrix;
 /// Contains the necessary sample information to generate a Camera ray
 /*
 struct CameraSample
@@ -54,7 +55,11 @@ public:
     /// static std::string name();
 
     /// Return the name of this Camera's cuda ray generation function 
-    /// static std::string rayGenFunctionName();
+    virtual const char* rayGenFunctionName()=0;
+
+    /// Set the Camera-to-World transform
+    ///    \param camera_to_world   Camera-to-World transform
+    virtual void setCameraToWorld( const Matrix& camera_to_world )=0;
 
     /*
     /// Create named camera object

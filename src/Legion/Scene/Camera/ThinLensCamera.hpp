@@ -41,9 +41,11 @@ public:
     /// Destroy a ThinLensCamera object
     ~ThinLensCamera();
 
+    const char* rayGenFunctionName();
+    
     /// Set the Camera-to-World transform
     ///    \param camera_to_world   Camera-to-World transform
-    void setCameraToWorld( Matrix camera_to_world );
+    void setCameraToWorld( const Matrix& camera_to_world );
 
     /// Set the image plane aspect ratio
     ///   \param ratio image plane aspect ratio

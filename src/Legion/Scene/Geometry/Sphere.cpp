@@ -53,13 +53,13 @@ Sphere::Sphere( const Parameters& params)
 }
 
 
-std::string Sphere::getIntersectionName()const
+const char* Sphere::getIntersectionName()const
 {
     return "sphereIntersect";
 }
 
 
-std::string Sphere::getBoundingBoxName()const
+const char* Sphere::getBoundingBoxName()const
 {
     return "sphereBoundingBox";
 }

@@ -28,7 +28,6 @@
 #define LEGION_SCENE_GEOMETRY_IGEOMETRY_H_
 
 #include <Legion/Scene/ISceneObject.hpp>
-#include <string>
 
 namespace legion
 {
@@ -42,8 +41,8 @@ class IGeometry : public ISceneObject
 public:
     virtual ~IGeometry() {}
 
-    virtual std::string getIntersectionName()const=0;
-    virtual std::string getBoundingBoxName()const=0;
+    virtual const char* getIntersectionName()const=0;
+    virtual const char* getBoundingBoxName()const=0;
 
     virtual void        setTransform( const Matrix& transform )=0;
     virtual Matrix      getTransform() const=0;
@@ -73,10 +72,10 @@ public:
 
     ~Instance() {}
 
-    std::string  getIntersectionName()const
+    const char* getIntersectionName()const
     { return m_child->getIntersectionName(); }
 
-    std::string  getBoundingBoxName()const
+    const char* getBoundingBoxName()const
     { return m_child->getBoundingBoxName(); }
 
     void setTransform( const Matrix& transform )

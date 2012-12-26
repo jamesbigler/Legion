@@ -43,8 +43,8 @@ public:
     Sphere();
     Sphere( const Parameters& params );
     
-    std::string getIntersectionName()const;
-    std::string getBoundingBoxName()const;
+    const char* getIntersectionName()const;
+    const char* getBoundingBoxName()const;
 
     void        setTransform( const Matrix& transform );
     Matrix      getTransform() const;

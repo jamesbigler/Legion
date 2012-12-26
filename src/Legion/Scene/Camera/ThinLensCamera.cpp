@@ -42,8 +42,14 @@ ThinLensCamera::~ThinLensCamera()
 {
 }
 
+
+const char* ThinLensCamera::rayGenFunctionName()
+{
+    return "thinLensCamera";
+}
+
     
-void ThinLensCamera::setCameraToWorld( Matrix camera_to_world )
+void ThinLensCamera::setCameraToWorld( const Matrix& camera_to_world )
 {
     m_camera_to_world = camera_to_world;
 }
