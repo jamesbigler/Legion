@@ -24,11 +24,27 @@
 #ifndef LEGION_CORE_VARIABLE_CONTAINER_H_
 #define LEGION_CORE_VARIABLE_CONTAINER_H_
 
+#include <Legion/Common/Math/Vector.hpp>
+#include <optixu/optixpp_namespace.h>
+
 namespace legion
 {
 
+class Matrix;
+
 class VariableContainer
 {
+public:
+    explicit VariableContainer( optix::ScopedObj* scoped );
+    void setFloat( const std::string& name, float val );
+    void setFloat( const std::string& name, const Vector2& val );
+    void setFloat( const std::string& name, const Vector3& val );
+    void setFloat( const std::string& name, const Vector4& val );
+
+    void setMatrix( const std::string& name, const Matrix& val ); 
+
+private:
+    optix::ScopedObj* m_scoped;
 };
 
 }

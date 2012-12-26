@@ -21,3 +21,54 @@
 // IN THE SOFTWARE.
 
 #include <Legion/Core/VariableContainer.hpp>
+#include <Legion/Common/Math/Matrix.hpp>
+
+using namespace legion;
+
+namespace
+{
+    optix::Variable getVariable( optix::ScopedObj* scoped,
+                                 const std::string& name )
+    {
+        optix::Variable v = scoped->queryVariable( name );
+        if( !v )
+            v = scoped->declareVariable( name );
+        return v;
+    }
+}
+
+
+VariableContainer::VariableContainer( optix::ScopedObj* scoped )
+    : m_scoped( scoped )
+{
+}
+
+
+void VariableContainer::setFloat( const std::string& name, float val )
+{
+    getVariable( m_scoped, name )->setFloat( val );
+}
+
+
+void VariableContainer::setFloat( const std::string& name, const Vector2& val )
+{
+    getVariable( m_scoped, name )->setFloat( val.x(), val.y() );
+}
+
+
+void VariableContainer::setFloat( const std::string& name, const Vector3& val )
+{
+    getVariable( m_scoped, name )->setFloat( val.x(), val.y(), val.z() );
+}
+
+
+void VariableContainer::setFloat( const std::string& name, const Vector4& val )
+{
+    getVariable( m_scoped, name )->setFloat( val.x(), val.y(), val.z(), val.w() );
+}
+
+
+void VariableContainer::setMatrix( const std::string& name, const Matrix& val ) 
+{
+    getVariable( m_scoped, name )->setMatrix4x4fv( false, val.getData() );
+}

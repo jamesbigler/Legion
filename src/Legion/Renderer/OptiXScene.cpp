@@ -60,12 +60,6 @@ OptiXScene::~OptiXScene()
 }
 
 
-optix::Buffer OptiXScene::getOutputBuffer()
-{
-    return m_output_buffer;
-}
-
-
 void OptiXScene::renderPass( const Index2& min,
                              const Index2& max,
                              unsigned spp )
@@ -77,3 +71,36 @@ void OptiXScene::renderPass( const Index2& min,
     m_output_buffer->unmap();
 }
 
+
+optix::Buffer OptiXScene::getOutputBuffer()
+{
+    return m_output_buffer;
+}
+
+
+void setCamera( ICamera* camera )
+{
+    
+}
+
+
+void setFilm( IFilm* film )
+{
+    LEGION_TODO();
+}
+
+
+void addGeometry( IGeometry* geometry )
+{
+    LEGION_TODO();
+}
+
+
+void addLight( ILight* light )
+{
+    LEGION_TODO();
+}
+
+
+
+void clearScene()
