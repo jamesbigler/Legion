@@ -66,6 +66,8 @@ add_library( legion SHARED
     Legion.hpp
     Renderer/OptiXScene.cpp
     Renderer/OptiXScene.hpp
+    Renderer/CUDAProgramManager.cpp
+    Renderer/CUDAProgramManager.hpp
     #Renderer/LightSet.cpp
     #Renderer/LightSet.hpp
     #Renderer/RayScheduler.cpp

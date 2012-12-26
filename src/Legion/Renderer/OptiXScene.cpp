@@ -22,6 +22,7 @@
 
 #include <Legion/Renderer/OptiXScene.hpp>
 #include <Legion/Common/Util/Image.hpp>
+#include <Legion/Core/Exception.hpp>
 #include <config.hpp>
 
 using namespace legion;
@@ -104,3 +105,6 @@ void addLight( ILight* light )
 
 
 void clearScene()
+{
+    LEGION_TODO();
+}

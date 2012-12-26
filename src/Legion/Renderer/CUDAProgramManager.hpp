@@ -1,7 +1,6 @@
 
-// Copyright (C) 2011 R. Keith Morley 
-// 
-// (MIT/X11 License)
+// Copyright (C) 2011 R. Keith Morley
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to
 // deal in the Software without restriction, including without limitation the
@@ -19,20 +18,26 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
+// (MIT/X11 License)
 
-#ifndef LEGION_COMMON_UTIL_CUDA_FACTORY_HPP_
-#define LEGION_COMMON_UTIL_CUDA_FACTORY_HPP_
+#ifndef LEGION_RENDERER_CUDA_PROGRAM_MANAGER_HPP_
+#define LEGION_RENDERER_CUDA_PROGRAM_MANAGER_HPP_
 
-#include <string>
-#include <optix.h>
+#include <optixu/optixpp_namespace.h>
+#include <map>
 
-class CUDAFunctionRegistry
+namespace legion
+{
+
+class CUDAProgramManager
 {
 public:
+    CUDAProgramManager();
+    ~CUDAProgramManager();
 
     optix::Program load( const std::string& name,
-                         const std::string& cuda_filename,
-                         const std::string& cuda_function_name );
+                         const std::string& cuda_filename = "",
+                         const std::string& cuda_function_name = "" );
 
     optix::Program get( const std::string& name ) const;
 
@@ -40,6 +45,8 @@ private:
     typedef std::map< std::string, optix::Program> Registry;
     Registry m_registry;
 };
-    
 
-#endif // LEGION_COMMON_UTIL_CUDA_FACTORY_HPP_
+}
+
+
+#endif // LEGION_RENDERER_CUDA_PROGRAM_MANAGER_HPP_
