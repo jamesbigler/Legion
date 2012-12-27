@@ -8,7 +8,7 @@ set( CUDA_GENERATED_OUTPUT_DIR ${PTX_OUTPUT_DIR} )
 
 # Set up build .cu -> .ptx build 
 CUDA_COMPILE_PTX( ptx_files
-    Scene/Camera/CUDA/camera.cu
+    Scene/Camera/CUDA/legionCamera.cu
     )
 
 configure_file( "${CMAKE_CURRENT_SOURCE_DIR}/Core/config.hpp.in"

@@ -29,21 +29,27 @@
 namespace legion
 {
 
+// TODO: innapropriately named variables and classname
+//       CUDA should be either PTX or optix
 class CUDAProgramManager
 {
 public:
-    CUDAProgramManager();
+    explicit CUDAProgramManager( optix::Context context );
     ~CUDAProgramManager();
 
-    optix::Program load( const std::string& name,
-                         const std::string& cuda_filename = "",
-                         const std::string& cuda_function_name = "" );
+    void addPath( const std::string& path );
 
-    optix::Program get( const std::string& name ) const;
+    optix::Program get( const std::string& name,
+                        const std::string& cuda_filename = "",
+                        const std::string& cuda_function_name = "" );
 
 private:
-    typedef std::map< std::string, optix::Program> Registry;
-    Registry m_registry;
+    typedef std::map< std::string, optix::Program>   Registry;
+    typedef std::vector<std::string>                 Paths;;
+
+    optix::Context  m_context;
+    Registry        m_registry;
+    Paths           m_paths;
 };
 
 }

@@ -32,16 +32,25 @@ namespace
 {
     std::string ptxFilename( const std::string& cuda_filename )
     {
-        return PTX_DIR + "/cuda_compile_ptx_generated_" + cuda_filename + ".ptx";
+        return "cuda_compile_ptx_generated_" + cuda_filename + ".ptx";
+        //return PTX_DIR + "/cuda_compile_ptx_generated_" + cuda_filename + ".ptx";
     }
 }
 
 
 OptiXScene::OptiXScene()
+    : m_optix_context( optix::Context::create() ),
+      m_program_mgr( m_optix_context )
 {
-    m_optix_context = optix::Context::create();
-    m_camera        = m_optix_context->createProgramFromPTXFile(
-                            ptxFilename( "camera.cu" ), "legionCamera" );
+    m_program_mgr.addPath( "." );
+    m_program_mgr.addPath( PTX_DIR );
+
+    //m_camera        = m_optix_context->createProgramFromPTXFile(
+    //                        ptxFilename( "camera.cu" ), "legionCamera" );
+    m_camera = m_program_mgr.get( 
+            "legionCamera",
+            ptxFilename( "legionCamera.cu" ),
+            "legionCamera" );
 
     m_optix_context->setEntryPointCount( 1 );
     m_optix_context->setRayGenerationProgram( 0, m_camera );

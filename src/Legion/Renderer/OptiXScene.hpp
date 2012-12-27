@@ -25,6 +25,7 @@
 
 #include <optixu/optixpp_namespace.h>
 #include <Legion/Common/Math/Vector.hpp>
+#include <Legion/Renderer/CUDAProgramManager.hpp>
 
 namespace legion
 {
@@ -57,6 +58,8 @@ private:
     optix::Context m_optix_context;
     optix::Program m_camera;
     optix::Buffer  m_output_buffer;
+
+    CUDAProgramManager m_program_mgr;
 
     // INFO: optixscene should own an IFilm.  The IFilm will have a cuda-side
     //       function that takes a val and writes it to output_buffer (which it
