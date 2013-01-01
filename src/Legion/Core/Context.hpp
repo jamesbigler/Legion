@@ -68,7 +68,8 @@ private:
     Renderer                 m_renderer;
     */
 
-    std::unique_ptr<Impl> m_impl;
+    //std::unique_ptr<Impl> m_impl;
+    std::auto_ptr<Impl> m_impl;
 };
 
 

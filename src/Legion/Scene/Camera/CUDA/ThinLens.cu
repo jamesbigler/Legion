@@ -20,26 +20,32 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
+#include <Legion/Scene/Camera/CUDA/Camera.hpp>
+#include <optixu/optixu_matrix_namespace.h>
+#include <optixu/optixu_math_namespace.h>
 #include <optix.h>
 
-rtDeclareVariable(uint2, launch_index, rtLaunchIndex, );
-rtDeclareVariable(uint2, launch_dim,   rtLaunchDim, );
+rtDeclareVariable( optix::Matrix4x4, camera_to_world, , );
+rtDeclareVariable( float           , focal_distance , , );
+rtDeclareVariable( float           , aperture_radius, , );
+rtDeclareVariable( float4          , view_plane     , , );
 
-rtBuffer<float4, 2> output_buffer;
 
-RT_PROGRAM void legionCamera()
+RT_CALLABLE_PROGRAM
+legion::RayGeometry thinLensCreateRay(
+        float2  aperture_sample,
+        float2  screen_sample,
+        float   time )
 {
-    const float r = static_cast<float>( launch_index.x ) /
-                    static_cast<float>( launch_dim.x );
-    const float g = static_cast<float>( launch_index.y ) /
-                    static_cast<float>( launch_dim.y );
+    const float2 disk_sample = optix::square_to_disk( aperture_sample );
+    legion::RayGeometry r;
+    r.origin      = make_float3( aperture_radius * disk_sample, 0.0f );
+    r.direction.x = optix::lerp( view_plane.x, view_plane.y, screen_sample.x );
+    r.direction.y = optix::lerp( view_plane.z, view_plane.w, screen_sample.y );
+    r.direction.z = -focal_distance; 
+    r.direction = optix::normalize( r.direction );
 
-
-    output_buffer[ launch_index ] = make_float4( r, g, 0.0f, 1.0f );
+    // TODO: transform
+    return r;
 }
-
-
-
-
-
 

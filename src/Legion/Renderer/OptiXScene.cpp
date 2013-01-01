@@ -22,45 +22,89 @@
 
 #include <Legion/Renderer/OptiXScene.hpp>
 #include <Legion/Common/Util/Image.hpp>
+#include <Legion/Common/Util/Logger.hpp>
 #include <Legion/Core/Exception.hpp>
+#include <Legion/Core/VariableContainer.hpp>
+#include <Legion/Scene/Camera/ICamera.hpp>
+#include <Legion/Scene/Geometry/IGeometry.hpp>
 #include <config.hpp>
 
 using namespace legion;
 
+#define OPTIX_CATCH_RETHROW                                                    \
+    catch ( optix::Exception& e )                                              \
+    {                                                                          \
+        throw legion::Exception( std::string("OPTIX_EXCEPTION: ")+e.what() );  \
+    }                                                                          \
+    catch ( std::exception& e )                                                \
+    {                                                                          \
+        throw legion::Exception( std::string("OPTIX_EXCEPTION: ")+e.what() );  \
+    }                                                                          \
+    catch (...)                                                                \
+    {                                                                          \
+        throw legion::Exception( std::string("OPTIX_EXCEPTION: unknown") );    \
+    }
+
+#define OPTIX_CATCH_WARN                                                       \
+    catch ( optix::Exception& e )                                              \
+    {                                                                          \
+        LLOG_WARN << "OPTIX_EXCEPTION: " << e.what();                          \
+    }                                                                          \
+    catch ( std::exception& e )                                                \
+    {                                                                          \
+        LLOG_WARN << "OPTIX_EXCEPTION: " << e.what();                          \
+    }                                                                          \
+    catch (...)                                                                \
+    {                                                                          \
+        LLOG_WARN << "OPTIX_EXCEPTION: Unknown";                               \
+    }
+
+
 
 namespace
 {
+    /*
     std::string ptxFilename( const std::string& cuda_filename )
     {
         return "cuda_compile_ptx_generated_" + cuda_filename + ".ptx";
         //return PTX_DIR + "/cuda_compile_ptx_generated_" + cuda_filename + ".ptx";
     }
+    */
 }
 
 
 OptiXScene::OptiXScene()
     : m_optix_context( optix::Context::create() ),
-      m_program_mgr( m_optix_context )
+      m_program_mgr( m_optix_context ),
+      m_camera( 0 )
 {
-    m_program_mgr.addPath( "." );
+    //m_program_mgr.addPath( "." );
     m_program_mgr.addPath( PTX_DIR );
 
     //m_camera        = m_optix_context->createProgramFromPTXFile(
     //                        ptxFilename( "camera.cu" ), "legionCamera" );
+    /*
     m_camera = m_program_mgr.get( 
             "legionCamera",
             ptxFilename( "legionCamera.cu" ),
             "legionCamera" );
+    */
+    try
+    {
+        m_camera_program = m_program_mgr.get( "Camera" );
 
-    m_optix_context->setEntryPointCount( 1 );
-    m_optix_context->setRayGenerationProgram( 0, m_camera );
+        m_optix_context->setEntryPointCount( 1 );
+        m_optix_context->setRayGenerationProgram( 0, m_camera_program );
 
-    m_output_buffer = m_optix_context->createBuffer( 
-                          RT_BUFFER_OUTPUT,
-                          RT_FORMAT_FLOAT4,
-                          512u, 512u );
+        m_output_buffer = m_optix_context->createBuffer( 
+                              RT_BUFFER_OUTPUT,
+                              RT_FORMAT_FLOAT4,
+                              512u, 512u );
 
-    m_optix_context[ "output_buffer" ]->set( m_output_buffer );
+        m_optix_context[ "output_buffer" ]->set( m_output_buffer );
+    }
+    OPTIX_CATCH_RETHROW;
+
 }
 
 
@@ -74,11 +118,16 @@ void OptiXScene::renderPass( const Index2& min,
                              const Index2& max,
                              unsigned spp )
 {
-    m_optix_context->launch( 0, 512, 512 );
-    const std::string filename = "test.exr";
-    writeOpenEXR( filename, 512, 512, 4,
-                  static_cast<float*>( m_output_buffer->map() ) );
-    m_output_buffer->unmap();
+   
+    try
+    {
+        m_optix_context->launch( 0, 512, 512 );
+        const std::string filename = "test.exr";
+        writeOpenEXR( filename, 512, 512, 4,
+                      static_cast<float*>( m_output_buffer->map() ) );
+        m_output_buffer->unmap();
+    }
+    OPTIX_CATCH_RETHROW;
 }
 
 
@@ -88,32 +137,78 @@ optix::Buffer OptiXScene::getOutputBuffer()
 }
 
 
-void setCamera( ICamera* camera )
+void OptiXScene::setCamera( ICamera* camera )
 {
+    m_camera = camera;
+    try
+    {
+        optix::Program create_ray = 
+            m_program_mgr.get( camera->name(),
+                               std::string( camera->name() ) + ".ptx",
+                               camera->createRayFunctionName() );
+
+        VariableContainer vc( create_ray.get() );
+        camera->setVariables( vc );
+        m_camera_program[ "legionCameraCreateRay" ]->set( create_ray );
+    }
+    OPTIX_CATCH_RETHROW;
+}
+
+
+void OptiXScene::setFilm( IFilm* film )
+{
+    LEGION_TODO();
+}
+
+
+void OptiXScene::addGeometry( IGeometry* geometry )
+{
+    m_geometry.push_back( geometry );
+    try
+    {
+        // Load the geometry programs
+        optix::Program intersect = 
+            m_program_mgr.get( geometry->name(),
+                               std::string( geometry->name() ) + ".ptx",
+                               geometry->intersectionName() );
+
+        optix::Program bbox = 
+            m_program_mgr.get( geometry->name(),
+                               std::string( geometry->name() ) + ".ptx",
+                               geometry->boundingBoxName() );
+
+        // Create optix Geometry 
+        optix::Geometry optix_geometry = m_optix_context->createGeometry();
+        optix_geometry->setPrimitiveCount( geometry->primitiveCount() );
+        optix_geometry->setIntersectionProgram( intersect ); 
+        optix_geometry->setBoundingBoxProgram( bbox ); 
+
+        VariableContainer vc( optix_geometry.get() );
+        geometry->setVariables( vc );
+
+        // Create optix Material
     
+        // Create optix GeometryInstance
+        optix::GeometryInstance optix_geometry_instance =
+            m_optix_context->createGeometryInstance();
+        optix_geometry_instance->setGeometry( optix_geometry );
+        optix_geometry_instance->setMaterialCount( 1u );
+        optix_geometry_instance->setMaterial( 1, m_default_material );
+
+    }
+    OPTIX_CATCH_RETHROW;
+    LEGION_TODO();
 }
 
 
-void setFilm( IFilm* film )
+void OptiXScene::addLight( ILight* light )
 {
     LEGION_TODO();
 }
 
 
-void addGeometry( IGeometry* geometry )
-{
-    LEGION_TODO();
-}
 
-
-void addLight( ILight* light )
-{
-    LEGION_TODO();
-}
-
-
-
-void clearScene()
+void OptiXScene::clearScene()
 {
     LEGION_TODO();
 }

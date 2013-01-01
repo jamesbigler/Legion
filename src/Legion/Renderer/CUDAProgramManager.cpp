@@ -58,13 +58,13 @@ optix::Program CUDAProgramManager::get(
         return it->second;
     }
 
-    const std::string filename      = cuda_filename.empty() ? 
-                                      name + ".cu"          :
-                                      cuda_filename;
+    const std::string filename = cuda_filename.empty() ? 
+                                 name + ".ptx"         :
+                                 cuda_filename;
 
-    const std::string function_name = cuda_function_name.empty() ?
-                                      name                       :
-                                      cuda_function_name;
+    const std::string funcname = cuda_function_name.empty() ?
+                                 name                       :
+                                 cuda_function_name;
                            
     for( Paths::iterator path = m_paths.begin(); path != m_paths.end(); ++path )
     {
@@ -72,7 +72,7 @@ optix::Program CUDAProgramManager::get(
         try
         {
             optix::Program p = 
-                m_context->createProgramFromPTXFile( full_path, function_name );
+                m_context->createProgramFromPTXFile( full_path, funcname );
             if( p )
             {
                 m_registry.insert( std::make_pair( lookup_name, p ) );

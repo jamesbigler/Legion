@@ -24,6 +24,7 @@
 
 #include <Legion/Scene/Geometry/Sphere.hpp>
 #include <Legion/Common/Util/Logger.hpp>
+#include <Legion/Core/VariableContainer.hpp>
 
 
 using namespace legion;
@@ -53,15 +54,27 @@ Sphere::Sphere( const Parameters& params)
 }
 
 
-const char* Sphere::getIntersectionName()const
+const char* Sphere::name()const
+{
+    return "Sphere";
+}
+
+
+const char* Sphere::intersectionName()const
 {
     return "sphereIntersect";
 }
 
 
-const char* Sphere::getBoundingBoxName()const
+const char* Sphere::boundingBoxName()const
 {
     return "sphereBoundingBox";
+}
+
+
+unsigned Sphere::numPrimitives()const
+{
+    return 1u;
 }
 
 
@@ -91,6 +104,6 @@ ISurface* Sphere::getSurface()const
 
 void Sphere::setVariables( VariableContainer& container ) const
 {
-    //containter.setFloat( "center", m_center );
-    //containter.setFloat( "radius", m_radius );
+    container.setFloat( "center", m_center );
+    container.setFloat( "radius", m_radius );
 }

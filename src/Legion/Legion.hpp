@@ -17,7 +17,7 @@
 #include <Legion/Core/Exception.hpp>
 #include <Legion/Core/Ray.hpp>
 #include <Legion/Scene/Camera/ICamera.hpp>
-#include <Legion/Scene/Camera/ThinLensCamera.hpp>
+#include <Legion/Scene/Camera/ThinLens.hpp>
 #include <Legion/Scene/Film/IFilm.hpp>
 #include <Legion/Scene/Film/ImageFilm.hpp>
 #include <Legion/Scene/Surface/ISurface.hpp>

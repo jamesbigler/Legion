@@ -20,53 +20,39 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-/// \file Sphere.hpp
+#include <Legion/Scene/Camera/CUDA/Camera.hpp>
+#include <optixu/optixu_math_namespace.h>
+#include <optix.h>
 
+rtDeclareVariable( uint2, launch_index, rtLaunchIndex, );
+rtDeclareVariable( uint2, launch_dim,   rtLaunchDim, );
 
-#ifndef LEGION_SCENE_GEOMETRY_SPHERE_HPP_
-#define LEGION_SCENE_GEOMETRY_SPHERE_HPP_
+rtBuffer<float4, 2> output_buffer;
 
-#include <Legion/Scene/Geometry/IGeometry.hpp>
-#include <Legion/Common/Math/Vector.hpp>
+rtCallableProgram( legion::RayGeometry,
+                   legionCameraCreateRay, 
+                   (float2, float2, float ) );
 
-namespace legion
+RT_PROGRAM void Camera()
 {
+    const float sx = static_cast<float>( launch_index.x ) /
+                     static_cast<float>( launch_dim.x );
+    const float sy = static_cast<float>( launch_index.y ) /
+                     static_cast<float>( launch_dim.y );
 
-class VariableContainer;
-class Parameters;
-class ISurface;
+    const float  time_seed   = 0.0f;
+    const float2 lens_seed   = make_float2( 0.0f, 0.0f );
+    const float2 screen_seed = make_float2( sx, sy );
 
-class Sphere : public IGeometry
-{
-public:
-    static IGeometry* create( const Parameters& params );
+    legion::RayGeometry rg = legionCameraCreateRay( lens_seed,
+                                                    screen_seed,
+                                                    time_seed );
 
-    Sphere();
-    Sphere( const Parameters& params );
-    
-    const char* name()const;
-    const char* intersectionName()const;
-    const char* boundingBoxName()const;
-
-    unsigned    numPrimitives()const;
-
-    void        setTransform( const Matrix& transform );
-    Matrix      getTransform() const;
-
-    void        setSurface( ISurface* surface );
-    ISurface*   getSurface()const;
-
-    void setVariables( VariableContainer& container )const;
-
-private:
-    Matrix    m_transform;
-    float     m_radius;
-    Vector3   m_center;
-    ISurface* m_surface;
-};
-
-
+    output_buffer[ launch_index ] = make_float4( rg.direction, 1.0f );
 }
 
 
-#endif // LEGION_SCENE_GEOMETRY_SPHERE_HPP_
+
+
+
+

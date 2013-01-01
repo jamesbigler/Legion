@@ -60,7 +60,8 @@ public:
     PType* create( const std::string& name, const Parameters& params );
 private:
     class Impl;
-    std::unique_ptr<Impl> m_impl;
+    //std::unique_ptr<Impl> m_impl;
+    std::auto_ptr<Impl> m_impl;
 
 };
 

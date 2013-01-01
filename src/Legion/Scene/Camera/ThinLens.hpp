@@ -20,61 +20,60 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-#ifndef LEGION_SCENE_CAMERA_THINLENSCAMERA_HPP_
-#define LEGION_SCENE_CAMERA_THINLENSCAMERA_HPP_
+#ifndef LEGION_SCENE_CAMERA_THIN_LENS_HPP_
+#define LEGION_SCENE_CAMERA_THIN_LENS_HPP_
 
 #include <Legion/Scene/Camera/ICamera.hpp>
 #include <Legion/Common/Math/Matrix.hpp>
+#include <Legion/Common/Math/Vector.hpp>
 
 namespace legion
 {
-
+/// TODO: there should be wrapper class(es) which give reasonable interfaces
+///       for controlling DOF, FOV, etc.
+///       Example: ThinLensSLR which gives focal_length (eg, 35mm) f_stop, etc.
 
 /// A basic thin lens camera implementation.  Supports depth-of-field with a
 /// round lens model.
-class ThinLensCamera : public ICamera
+class ThinLens : public ICamera
 {
 public:
-    /// Create a named ThinLensCamera object
-    ThinLensCamera();
+    /// Create a named ThinLens object
+    ThinLens();
 
-    /// Destroy a ThinLensCamera object
-    ~ThinLensCamera();
+    /// Destroy a ThinLens object
+    ~ThinLens();
 
-    const char* rayGenFunctionName();
+    const char* name()const;
+
+    const char* createRayFunctionName()const;
     
     /// Set the Camera-to-World transform
     ///    \param camera_to_world   Camera-to-World transform
     void setCameraToWorld( const Matrix& camera_to_world );
 
-    /// Set the image plane aspect ratio
-    ///   \param ratio image plane aspect ratio
-    void setAspectRatio( float ratio );
-
     /// Set the distance from the lens to the world point of perfect focus
     ///   \param distance  distance to world focal plane
     void setFocalDistance( float distance );
-
-    /// Set the distance from the lens to the sensor-side point of perfect focus
-    ///   \param length distance to internal focal plane 
-    void setFocalLength( float length );
 
     /// Set the radius of the lens aperture to control the extent of the circle
     /// of confusion
     ///   \param radius  The lens radius
     void setApertureRadius( float radius );
 
+    ///
+    void setViewPlane( float l, float r, float b, float t );
+
     /// See ISceneObject::setVariables
     void setVariables( VariableContainer& container ) const;
     
 private:
     Matrix       m_camera_to_world;  ///< Camera-to-world transform
-    float        m_aspect_ratio;     ///< Width / height
     float        m_focal_distance;   ///< Dist from lens to world focal plane
-    float        m_focal_length;     ///< Dist from lens to internal focal point
     float        m_aperture_radius;  ///< Lens aperture radius
+    Vector4      m_view_plane;       ///< 
 };
 
 }
 
-#endif // LEGION_SCENE_CAMERA_THINLENSCAMERA_HPP_
+#endif // LEGION_SCENE_CAMERA_THIN_LENS_HPP_

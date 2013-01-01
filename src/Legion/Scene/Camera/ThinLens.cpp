@@ -21,60 +21,77 @@
 // IN THE SOFTWARE.
 
 
-#include <Legion/Scene/Camera/ThinLensCamera.hpp>
+#include <Legion/Scene/Camera/ThinLens.hpp>
+#include <Legion/Core/VariableContainer.hpp>
 
 
 using namespace legion;
 
 
-ThinLensCamera::ThinLensCamera() 
-    : m_camera_to_world(),
-      m_aspect_ratio( 1.0f ),
+ThinLens::ThinLens() 
+    : m_camera_to_world( Matrix::identity() ),
       m_focal_distance( 1.0f ),
-      m_focal_length( 1.0f ),
       m_aperture_radius( 0.0f )
 
 {
+    // 4:3 Aspect ratio default
+    m_view_plane[ 0 ] = -0.5f;
+    m_view_plane[ 1 ] =  0.5f;
+    m_view_plane[ 2 ] = -0.375f;
+    m_view_plane[ 3 ] =  0.375f;
 }
 
 
-ThinLensCamera::~ThinLensCamera()
+ThinLens::~ThinLens()
 {
 }
 
 
-const char* ThinLensCamera::rayGenFunctionName()
+const char* ThinLens::name()const
 {
-    return "thinLensCamera";
+    return "ThinLens";
 }
 
     
-void ThinLensCamera::setCameraToWorld( const Matrix& camera_to_world )
+const char* ThinLens::createRayFunctionName()const
+{
+    return "thinLensCreateRay";
+}
+
+    
+void ThinLens::setCameraToWorld( const Matrix& camera_to_world )
 {
     m_camera_to_world = camera_to_world;
 }
 
 
-void ThinLensCamera::setFocalDistance( float distance )
+void ThinLens::setFocalDistance( float distance )
 {
     m_focal_distance = distance;
 }
     
 
-void ThinLensCamera::setFocalLength( float length )
-{
-    m_focal_length = length;
-}
-
-
-void ThinLensCamera::setApertureRadius( float radius )
+void ThinLens::setApertureRadius( float radius )
 {
     m_aperture_radius = radius;
 }
     
 
-void ThinLensCamera::setVariables( VariableContainer& container ) const
+void ThinLens::setViewPlane( float l, float r, float b, float t )
 {
+    m_view_plane[ 0 ] = l;
+    m_view_plane[ 1 ] = r;
+    m_view_plane[ 2 ] = b;
+    m_view_plane[ 3 ] = t;
+}
+
+
+void ThinLens::setVariables( VariableContainer& container ) const
+{
+    container.setMatrix( "camera_to_world", m_camera_to_world );
+    container.setFloat ( "focal_distance",  m_focal_distance );
+    container.setFloat ( "aperture_radius", m_aperture_radius );
+    container.setFloat ( "view_plane",      m_view_plane );
 }
 
 

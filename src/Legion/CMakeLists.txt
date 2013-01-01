@@ -7,8 +7,11 @@ set( CUDA_GENERATED_OUTPUT_DIR ${PTX_OUTPUT_DIR} )
 
 
 # Set up build .cu -> .ptx build 
+set( CUDA_NVCC_FLAGS "-arch sm_30" )
 CUDA_COMPILE_PTX( ptx_files
-    Scene/Camera/CUDA/legionCamera.cu
+    Scene/Camera/CUDA/Camera.cu
+    Scene/Camera/CUDA/ThinLens.cu
+    Scene/Geometry/CUDA/Sphere.cu
     )
 
 configure_file( "${CMAKE_CURRENT_SOURCE_DIR}/Core/config.hpp.in"
@@ -88,8 +91,8 @@ add_library( legion SHARED
     Scene/Light/PointLight.cpp
     Scene/Light/PointLight.hpp
     Scene/Camera/ICamera.hpp
-    Scene/Camera/ThinLensCamera.cpp
-    Scene/Camera/ThinLensCamera.hpp
+    Scene/Camera/ThinLens.cpp
+    Scene/Camera/ThinLens.hpp
     Scene/Surface/Lambertian.cpp
     Scene/Surface/Lambertian.hpp
     Scene/Surface/ISurface.hpp

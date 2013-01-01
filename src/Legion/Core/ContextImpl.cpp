@@ -52,6 +52,7 @@ void Context::Impl::setRenderer( IRenderer* renderer )
 void Context::Impl::setCamera( ICamera* camera )
 {
     m_camera = camera;
+    m_optix_scene.setCamera( camera );
 }
 
 

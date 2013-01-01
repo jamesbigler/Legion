@@ -28,6 +28,7 @@
 #define LEGION_SCENE_GEOMETRY_IGEOMETRY_H_
 
 #include <Legion/Scene/ISceneObject.hpp>
+#include <Legion/Common/Math/Matrix.hpp>
 
 namespace legion
 {
@@ -41,8 +42,11 @@ class IGeometry : public ISceneObject
 public:
     virtual ~IGeometry() {}
 
-    virtual const char* getIntersectionName()const=0;
-    virtual const char* getBoundingBoxName()const=0;
+    virtual const char* name()const=0;
+    virtual const char* intersectionName()const=0;
+    virtual const char* boundingBoxName()const=0;
+
+    virtual unsigned    numPrimitives()const=0;
 
     virtual void        setTransform( const Matrix& transform )=0;
     virtual Matrix      getTransform() const=0;
@@ -51,15 +55,7 @@ public:
     virtual ISurface*   getSurface()const = 0 ;
 };
 
-}
 
-
-#include <Legion/Common/Math/Matrix.hpp>
-
-namespace legion
-{
-
-class ISurface;
 
 class Instance : public IGeometry
 {
@@ -72,11 +68,17 @@ public:
 
     ~Instance() {}
 
-    const char* getIntersectionName()const
-    { return m_child->getIntersectionName(); }
+    const char* name()const
+    { return m_child->name(); }
 
-    const char* getBoundingBoxName()const
-    { return m_child->getBoundingBoxName(); }
+    const char* intersectionName()const
+    { return m_child->intersectionName(); }
+
+    const char* boundingBoxName()const
+    { return m_child->boundingBoxName(); }
+
+    virtual unsigned numPrimitives()const
+    { return m_child->numPrimitives(); }
 
     void setTransform( const Matrix& transform )
     { m_transform = transform; }

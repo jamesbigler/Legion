@@ -61,7 +61,7 @@ int main( int argc, char** argv )
         ctx.addLight( &light );
         //ctx.addAreaLigth(...); 
 
-        legion::ThinLensCamera cam;
+        legion::ThinLens cam;
         ctx.setCamera( &cam );
 
         legion::ImageFilm film;

@@ -9,7 +9,7 @@ endif( NOT CMAKE_BUILD_TYPE )
 
 add_definitions( -DLLOG_MAX_LEVEL=legion::Log::DEBUG )
 
-set(CMAKE_CXX_FLAGS                "-Wall -Werror -funroll-loops -floop-optimize -ffast-math -Qunused-arguments -stdlib=libc++" )
+set(CMAKE_CXX_FLAGS "-Wall -Werror -funroll-loops -floop-optimize -ffast-math -Qunused-arguments" ) # -stdlib=libc++" )
 set(CMAKE_CXX_FLAGS_DEBUG          "-g")
 set(CMAKE_CXX_FLAGS_MINSIZEREL     "-Os -DNDEBUG")
 set(CMAKE_CXX_FLAGS_RELEASE        "-O4 -DNDEBUG")

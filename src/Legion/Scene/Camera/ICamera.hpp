@@ -51,11 +51,12 @@ public:
 
     virtual ~ICamera() {}
 
-    /// Return the name of this Camera type
-    /// static std::string name();
+    /// Return the name of this Camera type.  The associated PTX file should
+    /// be named {name()}.ptx
+    virtual const char* name()const=0;
 
     /// Return the name of this Camera's cuda ray generation function 
-    virtual const char* rayGenFunctionName()=0;
+    virtual const char* createRayFunctionName()const=0;
 
     /// Set the Camera-to-World transform
     ///    \param camera_to_world   Camera-to-World transform
