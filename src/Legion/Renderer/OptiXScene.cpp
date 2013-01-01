@@ -91,7 +91,16 @@ OptiXScene::OptiXScene()
     */
     try
     {
-        m_camera_program = m_program_mgr.get( "Camera" );
+        // TODO: create optix initialization func (default material, 
+        // context, etc)
+        m_camera_program      = m_program_mgr.get( "Camera" );
+        m_default_any_hit     = m_program_mgr.get( "Normal",
+                                                   "Normal.ptx",
+                                                   "normalAnyHit" );
+        m_default_closest_hit = m_program_mgr.get( "Normal",
+                                                   "Normal.ptx",
+                                                   "normalClosestHit" );
+        m_default_mtlj = m_context->createMaterial()
 
         m_optix_context->setEntryPointCount( 1 );
         m_optix_context->setRayGenerationProgram( 0, m_camera_program );
