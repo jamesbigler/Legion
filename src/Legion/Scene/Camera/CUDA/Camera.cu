@@ -21,13 +21,16 @@
 // IN THE SOFTWARE.
 
 #include <Legion/Scene/Camera/CUDA/Camera.hpp>
+#include <Legion/Scene/Surface/CUDA/Surface.hpp>
 #include <optixu/optixu_math_namespace.h>
 #include <optix.h>
 
 rtDeclareVariable( uint2, launch_index, rtLaunchIndex, );
 rtDeclareVariable( uint2, launch_dim,   rtLaunchDim, );
 
-rtBuffer<float4, 2> output_buffer;
+rtDeclareVariable( rtObject, legion_top_group, , );
+
+rtBuffer<float4, 2> legion_output_buffer;
 
 rtCallableProgram( legion::RayGeometry,
                    legionCameraCreateRay, 
@@ -48,7 +51,20 @@ RT_PROGRAM void Camera()
                                                     screen_seed,
                                                     time_seed );
 
-    output_buffer[ launch_index ] = make_float4( rg.direction, 1.0f );
+    RadiancePRD prd;
+    prd.result = make_float3( 0.0f );
+    prd.importance = 1.0f;
+    prd.depth = 0u;
+
+    optix::Ray ray = optix::make_Ray( 
+            rg.origin,
+            rg.direction,
+            0u,
+            0.0f,
+            RT_DEFAULT_MAX );
+    rtTrace( legion_top_group, ray, prd );
+
+    legion_output_buffer[ launch_index ] = make_float4( prd.result, 1.0f );
 }
 
 

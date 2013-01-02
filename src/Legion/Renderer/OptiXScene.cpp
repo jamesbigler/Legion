@@ -78,39 +78,42 @@ OptiXScene::OptiXScene()
       m_program_mgr( m_optix_context ),
       m_camera( 0 )
 {
-    //m_program_mgr.addPath( "." );
     m_program_mgr.addPath( PTX_DIR );
 
-    //m_camera        = m_optix_context->createProgramFromPTXFile(
-    //                        ptxFilename( "camera.cu" ), "legionCamera" );
-    /*
-    m_camera = m_program_mgr.get( 
-            "legionCamera",
-            ptxFilename( "legionCamera.cu" ),
-            "legionCamera" );
-    */
     try
     {
-        // TODO: create optix initialization func (default material, 
-        // context, etc)
-        m_camera_program      = m_program_mgr.get( "Camera" );
-        m_default_any_hit     = m_program_mgr.get( "Normal",
-                                                   "Normal.ptx",
-                                                   "normalAnyHit" );
-        m_default_closest_hit = m_program_mgr.get( "Normal",
-                                                   "Normal.ptx",
-                                                   "normalClosestHit" );
-        m_default_mtlj = m_context->createMaterial()
-
-        m_optix_context->setEntryPointCount( 1 );
-        m_optix_context->setRayGenerationProgram( 0, m_camera_program );
+        m_optix_context->setEntryPointCount( 1u );
+        m_optix_context->setRayTypeCount( 2u );
 
         m_output_buffer = m_optix_context->createBuffer( 
                               RT_BUFFER_OUTPUT,
                               RT_FORMAT_FLOAT4,
                               512u, 512u );
+        m_optix_context[ "legion_output_buffer" ]->set( m_output_buffer );
 
-        m_optix_context[ "output_buffer" ]->set( m_output_buffer );
+        m_top_group = m_optix_context->createGeometryGroup();
+        m_top_group->setAcceleration( 
+                m_optix_context->createAcceleration( "Sbvh", "Bvh" ) ); 
+        m_optix_context[ "legion_top_group" ]->set( m_top_group );
+        
+
+        // TODO: create optix initialization func (default material, 
+        // context, etc)
+        m_camera_program = m_program_mgr.get( "Camera" );
+        m_optix_context->setRayGenerationProgram( 0, m_camera_program );
+
+        // Create default material TODO: from Normal class object
+        m_default_mtl = m_optix_context->createMaterial();
+        m_default_mtl->setClosestHitProgram(
+                RADIANCE_RAY_TYPE,
+                m_program_mgr.get( "Normal", "Normal.ptx", "normalClosestHit" )
+                );
+        m_default_mtl->setAnyHitProgram(
+                SHADOW_RAY_TYPE, 
+                m_program_mgr.get( "Normal", "Normal.ptx", "normalAnyHit" )
+                );
+
+
     }
     OPTIX_CATCH_RETHROW;
 
@@ -188,7 +191,7 @@ void OptiXScene::addGeometry( IGeometry* geometry )
 
         // Create optix Geometry 
         optix::Geometry optix_geometry = m_optix_context->createGeometry();
-        optix_geometry->setPrimitiveCount( geometry->primitiveCount() );
+        optix_geometry->setPrimitiveCount( geometry->numPrimitives() );
         optix_geometry->setIntersectionProgram( intersect ); 
         optix_geometry->setBoundingBoxProgram( bbox ); 
 
@@ -202,11 +205,17 @@ void OptiXScene::addGeometry( IGeometry* geometry )
             m_optix_context->createGeometryInstance();
         optix_geometry_instance->setGeometry( optix_geometry );
         optix_geometry_instance->setMaterialCount( 1u );
-        optix_geometry_instance->setMaterial( 1, m_default_material );
+        optix_geometry_instance->setMaterial( 0, m_default_mtl );
+        optix_geometry_instance->setGeometry( optix_geometry );
+
+        m_top_group->setChildCount( m_top_group->getChildCount()+1u );
+        m_top_group->setChild( 
+                m_top_group->getChildCount()-1,
+                optix_geometry_instance
+                );
 
     }
     OPTIX_CATCH_RETHROW;
-    LEGION_TODO();
 }
 
 

@@ -65,13 +65,13 @@ void Context::setFilm( IFilm* film )
 }
 
 
-void Context::addGeometry( const IGeometry* geometry )
+void Context::addGeometry( IGeometry* geometry )
 {
     m_impl->addGeometry( geometry );
 }
 
 
-void Context::addLight( const ILight* light )
+void Context::addLight( ILight* light )
 {
     m_impl->addLight( light );
 }

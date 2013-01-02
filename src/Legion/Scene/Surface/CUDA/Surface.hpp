@@ -20,51 +20,21 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
+#ifndef LEGION_SCENE_SURFACE_CUDA_SURFACE_HPP_
+#define LEGION_SCENE_SURFACE_CUDA_SURFACE_HPP_
 
-#ifndef LEGION_CORE_CONTEXT_IMPL_H_
-#define LEGION_CORE_CONTEXT_IMPL_H_
-
-#include <Legion/Core/Context.hpp>
-#include <Legion/Common/Util/Plugin.hpp>
-#include <Legion/Renderer/OptixScene.hpp>
-
-#include <vector>
-
-namespace legion
+struct RadiancePRD 
 {
-
-class ICamera;
-
-class Context::Impl
-{
-public:
-    Impl();
-    ~Impl();
-
-    void setRenderer   ( IRenderer* renderer );
-
-    void setCamera     ( ICamera* camera );
-
-    void setFilm       ( IFilm* film );
-
-    void addGeometry( IGeometry* geometry );
-
-    void addLight( ILight* light );
-
-    void addAssetPath( const std::string& path );
-
-    void render();
-
-private:
-    PluginManager   m_plugin_mgr;
-    OptiXScene      m_optix_scene;
-
-    ICamera* m_camera;
-    IFilm*   m_film;
-    std::vector<IGeometry*> m_geometry;
+  float3 result;
+  float  importance;
+  int    depth;
 };
 
-}
+
+struct ShadowPRD 
+{
+  float3 attenuation;
+};
 
 
-#endif // LEGION_CORE_CONTEXT_IMPL_H_
+#endif // LEGION_SCENE_SURFACE_CUDA_SURFACE_HPP_

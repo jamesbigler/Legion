@@ -12,6 +12,7 @@ CUDA_COMPILE_PTX( ptx_files
     Scene/Camera/CUDA/Camera.cu
     Scene/Camera/CUDA/ThinLens.cu
     Scene/Geometry/CUDA/Sphere.cu
+    Scene/Surface/CUDA/Normal.cu
     )
 
 configure_file( "${CMAKE_CURRENT_SOURCE_DIR}/Core/config.hpp.in"

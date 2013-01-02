@@ -102,6 +102,18 @@ ISurface* Sphere::getSurface()const
 }
 
 
+void Sphere::setCenter( Vector3 center )
+{
+    m_center = center;
+}
+
+
+void Sphere::setRadius( float radius )
+{
+    m_radius = radius;
+}
+
+
 void Sphere::setVariables( VariableContainer& container ) const
 {
     container.setFloat( "center", m_center );

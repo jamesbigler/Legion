@@ -20,51 +20,33 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
+/// \file IGeometry.hpp
+/// Pure virtual interface for Geometry classes
 
-#ifndef LEGION_CORE_CONTEXT_IMPL_H_
-#define LEGION_CORE_CONTEXT_IMPL_H_
 
-#include <Legion/Core/Context.hpp>
-#include <Legion/Common/Util/Plugin.hpp>
-#include <Legion/Renderer/OptixScene.hpp>
+#include <Legion/Scene/Surface/CUDA/Surface.hpp>
+#include <optixu/optixu_math_namespace.h>
+#include <optix.h>
 
-#include <vector>
 
-namespace legion
+rtDeclareVariable( float3, shading_normal, attribute shading_normal, ); 
+
+
+rtDeclareVariable( RadiancePRD, radiance_prd, rtPayload, );
+rtDeclareVariable( ShadowPRD,   shadow_prd,   rtPayload, );
+
+
+RT_PROGRAM void normalAnyHit()
 {
+  // this material is opaque, so it fully attenuates all shadow rays
+  shadow_prd.attenuation = make_float3(0);
 
-class ICamera;
-
-class Context::Impl
-{
-public:
-    Impl();
-    ~Impl();
-
-    void setRenderer   ( IRenderer* renderer );
-
-    void setCamera     ( ICamera* camera );
-
-    void setFilm       ( IFilm* film );
-
-    void addGeometry( IGeometry* geometry );
-
-    void addLight( ILight* light );
-
-    void addAssetPath( const std::string& path );
-
-    void render();
-
-private:
-    PluginManager   m_plugin_mgr;
-    OptiXScene      m_optix_scene;
-
-    ICamera* m_camera;
-    IFilm*   m_film;
-    std::vector<IGeometry*> m_geometry;
-};
-
+  rtTerminateRay();
 }
 
-
-#endif // LEGION_CORE_CONTEXT_IMPL_H_
+RT_PROGRAM void normalClosestHit()
+{
+    radiance_prd.result = optix::normalize( 
+            rtTransformNormal(RT_OBJECT_TO_WORLD, shading_normal) 
+            ) * 0.5f + 0.5f;
+}

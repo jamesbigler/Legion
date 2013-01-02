@@ -51,9 +51,9 @@ public:
 //    void setPixelFIlter( FilterType type );
 
     // eg, TriMesh, Instance, Volume, Sphere ...
-    void addGeometry( const IGeometry* geometry );
+    void addGeometry( IGeometry* geometry );
 
-    void addLight( const ILight* light );
+    void addLight( ILight* light );
 
     void addAssetPath( const std::string& path );
 

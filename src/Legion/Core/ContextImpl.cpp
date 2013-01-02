@@ -61,12 +61,13 @@ void Context::Impl::setFilm( IFilm* film )
 }
 
 
-void Context::Impl::addGeometry( const IGeometry* geometry )
+void Context::Impl::addGeometry( IGeometry* geometry )
 {
+    m_optix_scene.addGeometry( geometry );
 }
 
 
-void Context::Impl::addLight( const ILight* light )
+void Context::Impl::addLight( ILight* light )
 {
 }
 

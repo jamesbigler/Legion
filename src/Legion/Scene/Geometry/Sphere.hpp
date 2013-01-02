@@ -56,6 +56,9 @@ public:
     void        setSurface( ISurface* surface );
     ISurface*   getSurface()const;
 
+    void        setCenter( Vector3 center );
+    void        setRadius( float radius );
+
     void setVariables( VariableContainer& container )const;
 
 private:

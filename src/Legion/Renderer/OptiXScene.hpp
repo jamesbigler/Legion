@@ -57,9 +57,14 @@ public:
     // TODO: removers?
 
 private:
-    optix::Context m_optix_context;
-    optix::Program m_camera_program;
-    optix::Buffer  m_output_buffer;
+    static const unsigned RADIANCE_RAY_TYPE = 0u;
+    static const unsigned SHADOW_RAY_TYPE   = 1u;
+
+    optix::Context  m_optix_context;
+    optix::Program  m_camera_program;
+    optix::Buffer   m_output_buffer;
+    optix::Material m_default_mtl;
+    optix::GeometryGroup    m_top_group;
 
     CUDAProgramManager m_program_mgr;
 

@@ -46,6 +46,7 @@ int main( int argc, char** argv )
         */
 
         legion::Sphere sphere;
+        sphere.setCenter( legion::Vector3( 0.0f, 0.0f, -4.0f ) );
         sphere.setSurface( &mtl );
         /*
         square.setVertices( verts.size(), &verts[0] );

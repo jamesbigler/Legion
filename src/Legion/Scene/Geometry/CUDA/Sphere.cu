@@ -38,7 +38,7 @@ rtDeclareVariable(float3, shading_normal, attribute shading_normal, );
 rtDeclareVariable(optix::Ray, ray, rtCurrentRay, );
 
 
-RT_PROGRAM void sphereIntersect()
+RT_PROGRAM void sphereIntersect( int )
 {
   float3 O = ray.origin - center;
   float3 D = ray.direction;
@@ -83,7 +83,7 @@ RT_PROGRAM void sphereIntersect()
 }
 
 
-RT_PROGRAM void bounds( int, float result[6] )
+RT_PROGRAM void sphereBoundingBox( int, float result[6] )
 {
   optix::Aabb* aabb = (optix::Aabb*)result;
   
