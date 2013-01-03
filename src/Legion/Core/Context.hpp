@@ -24,6 +24,7 @@
 #define LEGION_CORE_CONTEXT_H_
 
 #include <Legion/Common/Util/Noncopyable.hpp>
+#include <Legion/Common/Math/Vector.hpp>
 #include <memory>
 
 namespace legion
@@ -37,6 +38,14 @@ class IRenderer;
 class ISurface;
 
 
+// TODO: this is a placeholder struct
+struct RenderParameters
+{
+    unsigned samples_per_pixel;
+    Index2   resolution;
+};
+
+
 class Context : public Noncopyable
 {
 public:
@@ -44,6 +53,8 @@ public:
 
     Context();
     ~Context();
+
+    void setRenderParameters( const RenderParameters& params );
     
     void setRenderer   ( IRenderer* renderer );
     void setCamera     ( ICamera* camera );

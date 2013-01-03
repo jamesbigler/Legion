@@ -20,6 +20,7 @@
 // IN THE SOFTWARE.
 // (MIT/X11 License)
 
+#include <Legion/Core/Context.hpp>
 #include <Legion/Renderer/OptiXScene.hpp>
 #include <Legion/Common/Util/Image.hpp>
 #include <Legion/Common/Util/Logger.hpp>
@@ -76,7 +77,9 @@ namespace
 OptiXScene::OptiXScene()
     : m_optix_context( optix::Context::create() ),
       m_program_mgr( m_optix_context ),
-      m_camera( 0 )
+      m_camera( 0 ),
+      m_resolution( 1280u, 960u ),
+      m_samples_per_pixel( 64u )
 {
     m_program_mgr.addPath( PTX_DIR );
 
@@ -87,8 +90,7 @@ OptiXScene::OptiXScene()
 
         m_output_buffer = m_optix_context->createBuffer( 
                               RT_BUFFER_OUTPUT,
-                              RT_FORMAT_FLOAT4,
-                              512u, 512u );
+                              RT_FORMAT_FLOAT4 );
         m_optix_context[ "legion_output_buffer" ]->set( m_output_buffer );
 
         m_top_group = m_optix_context->createGeometryGroup();
@@ -122,7 +124,13 @@ OptiXScene::OptiXScene()
 
 OptiXScene::~OptiXScene()
 {
+}
+    
 
+void OptiXScene::setRenderParameters( const RenderParameters& params )
+{
+    m_resolution        = params.resolution;
+    m_samples_per_pixel = params.samples_per_pixel;
 }
 
 
@@ -133,9 +141,10 @@ void OptiXScene::renderPass( const Index2& min,
    
     try
     {
-        m_optix_context->launch( 0, 512, 512 );
+        m_output_buffer->setSize( m_resolution.x(), m_resolution.y() );
+        m_optix_context->launch( 0, m_resolution.x(), m_resolution.y() );
         const std::string filename = "test.exr";
-        writeOpenEXR( filename, 512, 512, 4,
+        writeOpenEXR( filename, m_resolution.x(), m_resolution.y(), 4,
                       static_cast<float*>( m_output_buffer->map() ) );
         m_output_buffer->unmap();
     }

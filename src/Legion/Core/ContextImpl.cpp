@@ -44,6 +44,12 @@ Context::Impl::~Impl()
 }
 
 
+void Context::Impl::setRenderParameters( const RenderParameters& params )
+{
+    m_optix_scene.setRenderParameters( params );
+}
+
+
 void Context::Impl::setRenderer( IRenderer* renderer )
 {
 }

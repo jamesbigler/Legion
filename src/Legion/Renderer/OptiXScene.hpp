@@ -32,6 +32,7 @@
 namespace legion
 {
 
+struct RenderParameters;
 class ICamera;
 class IFilm;
 class IGeometry;
@@ -42,6 +43,8 @@ class OptiXScene
 public:
     OptiXScene();
     ~OptiXScene();
+
+    void setRenderParameters( const RenderParameters& params );
 
     void resetFrame();
     void renderPass( const Index2& min, const Index2& max, unsigned spp );
@@ -70,6 +73,9 @@ private:
 
     ICamera* m_camera;
     std::vector<IGeometry*> m_geometry;
+
+    Index2   m_resolution;
+    unsigned m_samples_per_pixel;
 
     // INFO: optixscene should own an IFilm.  The IFilm will have a cuda-side
     //       function that takes a val and writes it to output_buffer (which it

@@ -47,6 +47,12 @@ Context::~Context()
 }
 
 
+void Context::setRenderParameters( const RenderParameters& params )
+{
+    m_impl->setRenderParameters( params );
+}
+
+
 void Context::setRenderer( IRenderer* renderer )
 {
     m_impl->setRenderer( renderer );

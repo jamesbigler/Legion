@@ -41,6 +41,8 @@ public:
     Impl();
     ~Impl();
 
+    void setRenderParameters( const RenderParameters& params );
+
     void setRenderer   ( IRenderer* renderer );
 
     void setCamera     ( ICamera* camera );
