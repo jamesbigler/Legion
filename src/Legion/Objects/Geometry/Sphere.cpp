@@ -30,13 +30,14 @@
 using namespace legion;
     
 
-IGeometry* Sphere::create( const Parameters& params )
+IGeometry* Sphere::create( Context* context, const Parameters& params )
 {
-    return new Sphere( params );
+    return new Sphere( context, params );
 }
 
-Sphere::Sphere()
-    : m_transform( Matrix::identity() ),
+Sphere::Sphere( Context* context )
+    : IGeometry( context ),
+      m_transform( Matrix::identity() ),
       m_radius( 1.0f ),
       m_center( 0.0f, 0.0f, 0.0f ),
       m_surface( 0 )
@@ -44,8 +45,9 @@ Sphere::Sphere()
 }
 
 
-Sphere::Sphere( const Parameters& params)
-    : m_transform( Matrix::identity() ),
+Sphere::Sphere( Context* context, const Parameters& params)
+    : IGeometry( context ),
+      m_transform( Matrix::identity() ),
       m_radius( 1.0f ),
       m_center( 0.0f, 0.0f, 0.0f ),
       m_surface( 0 )

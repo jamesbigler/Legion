@@ -40,6 +40,7 @@ namespace legion
 class PointLight : public ILight
 {
 public:
+    PointLight( Context* context );
 
     void setVariables( VariableContainer& container ) const;
     

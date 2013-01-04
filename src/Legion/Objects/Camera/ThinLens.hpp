@@ -38,8 +38,8 @@ namespace legion
 class ThinLens : public ICamera
 {
 public:
-    /// Create a named ThinLens object
-    ThinLens();
+    /// Create a ThinLens object
+    ThinLens( Context* context );
 
     /// Destroy a ThinLens object
     ~ThinLens();

@@ -45,7 +45,7 @@ int main( int argc, char** argv )
         indices.push_back( legion::Index3( 0, 2, 3 ) );
         */
 
-        legion::Sphere sphere;
+        legion::Sphere sphere( &ctx );
         sphere.setCenter( legion::Vector3( 0.0f, 0.0f, -4.0f ) );
         sphere.setSurface( &mtl );
         /*
@@ -56,13 +56,13 @@ int main( int argc, char** argv )
         */
         ctx.addGeometry( &sphere );
 
-        legion::PointLight light;
+        legion::PointLight light( &ctx );
         light.setPosition( legion::Vector3( 1.0f, 1.0f, 1.0f ) );
         light.setIntensity( legion::Color( 1.0f, 1.0f, 1.0f ) );
         ctx.addLight( &light );
         //ctx.addAreaLigth(...); 
 
-        legion::ThinLens cam;
+        legion::ThinLens cam( &ctx );
         ctx.setCamera( &cam );
 
         legion::ImageFilm film;

@@ -28,8 +28,9 @@
 using namespace legion;
 
 
-ThinLens::ThinLens() 
-    : m_camera_to_world( Matrix::identity() ),
+ThinLens::ThinLens( Context* context ) 
+    : ICamera( context ),
+      m_camera_to_world( Matrix::identity() ),
       m_focal_distance( 1.0f ),
       m_aperture_radius( 0.0f )
 

@@ -27,14 +27,22 @@
 namespace legion
 {
 
+class Context;
 class VariableContainer;
 
 class IObject
 {
 public:
+    IObject( Context* context ) : m_context( context ) {}
+
+    Context* getContext() { return m_context; }
+    
     virtual ~IObject() {}
 
     virtual void setVariables( VariableContainer& container ) const = 0;
+
+private:
+    Context* m_context;
 };
 
 }

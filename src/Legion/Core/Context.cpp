@@ -21,11 +21,14 @@
 
 
 #include <Legion/Common/Util/Logger.hpp>
+#include <Legion/Common/Util/Parameters.hpp>
+#include <Legion/Common/Util/Plugin.hpp>
 #include <Legion/Common/Util/Preprocessor.hpp>
 #include <Legion/Core/Context.hpp>
-#include <Legion/Core/ContextImpl.hpp>
 #include <Legion/Core/Exception.hpp>
-//#include <config.hpp>
+#include <Legion/Objects/Geometry/Sphere.hpp>
+#include <Legion/Renderer/OptixScene.hpp>
+
 
 using namespace legion;
 
@@ -33,9 +36,115 @@ using namespace legion;
     if( !ptr ) throw Exception( std::string( f ) + ": " #ptr " param is NULL" );
 
 
+//------------------------------------------------------------------------------
+//
+//  Context::Impl class 
+//
+//------------------------------------------------------------------------------
+
+class Context::Impl
+{
+public:
+    Impl( Context* context );
+    ~Impl();
+
+    void setRenderParameters( const RenderParameters& params );
+
+    void setRenderer   ( IRenderer* renderer );
+
+    void setCamera     ( ICamera* camera );
+
+    void setFilm       ( IFilm* film );
+
+    void addGeometry( IGeometry* geometry );
+
+    void addLight( ILight* light );
+
+    void addAssetPath( const std::string& path );
+
+    void render();
+
+private:
+    PluginManager   m_plugin_mgr;
+    OptiXScene      m_optix_scene;
+
+    ICamera* m_camera;
+    IFilm*   m_film;
+    std::vector<IGeometry*> m_geometry;
+};
+
+
+
+Context::Impl::Impl( Context* context ) 
+    : m_plugin_mgr( context )
+{
+    m_plugin_mgr.registerPlugin<IGeometry>( "Sphere", &Sphere::create );
+
+    Parameters params;
+    IGeometry* geo = m_plugin_mgr.create<IGeometry>( "Sphere", params );
+    LLOG_INFO << "\tSphere: " << geo;
+    //Geometry* geo = ctx->create<Geometry>( "Sphere", properties );
+}
+
+
+Context::Impl::~Impl() 
+{
+}
+
+
+void Context::Impl::setRenderParameters( const RenderParameters& params )
+{
+    m_optix_scene.setRenderParameters( params );
+}
+
+
+void Context::Impl::setRenderer( IRenderer* renderer )
+{
+}
+
+
+void Context::Impl::setCamera( ICamera* camera )
+{
+    m_camera = camera;
+    m_optix_scene.setCamera( camera );
+}
+
+
+void Context::Impl::setFilm( IFilm* film )
+{
+}
+
+
+void Context::Impl::addGeometry( IGeometry* geometry )
+{
+    m_optix_scene.addGeometry( geometry );
+}
+
+
+void Context::Impl::addLight( ILight* light )
+{
+}
+
+
+void Context::Impl::addAssetPath( const std::string& path )
+{
+}
+
+
+void Context::Impl::render()
+{
+    m_optix_scene.renderPass( Index2( 0u, 0u ), Index2( 0u, 0u ), 1u );
+}
+
+
+//------------------------------------------------------------------------------
+//
+//  Context class -- public API simply forwards to Context::Impl
+//
+//------------------------------------------------------------------------------
 
 Context::Context() 
-    : m_impl( new Impl )
+    : m_impl( new Impl( this ) )
 {
     LLOG_INFO << "Creating legion::Context";
 }

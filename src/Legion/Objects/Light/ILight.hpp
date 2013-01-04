@@ -37,6 +37,7 @@ namespace legion
 class ILight : public IObject
 {
 public:
+    ILight( Context* context ) : IObject( context ) {}
 
     virtual ~ILight() {}
 

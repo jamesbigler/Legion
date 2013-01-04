@@ -24,6 +24,13 @@
 #include <Legion/Objects/Light/PointLight.hpp>
 
 using namespace legion;
+    
+
+PointLight::PointLight( Context* context )
+    : ILight( context )
+{
+}
+
 
 void PointLight::setVariables( VariableContainer& container ) const
 {

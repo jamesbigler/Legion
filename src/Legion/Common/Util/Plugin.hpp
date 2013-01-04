@@ -30,6 +30,7 @@
 namespace legion
 {
 
+class Context;
 class ICamera;
 class IFilm;
 class IGeometry;
@@ -47,14 +48,14 @@ class Plugin
 class PluginManager
 {
 public:
-    PluginManager();
+    PluginManager( Context* ctx );
     ~PluginManager();
 
     std::vector<std::string> registeredPluginNames()const;
 
     template <typename PType>
     void registerPlugin( const std::string& name, 
-                         PType* (*create)( const Parameters& params ) );
+                         PType* (*create)( Context* ctx, const Parameters& params ) );
 
     template <typename PType>
     PType* create( const std::string& name, const Parameters& params );
@@ -69,7 +70,7 @@ private:
     template<>                                                                 \
     void PluginManager::registerPlugin< PLUGIN_TYPE >(                         \
             const std::string& plugin_name,                                    \
-            PLUGIN_TYPE* (*create)( const Parameters& params ) );              \
+            PLUGIN_TYPE* (*create)( Context* ctx, const Parameters& params ) );\
                                                                                \
     template <>                                                                \
     PLUGIN_TYPE* PluginManager::create<PLUGIN_TYPE>(                           \

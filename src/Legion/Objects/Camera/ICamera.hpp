@@ -48,6 +48,7 @@ struct CameraSample
 class ICamera : public IObject
 {
 public:
+    ICamera( Context* context ) : IObject( context ) {}
 
     virtual ~ICamera() {}
 

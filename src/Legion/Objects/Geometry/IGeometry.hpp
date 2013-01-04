@@ -40,6 +40,7 @@ class ISurface;
 class IGeometry : public IObject
 {
 public:
+    IGeometry( Context* context ) : IObject( context ) {}
     virtual ~IGeometry() {}
 
     virtual const char* name()const=0;
@@ -60,8 +61,9 @@ public:
 class Instance : public IGeometry
 {
 public:
-    Instance( IGeometry* child, const Matrix& transform )
-        : m_transform( transform ), 
+    Instance( Context* context, IGeometry* child, const Matrix& transform )
+        : IGeometry( context ),
+          m_transform( transform ), 
           m_child( child ),
           m_surface( 0 )
     {}

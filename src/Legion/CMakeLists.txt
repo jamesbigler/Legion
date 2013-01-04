@@ -57,8 +57,6 @@ add_library( legion SHARED
     Core/Color.hpp
     Core/Context.cpp
     Core/Context.hpp
-    Core/ContextImpl.cpp
-    Core/ContextImpl.hpp
     Core/Declarations.hpp
     Core/Exception.cpp
     Core/Exception.hpp
