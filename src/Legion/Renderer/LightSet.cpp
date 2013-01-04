@@ -21,7 +21,7 @@
 // (MIT/X11 License)
 
 #include <Legion/Renderer/LightSet.hpp>
-#include <Legion/Scene/LightShader/ILightShader.hpp>
+#include <Legion/Objects/LightShader/ILightShader.hpp>
 
 #include <algorithm>
 #include <cmath>

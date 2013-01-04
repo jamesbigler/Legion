@@ -4,7 +4,7 @@
 
 #include <Legion/Common/Math/Vector.hpp>
 #include <Legion/Renderer/RayServer.hpp>
-#include <Legion/Scene/Mesh/Mesh.hpp>
+#include <Legion/Objects/Mesh/Mesh.hpp>
 
 #include <optixu/optixpp_namespace.h>
 

@@ -7,9 +7,9 @@
 #include <Legion/Core/Ray.hpp>
 #include <Legion/Renderer/Cuda/Shared.hpp>
 #include <Legion/Renderer/RayTracer.hpp>
-#include <Legion/Scene/LightShader/ILightShader.hpp>
-#include <Legion/Scene/Mesh/Mesh.hpp>
-#include <Legion/Scene/Surface/ISurface.hpp>
+#include <Legion/Objects/LightShader/ILightShader.hpp>
+#include <Legion/Objects/Mesh/Mesh.hpp>
+#include <Legion/Objects/Surface/ISurface.hpp>
 #include <config.hpp>
 
 

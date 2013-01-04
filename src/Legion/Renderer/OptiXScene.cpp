@@ -26,8 +26,8 @@
 #include <Legion/Common/Util/Logger.hpp>
 #include <Legion/Core/Exception.hpp>
 #include <Legion/Core/VariableContainer.hpp>
-#include <Legion/Scene/Camera/ICamera.hpp>
-#include <Legion/Scene/Geometry/IGeometry.hpp>
+#include <Legion/Objects/Camera/ICamera.hpp>
+#include <Legion/Objects/Geometry/IGeometry.hpp>
 #include <config.hpp>
 
 using namespace legion;

@@ -3,8 +3,8 @@
 #include <Legion/Renderer/RayScheduler.hpp>
 #include <Legion/Renderer/Renderer.hpp>
 #include <Legion/Renderer/Cuda/Shared.hpp>
-#include <Legion/Scene/Camera/ICamera.hpp>
-#include <Legion/Scene/Film/IFilm.hpp>
+#include <Legion/Objects/Camera/ICamera.hpp>
+#include <Legion/Objects/Film/IFilm.hpp>
 #include <Legion/Common/Util/AutoTimerHelpers.hpp>
 #include <Legion/Common/Util/Logger.hpp>
 #include <Legion/Common/Util/Timer.hpp>

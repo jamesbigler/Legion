@@ -21,70 +21,22 @@
 // IN THE SOFTWARE.
 
 
-#include <Legion/Core/ContextImpl.hpp>
-#include <Legion/Common/Util/Parameters.hpp>
-#include <Legion/Common/Util/Logger.hpp>
-#include <Legion/Objects/Geometry/Sphere.hpp>
+#include <Legion/Objects/Light/PointLight.hpp>
 
 using namespace legion;
 
-Context::Impl::Impl() 
-{
-    m_plugin_mgr.registerPlugin<IGeometry>( "Sphere", &Sphere::create );
-
-    Parameters params;
-    IGeometry* geo = m_plugin_mgr.create<IGeometry>( "Sphere", params );
-    LLOG_INFO << "\tSphere: " << geo;
-    //Geometry* geo = ctx->create<Geometry>( "Sphere", properties );
-}
-
-
-Context::Impl::~Impl() 
+void PointLight::setVariables( VariableContainer& container ) const
 {
 }
 
 
-void Context::Impl::setRenderParameters( const RenderParameters& params )
+void PointLight::setIntensity( const Color& intensity )
 {
-    m_optix_scene.setRenderParameters( params );
+    m_intensity = intensity;
 }
 
 
-void Context::Impl::setRenderer( IRenderer* renderer )
+void PointLight::setPosition( const Vector3& position )
 {
+    m_position = position;
 }
-
-
-void Context::Impl::setCamera( ICamera* camera )
-{
-    m_camera = camera;
-    m_optix_scene.setCamera( camera );
-}
-
-
-void Context::Impl::setFilm( IFilm* film )
-{
-}
-
-
-void Context::Impl::addGeometry( IGeometry* geometry )
-{
-    m_optix_scene.addGeometry( geometry );
-}
-
-
-void Context::Impl::addLight( ILight* light )
-{
-}
-
-
-void Context::Impl::addAssetPath( const std::string& path )
-{
-}
-
-
-void Context::Impl::render()
-{
-    m_optix_scene.renderPass( Index2( 0u, 0u ), Index2( 0u, 0u ), 1u );
-}
-

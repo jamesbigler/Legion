@@ -9,10 +9,10 @@ set( CUDA_GENERATED_OUTPUT_DIR ${PTX_OUTPUT_DIR} )
 # Set up build .cu -> .ptx build 
 set( CUDA_NVCC_FLAGS "-arch sm_30" )
 CUDA_COMPILE_PTX( ptx_files
-    Scene/Camera/CUDA/Camera.cu
-    Scene/Camera/CUDA/ThinLens.cu
-    Scene/Geometry/CUDA/Sphere.cu
-    Scene/Surface/CUDA/Normal.cu
+    Objects/Camera/CUDA/Camera.cu
+    Objects/Camera/CUDA/ThinLens.cu
+    Objects/Geometry/CUDA/Sphere.cu
+    Objects/Surface/CUDA/Normal.cu
     )
 
 configure_file( "${CMAKE_CURRENT_SOURCE_DIR}/Core/config.hpp.in"
@@ -54,8 +54,6 @@ add_library( legion SHARED
     Common/Util/TypeConversion.cpp
     Common/Util/TypeConversion.hpp
     Common/Util/Util.hpp
-    #Core/APIBase.cpp
-    #Core/APIBase.hpp
     Core/Color.hpp
     Core/Context.cpp
     Core/Context.hpp
@@ -68,60 +66,27 @@ add_library( legion SHARED
     Core/VariableContainer.cpp
     Core/VariableContainer.hpp
     Legion.hpp
-    Renderer/OptiXScene.cpp
-    Renderer/OptiXScene.hpp
+    Objects/Camera/ICamera.hpp
+    Objects/Camera/ThinLens.cpp
+    Objects/Camera/ThinLens.hpp
+    Objects/Film/IFilm.hpp
+    Objects/Film/ImageFilm.cpp
+    Objects/Film/ImageFilm.hpp
+    Objects/Geometry/IGeometry.hpp
+    Objects/Geometry/Sphere.cpp
+    Objects/Geometry/Sphere.hpp
+    Objects/Geometry/TriMesh.cpp
+    Objects/Geometry/TriMesh.hpp
+    Objects/Light/ILight.hpp
+    Objects/Light/PointLight.cpp
+    Objects/Light/PointLight.hpp
+    Objects/Surface/ISurface.hpp
+    Objects/Surface/Lambertian.cpp
+    Objects/Surface/Lambertian.hpp
     Renderer/CUDAProgramManager.cpp
     Renderer/CUDAProgramManager.hpp
-    #Renderer/LightSet.cpp
-    #Renderer/LightSet.hpp
-    #Renderer/RayScheduler.cpp
-    #Renderer/RayScheduler.hpp
-    #Renderer/RayServer.hpp
-    #Renderer/RayTracer.cpp
-    #Renderer/RayTracer.hpp
-    #Renderer/Renderer.cpp
-    #Renderer/Renderer.hpp
-    #Renderer/ShadingEngine.cpp
-    #Renderer/ShadingEngine.hpp
-    Scene/Geometry/IGeometry.hpp
-    Scene/Geometry/Sphere.cpp
-    Scene/Geometry/Sphere.hpp
-    Scene/Geometry/TriMesh.cpp
-    Scene/Geometry/TriMesh.hpp
-    Scene/Light/ILight.hpp
-    Scene/Light/PointLight.cpp
-    Scene/Light/PointLight.hpp
-    Scene/Camera/ICamera.hpp
-    Scene/Camera/ThinLens.cpp
-    Scene/Camera/ThinLens.hpp
-    Scene/Surface/Lambertian.cpp
-    Scene/Surface/Lambertian.hpp
-    Scene/Surface/ISurface.hpp
-    Scene/Film/IFilm.hpp
-    Scene/Film/ImageFilm.cpp
-    Scene/Film/ImageFilm.hpp
-    #Scene/Camera/IBasicCamera.cpp
-    #Scene/Camera/IBasicCamera.hpp
-    #Scene/Camera/ICamera.cpp
-    #Scene/Film/Film.hpp
-    #Scene/Film/IFilm.cpp
-    #Scene/Film/IFilm.hpp
-    #Scene/Film/ImageFilm.cpp
-    #Scene/Film/ImageFilm.hpp
-    #Scene/LightShader/DiffuseLight.cpp
-    #Scene/LightShader/DiffuseLight.hpp
-    #Scene/LightShader/ILightShader.cpp
-    #Scene/LightShader/ILightShader.hpp
-    #Scene/LightShader/MeshLight.cpp
-    #Scene/LightShader/MeshLight.hpp
-    #Scene/LightShader/PointLightShader.cpp
-    #Scene/LightShader/PointLightShader.hpp
-    #Scene/Mesh/Mesh.cpp
-    #Scene/Mesh/Mesh.hpp
-    #Scene/SurfaceShader/ISurfaceShader.cpp
-    #Scene/SurfaceShader/ISurfaceShader.hpp
-    #Scene/SurfaceShader/Lambertian.cpp
-    #Scene/SurfaceShader/Lambertian.hpp
+    Renderer/OptiXScene.cpp
+    Renderer/OptiXScene.hpp
     )
 
 # Link against optix

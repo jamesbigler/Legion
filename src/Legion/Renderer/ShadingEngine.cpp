@@ -32,8 +32,8 @@
 #include <Legion/Renderer/Cuda/Shared.hpp>
 #include <Legion/Renderer/RayTracer.hpp>
 #include <Legion/Renderer/ShadingEngine.hpp>
-#include <Legion/Scene/Surface/ISurface.hpp>
-#include <Legion/Scene/LightShader/ILightShader.hpp>
+#include <Legion/Objects/Surface/ISurface.hpp>
+#include <Legion/Objects/LightShader/ILightShader.hpp>
 
 #include <iomanip>
 
