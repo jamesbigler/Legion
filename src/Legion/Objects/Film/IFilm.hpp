@@ -18,6 +18,7 @@ namespace legion
 class IFilm : public IObject
 {
 public:
+    IFilm( Context* context ) : IObject( context ) {}
     virtual ~IFilm() {}
 
     /*

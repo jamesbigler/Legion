@@ -25,6 +25,7 @@
 
 #include <Legion/Common/Util/Noncopyable.hpp>
 #include <Legion/Common/Math/Vector.hpp>
+
 #include <memory>
 
 namespace legion
@@ -36,6 +37,7 @@ class IGeometry;
 class ILight;
 class IRenderer;
 class ISurface;
+class PluginContext;
 
 
 // TODO: this is a placeholder struct
@@ -54,21 +56,18 @@ public:
     Context();
     ~Context();
 
-    void setRenderParameters( const RenderParameters& params );
-    
     void setRenderer   ( IRenderer* renderer );
     void setCamera     ( ICamera* camera );
     void setFilm       ( IFilm* film );
-//    void setPixelFIlter( FilterType type );
+    void addGeometry   ( IGeometry* geometry );
+    void addLight      ( ILight* light );
 
-    // eg, TriMesh, Instance, Volume, Sphere ...
-    void addGeometry( IGeometry* geometry );
-
-    void addLight( ILight* light );
 
     void addAssetPath( const std::string& path );
 
     void render();
+
+    PluginContext& getPluginContext();
 
 private:
     /*

@@ -6,7 +6,8 @@
 using namespace legion;
 
 
-Lambertian::Lambertian()
+Lambertian::Lambertian( Context* context )
+    : ISurface( context )
 {
 }
 

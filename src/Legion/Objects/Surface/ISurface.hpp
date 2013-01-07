@@ -15,6 +15,7 @@ namespace legion
 class ISurface : public IObject
 {
 public:
+    ISurface( Context* context ) : IObject( context ) {}
     virtual ~ISurface() {}
     
     /// Return the name of this Surface type

@@ -11,7 +11,7 @@ namespace legion
 class ImageFilm : public IFilm
 {
 public:
-    ImageFilm();
+    ImageFilm( Context* context );
     
     void setVariables( VariableContainer& container ) const;
     /*

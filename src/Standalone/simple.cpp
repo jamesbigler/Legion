@@ -18,7 +18,7 @@ int main( int argc, char** argv )
         // Parameters params;
         // params.add( "Kd", legion::Color( 0.5f, 0.5f, 0.5f ) );
         // legion::createSurfaceShader( "Lambertian", "material", params );
-        legion::Lambertian mtl;
+        legion::Lambertian mtl( &ctx );
         mtl.setKd( legion::Color(  0.5f, 0.5f, 0.5f ) );
        
         /*
@@ -65,7 +65,7 @@ int main( int argc, char** argv )
         legion::ThinLens cam( &ctx );
         ctx.setCamera( &cam );
 
-        legion::ImageFilm film;
+        legion::ImageFilm film( &ctx );
         //film.setDimensions( legion::Index2( 256u, 256u ) );
         ctx.setFilm( &film );
 

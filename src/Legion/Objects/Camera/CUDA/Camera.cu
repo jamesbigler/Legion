@@ -32,9 +32,6 @@ rtDeclareVariable( rtObject, legion_top_group, , );
 
 rtBuffer<float4, 2> legion_output_buffer;
 
-rtCallableProgram( legion::RayGeometry,
-                   legionCameraCreateRay, 
-                   (float2, float2, float ) );
 
 RT_PROGRAM void Camera()
 {

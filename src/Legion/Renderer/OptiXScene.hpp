@@ -24,7 +24,6 @@
 #define LEGION_RENDERER_OPTIX_SCENE_HPP_
 
 #include <optixu/optixpp_namespace.h>
-#include <Legion/Common/Math/Vector.hpp>
 #include <Legion/Renderer/CUDAProgramManager.hpp>
 
 #include <vector>
@@ -32,11 +31,12 @@
 namespace legion
 {
 
-struct RenderParameters;
 class ICamera;
 class IFilm;
 class IGeometry;
 class ILight;
+class IRenderer;
+
 
 class OptiXScene
 {
@@ -44,47 +44,39 @@ public:
     OptiXScene();
     ~OptiXScene();
 
-    void setRenderParameters( const RenderParameters& params );
-
-    void resetFrame();
-    void renderPass( const Index2& min, const Index2& max, unsigned spp );
-    optix::Buffer getOutputBuffer();
-
-    void setCamera( ICamera* camera );
-    void setFilm( IFilm* film );
+    void setRenderer( IRenderer* renderer );
+    void setCamera  ( ICamera*   camera );
+    void setFilm    ( IFilm*     film );
+    void addLight   ( ILight*    light );
     void addGeometry( IGeometry* geometry );
-    void addLight( ILight* light );
 
-    void clearScene();
+    void render();
 
-    // TODO: removers?
+    optix::Context getOptiXContext()
+    { return m_optix_context; }
 
 private:
-    static const unsigned RADIANCE_RAY_TYPE = 0u;
-    static const unsigned SHADOW_RAY_TYPE   = 1u;
+    static const unsigned RADIANCE_TYPE = 0u;
+    static const unsigned SHADOW_TYPE   = 1u;
 
-    optix::Context  m_optix_context;
-    optix::Program  m_camera_program;
-    optix::Buffer   m_output_buffer;
-    optix::Material m_default_mtl;
+    void initializeOptixContext();
+
+    typedef std::map<IGeometry*, optix::GeometryInstance > GeometryMap;
+
+    optix::Context          m_optix_context;
+    optix::Program          m_raygen_program;
+    optix::Program          m_create_ray_program;
+    optix::Material         m_default_mtl;
     optix::GeometryGroup    m_top_group;
 
-    CUDAProgramManager m_program_mgr;
+    CUDAProgramManager      m_program_mgr;
 
-    ICamera* m_camera;
-    std::vector<IGeometry*> m_geometry;
-
-    Index2   m_resolution;
-    unsigned m_samples_per_pixel;
-
-    // INFO: optixscene should own an IFilm.  The IFilm will have a cuda-side
-    //       function that takes a val and writes it to output_buffer (which it
-    //       owns).
-    //
-    //       optixscene will then map that buffer and pass map data to an
-    //       IDiaplay
+    IRenderer*              m_renderer;
+    ICamera*                m_camera;
+    IFilm*                  m_film;
+    std::vector<ILight*>    m_lights;
+    GeometryMap             m_geometry;
 };
-
 
 }
 

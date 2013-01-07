@@ -25,6 +25,7 @@
 #include <Legion/Common/Util/Plugin.hpp>
 #include <Legion/Common/Util/Preprocessor.hpp>
 #include <Legion/Core/Context.hpp>
+#include <Legion/Core/PluginContext.hpp>
 #include <Legion/Core/Exception.hpp>
 #include <Legion/Objects/Geometry/Sphere.hpp>
 #include <Legion/Renderer/OptixScene.hpp>
@@ -48,8 +49,6 @@ public:
     Impl( Context* context );
     ~Impl();
 
-    void setRenderParameters( const RenderParameters& params );
-
     void setRenderer   ( IRenderer* renderer );
 
     void setCamera     ( ICamera* camera );
@@ -64,19 +63,24 @@ public:
 
     void render();
 
+    PluginContext& getPluginContext();
+
 private:
     PluginManager   m_plugin_mgr;
     OptiXScene      m_optix_scene;
+    PluginContext   m_plugin_context;
 
-    ICamera* m_camera;
-    IFilm*   m_film;
+    ICamera*                m_camera;
+    IFilm*                  m_film;
     std::vector<IGeometry*> m_geometry;
 };
 
 
 
 Context::Impl::Impl( Context* context ) 
-    : m_plugin_mgr( context )
+    : m_plugin_mgr( context ),
+      m_optix_scene(),
+      m_plugin_context( m_optix_scene.getOptiXContext() )
 {
     m_plugin_mgr.registerPlugin<IGeometry>( "Sphere", &Sphere::create );
 
@@ -89,12 +93,6 @@ Context::Impl::Impl( Context* context )
 
 Context::Impl::~Impl() 
 {
-}
-
-
-void Context::Impl::setRenderParameters( const RenderParameters& params )
-{
-    m_optix_scene.setRenderParameters( params );
 }
 
 
@@ -133,9 +131,14 @@ void Context::Impl::addAssetPath( const std::string& path )
 
 void Context::Impl::render()
 {
-    m_optix_scene.renderPass( Index2( 0u, 0u ), Index2( 0u, 0u ), 1u );
+    m_optix_scene.render();
 }
 
+
+PluginContext& Context::Impl::getPluginContext()
+{
+    return m_plugin_context; 
+}
 
 //------------------------------------------------------------------------------
 //
@@ -153,12 +156,6 @@ Context::Context()
 Context::~Context()
 {
     LLOG_INFO << "Destroying legion::Context";
-}
-
-
-void Context::setRenderParameters( const RenderParameters& params )
-{
-    m_impl->setRenderParameters( params );
 }
 
 
@@ -200,9 +197,11 @@ void Context::addAssetPath( const std::string& path )
 
 void Context::render()
 {
-    m_impl->render();
+    return m_impl->render();
 }
 
 
-
-
+PluginContext& Context::getPluginContext()
+{
+    return m_impl->getPluginContext();
+}

@@ -20,40 +20,26 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-
-#ifndef LEGION_OBJECTS_IOBJECT_OBJECT_HPP_
-#define LEGION_OBJECTS_IOBJECT_OBJECT_HPP_
+#ifndef LEGION_CORE_PLUGIN_CONTEXT_H_
+#define LEGION_CORE_PLUGIN_CONTEXT_H_
 
 #include <optixu/optixpp_namespace.h>
 
 namespace legion
 {
 
-class Context;
-class VariableContainer;
-
-class IObject
+class PluginContext
 {
 public:
-    IObject( Context* context ) : m_context( context ) {}
+    PluginContext( optix::Context optix_context ) 
+        : m_optix_context( optix_context ) {}
 
-    Context* getContext() { return m_context; }
-    
-    virtual ~IObject() {}
-
-    virtual void setVariables( VariableContainer& container ) const = 0;
-    
-    optix::Buffer createBuffer( unsigned type,
-                                RTformat format, 
-                                RTsize   width=0u,
-                                RTsize   heidth=0u,
-                                RTsize   depth=0u );
+    optix::Context getOptiXContext();
 
 private:
-    Context* m_context;
+    optix::Context m_optix_context; 
 };
 
 }
 
-
-#endif // LEGION_OBJECTS_IOBJECTS_OBJECT_HPP_
+#endif // LEGION_CORE_PLUGIN_CONTEXT_H_

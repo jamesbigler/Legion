@@ -40,7 +40,8 @@ using namespace legion;
 
 
 
-ImageFilm::ImageFilm()
+ImageFilm::ImageFilm( Context* context )
+    : IFilm( context )
 {
 }
 

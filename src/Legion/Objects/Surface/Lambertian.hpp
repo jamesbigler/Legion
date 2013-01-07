@@ -17,7 +17,7 @@ class VariableContainer;
 class Lambertian : public ISurface
 {
 public:
-    Lambertian();
+    Lambertian( Context* context );
     ~Lambertian();
     
     

@@ -1,7 +1,6 @@
 
-// Copyright (C) 2011 R. Keith Morley 
-// 
-// (MIT/X11 License)
+// Copyright (C) 2011 R. Keith Morley
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to
 // deal in the Software without restriction, including without limitation the
@@ -19,41 +18,52 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
+// (MIT/X11 License)
 
 
-#ifndef LEGION_OBJECTS_IOBJECT_OBJECT_HPP_
-#define LEGION_OBJECTS_IOBJECT_OBJECT_HPP_
+#include <Legion/Objects/Renderer/ProgressiveRenderer.hpp>
 
-#include <optixu/optixpp_namespace.h>
+using namespace legion;
 
-namespace legion
+ProgressiveRenderer::ProgressiveRenderer( Context* context ) 
+   : IRenderer( context )
 {
-
-class Context;
-class VariableContainer;
-
-class IObject
-{
-public:
-    IObject( Context* context ) : m_context( context ) {}
-
-    Context* getContext() { return m_context; }
-    
-    virtual ~IObject() {}
-
-    virtual void setVariables( VariableContainer& container ) const = 0;
-    
-    optix::Buffer createBuffer( unsigned type,
-                                RTformat format, 
-                                RTsize   width=0u,
-                                RTsize   heidth=0u,
-                                RTsize   depth=0u );
-
-private:
-    Context* m_context;
-};
-
+    m_output_buffer = createBuffer( RT_BUFFER_OUTPUT,
+                                    RT_FORMAT_FLOAT4 );
 }
 
 
-#endif // LEGION_OBJECTS_IOBJECTS_OBJECT_HPP_
+ProgressiveRenderer::~ProgressiveRenderer()
+{
+}
+
+
+const char* ProgressiveRenderer::name()const
+{
+    return "ProgressiveRenderer";
+}
+
+
+const char* ProgressiveRenderer::rayGenProgramName()const
+{
+    return "progressiveRendererCamera";
+}
+
+
+optix::Buffer ProgressiveRenderer::getOutputBuffer()const
+{
+    return m_output_buffer;
+}
+
+
+void ProgressiveRenderer::render()
+{
+    m_output_buffer->setSize( getResolution().x(), getResolution().y() );
+    launch( getResolution() );
+}
+    
+
+void ProgressiveRenderer::setVariables( VariableContainer& container ) const
+{
+}
+

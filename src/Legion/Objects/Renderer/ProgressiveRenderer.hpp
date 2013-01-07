@@ -20,12 +20,11 @@
 // IN THE SOFTWARE.
 // (MIT/X11 License)
 
-#ifndef LEGION_OBJECTS_RENDERER_IRENDERER_HPP_
-#define LEGION_OBJECTS_RENDERER_IRENDERER_HPP_
+#ifndef LEGION_OBJECTS_RENDERER_PROGRESSIVE_RENDERER_HPP_
+#define LEGION_OBJECTS_RENDERER_PROGRESSIVE_RENDERER_HPP_
 
 #include <Legion/Common/Math/Vector.hpp>
-#include <Legion/Objects/IObject.hpp>
-#include <optixu/optixpp_namespace.h>
+#include <Legion/Objects/Renderer/IRenderer.hpp>
 
 namespace legion
 {
@@ -35,41 +34,22 @@ class IDisplay;
 
 /// Owns the optix raygen program, the output framebuffer,  and all ray
 /// scheduling
-class IRenderer : public IObject
+class ProgressiveRenderer : public IRenderer
 {
 public:
-    IRenderer( Context* context ) 
-        : IObject( context ),
-          m_display( 0u),
-          m_resolution( 1280u, 960u ),
-          m_samples_per_pixel( 64u )
-    {}
+    ProgressiveRenderer( Context* context );
+    ~ProgressiveRenderer();
 
-    virtual ~IRenderer() {}
-
-    void      setDisplay( IDisplay* display )    { m_display = display; }
-    IDisplay* getDisplay()                       { return m_display;    }
-
-    void     setSamplesPerPixel( unsigned spp )  { m_samples_per_pixel = spp;  }
-    unsigned getSamplesPerPixel()const           { return m_samples_per_pixel; }
+    const char*    name()const;
+    const char*    rayGenProgramName()const;
+    optix::Buffer  getOutputBuffer()const;
+    void           render();
     
-    void     setResolution( const Index2& res )  { m_resolution = res;  }
-    Index2   getResolution( const Index2& res )  { return m_resolution; }
-
-    void     launch( const Index2& dims );
-
-    virtual const char*    name()const=0;
-    virtual const char*    rayGenProgramName()const=0;
-    virtual optix::Buffer  getOutputBuffer()const=0;
-    virtual void           render()=0;
-
-protected:
-    // TODO: pimpl
-    IDisplay* m_display;
-    Index2    m_resolution;
-    unsigned  m_samples_per_pixel;
+    void setVariables( VariableContainer& container ) const;
+private:
+    optix::Buffer m_output_buffer;
 };
 
 }
 
-#endif // LEGION_OBJECTS_RENDERER_IRENDERER_HPP_
+#endif // LEGION_OBJECTS_RENDERER_PROGRESSIVE_RENDERER_HPP_ 

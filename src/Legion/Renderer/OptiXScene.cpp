@@ -61,100 +61,36 @@ using namespace legion;
     }
 
 
-
-namespace
-{
-    /*
-    std::string ptxFilename( const std::string& cuda_filename )
-    {
-        return "cuda_compile_ptx_generated_" + cuda_filename + ".ptx";
-        //return PTX_DIR + "/cuda_compile_ptx_generated_" + cuda_filename + ".ptx";
-    }
-    */
-}
-
-
 OptiXScene::OptiXScene()
     : m_optix_context( optix::Context::create() ),
       m_program_mgr( m_optix_context ),
-      m_camera( 0 ),
-      m_resolution( 1280u, 960u ),
-      m_samples_per_pixel( 64u )
+      m_renderer( 0u ),
+      m_camera( 0u ),
+      m_film( 0u )
 {
     m_program_mgr.addPath( PTX_DIR );
-
-    try
-    {
-        m_optix_context->setEntryPointCount( 1u );
-        m_optix_context->setRayTypeCount( 2u );
-
-        m_output_buffer = m_optix_context->createBuffer( 
-                              RT_BUFFER_OUTPUT,
-                              RT_FORMAT_FLOAT4 );
-        m_optix_context[ "legion_output_buffer" ]->set( m_output_buffer );
-
-        m_top_group = m_optix_context->createGeometryGroup();
-        m_top_group->setAcceleration( 
-                m_optix_context->createAcceleration( "Sbvh", "Bvh" ) ); 
-        m_optix_context[ "legion_top_group" ]->set( m_top_group );
-        
-
-        // TODO: create optix initialization func (default material, 
-        // context, etc)
-        m_camera_program = m_program_mgr.get( "Camera" );
-        m_optix_context->setRayGenerationProgram( 0, m_camera_program );
-
-        // Create default material TODO: from Normal class object
-        m_default_mtl = m_optix_context->createMaterial();
-        m_default_mtl->setClosestHitProgram(
-                RADIANCE_RAY_TYPE,
-                m_program_mgr.get( "Normal", "Normal.ptx", "normalClosestHit" )
-                );
-        m_default_mtl->setAnyHitProgram(
-                SHADOW_RAY_TYPE, 
-                m_program_mgr.get( "Normal", "Normal.ptx", "normalAnyHit" )
-                );
-
-
-    }
-    OPTIX_CATCH_RETHROW;
-
+    initializeOptixContext();
 }
+
+
 
 
 OptiXScene::~OptiXScene()
 {
+    m_optix_context->destroy();
 }
     
 
-void OptiXScene::setRenderParameters( const RenderParameters& params )
+void OptiXScene::setRenderer( IRenderer* renderer )
 {
-    m_resolution        = params.resolution;
-    m_samples_per_pixel = params.samples_per_pixel;
-}
+    LEGION_TODO();
 
+    m_raygen_program = 
+            m_program_mgr.get( renderer->name(),
+                               std::string( renderer->name() ) + ".ptx",
+                               renderer->rayGenProgramName() );
 
-void OptiXScene::renderPass( const Index2& min,
-                             const Index2& max,
-                             unsigned spp )
-{
-   
-    try
-    {
-        m_output_buffer->setSize( m_resolution.x(), m_resolution.y() );
-        m_optix_context->launch( 0, m_resolution.x(), m_resolution.y() );
-        const std::string filename = "test.exr";
-        writeOpenEXR( filename, m_resolution.x(), m_resolution.y(), 4,
-                      static_cast<float*>( m_output_buffer->map() ) );
-        m_output_buffer->unmap();
-    }
-    OPTIX_CATCH_RETHROW;
-}
-
-
-optix::Buffer OptiXScene::getOutputBuffer()
-{
-    return m_output_buffer;
+    m_optix_context->setRayGenerationProgram( 0, m_raygen_program );
 }
 
 
@@ -168,9 +104,7 @@ void OptiXScene::setCamera( ICamera* camera )
                                std::string( camera->name() ) + ".ptx",
                                camera->createRayFunctionName() );
 
-        VariableContainer vc( create_ray.get() );
-        camera->setVariables( vc );
-        m_camera_program[ "legionCameraCreateRay" ]->set( create_ray );
+        m_optix_context[ "legionCameraCreateRay" ]->set( create_ray );
     }
     OPTIX_CATCH_RETHROW;
 }
@@ -182,9 +116,15 @@ void OptiXScene::setFilm( IFilm* film )
 }
 
 
+void OptiXScene::addLight( ILight* light )
+{
+    LEGION_TODO();
+}
+
+
+
 void OptiXScene::addGeometry( IGeometry* geometry )
 {
-    m_geometry.push_back( geometry );
     try
     {
         // Load the geometry programs
@@ -204,8 +144,6 @@ void OptiXScene::addGeometry( IGeometry* geometry )
         optix_geometry->setIntersectionProgram( intersect ); 
         optix_geometry->setBoundingBoxProgram( bbox ); 
 
-        VariableContainer vc( optix_geometry.get() );
-        geometry->setVariables( vc );
 
         // Create optix Material
     
@@ -223,19 +161,82 @@ void OptiXScene::addGeometry( IGeometry* geometry )
                 optix_geometry_instance
                 );
 
+        m_geometry.insert(std::make_pair( geometry, optix_geometry_instance ) );
     }
     OPTIX_CATCH_RETHROW;
 }
 
 
-void OptiXScene::addLight( ILight* light )
+void OptiXScene::render()
 {
-    LEGION_TODO();
+    // TODO: have defaults objects for all of these
+    LEGION_ASSERT( m_renderer );
+    LEGION_ASSERT( m_camera );
+    LEGION_ASSERT( m_film );
+   
+    //
+    // Update optix variables for all objects
+    //
+    VariableContainer renderer_vc( m_raygen_program.get() );
+    m_renderer->setVariables( renderer_vc );
+        
+    VariableContainer vc( m_create_ray_program.get() );
+    camera->setVariables( vc );
+        
+    for( GeometryMap::iterator it = m_geometry.begin();
+         it != m_geometry.end();
+         ++it )
+    {
+        IGeometry*              geometry          = it->first; 
+        optix::GeometryInstance geometry_instance = it->second; 
+
+        VariableContainer vc( geometry_instance.get() );
+        geometry->setVariables( vc );
+    }
+
+    m_renderer->render();
+
+    /*
+    try
+    {
+        m_output_buffer->setSize( m_resolution.x(), m_resolution.y() );
+        m_optix_context->launch( 0, m_resolution.x(), m_resolution.y() );
+        const std::string filename = "test.exr";
+        writeOpenEXR( filename, m_resolution.x(), m_resolution.y(), 4,
+                      static_cast<float*>( m_output_buffer->map() ) );
+        m_output_buffer->unmap();
+    }
+    OPTIX_CATCH_RETHROW;
+    */
 }
 
 
-
-void OptiXScene::clearScene()
+void OptiXScene::initializeOptixContext()
 {
-    LEGION_TODO();
+    try
+    {
+        m_optix_context->setEntryPointCount( 1u ); // Single raygen
+        m_optix_context->setRayTypeCount   ( 2u ); // Radiance, shadow query
+
+        m_optix_context[ "legion_radiance_ray_type" ]->setUint( RADIANCE_TYPE );
+        m_optix_context[ "legion_shadow_ray_type"   ]->setUint( SHADOW_TYPE );
+
+        // Create the top level scene group
+        m_top_group = m_optix_context->createGeometryGroup();
+        m_top_group->setAcceleration( 
+                m_optix_context->createAcceleration( "Sbvh", "Bvh" ) ); 
+        m_optix_context[ "legion_top_group" ]->set( m_top_group );
+        
+        // Create default material TODO: from Normal class object
+        m_default_mtl = m_optix_context->createMaterial();
+        m_default_mtl->setClosestHitProgram(
+                RADIANCE_RAY_TYPE,
+                m_program_mgr.get( "Normal", "Normal.ptx", "normalClosestHit" )
+                );
+        m_default_mtl->setAnyHitProgram(
+                SHADOW_RAY_TYPE, 
+                m_program_mgr.get( "Normal", "Normal.ptx", "normalAnyHit" )
+                );
+    }
+    OPTIX_CATCH_RETHROW;
 }

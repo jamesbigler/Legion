@@ -9,7 +9,6 @@ set( CUDA_GENERATED_OUTPUT_DIR ${PTX_OUTPUT_DIR} )
 # Set up build .cu -> .ptx build 
 set( CUDA_NVCC_FLAGS "-arch sm_30" )
 CUDA_COMPILE_PTX( ptx_files
-    Objects/Camera/CUDA/Camera.cu
     Objects/Camera/CUDA/ThinLens.cu
     Objects/Geometry/CUDA/Sphere.cu
     Objects/Surface/CUDA/Normal.cu
@@ -78,6 +77,9 @@ add_library( legion SHARED
     Objects/Light/ILight.hpp
     Objects/Light/PointLight.cpp
     Objects/Light/PointLight.hpp
+    Objects/Renderer/IRenderer.hpp
+    Objects/Renderer/ProgressiveRenderer.cpp
+    Objects/Renderer/ProgressiveRenderer.hpp
     Objects/Surface/ISurface.hpp
     Objects/Surface/Lambertian.cpp
     Objects/Surface/Lambertian.hpp
