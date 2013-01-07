@@ -4,7 +4,7 @@
 
 #include <Legion/Common/Math/Vector.hpp>
 #include <Legion/Renderer/RayServer.hpp>
-#include <Legion/Scene/Mesh/Mesh.hpp>
+#include <Legion/Objects/Mesh/Mesh.hpp>
 
 #include <optixu/optixpp_namespace.h>
 
@@ -13,7 +13,7 @@ namespace legion
 {
 
 class  Ray;
-class  ISurfaceShader;
+class  ISurface;
 class  ILightShader;
 struct LocalGeometry;
 
@@ -49,7 +49,7 @@ public:
     static void updateFaceBuffer( optix::Buffer         buffer,
                                   unsigned              num_tris,
                                   const Index3*         tris,
-                                  const ISurfaceShader* shader,
+                                  const ISurface* shader,
                                   const ILightShader*   lshader );
 
 

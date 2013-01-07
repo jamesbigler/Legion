@@ -3,8 +3,8 @@
 #include <Legion/Renderer/RayScheduler.hpp>
 #include <Legion/Renderer/Renderer.hpp>
 #include <Legion/Renderer/Cuda/Shared.hpp>
-#include <Legion/Scene/Camera/ICamera.hpp>
-#include <Legion/Scene/Film/IFilm.hpp>
+#include <Legion/Objects/Camera/ICamera.hpp>
+#include <Legion/Objects/Film/IFilm.hpp>
 #include <Legion/Common/Util/AutoTimerHelpers.hpp>
 #include <Legion/Common/Util/Logger.hpp>
 #include <Legion/Common/Util/Timer.hpp>
@@ -112,7 +112,7 @@ void Renderer::addLight( const ILightShader* light_shader )
 void Renderer::addMesh( Mesh* mesh )
 {
     m_ray_tracer.addMesh( mesh );
-    m_shading_engine.addSurfaceShader( mesh->getShader() );
+    m_shading_engine.addSurface( mesh->getShader() );
 }
 
 

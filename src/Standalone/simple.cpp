@@ -18,7 +18,7 @@ int main( int argc, char** argv )
         // Parameters params;
         // params.add( "Kd", legion::Color( 0.5f, 0.5f, 0.5f ) );
         // legion::createSurfaceShader( "Lambertian", "material", params );
-        legion::Lambertian mtl;
+        legion::Lambertian mtl( &ctx );
         mtl.setKd( legion::Color(  0.5f, 0.5f, 0.5f ) );
        
         /*
@@ -45,29 +45,27 @@ int main( int argc, char** argv )
         indices.push_back( legion::Index3( 0, 2, 3 ) );
         */
 
-        legion::TriMesh square;
+        legion::Sphere sphere( &ctx );
+        sphere.setCenter( legion::Vector3( 0.0f, 0.0f, -4.0f ) );
+        sphere.setSurface( &mtl );
         /*
         square.setVertices( verts.size(), &verts[0] );
         //square.setVertices( verts.begin(), verts.end() );
         square.setFaces( indices.size(), &indices[0], &mtl );
         //square.setFaces( indices.begin(), indices.end() );
         */
-        ctx.addGeometry( &square );
+        ctx.addGeometry( &sphere );
 
-        legion::PointLight light;
+        legion::PointLight light( &ctx );
         light.setPosition( legion::Vector3( 1.0f, 1.0f, 1.0f ) );
         light.setIntensity( legion::Color( 1.0f, 1.0f, 1.0f ) );
         ctx.addLight( &light );
         //ctx.addAreaLigth(...); 
 
-        legion::ThinLensCamera cam;
-        cam.setViewPlane( -1.0f, 1.0f, 1.0f, -1.0f );
-        //cam.setShutterOpenClose( 0.0f, 0.005f );
-        cam.setFocalDistance( 1.0f );
-        cam.setLensRadius( 0.0f );
+        legion::ThinLens cam( &ctx );
         ctx.setCamera( &cam );
 
-        legion::ImageFilm film;
+        legion::ImageFilm film( &ctx );
         //film.setDimensions( legion::Index2( 256u, 256u ) );
         ctx.setFilm( &film );
 

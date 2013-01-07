@@ -30,11 +30,12 @@
 namespace legion
 {
 
+class Context;
 class ICamera;
 class IFilm;
 class IGeometry;
 class ILight;
-class ISurfaceShader;
+class ISurface;
 class Parameters;
 
 
@@ -47,20 +48,21 @@ class Plugin
 class PluginManager
 {
 public:
-    PluginManager();
+    PluginManager( Context* ctx );
     ~PluginManager();
 
     std::vector<std::string> registeredPluginNames()const;
 
     template <typename PType>
     void registerPlugin( const std::string& name, 
-                         PType* (*create)( const Parameters& params ) );
+                         PType* (*create)( Context* ctx, const Parameters& params ) );
 
     template <typename PType>
     PType* create( const std::string& name, const Parameters& params );
 private:
     class Impl;
-    std::unique_ptr<Impl> m_impl;
+    //std::unique_ptr<Impl> m_impl;
+    std::auto_ptr<Impl> m_impl;
 
 };
 
@@ -68,7 +70,7 @@ private:
     template<>                                                                 \
     void PluginManager::registerPlugin< PLUGIN_TYPE >(                         \
             const std::string& plugin_name,                                    \
-            PLUGIN_TYPE* (*create)( const Parameters& params ) );              \
+            PLUGIN_TYPE* (*create)( Context* ctx, const Parameters& params ) );\
                                                                                \
     template <>                                                                \
     PLUGIN_TYPE* PluginManager::create<PLUGIN_TYPE>(                           \
@@ -79,7 +81,7 @@ FORWARD_DECLARE_PLUGIN_SPECIALIZATIONS( ICamera        )
 FORWARD_DECLARE_PLUGIN_SPECIALIZATIONS( IFilm          )
 FORWARD_DECLARE_PLUGIN_SPECIALIZATIONS( IGeometry      )
 FORWARD_DECLARE_PLUGIN_SPECIALIZATIONS( ILight         )
-FORWARD_DECLARE_PLUGIN_SPECIALIZATIONS( ISurfaceShader )
+FORWARD_DECLARE_PLUGIN_SPECIALIZATIONS( ISurface )
 
 #undef FORWARD_DECLARE_PLUGIN_SPECIALIZATIONS
 

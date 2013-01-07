@@ -32,8 +32,8 @@
 #include <Legion/Renderer/Cuda/Shared.hpp>
 #include <Legion/Renderer/RayTracer.hpp>
 #include <Legion/Renderer/ShadingEngine.hpp>
-#include <Legion/Scene/SurfaceShader/ISurfaceShader.hpp>
-#include <Legion/Scene/LightShader/ILightShader.hpp>
+#include <Legion/Objects/Surface/ISurface.hpp>
+#include <Legion/Objects/LightShader/ILightShader.hpp>
 
 #include <iomanip>
 
@@ -261,7 +261,7 @@ void ShadingEngine::shade( std::vector<Ray>&           rays,
             }
 
             // Evaluate bsdf
-            const ISurfaceShader* shader = m_surface_shaders[lgeom.material_id];
+            const ISurface* shader = m_surfaces[lgeom.material_id];
             if( !shader )
             {
                 LLOG_ERROR << "no shader found for id: " << lgeom.material_id;
@@ -301,10 +301,10 @@ const ShadingEngine::Results& ShadingEngine::getResults()const
 }
 
 
-void ShadingEngine::addSurfaceShader( const ISurfaceShader* shader )
+void ShadingEngine::addSurface( const ISurface* shader )
 {
     LLOG_INFO << __func__ << ": adding surface shader " << shader->getID();
-    m_surface_shaders[ shader->getID() ] = shader;
+    m_surfaces[ shader->getID() ] = shader;
 }
 
 

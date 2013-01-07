@@ -20,12 +20,12 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-
 #ifndef LEGION_CORE_CONTEXT_H_
 #define LEGION_CORE_CONTEXT_H_
 
-
 #include <Legion/Common/Util/Noncopyable.hpp>
+#include <Legion/Common/Math/Vector.hpp>
+
 #include <memory>
 
 namespace legion
@@ -36,6 +36,16 @@ class IFilm;
 class IGeometry;
 class ILight;
 class IRenderer;
+class ISurface;
+class PluginContext;
+
+
+// TODO: this is a placeholder struct
+struct RenderParameters
+{
+    unsigned samples_per_pixel;
+    Index2   resolution;
+};
 
 
 class Context : public Noncopyable
@@ -45,31 +55,23 @@ public:
 
     Context();
     ~Context();
-    
+
     void setRenderer   ( IRenderer* renderer );
     void setCamera     ( ICamera* camera );
     void setFilm       ( IFilm* film );
-//    void setPixelFIlter( FilterType type );
+    void addGeometry   ( IGeometry* geometry );
+    void addLight      ( ILight* light );
 
-    // eg, TriMesh, Instance, Volume, Sphere ...
-    void addGeometry( const IGeometry* geometry );
-
-    void addLight( const ILight* light );
 
     void addAssetPath( const std::string& path );
 
     void render();
 
+    PluginContext& getPluginContext();
+
 private:
-    /*
-    std::vector<const Mesh*> m_meshes;
-    const ICamera*           m_camera;
-    const IFilm*             m_film;
-
-    Renderer                 m_renderer;
-    */
-
-    std::unique_ptr<Impl> m_impl;
+    //std::unique_ptr<Impl> m_impl;
+    std::auto_ptr<Impl> m_impl;
 };
 
 

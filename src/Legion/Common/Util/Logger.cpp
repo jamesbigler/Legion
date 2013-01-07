@@ -65,7 +65,7 @@ std::string Log::time()
     char buffer[11];
     time_t t;
     std::time(&t);
-    tm r = {0};
+    tm r; // ={0};
     strftime(buffer, sizeof(buffer), "%X", localtime_r(&t, &r));
 
     struct timeval tv;

@@ -5,6 +5,7 @@
 namespace legion
 {
 
+
 class Color
 {
 public:
@@ -37,6 +38,7 @@ private:
 
     float m_c[3];
 };
+
 
 Color operator*( const Color& c0, const Color& c1 );
 Color operator/( const Color& c0, const Color& c1 );

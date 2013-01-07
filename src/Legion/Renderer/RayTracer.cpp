@@ -7,9 +7,9 @@
 #include <Legion/Core/Ray.hpp>
 #include <Legion/Renderer/Cuda/Shared.hpp>
 #include <Legion/Renderer/RayTracer.hpp>
-#include <Legion/Scene/LightShader/ILightShader.hpp>
-#include <Legion/Scene/Mesh/Mesh.hpp>
-#include <Legion/Scene/SurfaceShader/ISurfaceShader.hpp>
+#include <Legion/Objects/LightShader/ILightShader.hpp>
+#include <Legion/Objects/Mesh/Mesh.hpp>
+#include <Legion/Objects/Surface/ISurface.hpp>
 #include <config.hpp>
 
 
@@ -53,7 +53,7 @@ using namespace legion;
 namespace
 {
 
-    inline unsigned packShaderIDs( const ISurfaceShader* sshader,
+    inline unsigned packShaderIDs( const ISurface* sshader,
                                    const ILightShader*   lshader )
     {
         int sid = sshader ? sshader->getID() : -1u;
@@ -62,7 +62,7 @@ namespace
 
         // Ensure that ids are in [0, 2^16-1]
         if( sid > ( 1 << 16 - 1 ) )
-            throw Exception( "ISurfaceShader ID cannot fit in 16 bits" );
+            throw Exception( "ISurface ID cannot fit in 16 bits" );
         
         if( lid > ( 1 << 16 - 1 ) )
             throw Exception( "ILightShader ID out cannot fit in 16 bits" );
@@ -109,7 +109,7 @@ void RayTracer::updateVertexBuffer( optix::Buffer buffer,
 void RayTracer::updateFaceBuffer( optix::Buffer         buffer,
                                   unsigned              num_faces,
                                   const Index3*         tris,
-                                  const ISurfaceShader* sshader,
+                                  const ISurface* sshader,
                                   const ILightShader*   lshader )
 {
     try

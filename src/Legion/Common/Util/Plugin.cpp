@@ -30,41 +30,42 @@ using namespace legion;
 class PluginManager::Impl
 {
 public:
-    typedef ICamera*       (*CameraCreator       )( const Parameters& );
-    typedef IFilm*         (*FilmCreator         )( const Parameters& );
-    typedef IGeometry*     (*GeometryCreator     )( const Parameters& );
-    typedef ILight*        (*LightCreator        )( const Parameters& );
-    typedef ISurfaceShader*(*SurfaceShaderCreator)( const Parameters& );
+    typedef ICamera*  (*CameraCreator  )( Context*, const Parameters& );
+    typedef IFilm*    (*FilmCreator    )( Context*, const Parameters& );
+    typedef IGeometry*(*GeometryCreator)( Context*, const Parameters& );
+    typedef ILight*   (*LightCreator   )( Context*, const Parameters& );
+    typedef ISurface* (*SurfaceCreator )( Context*, const Parameters& );
 
-    Impl() {}
+    Impl( Context* ctx ) : m_context( ctx ) {}
     ~Impl() {}
 
-    void registerCamera       ( const std::string& name, CameraCreator        );
-    void registerFilm         ( const std::string& name, FilmCreator          );
-    void registerGeometry     ( const std::string& name, GeometryCreator      );
-    void registerLight        ( const std::string& name, LightCreator         );
-    void registerSurfaceShader( const std::string& name, SurfaceShaderCreator );
+    void registerCamera  ( const std::string& name, CameraCreator   );
+    void registerFilm    ( const std::string& name, FilmCreator     );
+    void registerGeometry( const std::string& name, GeometryCreator );
+    void registerLight   ( const std::string& name, LightCreator    );
+    void registerSurface ( const std::string& name, SurfaceCreator  );
 
-    ICamera*  createCamera    ( const std::string& name, const Parameters& p );
-    IFilm* createFilm         ( const std::string& name, const Parameters& p );
-    IGeometry* createGeometry ( const std::string& name, const Parameters& p );
-    ILight* createLight       ( const std::string& name, const Parameters& p );
-    ISurfaceShader* createSurfaceShader( const std::string& name,
-                                         const Parameters& p );
+    ICamera*  createCamera  ( const std::string& name, const Parameters& p );
+    IFilm*    createFilm    ( const std::string& name, const Parameters& p );
+    IGeometry*createGeometry( const std::string& name, const Parameters& p );
+    ILight*   createLight   ( const std::string& name, const Parameters& p );
+    ISurface* createSurface ( const std::string& name, const Parameters& p );
 
 private:
-    typedef std::map<std::string, CameraCreator>          CameraCreators;
-    typedef std::map<std::string, FilmCreator>            FilmCreators;    
-    typedef std::map<std::string, GeometryCreator>        GeometryCreators;
-    typedef std::map<std::string, LightCreator>           LightCreators;
-    typedef std::map<std::string, SurfaceShaderCreator>   SurfaceShaderCreators;
+    typedef std::map<std::string, CameraCreator>    CameraCreators;
+    typedef std::map<std::string, FilmCreator>      FilmCreators;    
+    typedef std::map<std::string, GeometryCreator>  GeometryCreators;
+    typedef std::map<std::string, LightCreator>     LightCreators;
+    typedef std::map<std::string, SurfaceCreator>   SurfaceCreators;
 
+    Context*              m_context;
     CameraCreators        m_camera_creators;
     FilmCreators          m_film_creators;
     GeometryCreators      m_geometry_creators;
     LightCreators         m_light_creators;
-    SurfaceShaderCreators m_surface_shader_creators;
+    SurfaceCreators       m_surface_creators;
 };
+
 
 void PluginManager::Impl::registerCamera( 
         const std::string& name,
@@ -74,14 +75,17 @@ void PluginManager::Impl::registerCamera(
     LEGION_ASSERT( m_camera_creators.find( name ) != m_camera_creators.end() );
 
     m_camera_creators.insert( std::make_pair( name, creator ) );
-
 }
+
 
 void PluginManager::Impl::registerFilm(
         const std::string& name,
         FilmCreator creator )
 {
-    LEGION_TODO();
+    LEGION_ASSERT( creator != 0 ); 
+    LEGION_ASSERT( m_film_creators.find( name ) != m_film_creators.end() );
+
+    m_film_creators.insert( std::make_pair( name, creator ) );
 }
 
 
@@ -100,15 +104,22 @@ void PluginManager::Impl::registerLight(
         const std::string& name,
         LightCreator creator )
 {
-    LEGION_TODO();
+    LEGION_ASSERT( creator != 0 ); 
+    LEGION_ASSERT( m_light_creators.find( name ) != m_light_creators.end() );
+
+    m_light_creators.insert( std::make_pair( name, creator ) );
 }
 
 
-void PluginManager::Impl::registerSurfaceShader(
+void PluginManager::Impl::registerSurface(
         const std::string& name,
-        SurfaceShaderCreator creator )
+        SurfaceCreator creator )
 {
-    LEGION_TODO();
+    LEGION_ASSERT( creator != 0 ); 
+    LEGION_ASSERT( m_surface_creators.find( name ) != 
+                   m_surface_creators.end() );
+
+    m_surface_creators.insert( std::make_pair( name, creator ) );
 }
 
 
@@ -116,7 +127,10 @@ ICamera* PluginManager::Impl::createCamera(
         const std::string& name, 
         const Parameters& p )
 {
-    LEGION_TODO();
+    CameraCreators::iterator it = m_camera_creators.find( name );
+    LEGION_ASSERT( it != m_camera_creators.end() ); 
+
+    return it->second( m_context, p );
 }
 
 
@@ -124,7 +138,10 @@ IFilm* PluginManager::Impl::createFilm(
         const std::string& name, 
         const Parameters& p )
 {
-    LEGION_TODO();
+    FilmCreators::iterator it = m_film_creators.find( name );
+    LEGION_ASSERT( it != m_film_creators.end() ); 
+
+    return it->second( m_context, p );
 }
 
 
@@ -135,7 +152,7 @@ IGeometry* PluginManager::Impl::createGeometry(
     GeometryCreators::iterator it = m_geometry_creators.find( name );
     LEGION_ASSERT( it != m_geometry_creators.end() ); 
 
-    return it->second( p );
+    return it->second( m_context, p );
 }
 
 
@@ -143,15 +160,21 @@ ILight* PluginManager::Impl::createLight(
         const std::string& name,
         const Parameters& p )
 {
-    LEGION_TODO();
+    LightCreators::iterator it = m_light_creators.find( name );
+    LEGION_ASSERT( it != m_light_creators.end() ); 
+
+    return it->second( m_context, p );
 }
 
 
-ISurfaceShader* PluginManager::Impl::createSurfaceShader(
+ISurface* PluginManager::Impl::createSurface(
         const std::string& name,
         const Parameters& p )
 {
-    LEGION_TODO();
+    SurfaceCreators::iterator it = m_surface_creators.find( name );
+    LEGION_ASSERT( it != m_surface_creators.end() ); 
+
+    return it->second( m_context, p );
 }
 
 
@@ -160,8 +183,8 @@ ISurfaceShader* PluginManager::Impl::createSurfaceShader(
 // PluginManager 
 //
 //-----------------------------------------------------------------------------
-PluginManager::PluginManager()
-    : m_impl( new Impl )
+PluginManager::PluginManager( Context* ctx )
+    : m_impl( new Impl( ctx ) )
 {
 }
 
@@ -174,7 +197,7 @@ PluginManager::~PluginManager()
 template <>
 void PluginManager::registerPlugin<ICamera>( 
         const std::string& name,
-        ICamera* (*create)( const Parameters& params ) )
+        ICamera* (*create)( Context* ctx, const Parameters& params ) )
 {
     m_impl->registerCamera( name, create );
 }
@@ -183,7 +206,7 @@ void PluginManager::registerPlugin<ICamera>(
 template <>
 void PluginManager::registerPlugin<IFilm>(
         const std::string& name,
-        IFilm* (*create)( const Parameters& params ) )
+        IFilm* (*create)( Context* ctx, const Parameters& params ) )
 {
     m_impl->registerFilm( name, create );
 }
@@ -192,7 +215,7 @@ void PluginManager::registerPlugin<IFilm>(
 template <>
 void PluginManager::registerPlugin<IGeometry>(
         const std::string& name,
-        IGeometry* (*create)( const Parameters& params ) )
+        IGeometry* (*create)( Context* ctx, const Parameters& params ) )
 {
     m_impl->registerGeometry( name, create );
 }
@@ -201,18 +224,18 @@ void PluginManager::registerPlugin<IGeometry>(
 template <>
 void PluginManager::registerPlugin<ILight>(
         const std::string& name,
-        ILight* (*create)( const Parameters& params ) )
+        ILight* (*create)( Context* ctx, const Parameters& params ) )
 {
     m_impl->registerLight( name, create );
 }
 
 
 template <>
-void PluginManager::registerPlugin<ISurfaceShader>(
+void PluginManager::registerPlugin<ISurface>(
         const std::string& name,
-        ISurfaceShader* (*create)( const Parameters& params ) )
+        ISurface* (*create)( Context* ctx, const Parameters& params ) )
 {
-    m_impl->registerSurfaceShader( name, create );
+    m_impl->registerSurface( name, create );
 }
 
 
@@ -221,7 +244,7 @@ ICamera* PluginManager::create<ICamera>(
         const std::string& plugin_name,
         const Parameters& params )
 {
-    return 0;
+    return m_impl->createCamera( plugin_name, params );
 }
 
 template <>
@@ -229,7 +252,7 @@ IFilm* PluginManager::create<IFilm>(
         const std::string& plugin_name,
         const Parameters& params )
 {
-    return 0;
+    return m_impl->createFilm( plugin_name, params );
 }
 
 
@@ -249,15 +272,15 @@ ILight* PluginManager::create<ILight>(
         const std::string& plugin_name,
         const Parameters& params )
 {
-    return 0;
+    return m_impl->createLight( plugin_name, params );
 }
 
 
 
 template <>
-ISurfaceShader* PluginManager::create<ISurfaceShader>(
+ISurface* PluginManager::create<ISurface>(
         const std::string& plugin_name,
         const Parameters& params )
 {
-    return 0;
+    return m_impl->createSurface( plugin_name, params );
 }

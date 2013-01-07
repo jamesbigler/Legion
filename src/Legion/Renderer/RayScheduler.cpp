@@ -30,8 +30,8 @@
 #include <Legion/Renderer/sobol_matrices.hpp>
 #include <Legion/Renderer/RayScheduler.hpp>
 #include <Legion/Renderer/RayTracer.hpp>
-#include <Legion/Scene/Camera/ICamera.hpp>
-#include <Legion/Scene/Film/IFilm.hpp>
+#include <Legion/Objects/Camera/ICamera.hpp>
+#include <Legion/Objects/Film/IFilm.hpp>
 
 using namespace legion;
 
