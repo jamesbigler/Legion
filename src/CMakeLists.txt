@@ -9,7 +9,13 @@ endif( NOT CMAKE_BUILD_TYPE )
 
 add_definitions( -DLLOG_MAX_LEVEL=legion::Log::DEBUG )
 
-set(CMAKE_CXX_FLAGS                "-Wall -Werror -funroll-loops -floop-optimize -ffast-math -Qunused-arguments -stdlib=libc++" )
+if( "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" )
+    set(CMAKE_CXX_FLAGS "-Wall -Wextra -pedantic -Werror -funroll-loops -floop-optimize -ffast-math -Qunused-arguments -stdlib=libc++" )
+elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+    set(CMAKE_CXX_FLAGS "-Wall -Wextra -pedantic -Werror -funroll-loops -floop-optimize -ffast-math -std=c++0x" )
+endif()
+
+
 set(CMAKE_CXX_FLAGS_DEBUG          "-g")
 set(CMAKE_CXX_FLAGS_MINSIZEREL     "-Os -DNDEBUG")
 set(CMAKE_CXX_FLAGS_RELEASE        "-O4 -DNDEBUG")
