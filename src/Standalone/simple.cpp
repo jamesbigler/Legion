@@ -65,13 +65,12 @@ int main( int , char** )
         legion::ThinLens cam( &ctx );
         ctx.setCamera( &cam );
 
-        //legion::ImageFilm film( &ctx );
-        //film.setDimensions( legion::Index2( 256u, 256u ) );
-        //ctx.setFilm( &film );
-        
         legion::ProgressiveRenderer renderer( &ctx );
         ctx.setRenderer( &renderer );
 
+        legion::ImageFileDisplay display( &ctx, "simple.exr" );
+        renderer.setDisplay( &display );
+        
         ctx.render();
         LLOG_INFO << "Finished ***********";
     }

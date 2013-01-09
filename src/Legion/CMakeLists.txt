@@ -69,6 +69,9 @@ add_library( legion SHARED
     Objects/Camera/ICamera.hpp
     Objects/Camera/ThinLens.cpp
     Objects/Camera/ThinLens.hpp
+    Objects/Display/IDisplay.hpp
+    Objects/Display/ImageFileDisplay.cpp
+    Objects/Display/ImageFileDisplay.hpp
     #Objects/Film/IFilm.hpp
     #Objects/Film/ImageFilm.cpp
     #Objects/Film/ImageFilm.hpp

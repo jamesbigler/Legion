@@ -19,6 +19,8 @@
 #include <Legion/Objects/Renderer/ProgressiveRenderer.hpp>
 #include <Legion/Objects/Camera/ICamera.hpp>
 #include <Legion/Objects/Camera/ThinLens.hpp>
+#include <Legion/Objects/Display/IDisplay.hpp>
+#include <Legion/Objects/Display/ImageFileDisplay.hpp>
 #include <Legion/Objects/Surface/ISurface.hpp>
 #include <Legion/Objects/Surface/Lambertian.hpp>
 #include <Legion/Objects/Geometry/IGeometry.hpp>

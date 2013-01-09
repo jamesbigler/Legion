@@ -1,7 +1,6 @@
 
-// Copyright (C) 2011 R. Keith Morley 
-// 
-// (MIT/X11 License)
+// Copyright (C) 2011 R. Keith Morley
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to
 // deal in the Software without restriction, including without limitation the
@@ -19,13 +18,13 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
+// (MIT/X11 License)
 
+#ifndef LEGION_OBJECTS_DISPLAY_IDISPLAY_HPP_
+#define LEGION_OBJECTS_DISPLAY_IDISPLAY_HPP_
 
-#ifndef LEGION_OBJECTS_IOBJECT_OBJECT_HPP_
-#define LEGION_OBJECTS_IOBJECT_OBJECT_HPP_
-
-#include <Legion/Core/Context.hpp>
-#include <Legion/Core/PluginContext.hpp>
+#include <Legion/Common/Math/Vector.hpp>
+#include <Legion/Objects/IObject.hpp>
 #include <optixu/optixpp_namespace.h>
 
 namespace legion
@@ -33,31 +32,18 @@ namespace legion
 
 class VariableContainer;
 
-class IObject
+class IDisplay: public IObject
 {
 public:
-    IObject( Context* context );
+    IDisplay( Context* context ) : IObject( context ) {}
 
-    virtual ~IObject();
+    virtual ~IDisplay() {}
 
-    PluginContext& getPluginContext();
-
-    void           launchOptiX( const Index2& dimensions );
-
-    optix::Buffer  createOptiXBuffer( unsigned type,
-                                      RTformat format,
-                                      unsigned width  = 0u,
-                                      unsigned height = 0u,
-                                      unsigned depth  = 0u );
-
-
-    virtual void setVariables( VariableContainer& ) const {}
-
-private:
-    PluginContext& m_plugin_context;
+    virtual void updateFrame( const Index2& /* resolution */,
+                              const float*  /* pixels     */ ) {}
+    virtual void completeFrame( const Index2& resolution, const float* pixels ) = 0;
 };
 
 }
 
-
-#endif // LEGION_OBJECTS_IOBJECTS_OBJECT_HPP_
+#endif // LEGION_OBJECTS_DISPLAY_IDISPLAY_HPP_

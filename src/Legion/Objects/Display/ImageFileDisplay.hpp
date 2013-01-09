@@ -20,57 +20,27 @@
 // IN THE SOFTWARE.
 // (MIT/X11 License)
 
+#ifndef LEGION_OBJECTS_DISPLAY_IMAGE_FILE_DISPLAY_HPP_
+#define LEGION_OBJECTS_DISPLAY_IMAGE_FILE_DISPLAY_HPP_
 
-#include <Legion/Objects/Renderer/ProgressiveRenderer.hpp>
 #include <Legion/Objects/Display/IDisplay.hpp>
-#include <Legion/Core/VariableContainer.hpp>
+#include <string>
 
-using namespace legion;
-
-ProgressiveRenderer::ProgressiveRenderer( Context* context ) 
-   : IRenderer( context )
+namespace legion
 {
-    m_output_buffer = createOptiXBuffer( RT_BUFFER_OUTPUT,
-                                         RT_FORMAT_FLOAT4 );
+
+class VariableContainer;
+
+class ImageFileDisplay : public IDisplay
+{
+public:
+    ImageFileDisplay( Context* context, const char* filename );
+
+    void completeFrame( const Index2& resolution, const float* pixels );
+private:
+    std::string m_filename;
+};
+
 }
 
-
-ProgressiveRenderer::~ProgressiveRenderer()
-{
-}
-
-
-const char* ProgressiveRenderer::name()const
-{
-    return "ProgressiveRenderer";
-}
-
-
-const char* ProgressiveRenderer::rayGenProgramName()const
-{
-    return "progressiveRendererRayGen";
-}
-
-
-optix::Buffer ProgressiveRenderer::getOutputBuffer()const
-{
-    return m_output_buffer;
-}
-
-
-void ProgressiveRenderer::render()
-{
-    // TODO: iterate over number of samples
-    // TODO: update display
-    m_output_buffer->setSize( getResolution().x(), getResolution().y() );
-    launchOptiX( getResolution() );
-    m_display->completeFrame( getResolution(), reinterpret_cast<float*>( m_output_buffer->map() ) );
-    m_output_buffer->unmap();
-}
-    
-
-void ProgressiveRenderer::setVariables( VariableContainer& container ) const
-{
-    container.setBuffer( "legion_output_buffer", m_output_buffer );
-}
-
+#endif // LEGION_OBJECTS_DISPLAY_IMAGE_FILE_DISPLAY_HPP_
