@@ -40,8 +40,8 @@ public:
     void setFloat( const std::string& name, const Vector2& val );
     void setFloat( const std::string& name, const Vector3& val );
     void setFloat( const std::string& name, const Vector4& val );
-
-    void setMatrix( const std::string& name, const Matrix& val ); 
+    void setMatrix( const std::string& name, const Matrix& val );
+    void setBuffer( const std::string& name, optix::Buffer val );
 
 private:
     optix::ScopedObj* m_scoped;

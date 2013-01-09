@@ -28,6 +28,7 @@
 #include <Legion/Core/PluginContext.hpp>
 #include <Legion/Core/Exception.hpp>
 #include <Legion/Objects/Geometry/Sphere.hpp>
+#include <Legion/Objects/Renderer/IRenderer.hpp>
 #include <Legion/Renderer/OptixScene.hpp>
 
 
@@ -100,6 +101,7 @@ Context::Impl::~Impl()
 void Context::Impl::setRenderer( IRenderer* renderer )
 {
     m_renderer = renderer;
+    m_optix_scene.setRenderer( renderer );
 }
 
 
@@ -137,7 +139,8 @@ void Context::Impl::addAssetPath( const std::string& path )
 
 void Context::Impl::render()
 {
-    m_optix_scene.render();
+    m_optix_scene.sync();
+    m_renderer->render();
 }
 
 

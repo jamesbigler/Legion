@@ -3,7 +3,7 @@
 #include <Legion/Common/Util/Image.hpp>
 #include <cstdlib>
 
-int main( int argc, char** argv )
+int main( int, char** )
 {
     const unsigned num_channels = 3;
     const unsigned width  = 256;

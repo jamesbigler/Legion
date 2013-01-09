@@ -2,7 +2,7 @@
 #include <Legion/Legion.hpp>
 #include <vector>
 
-int main( int argc, char** argv )
+int main( int , char** )
 {
     try
     {
@@ -59,15 +59,18 @@ int main( int argc, char** argv )
         legion::PointLight light( &ctx );
         light.setPosition( legion::Vector3( 1.0f, 1.0f, 1.0f ) );
         light.setIntensity( legion::Color( 1.0f, 1.0f, 1.0f ) );
-        ctx.addLight( &light );
+        //ctx.addLight( &light );
         //ctx.addAreaLigth(...); 
 
         legion::ThinLens cam( &ctx );
         ctx.setCamera( &cam );
 
-        legion::ImageFilm film( &ctx );
+        //legion::ImageFilm film( &ctx );
         //film.setDimensions( legion::Index2( 256u, 256u ) );
-        ctx.setFilm( &film );
+        //ctx.setFilm( &film );
+        
+        legion::ProgressiveRenderer renderer( &ctx );
+        ctx.setRenderer( &renderer );
 
         ctx.render();
         LLOG_INFO << "Finished ***********";

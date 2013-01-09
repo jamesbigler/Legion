@@ -20,20 +20,16 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-#include <Legion/Objects/Camera/CUDA/Camera.hpp>
-#include <Legion/Objects/Surface/CUDA/Surface.hpp>
-#include <optixu/optixu_math_namespace.h>
-#include <optix.h>
+#include <Legion/Objects/cuda_common.hpp>
+
 
 rtDeclareVariable( uint2, launch_index, rtLaunchIndex, );
 rtDeclareVariable( uint2, launch_dim,   rtLaunchDim, );
 
-rtDeclareVariable( rtObject, legion_top_group, , );
-
 rtBuffer<float4, 2> legion_output_buffer;
 
 
-RT_PROGRAM void Camera()
+RT_PROGRAM void progressiveRendererRayGen()
 {
     const float sx = static_cast<float>( launch_index.x ) /
                      static_cast<float>( launch_dim.x );
@@ -48,7 +44,7 @@ RT_PROGRAM void Camera()
                                                     screen_seed,
                                                     time_seed );
 
-    RadiancePRD prd;
+    legion::RadiancePRD prd;
     prd.result = make_float3( 0.0f );
     prd.importance = 1.0f;
     prd.depth = 0u;

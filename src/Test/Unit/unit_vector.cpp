@@ -6,7 +6,7 @@
 
 using namespace legion;
 
-int main( int argc, char** argv )
+int main( int, char** argv )
 {
     /*
     Vector3 v0( 0, 1, 2 );

@@ -22,14 +22,15 @@
 
 
 #include <Legion/Objects/Renderer/ProgressiveRenderer.hpp>
+#include <Legion/Core/VariableContainer.hpp>
 
 using namespace legion;
 
 ProgressiveRenderer::ProgressiveRenderer( Context* context ) 
    : IRenderer( context )
 {
-    m_output_buffer = createBuffer( RT_BUFFER_OUTPUT,
-                                    RT_FORMAT_FLOAT4 );
+    m_output_buffer = createOptiXBuffer( RT_BUFFER_OUTPUT,
+                                         RT_FORMAT_FLOAT4 );
 }
 
 
@@ -46,7 +47,7 @@ const char* ProgressiveRenderer::name()const
 
 const char* ProgressiveRenderer::rayGenProgramName()const
 {
-    return "progressiveRendererCamera";
+    return "progressiveRendererRayGen";
 }
 
 
@@ -58,12 +59,15 @@ optix::Buffer ProgressiveRenderer::getOutputBuffer()const
 
 void ProgressiveRenderer::render()
 {
+    // TODO: iterate over number of samples
+    // TODO: update display
     m_output_buffer->setSize( getResolution().x(), getResolution().y() );
-    launch( getResolution() );
+    launchOptiX( getResolution() );
 }
     
 
-void ProgressiveRenderer::setVariables( VariableContainer& /*container*/ ) const
+void ProgressiveRenderer::setVariables( VariableContainer& container ) const
 {
+    container.setBuffer( "legion_output_buffer", m_output_buffer );
 }
 

@@ -50,7 +50,7 @@ public:
     void addLight   ( ILight*    light );
     void addGeometry( IGeometry* geometry );
 
-    void render();
+    void sync();
 
     optix::Context getOptiXContext()
     { return m_optix_context; }

@@ -56,8 +56,6 @@ public:
     void     setResolution( const Index2& res )  { m_resolution = res;  }
     Index2   getResolution()const                { return m_resolution; }
 
-    void     launch( const Index2& dims );
-
     virtual const char*    name()const=0;
     virtual const char*    rayGenProgramName()const=0;
     virtual optix::Buffer  getOutputBuffer()const=0;

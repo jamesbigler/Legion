@@ -15,11 +15,10 @@
 #include <Legion/Core/Color.hpp>
 #include <Legion/Core/Context.hpp>
 #include <Legion/Core/Exception.hpp>
-#include <Legion/Core/Ray.hpp>
+#include <Legion/Objects/Renderer/IRenderer.hpp>
+#include <Legion/Objects/Renderer/ProgressiveRenderer.hpp>
 #include <Legion/Objects/Camera/ICamera.hpp>
 #include <Legion/Objects/Camera/ThinLens.hpp>
-#include <Legion/Objects/Film/IFilm.hpp>
-#include <Legion/Objects/Film/ImageFilm.hpp>
 #include <Legion/Objects/Surface/ISurface.hpp>
 #include <Legion/Objects/Surface/Lambertian.hpp>
 #include <Legion/Objects/Geometry/IGeometry.hpp>

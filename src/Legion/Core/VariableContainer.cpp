@@ -72,3 +72,9 @@ void VariableContainer::setMatrix( const std::string& name, const Matrix& val )
 {
     getVariable( m_scoped, name )->setMatrix4x4fv( false, val.getData() );
 }
+    
+
+void VariableContainer::setBuffer( const std::string& name, optix::Buffer val )
+{
+    getVariable( m_scoped, name )->set( val );
+}

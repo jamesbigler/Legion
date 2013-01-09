@@ -84,14 +84,14 @@ OptiXScene::~OptiXScene()
 
 void OptiXScene::setRenderer( IRenderer* renderer )
 {
-    LEGION_TODO();
-
     m_raygen_program = 
             m_program_mgr.get( renderer->name(),
                                std::string( renderer->name() ) + ".ptx",
                                renderer->rayGenProgramName() );
 
     m_optix_context->setRayGenerationProgram( 0, m_raygen_program );
+
+    m_renderer = renderer;
 }
 
 
@@ -100,12 +100,12 @@ void OptiXScene::setCamera( ICamera* camera )
     m_camera = camera;
     try
     {
-        optix::Program create_ray = 
+        m_create_ray_program = 
             m_program_mgr.get( camera->name(),
                                std::string( camera->name() ) + ".ptx",
                                camera->createRayFunctionName() );
 
-        m_optix_context[ "legionCameraCreateRay" ]->set( create_ray );
+        m_optix_context[ "legionCameraCreateRay" ]->set( m_create_ray_program );
     }
     OPTIX_CATCH_RETHROW;
 }
@@ -170,12 +170,11 @@ void OptiXScene::addGeometry( IGeometry* geometry )
 }
 
 
-void OptiXScene::render()
+void OptiXScene::sync()
 {
     // TODO: have defaults objects for all of these
     LEGION_ASSERT( m_renderer );
     LEGION_ASSERT( m_camera );
-    LEGION_ASSERT( m_film );
    
     //
     // Update optix variables for all objects
@@ -196,8 +195,6 @@ void OptiXScene::render()
         VariableContainer vc( geometry_instance.get() );
         geometry->setVariables( vc );
     }
-
-    m_renderer->render();
 
     /*
     try

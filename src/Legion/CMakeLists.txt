@@ -12,6 +12,7 @@ CUDA_COMPILE_PTX( ptx_files
     Objects/Camera/CUDA/ThinLens.cu
     Objects/Geometry/CUDA/Sphere.cu
     Objects/Surface/CUDA/Normal.cu
+    Objects/Renderer/CUDA/ProgressiveRenderer.cu
     )
 
 configure_file( "${CMAKE_CURRENT_SOURCE_DIR}/Core/config.hpp.in"
@@ -63,6 +64,8 @@ add_library( legion SHARED
     Core/VariableContainer.cpp
     Core/VariableContainer.hpp
     Legion.hpp
+    Objects/IObject.cpp
+    Objects/IObject.hpp
     Objects/Camera/ICamera.hpp
     Objects/Camera/ThinLens.cpp
     Objects/Camera/ThinLens.hpp

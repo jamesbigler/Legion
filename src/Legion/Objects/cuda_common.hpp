@@ -23,6 +23,18 @@
 #ifndef LEGION_OBJECTS_CUDA_COMMON_HPP_
 #define LEGION_OBJECTS_CUDA_COMMON_HPP_
 
+#include <optix_world.h>
+
+namespace legion
+{
+
+struct RayGeometry
+{
+    float3 origin;
+    float3 direction;
+};
+
+
 //------------------------------------------------------------------------------
 //
 // this struct is to be used as the per-ray-data for radiance rays
@@ -46,7 +58,9 @@ struct ShadowPRD
 };
 
 
-struct ShadowPRD 
+} // end namespace legion
+
+
 
 //------------------------------------------------------------------------------
 //

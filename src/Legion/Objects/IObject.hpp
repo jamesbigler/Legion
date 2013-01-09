@@ -24,33 +24,37 @@
 #ifndef LEGION_OBJECTS_IOBJECT_OBJECT_HPP_
 #define LEGION_OBJECTS_IOBJECT_OBJECT_HPP_
 
+#include <Legion/Core/Context.hpp>
+#include <Legion/Core/PluginContext.hpp>
 #include <optixu/optixpp_namespace.h>
 
 namespace legion
 {
 
-class Context;
 class VariableContainer;
 
 class IObject
 {
 public:
-    IObject( Context* context ) : m_context( context ) {}
+    IObject( Context* context );
 
-    Context* getContext() { return m_context; }
-    
-    virtual ~IObject() {}
+    virtual ~IObject();
+
+    PluginContext& getPluginContext();
+
+    void           launchOptiX( const Index2& dimensions );
+
+    optix::Buffer  createOptiXBuffer( unsigned type,
+                                      RTformat format,
+                                      unsigned width  = 0u,
+                                      unsigned height = 0u,
+                                      unsigned depth  = 0u );
+
 
     virtual void setVariables( VariableContainer& container ) const = 0;
-    
-    optix::Buffer createBuffer( unsigned type,
-                                RTformat format, 
-                                RTsize   width=0u,
-                                RTsize   heidth=0u,
-                                RTsize   depth=0u );
 
 private:
-    Context* m_context;
+    PluginContext& m_plugin_context;
 };
 
 }

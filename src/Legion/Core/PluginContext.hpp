@@ -34,7 +34,7 @@ public:
     PluginContext( optix::Context optix_context ) 
         : m_optix_context( optix_context ) {}
 
-    optix::Context getOptiXContext();
+    optix::Context getOptiXContext() { return m_optix_context; }
 
 private:
     optix::Context m_optix_context; 
