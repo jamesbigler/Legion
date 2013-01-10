@@ -52,8 +52,7 @@ public:
 
     void sync();
 
-    optix::Context getOptiXContext()
-    { return m_optix_context; }
+    optix::Context getOptiXContext() { return m_optix_context; }
 
 private:
     static const unsigned RADIANCE_TYPE = 0u;

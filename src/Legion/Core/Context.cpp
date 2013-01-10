@@ -26,8 +26,9 @@
 #include <Legion/Common/Util/Preprocessor.hpp>
 #include <Legion/Common/Util/Timer.hpp>
 #include <Legion/Core/Context.hpp>
-#include <Legion/Core/PluginContext.hpp>
 #include <Legion/Core/Exception.hpp>
+#include <Legion/Core/PluginContext.hpp>
+#include <Legion/Core/VariableContainer.hpp>
 #include <Legion/Objects/Geometry/Sphere.hpp>
 #include <Legion/Objects/Renderer/IRenderer.hpp>
 #include <Legion/Renderer/OptixScene.hpp>
@@ -145,7 +146,8 @@ void Context::Impl::render()
     LLOG_INFO << "Rendering frame ... ";
     Timer timer;
     timer.start();
-    m_renderer->render();
+    VariableContainer vc( m_optix_scene.getOptiXContext()->getRayGenerationProgram( 0 ).get() );
+    m_renderer->render( vc );
     timer.stop();
     LLOG_INFO << "Frame complete ... (" << timer.getTimeElapsed() << "s)";
 }

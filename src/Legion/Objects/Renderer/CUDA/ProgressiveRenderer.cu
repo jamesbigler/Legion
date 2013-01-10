@@ -26,7 +26,10 @@
 rtDeclareVariable( uint2, launch_index, rtLaunchIndex, );
 rtDeclareVariable( uint2, launch_dim,   rtLaunchDim, );
 
-rtBuffer<float4, 2> legion_output_buffer;
+
+rtDeclareVariable( unsigned, sample_number, , );
+
+rtBuffer<float4, 2> output_buffer;
 
 
 RT_PROGRAM void progressiveRendererRayGen()
@@ -57,7 +60,7 @@ RT_PROGRAM void progressiveRendererRayGen()
             RT_DEFAULT_MAX );
     rtTrace( legion_top_group, ray, prd );
 
-    legion_output_buffer[ launch_index ] = make_float4( prd.result, 1.0f );
+    output_buffer[ launch_index ] = make_float4( prd.result, 1.0f );
 }
 
 

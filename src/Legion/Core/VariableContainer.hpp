@@ -40,7 +40,11 @@ public:
     void setFloat( const std::string& name, const Vector2& val );
     void setFloat( const std::string& name, const Vector3& val );
     void setFloat( const std::string& name, const Vector4& val );
+
+    void setUnsigned( const std::string& name, unsigned val );
+
     void setMatrix( const std::string& name, const Matrix& val );
+
     void setBuffer( const std::string& name, optix::Buffer val );
 
 private:

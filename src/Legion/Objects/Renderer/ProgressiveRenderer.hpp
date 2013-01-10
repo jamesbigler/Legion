@@ -43,7 +43,7 @@ public:
     const char*    name()const;
     const char*    rayGenProgramName()const;
     optix::Buffer  getOutputBuffer()const;
-    void           render();
+    void           render( VariableContainer& container );
     
     void setVariables( VariableContainer& container ) const;
 private:

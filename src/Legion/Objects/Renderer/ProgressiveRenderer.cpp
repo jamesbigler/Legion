@@ -60,14 +60,15 @@ optix::Buffer ProgressiveRenderer::getOutputBuffer()const
 }
 
 
-void ProgressiveRenderer::render()
+void ProgressiveRenderer::render( VariableContainer& container )
 {
     // TODO: iterate over number of samples
     // TODO: update display
     Timer timer;
 
-    for( int i = 0; i < 10; ++i )
+    for( unsigned i = 0; i < getSamplesPerPixel(); ++i )
     {
+      container.setUnsigned( "sample_index", i );
       AutoPrintTimer apt( PrintTimeElapsed( "\tOptiX launch" ) );
       m_output_buffer->setSize( getResolution().x(), getResolution().y() );
       launchOptiX( getResolution() );

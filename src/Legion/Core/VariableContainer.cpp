@@ -68,6 +68,12 @@ void VariableContainer::setFloat( const std::string& name, const Vector4& val )
 }
 
 
+void VariableContainer::setUnsigned( const std::string& name, unsigned val )
+{
+    getVariable( m_scoped, name )->setUint( val );
+}
+
+
 void VariableContainer::setMatrix( const std::string& name, const Matrix& val ) 
 {
     getVariable( m_scoped, name )->setMatrix4x4fv( false, val.getData() );
