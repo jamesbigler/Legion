@@ -24,6 +24,7 @@
 #include <Legion/Common/Util/Parameters.hpp>
 #include <Legion/Common/Util/Plugin.hpp>
 #include <Legion/Common/Util/Preprocessor.hpp>
+#include <Legion/Common/Util/Timer.hpp>
 #include <Legion/Core/Context.hpp>
 #include <Legion/Core/PluginContext.hpp>
 #include <Legion/Core/Exception.hpp>
@@ -140,7 +141,13 @@ void Context::Impl::addAssetPath( const std::string& path )
 void Context::Impl::render()
 {
     m_optix_scene.sync();
+
+    LLOG_INFO << "Rendering frame ... ";
+    Timer timer;
+    timer.start();
     m_renderer->render();
+    timer.stop();
+    LLOG_INFO << "Frame complete ... (" << timer.getTimeElapsed() << "s)";
 }
 
 

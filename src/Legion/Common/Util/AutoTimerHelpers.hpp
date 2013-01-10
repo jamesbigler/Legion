@@ -27,6 +27,9 @@
 #ifndef LEGION_AUTOTIMERHELPERS_HPP_
 #define LEGION_AUTOTIMERHELPERS_HPP_
 
+#include <Legion/Common/Util/Logger.hpp>
+#include <Legion/Common/Util/Timer.hpp>
+
 namespace legion
 {
 
@@ -72,6 +75,20 @@ struct LoopTimerInfo
     double      max_time;
     double      total_time;
 };
+
+
+
+struct PrintTimeElapsed
+{
+    PrintTimeElapsed( const char* event ) : m_event( event ) {}
+
+    void operator()( double time_elapsed )
+    { LLOG_INFO << m_event << ": " << time_elapsed << "s"; }
+
+    std::string m_event;
+};
+
+typedef AutoTimer<PrintTimeElapsed> AutoPrintTimer;
 
 
 }

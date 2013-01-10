@@ -24,6 +24,8 @@
 #include <Legion/Objects/Renderer/ProgressiveRenderer.hpp>
 #include <Legion/Objects/Display/IDisplay.hpp>
 #include <Legion/Core/VariableContainer.hpp>
+#include <Legion/Common/Util/AutoTimerHelpers.hpp>
+#include <Legion/Common/Util/Logger.hpp>
 
 using namespace legion;
 
@@ -62,10 +64,19 @@ void ProgressiveRenderer::render()
 {
     // TODO: iterate over number of samples
     // TODO: update display
-    m_output_buffer->setSize( getResolution().x(), getResolution().y() );
-    launchOptiX( getResolution() );
+    Timer timer;
+
+    for( int i = 0; i < 10; ++i )
+    {
+      AutoPrintTimer apt( PrintTimeElapsed( "\tOptiX launch" ) );
+      m_output_buffer->setSize( getResolution().x(), getResolution().y() );
+      launchOptiX( getResolution() );
+    }
+
+    AutoPrintTimer apt( PrintTimeElapsed( "\tDisplay" ) );
     m_display->completeFrame( getResolution(), reinterpret_cast<float*>( m_output_buffer->map() ) );
     m_output_buffer->unmap();
+
 }
     
 
