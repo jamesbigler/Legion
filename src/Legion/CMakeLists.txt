@@ -32,7 +32,7 @@ add_library( legion SHARED
     Common/Math/Math.hpp
     Common/Math/Matrix.hpp
     Common/Math/ONB.hpp
-    Common/Math/Sobol.cpp
+    #Common/Math/Sobol.cpp
     Common/Math/Sobol.hpp
     Common/Math/Vector.hpp
     Common/Util/Assert.hpp

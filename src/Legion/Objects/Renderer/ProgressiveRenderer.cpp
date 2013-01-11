@@ -83,6 +83,6 @@ void ProgressiveRenderer::render( VariableContainer& container )
 
 void ProgressiveRenderer::setVariables( VariableContainer& container ) const
 {
-    container.setBuffer( "legion_output_buffer", m_output_buffer );
+    container.setBuffer( "output_buffer", m_output_buffer );
 }
 

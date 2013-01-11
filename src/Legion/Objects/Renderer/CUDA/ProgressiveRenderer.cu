@@ -21,28 +21,34 @@
 // IN THE SOFTWARE.
 
 #include <Legion/Objects/cuda_common.hpp>
+#include <Legion/Common/Math/Sobol.hpp>
+#include <optixu/optixu_math_namespace.h>
 
 
 rtDeclareVariable( uint2, launch_index, rtLaunchIndex, );
 rtDeclareVariable( uint2, launch_dim,   rtLaunchDim, );
 
-
-rtDeclareVariable( unsigned, sample_number, , );
+rtDeclareVariable( unsigned, sample_index, , );
 
 rtBuffer<float4, 2> output_buffer;
 
 
 RT_PROGRAM void progressiveRendererRayGen()
 {
-    const float sx = static_cast<float>( launch_index.x ) /
-                     static_cast<float>( launch_dim.x );
-    const float sy = static_cast<float>( launch_index.y ) /
-                     static_cast<float>( launch_dim.y );
+    const float2 inv_dim = make_float2( 1.0f ) / 
+                           make_float2( launch_dim.x, launch_dim.y );
 
+    const float sx = static_cast<float>( launch_index.x ) * inv_dim.x;
+    const float sy = static_cast<float>( launch_index.y ) * inv_dim.y;
+
+    // TODO: use Alex's code for grabbing the Ith sample within a given pixel
+    //       so we can query a screen seed for this pixel directly
     const float  time_seed   = 0.0f;
-    const float2 lens_seed   = make_float2( 0.0f, 0.0f );
-    const float2 screen_seed = make_float2( sx, sy );
-
+    const float2 lens_seed   = legion::Sobol::genLensSample( sample_index );
+    const float2 pixel_seed  = legion::Sobol::genPixelSample( sample_index );
+    const float2 screen_seed = make_float2( sx + pixel_seed.x * inv_dim.x ,
+                                            sy + pixel_seed.y * inv_dim.y );
+    
     legion::RayGeometry rg = legionCameraCreateRay( lens_seed,
                                                     screen_seed,
                                                     time_seed );
@@ -60,7 +66,10 @@ RT_PROGRAM void progressiveRendererRayGen()
             RT_DEFAULT_MAX );
     rtTrace( legion_top_group, ray, prd );
 
-    output_buffer[ launch_index ] = make_float4( prd.result, 1.0f );
+    const float4 prev   = output_buffer[ launch_index ];
+    const float4 cur    = make_float4( prd.result, 1.0f );
+    const float4 result = optix::lerp( prev, cur, 1.0f / static_cast<float>( sample_index+1 ) );
+    output_buffer[ launch_index ] = result;
 }
 
 

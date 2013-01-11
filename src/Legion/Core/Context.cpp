@@ -146,7 +146,9 @@ void Context::Impl::render()
     LLOG_INFO << "Rendering frame ... ";
     Timer timer;
     timer.start();
-    VariableContainer vc( m_optix_scene.getOptiXContext()->getRayGenerationProgram( 0 ).get() );
+    optix::Program ray_gen_program = m_optix_scene.getOptiXContext()->getRayGenerationProgram( 0 );
+    VariableContainer vc( ray_gen_program.get() );
+    //VariableContainer vc( m_optix_scene.getOptiXContext().get() );
     m_renderer->render( vc );
     timer.stop();
     LLOG_INFO << "Frame complete ... (" << timer.getTimeElapsed() << "s)";
