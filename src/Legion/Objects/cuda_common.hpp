@@ -24,6 +24,7 @@
 #define LEGION_OBJECTS_CUDA_COMMON_HPP_
 
 #include <optix_world.h>
+#include <Legion/Common/Math/Sobol.hpp>
 
 namespace legion
 {
@@ -58,9 +59,43 @@ struct ShadowPRD
 };
 
 
+//------------------------------------------------------------------------------
+//
+// Given a pixel and sample number, calculate screen, lens, and time samples
+// using the Sobol sequence.  Returns the sobol index so that further dimensions
+// can be queried (eg, for BSDF sampling).  Note that this function uses the
+// first 5 dimensions of the sobol sequence, so any further sampling of this
+// sobol_index should start at the 6th dim
+//
+//------------------------------------------------------------------------------
+__device__ unsigned generateSobolSamples( const uint2& launch_dim,
+                                          const uint2& pixel_coord,
+                                          unsigned     sample_index,
+                                          float2&      screen_sample,
+                                          float2&      lens_sample,
+                                          float&       time_sample )
+{
+    const float2 inv_dim = make_float2( 1.0f ) / 
+                           make_float2( launch_dim.x, launch_dim.y );
+
+    screen_sample = make_float2(0.5f );
+    unsigned sobol_index;
+    legion::Sobol::getRasterPos( 12, // 2^m should be > film max_dim
+                                 sample_index,
+                                 pixel_coord,
+                                 screen_sample,
+                                 sobol_index );
+
+    screen_sample = screen_sample * inv_dim;
+
+    lens_sample   = legion::Sobol::genLensSample( sobol_index );
+    time_sample   = 0.0f;
+
+    return sobol_index;
+}
+
+
 } // end namespace legion
-
-
 
 //------------------------------------------------------------------------------
 //

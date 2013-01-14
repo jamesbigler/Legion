@@ -21,7 +21,6 @@
 // IN THE SOFTWARE.
 
 #include <Legion/Objects/cuda_common.hpp>
-#include <Legion/Common/Math/Sobol.hpp>
 #include <optixu/optixu_math_namespace.h>
 
 
@@ -33,32 +32,22 @@ rtDeclareVariable( unsigned, sample_index, , );
 rtBuffer<float4, 2> output_buffer;
 
 
+
 RT_PROGRAM void progressiveRendererRayGen()
 {
-    const float2 inv_dim = make_float2( 1.0f ) / 
-                           make_float2( launch_dim.x, launch_dim.y );
-
-    const float sx = static_cast<float>( launch_index.x ) * inv_dim.x;
-    const float sy = static_cast<float>( launch_index.y ) * inv_dim.y;
-
-    // TODO: use Alex's code for grabbing the Ith sample within a given pixel
-    //       so we can query a screen seed for this pixel directly
-    float2 screen_seed = make_float2(0.5f );
-    unsigned sobol_index;
-    legion::Sobol::getRasterPos( 12, // 2^m should be > film max_dim
-                                 sample_index,
-                                 launch_index,
-                                 screen_seed,
-                                 sobol_index );
-    screen_seed = make_float2( screen_seed.x / static_cast<float>( launch_dim.x ),
-                               screen_seed.y / static_cast<float>( launch_dim.y ) );
-
-    const float  time_seed   = 0.0f;
-    const float2 lens_seed   = legion::Sobol::genLensSample( sobol_index );
+    float2 screen_sample;
+    float2 lens_sample;
+    float  time_sample;
+    legion::generateSobolSamples( launch_dim,
+                                  launch_index,
+                                  sample_index,
+                                  screen_sample,
+                                  lens_sample,
+                                  time_sample );
     
-    legion::RayGeometry rg = legionCameraCreateRay( lens_seed,
-                                                    screen_seed,
-                                                    time_seed );
+    legion::RayGeometry rg = legionCameraCreateRay( lens_sample,
+                                                    screen_sample,
+                                                    time_sample );
 
     legion::RadiancePRD prd;
     prd.result = make_float3( 0.0f );
