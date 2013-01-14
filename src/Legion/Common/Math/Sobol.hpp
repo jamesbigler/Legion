@@ -94,8 +94,7 @@ __device__ __inline__ float  Sobol::genTimeSample ( unsigned i, unsigned scrambl
 
 __device__ __inline__ unsigned Sobol::genu( unsigned i, unsigned dim,  unsigned s )
 {
-    //const unsigned int adr = dim*(52/4);
-    const unsigned int adr = 0 ;
+    const unsigned int adr = dim*(52/4);
     unsigned int result = 0;
 
     for (unsigned int c = 0; (i != 0); i>>=8, c+=2) {
@@ -200,8 +199,6 @@ __device__ __inline__ void Sobol::getRasterPos( const unsigned m, // 2^m should 
   sobol_index = lookUpSobolIndex( m, pass, pixel );
   raster_pos.x = static_cast<float>(Sobol::genu( sobol_index, 0 ) ) / (1U<<(32-m) );
   raster_pos.y = static_cast<float>(Sobol::genu( sobol_index, 1 ) ) / (1U<<(32-m) );
-  if( pixel.x % 32 == 0 && pixel.y % 32 == 0 )
-    rtPrintf( "**** %f %f\n", raster_pos.x, raster_pos.y );
 }
 
 }

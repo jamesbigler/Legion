@@ -50,18 +50,11 @@ RT_PROGRAM void progressiveRendererRayGen()
                                  launch_index,
                                  screen_seed,
                                  sobol_index );
-
-    if( launch_index.x % 32 == 0 && launch_index.y % 32 == 0 )
-        rtPrintf( "%u,%u: %f %f\n", launch_index.x, launch_index.y, screen_seed.x, screen_seed.y );
+    screen_seed = make_float2( screen_seed.x / static_cast<float>( launch_dim.x ),
+                               screen_seed.y / static_cast<float>( launch_dim.y ) );
 
     const float  time_seed   = 0.0f;
     const float2 lens_seed   = legion::Sobol::genLensSample( sobol_index );
-    /*
-    const float2 pixel_seed  = legion::Sobol::genPixelSample( sample_index );
-    const float2 screen_seed = make_float2( sx + pixel_seed.x * inv_dim.x ,
-                                            sy + pixel_seed.y * inv_dim.y );
-                                            sy + pixel_seed.y * inv_dim.y );
-                                            */
     
     legion::RayGeometry rg = legionCameraCreateRay( lens_seed,
                                                     screen_seed,
