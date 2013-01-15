@@ -42,6 +42,18 @@ public:
     virtual ~ILight() {}
 
     
+    /*
+    // double sampleDirection( const float3&    w_in, 
+    //                         const HitRecord& hit );
+    //                         const float2&    sample_seed );
+    virtual const char* sampleDirectionFunctionName()const=0;
+
+    // double pdfDirection( const float3&    w_in, 
+    //                      const HitRecord& hit );
+    //                      const float2&    sample_seed );
+    virtual const char* pdfDirectionFunctionName()const=0;
+    
+    */
 
     /*
     /// Destroy an ILightShader object

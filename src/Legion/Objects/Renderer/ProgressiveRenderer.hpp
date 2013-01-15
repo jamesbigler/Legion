@@ -40,8 +40,8 @@ public:
     ProgressiveRenderer( Context* context );
     ~ProgressiveRenderer();
 
-    void           setNumSamplesPerPass( unsigned num_samples_per_pass );
-    unsigned       getNumSamplesPerPass()const;
+    void           setSamplesPerPass( unsigned samples_per_pass );
+    unsigned       getSamplesPerPass()const;
 
     const char*    name()const;
     const char*    rayGenProgramName()const;

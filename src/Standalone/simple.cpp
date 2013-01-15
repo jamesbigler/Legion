@@ -66,6 +66,8 @@ int main( int , char** )
         ctx.setCamera( &cam );
 
         legion::ProgressiveRenderer renderer( &ctx );
+        renderer.setSamplesPerPixel( 64 );
+        renderer.setSamplesPerPass( 8 );
         ctx.setRenderer( &renderer );
 
         legion::ImageFileDisplay display( &ctx, "simple.exr" );

@@ -43,13 +43,13 @@ ProgressiveRenderer::~ProgressiveRenderer()
 }
 
     
-void ProgressiveRenderer::setNumSamplesPerPass( unsigned num_samples_per_pass )
+void ProgressiveRenderer::setSamplesPerPass( unsigned samples_per_pass )
 {
-    m_samples_per_pass =  num_samples_per_pass;
+    m_samples_per_pass =  samples_per_pass;
 }
 
 
-unsigned ProgressiveRenderer::getNumSamplesPerPass()const
+unsigned ProgressiveRenderer::getSamplesPerPass()const
 {
     return m_samples_per_pass;
 }
