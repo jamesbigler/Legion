@@ -29,6 +29,7 @@
 
 #include <Legion/Common/Util/Logger.hpp>
 #include <Legion/Common/Util/Timer.hpp>
+#include <limits>
 
 namespace legion
 {
@@ -39,6 +40,7 @@ struct LoopTimerInfo
         : name( name ),
           iterations( 0u ),
           max_time( 0.0 ),
+          min_time( std::numeric_limits<double>::max() ),
           total_time( 0.0 )
     {}
 
@@ -46,6 +48,7 @@ struct LoopTimerInfo
     {
         ++iterations;
         max_time = std::max( max_time, time_elapsed );
+        min_time = std::min( min_time, time_elapsed );
         total_time += time_elapsed;
     }
 
@@ -55,6 +58,7 @@ struct LoopTimerInfo
                   << name 
                   << " sum: " << total_time 
                   << " max: " << max_time
+                  << " min: " << min_time
                   << " avg: " << averageTime();
     }
 
@@ -73,8 +77,10 @@ struct LoopTimerInfo
     std::string name;
     unsigned    iterations;
     double      max_time;
+    double      min_time;
     double      total_time;
 };
+typedef AutoTimerRef<LoopTimerInfo> LoopTimer;
 
 
 

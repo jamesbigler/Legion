@@ -40,6 +40,9 @@ public:
     ProgressiveRenderer( Context* context );
     ~ProgressiveRenderer();
 
+    void           setNumSamplesPerPass( unsigned num_samples_per_pass );
+    unsigned       getNumSamplesPerPass()const;
+
     const char*    name()const;
     const char*    rayGenProgramName()const;
     optix::Buffer  getOutputBuffer()const;
@@ -48,6 +51,7 @@ public:
     void setVariables( VariableContainer& container ) const;
 private:
     optix::Buffer m_output_buffer;
+    unsigned      m_samples_per_pass;
 };
 
 }

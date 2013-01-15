@@ -30,7 +30,8 @@
 using namespace legion;
 
 ProgressiveRenderer::ProgressiveRenderer( Context* context ) 
-   : IRenderer( context )
+   : IRenderer( context ),
+     m_samples_per_pass( 16u )
 {
     m_output_buffer = createOptiXBuffer( RT_BUFFER_OUTPUT,
                                          RT_FORMAT_FLOAT4 );
@@ -39,6 +40,18 @@ ProgressiveRenderer::ProgressiveRenderer( Context* context )
 
 ProgressiveRenderer::~ProgressiveRenderer()
 {
+}
+
+    
+void ProgressiveRenderer::setNumSamplesPerPass( unsigned num_samples_per_pass )
+{
+    m_samples_per_pass =  num_samples_per_pass;
+}
+
+
+unsigned ProgressiveRenderer::getNumSamplesPerPass()const
+{
+    return m_samples_per_pass;
 }
 
 
@@ -62,17 +75,24 @@ optix::Buffer ProgressiveRenderer::getOutputBuffer()const
 
 void ProgressiveRenderer::render( VariableContainer& container )
 {
-    // TODO: iterate over number of samples
-    // TODO: update display
-    Timer timer;
+    m_output_buffer->setSize( getResolution().x(), getResolution().y() );
 
-    for( unsigned i = 0; i < getSamplesPerPixel(); ++i )
+    // TODO: update display
+    LoopTimerInfo progressive_updates( "ProgressiveRenderer progress loop" );
+    /*
+    const unsigned num_passes = getSamplesPerPixel() / m_samples_per_pass     ?
+                                getSamplesPerPixel() / m_samples_per_pass + 1 :
+                                getSamplesPerPixel() / m_samples_per_pass;
+                                */
+    for( unsigned i = 0; i < getSamplesPerPixel(); i += m_samples_per_pass )
     {
+      LLOG_INFO << "\tsample_index: " << i;
+      LoopTimer timer( progressive_updates );
       container.setUnsigned( "sample_index", i );
-      AutoPrintTimer apt( PrintTimeElapsed( "\tOptiX launch" ) );
-      m_output_buffer->setSize( getResolution().x(), getResolution().y() );
       launchOptiX( getResolution() );
     }
+    progressive_updates.log();
+
 
     AutoPrintTimer apt( PrintTimeElapsed( "\tDisplay" ) );
     m_display->completeFrame( getResolution(), reinterpret_cast<float*>( m_output_buffer->map() ) );
@@ -83,6 +103,7 @@ void ProgressiveRenderer::render( VariableContainer& container )
 
 void ProgressiveRenderer::setVariables( VariableContainer& container ) const
 {
-    container.setBuffer( "output_buffer", m_output_buffer );
+    container.setBuffer  ( "output_buffer", m_output_buffer );
+    container.setUnsigned( "samples_per_pass", m_samples_per_pass );
 }
 
