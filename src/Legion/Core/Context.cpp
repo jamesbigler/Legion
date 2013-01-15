@@ -86,12 +86,14 @@ Context::Impl::Impl( Context* context )
       m_optix_scene(),
       m_plugin_context( m_optix_scene.getOptiXContext() )
 {
+  /*
     m_plugin_mgr.registerPlugin<IGeometry>( "Sphere", &Sphere::create );
 
     Parameters params;
     IGeometry* geo = m_plugin_mgr.create<IGeometry>( "Sphere", params );
     LLOG_INFO << "\tSphere: " << geo;
     //Geometry* geo = ctx->create<Geometry>( "Sphere", properties );
+  */
 }
 
 
@@ -146,7 +148,8 @@ void Context::Impl::render()
     LLOG_INFO << "Rendering frame ... ";
     Timer timer;
     timer.start();
-    optix::Program ray_gen_program = m_optix_scene.getOptiXContext()->getRayGenerationProgram( 0 );
+    optix::Program ray_gen_program = 
+      m_optix_scene.getOptiXContext()->getRayGenerationProgram( 0 );
     VariableContainer vc( ray_gen_program.get() );
     //VariableContainer vc( m_optix_scene.getOptiXContext().get() );
     m_renderer->render( vc );
@@ -169,13 +172,11 @@ PluginContext& Context::Impl::getPluginContext()
 Context::Context() 
     : m_impl( new Impl( this ) )
 {
-    LLOG_INFO << "Creating legion::Context";
 }
 
 
 Context::~Context()
 {
-    LLOG_INFO << "Destroying legion::Context";
 }
 
 

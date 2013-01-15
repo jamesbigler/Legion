@@ -62,8 +62,7 @@ RT_PROGRAM void progressiveRendererRayGen()
         prd.importance = 1.0f;
         prd.depth = 0u;
 
-        optix::Ray ray = optix::make_Ray( 
-                rg.origin,
+        optix::Ray ray = optix::make_Ray( rg.origin,
                 rg.direction,
                 0u,
                 0.0f,
@@ -75,7 +74,8 @@ RT_PROGRAM void progressiveRendererRayGen()
     const float  spp    = static_cast<float>( samples_per_pass );
     const float4 prev   = output_buffer[ launch_index ];
     const float4 cur    = make_float4( result / spp, 1.0f );
-    output_buffer[ launch_index ] = optix::lerp( prev, cur, spp / ( spp+sample_index ) );
+    const float4 final  = optix::lerp( prev, cur, spp / ( spp+sample_index ) );
+    output_buffer[ launch_index ] = final;
 }
 
 

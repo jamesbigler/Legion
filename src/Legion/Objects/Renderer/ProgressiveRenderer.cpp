@@ -31,7 +31,7 @@ using namespace legion;
 
 ProgressiveRenderer::ProgressiveRenderer( Context* context ) 
    : IRenderer( context ),
-     m_samples_per_pass( 16u )
+     m_samples_per_pass( 8u )
 {
     m_output_buffer = createOptiXBuffer( RT_BUFFER_OUTPUT,
                                          RT_FORMAT_FLOAT4 );
@@ -75,29 +75,51 @@ optix::Buffer ProgressiveRenderer::getOutputBuffer()const
 
 void ProgressiveRenderer::render( VariableContainer& container )
 {
+    LLOG_INFO << "\tProgressiveRenderer : rendering ...";
     m_output_buffer->setSize( getResolution().x(), getResolution().y() );
 
-    // TODO: update display
-    LoopTimerInfo progressive_updates( "ProgressiveRenderer progress loop" );
-    /*
-    const unsigned num_passes = getSamplesPerPixel() / m_samples_per_pass     ?
-                                getSamplesPerPixel() / m_samples_per_pass + 1 :
-                                getSamplesPerPixel() / m_samples_per_pass;
-                                */
+    //
+    // Force pre-compilation and accel structure builds
+    //
+    {
+        AutoPrintTimer apt( PrintTimeElapsed( "\tCompile/accel build " ) );
+        launchOptiX( Index2( 0u, 0u ) );
+    }
+
+    //
+    // Progressive loop
+    //
+    LoopTimerInfo progressive_updates( "\tProgressive loop    :" );
     for( unsigned i = 0; i < getSamplesPerPixel(); i += m_samples_per_pass )
     {
-      LLOG_INFO << "\tsample_index: " << i;
-      LoopTimer timer( progressive_updates );
-      container.setUnsigned( "sample_index", i );
-      launchOptiX( getResolution() );
+        LoopTimer timer( progressive_updates );
+        container.setUnsigned( "sample_index", i );
+        launchOptiX( getResolution() );
+        m_display->updateFrame( 
+            getResolution(), 
+            reinterpret_cast<float*>( m_output_buffer->map() ) );
+        m_output_buffer->unmap();
     }
+
+    //
+    // Log statistics
+    //
     progressive_updates.log();
+    const float num_pixels = getResolution().x() * 
+                             getResolution().y() * 
+                             getSamplesPerPixel();
+    LLOG_INFO << "\tTotal pixels/second : " 
+              << static_cast<unsigned>( num_pixels / 
+                                        progressive_updates.total_time );
 
-
+    //
+    // Display
+    //
     AutoPrintTimer apt( PrintTimeElapsed( "\tDisplay" ) );
-    m_display->completeFrame( getResolution(), reinterpret_cast<float*>( m_output_buffer->map() ) );
+    m_display->completeFrame( 
+        getResolution(), 
+        reinterpret_cast<float*>( m_output_buffer->map() ) );
     m_output_buffer->unmap();
-
 }
     
 

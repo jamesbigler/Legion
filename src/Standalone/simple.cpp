@@ -13,7 +13,7 @@ int main( int , char** )
         legion::Log::setReportingLevel( legion::Log::INFO );
 
         // TODO: can be defined as ctx.log.info()
-        LLOG_INFO << "Starting ***********";
+        LLOG_INFO << "simple scene ...";
         
         // Parameters params;
         // params.add( "Kd", legion::Color( 0.5f, 0.5f, 0.5f ) );
@@ -72,7 +72,6 @@ int main( int , char** )
         renderer.setDisplay( &display );
         
         ctx.render();
-        LLOG_INFO << "Finished ***********";
     }
     catch( legion::Exception& e )
     {
