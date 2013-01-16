@@ -49,3 +49,26 @@ legion::RayGeometry thinLensCreateRay(
     return r;
 }
 
+/*
+// TODO: this is the function signature i want to use -- waiting for optix
+//       bug fix 
+RT_CALLABLE_PROGRAM
+void thinLensCreateRay(
+        float2  aperture_sample,
+        float2  screen_sample,
+        float   time,
+        float3& origin,
+        float3& direction
+        )
+{
+    const float2 disk_sample = optix::square_to_disk( aperture_sample );
+    origin      = make_float3( aperture_radius * disk_sample, 0.0f );
+    direction.x = optix::lerp( view_plane.x, view_plane.y, screen_sample.x );
+    direction.y = optix::lerp( view_plane.z, view_plane.w, screen_sample.y );
+    direction.z = -focal_distance; 
+    direction   = optix::normalize( direction );
+
+    // TODO: transform
+}
+*/
+

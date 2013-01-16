@@ -111,6 +111,12 @@ rtDeclareVariable( rtObject, legion_top_group, , );
 rtCallableProgram( legion::RayGeometry,
                    legionCameraCreateRay, 
                    (float2, float2, float ) );
+/*
+// TODO: waiting for optix bug fix
+rtCallableProgram( void,
+                   legionCameraCreateRay, 
+                   (float2, float2, float, float3&, float3& ) );
+*/
 
 
 #endif // LEGION_OBJECTS_CUDA_COMMON_HPP_
