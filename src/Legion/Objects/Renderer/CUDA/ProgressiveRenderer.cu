@@ -56,27 +56,13 @@ RT_PROGRAM void progressiveRendererRayGen()
         legion::RayGeometry rg = legionCameraCreateRay( lens_sample,
                                                         screen_sample,
                                                         time_sample );
-        /*
-        // TODO: waiting for optix bug fix
-        float3 origin, direction;
-        legionCameraCreateRay( lens_sample,
-                               screen_sample,
-                               time_sample,
-                               origin,
-                               direction );
-        */
 
         legion::RadiancePRD prd;
         prd.result = make_float3( 0.0f );
         prd.importance = 1.0f;
         prd.depth = 0u;
 
-        optix::Ray ray = optix::make_Ray( 
-                rg.origin,
-                rg.direction,
-                0u,
-                0.0f,
-                RT_DEFAULT_MAX );
+        optix::Ray ray = legion::makePrimaryRay( rg.origin, rg.direction );
         rtTrace( legion_top_group, ray, prd );
         result += prd.result;
     }

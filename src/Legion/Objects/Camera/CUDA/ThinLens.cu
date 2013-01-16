@@ -33,9 +33,9 @@ rtDeclareVariable( float4          , view_plane     , , );
 
 RT_CALLABLE_PROGRAM
 legion::RayGeometry thinLensCreateRay(
-        float2  aperture_sample,
-        float2  screen_sample,
-        float   time )
+        float2 aperture_sample,
+        float2 screen_sample,
+        float  time )
 {
     const float2 disk_sample = optix::square_to_disk( aperture_sample );
     legion::RayGeometry r;
@@ -49,9 +49,9 @@ legion::RayGeometry thinLensCreateRay(
     return r;
 }
 
-/*
 // TODO: this is the function signature i want to use -- waiting for optix
 //       bug fix 
+/*
 RT_CALLABLE_PROGRAM
 void thinLensCreateRay(
         float2  aperture_sample,

@@ -94,6 +94,11 @@ __device__ unsigned generateSobolSamples( const uint2& launch_dim,
     return sobol_index;
 }
 
+__device__ optix::Ray makePrimaryRay( float3 origin, float3 direction )
+{
+    return optix::make_Ray( origin, direction, 0u, 0.0f, RT_DEFAULT_MAX );
+}
+
 
 } // end namespace legion
 
@@ -108,15 +113,14 @@ rtDeclareVariable( unsigned, legion_radiance_ray_type, , );
 rtDeclareVariable( unsigned, legion_shadow_ray_type  , , );
 rtDeclareVariable( rtObject, legion_top_group, , );
 
+//------------------------------------------------------------------------------
+//
+// Camera helpers
+//
+//------------------------------------------------------------------------------
 rtCallableProgram( legion::RayGeometry,
                    legionCameraCreateRay, 
                    (float2, float2, float ) );
-/*
-// TODO: waiting for optix bug fix
-rtCallableProgram( void,
-                   legionCameraCreateRay, 
-                   (float2, float2, float, float3&, float3& ) );
-*/
 
 
 #endif // LEGION_OBJECTS_CUDA_COMMON_HPP_
