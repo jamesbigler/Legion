@@ -45,8 +45,9 @@ public:
     Sphere( Context* context, const Parameters& params );
     
     const char* name()const;
-    const char* intersectionName()const;
-    const char* boundingBoxName()const;
+    const char* intersectionFunctionName()const;
+    const char* boundingBoxFunctionName()const;
+    const char* sampleFunctionName()const;
 
     unsigned    numPrimitives()const;
 

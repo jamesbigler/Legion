@@ -29,6 +29,17 @@
 
 #define LFUNC __PRETTY_FUNCTION__
 
+#if defined(__CUDACC__) || defined(__CUDABE__)
+#    define LCUDA
+#endif
+
+#ifdef LCUDA
+#    include <host_defines.h>  // For __host__ and __device__ 
+#    define LHOSTDEVICE __host__ __device__
+#    define LDEVICE     __device__
+#else
+#    define LHOSTDEVICE
+#endif
 
 
 #endif // LEGION_COMMON_UTIL_PREPROCESSOR_HPP_

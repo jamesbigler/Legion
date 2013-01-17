@@ -22,6 +22,7 @@
 
 #include <Legion/Core/VariableContainer.hpp>
 #include <Legion/Common/Math/Matrix.hpp>
+#include <Legion/Core/Color.hpp>
 
 using namespace legion;
 
@@ -64,7 +65,14 @@ void VariableContainer::setFloat( const std::string& name, const Vector3& val )
 
 void VariableContainer::setFloat( const std::string& name, const Vector4& val )
 {
-    getVariable( m_scoped, name )->setFloat( val.x(), val.y(), val.z(), val.w() );
+    getVariable( m_scoped, name )->
+        setFloat( val.x(), val.y(), val.z(), val.w() );
+}
+
+
+void VariableContainer::setFloat( const std::string& name, const Color& val )
+{
+    getVariable( m_scoped, name )->setFloat( val.r(), val.g(), val.b() );
 }
 
 

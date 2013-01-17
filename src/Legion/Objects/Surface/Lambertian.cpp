@@ -1,6 +1,7 @@
 
 
 #include <Legion/Objects/Surface/Lambertian.hpp>
+#include <Legion/Core/VariableContainer.hpp>
 
 
 using namespace legion;
@@ -17,65 +18,37 @@ Lambertian::~Lambertian()
 }
 
 
-void Lambertian::setKd( const Color& kd )
+void Lambertian::setReflectance( const Color& reflectance )
 {
-    m_kd = kd;
+    m_reflectance = reflectance;
 }
     
 
-void Lambertian::setVariables( VariableContainer& /*container*/ ) const
+const char* Lambertian::name()const
 {
+    return "Lambertian";
 }
 
 
-/*
-void Lambertian::sampleBSDF( const Vector2& seed, 
-                                   const Vector3& w_out,
-                                   const LocalGeometry& p,
-                                   Vector3& w_in,
-                                   Color& f_over_pdf )const
+const char* Lambertian::sampleBSDFFunctionName()const
 {
-    // sample hemisphere with cosine density by uniformly sampling
-    // unit disk and projecting up to hemisphere
-    Vector2 on_disk( squareToDisk( seed ) );
-    const float x = on_disk.x();
-    const float y = on_disk.y();
-          float z = 1.0f - x*x -y*y;
-
-    z = z > 0.0f ? sqrtf( z ) : 0.0f;
-
-    // Transform into world space
-    ONB onb( p.shading_normal );
-    w_in = onb.inverseTransform( Vector3( x, y, z ) );
-
-    // calculate pdf
-    float pdf_inv  = PI / z;
-    f_over_pdf = pdf_inv * m_kd;
+    return "lambertianSampleBSDF";
 }
 
 
-bool Lambertian::isSingular()const
+const char* Lambertian::evaluateBSDFFunctionName()const
 {
-    return false;
+    return "lambertianEvaluateBSDF";
 }
 
 
-float Lambertian::pdf( const Vector3& w_out,
-                             const LocalGeometry& p,
-                             const Vector3& w_in )const
+const char* Lambertian::pdfFunctionName()const
 {
-    float cosine = std::max( 0.0f, dot( w_in, p.shading_normal ) );
-    return cosine * ONE_DIV_PI;
+    return "lambertianPDFFunctionName";
 }
 
 
-Color Lambertian::evaluateBSDF( const Vector3& w_out,
-                                      const LocalGeometry& p,
-                                      const Vector3& w_in )const
+void Lambertian::setVariables( VariableContainer& container ) const
 {
-    
-    float cosine = std::max( 0.0f, dot( w_in, p.shading_normal ) );
-    return cosine * ONE_DIV_PI * m_kd;
+    container.setFloat( "reflectance", m_reflectance );
 }
-*/
-    

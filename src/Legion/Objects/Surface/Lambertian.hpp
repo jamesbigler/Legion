@@ -20,11 +20,14 @@ public:
     Lambertian( Context* context );
     ~Lambertian();
     
+    void setReflectance( const Color& reflectance );
     
-    void setKd( const Color& kd );
-    
-    void setVariables( VariableContainer& container ) const ;
+    const char* name()const;
+    const char* sampleBSDFFunctionName()const;
+    const char* evaluateBSDFFunctionName()const;
+    const char* pdfFunctionName()const;
 
+    void setVariables( VariableContainer& container ) const ;
 
     /*
     void   sampleBSDF( const Vector2& seed,
@@ -47,7 +50,7 @@ public:
 
     */
 private:
-    Color m_kd;
+    Color m_reflectance;
 };
 
 

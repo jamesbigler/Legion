@@ -24,7 +24,7 @@
 #define LEGION_OBJECTS_CUDA_COMMON_HPP_
 
 #include <optix_world.h>
-#include <Legion/Common/Math/Sobol.hpp>
+#include <Legion/Common/Math/CUDA/Sobol.hpp>
 
 namespace legion
 {
@@ -87,8 +87,8 @@ __device__ unsigned generateSobolSamples( const uint2& launch_dim,
                                  sobol_index );
 
     screen_sample = screen_sample * inv_dim;
-
-    lens_sample   = legion::Sobol::genLensSample( sobol_index );
+    lens_sample   = make_float2( legion::Sobol::gen( sobol_index, 2 ),
+                                 legion::Sobol::gen( sobol_index, 3 ) );
     time_sample   = 0.0f;
 
     return sobol_index;
@@ -122,5 +122,42 @@ rtCallableProgram( legion::RayGeometry,
                    legionCameraCreateRay, 
                    (float2, float2, float ) );
 
+
+//------------------------------------------------------------------------------
+//
+// Surface helpers
+//
+//------------------------------------------------------------------------------
+
+namespace legion
+{
+struct BSDFSample
+{
+    float3 w_in;
+    float3 f_over_pdf;
+};
+
+struct LocalGeometry 
+{
+    float3   position;
+    float3   position_object;
+    float3   geometric_normal;
+    float3   shading_normal;
+    float2   texcoord;
+};
+
+}
+
+rtCallableProgram( legion::BSDFSample,
+                   sampleBSDF,
+                   ( float2, float3 , legion::LocalGeometry ) );
+
+rtCallableProgram( float3, 
+                   evaluateBSDF,
+                   ( float3 , legion::LocalGeometry, float3 ) );
+
+rtCallableProgram( float, 
+                   pdf,
+                   ( float3, legion::LocalGeometry, float3 ) );
 
 #endif // LEGION_OBJECTS_CUDA_COMMON_HPP_

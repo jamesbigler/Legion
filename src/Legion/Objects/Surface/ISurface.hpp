@@ -16,7 +16,16 @@ class ISurface : public IObject
 {
 public:
     ISurface( Context* context ) : IObject( context ) {}
+
     virtual ~ISurface() {}
+
+
+    virtual const char* name()const=0;
+    virtual const char* sampleBSDFFunctionName()const=0;
+    virtual const char* evaluateBSDFFunctionName()const=0;
+    virtual const char* pdfFunctionName()const=0;
+
+    virtual const char* emissionFunctionName()const { return ""; };
     
     /// Return the name of this Surface type
     /// static std::string name();

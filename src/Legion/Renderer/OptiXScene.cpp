@@ -134,12 +134,12 @@ void OptiXScene::addGeometry( IGeometry* geometry )
         optix::Program intersect = 
             m_program_mgr.get( geometry->name(),
                                std::string( geometry->name() ) + ".ptx",
-                               geometry->intersectionName() );
+                               geometry->intersectionFunctionName() );
 
         optix::Program bbox = 
             m_program_mgr.get( geometry->name(),
                                std::string( geometry->name() ) + ".ptx",
-                               geometry->boundingBoxName() );
+                               geometry->boundingBoxFunctionName() );
 
         // Create optix Geometry 
         optix::Geometry optix_geometry = m_optix_context->createGeometry();

@@ -31,6 +31,7 @@ namespace legion
 {
 
 class Matrix;
+class Color;
 
 class VariableContainer
 {
@@ -40,6 +41,8 @@ public:
     void setFloat( const std::string& name, const Vector2& val );
     void setFloat( const std::string& name, const Vector3& val );
     void setFloat( const std::string& name, const Vector4& val );
+
+    void setFloat( const std::string& name, const Color& val );
 
     void setUnsigned( const std::string& name, unsigned val );
 

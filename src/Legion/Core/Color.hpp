@@ -16,6 +16,10 @@ public:
     float red()const               { return m_c[0]; }
     float green()const             { return m_c[1]; }
     float blue()const              { return m_c[2]; }
+    
+    float r()const                 { return m_c[0]; }
+    float g()const                 { return m_c[1]; }
+    float b()const                 { return m_c[2]; }
 
     void  setRed  ( float r )      { m_c[0] = r; }
     void  setGreen( float g )      { m_c[1] = g; }

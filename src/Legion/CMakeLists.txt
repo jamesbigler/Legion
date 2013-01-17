@@ -12,6 +12,7 @@ CUDA_COMPILE_PTX( ptx_files
     Objects/Camera/CUDA/ThinLens.cu
     Objects/Geometry/CUDA/Sphere.cu
     Objects/Surface/CUDA/Normal.cu
+    Objects/Surface/CUDA/Lambertian.cu
     Objects/Renderer/CUDA/ProgressiveRenderer.cu
     )
 
@@ -25,15 +26,14 @@ include_directories(
 # build the library and ptx files
 add_library( legion SHARED
     ${ptx_files}
+    Common/Math/CUDA/Math.hpp
+    Common/Math/CUDA/ONB.hpp
+    Common/Math/CUDA/Sobol.hpp
     Common/Math/Filter.hpp
     Common/Math/MTRand.cpp
     Common/Math/MTRand.hpp
-    Common/Math/Math.cpp
     Common/Math/Math.hpp
     Common/Math/Matrix.hpp
-    Common/Math/ONB.hpp
-    #Common/Math/Sobol.cpp
-    Common/Math/Sobol.hpp
     Common/Math/Vector.hpp
     Common/Util/Assert.hpp
     Common/Util/AutoTimerHelpers.hpp
@@ -64,22 +64,19 @@ add_library( legion SHARED
     Core/VariableContainer.cpp
     Core/VariableContainer.hpp
     Legion.hpp
-    Objects/IObject.cpp
-    Objects/IObject.hpp
     Objects/Camera/ICamera.hpp
     Objects/Camera/ThinLens.cpp
     Objects/Camera/ThinLens.hpp
     Objects/Display/IDisplay.hpp
     Objects/Display/ImageFileDisplay.cpp
     Objects/Display/ImageFileDisplay.hpp
-    #Objects/Film/IFilm.hpp
-    #Objects/Film/ImageFilm.cpp
-    #Objects/Film/ImageFilm.hpp
     Objects/Geometry/IGeometry.hpp
     Objects/Geometry/Sphere.cpp
     Objects/Geometry/Sphere.hpp
     Objects/Geometry/TriMesh.cpp
     Objects/Geometry/TriMesh.hpp
+    Objects/IObject.cpp
+    Objects/IObject.hpp
     Objects/Light/ILight.hpp
     Objects/Light/PointLight.cpp
     Objects/Light/PointLight.hpp

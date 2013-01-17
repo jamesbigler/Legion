@@ -62,15 +62,21 @@ const char* Sphere::name()const
 }
 
 
-const char* Sphere::intersectionName()const
+const char* Sphere::intersectionFunctionName()const
 {
     return "sphereIntersect";
 }
 
 
-const char* Sphere::boundingBoxName()const
+const char* Sphere::boundingBoxFunctionName()const
 {
     return "sphereBoundingBox";
+}
+
+
+const char* Sphere::sampleFunctionName()const
+{
+    return "sphereSample";
 }
 
 

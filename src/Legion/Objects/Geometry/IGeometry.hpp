@@ -43,9 +43,10 @@ public:
     IGeometry( Context* context ) : IObject( context ) {}
     virtual ~IGeometry() {}
 
-    virtual const char* name()const=0;
-    virtual const char* intersectionName()const=0;
-    virtual const char* boundingBoxName()const=0;
+    virtual const char* name()                    const=0;
+    virtual const char* intersectionFunctionName()const=0;
+    virtual const char* boundingBoxFunctionName() const=0;
+    virtual const char* sampleFunctionName()      const=0;
 
     virtual unsigned    numPrimitives()const=0;
 
@@ -73,11 +74,14 @@ public:
     const char* name()const
     { return m_child->name(); }
 
-    const char* intersectionName()const
-    { return m_child->intersectionName(); }
+    const char* intersectionFunctionName()const
+    { return m_child->intersectionFunctionName(); }
 
-    const char* boundingBoxName()const
-    { return m_child->boundingBoxName(); }
+    const char* boundingBoxFunctionName()const
+    { return m_child->boundingBoxFunctionName(); }
+
+    const char* sampleFunctionName()const
+    { return m_child->sampleFunctionName(); }
 
     virtual unsigned numPrimitives()const
     { return m_child->numPrimitives(); }

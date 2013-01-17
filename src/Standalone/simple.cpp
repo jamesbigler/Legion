@@ -19,7 +19,7 @@ int main( int , char** )
         // params.add( "Kd", legion::Color( 0.5f, 0.5f, 0.5f ) );
         // legion::createSurfaceShader( "Lambertian", "material", params );
         legion::Lambertian mtl( &ctx );
-        mtl.setKd( legion::Color(  0.5f, 0.5f, 0.5f ) );
+        mtl.setReflectance( legion::Color(  0.5f, 0.5f, 0.5f ) );
        
         /*
         std::vector<legion::Mesh::Vertex> verts;

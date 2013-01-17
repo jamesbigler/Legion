@@ -27,7 +27,8 @@
 #ifndef LEGION_COMMON_MATH_ONB_HPP_
 #define LEGION_COMMON_MATH_ONB_HPP_
 
-#include <Legion/Common/Math/Vector.hpp>
+#include <optixu/optixu_math_namespace.h>
+#include <Legion/Common/Util/Preprocessor.hpp>
 
 namespace legion
 {
@@ -36,76 +37,76 @@ class ONB
 {
 public:
   /// Assumes normal is normalized
-  ONB( const Vector3& normal );
+  LDEVICE ONB( const float3& normal );
   
   /// Transforms the Vector from world space to the local space 
-  Vector3 transform( const Vector3& v)const;
+  LDEVICE float3 transform( const float3& v)const;
 
   /// Transforms the Vector from the local space to world
-  Vector3 inverseTransform( const Vector3& v)const;
+  LDEVICE float3 inverseTransform( const float3& v)const;
   
-  Vector3 tangent()const;
-  Vector3 binormal()const;
-  Vector3 normal()const;
+  LDEVICE float3 tangent()const;
+  LDEVICE float3 binormal()const;
+  LDEVICE float3 normal()const;
 
 private:
-  Vector3 m_tangent;
-  Vector3 m_binormal;
-  Vector3 m_normal;
+  float3 m_tangent;
+  float3 m_binormal;
+  float3 m_normal;
 };
 
-inline ONB::ONB( const Vector3& normal )
+LDEVICE inline ONB::ONB( const float3& normal )
 {
     m_normal = normal;
 
-    if( fabs( m_normal.x() ) > fabs( m_normal.z() ) )
+    if( fabs( m_normal.x ) > fabs( m_normal.z ) )
     {
-        m_binormal.setX( -m_normal.y() );
-        m_binormal.setY(  m_normal.x() );
-        m_binormal.setZ(  0.0f );
+        m_binormal.x = -m_normal.y;
+        m_binormal.y =  m_normal.x;
+        m_binormal.z =  0.0f;
     }
     else
     {
-        m_binormal.setX(  0.0f );
-        m_binormal.setY( -m_normal.z() );
-        m_binormal.setZ(  m_normal.y() );
+        m_binormal.x =  0.0f;
+        m_binormal.y = -m_normal.z;
+        m_binormal.z =  m_normal.y;
     }
 
-    m_binormal = normalize(m_binormal);
-    m_tangent  = cross( m_binormal, m_normal );
+    m_binormal = optix::normalize(m_binormal);
+    m_tangent  = optix::cross( m_binormal, m_normal );
 }
   
 
-inline Vector3 ONB::tangent()const
+LDEVICE inline float3 ONB::tangent()const
 {
     return m_tangent;
 }
 
 
-inline Vector3 ONB::binormal()const
+LDEVICE inline float3 ONB::binormal()const
 {
     return m_binormal;
 }
 
 
-inline Vector3 ONB::normal()const
+LDEVICE inline float3 ONB::normal()const
 {
     return m_normal;
 }
 
 
-inline Vector3 ONB::transform( const Vector3& v)const
+LDEVICE inline float3 ONB::transform( const float3& v)const
 {
 
-    return Vector3( dot( v, m_tangent  ),
-                    dot( v, m_binormal ),
-                    dot( v, m_normal   ) );
+    return make_float3( optix::dot( v, m_tangent  ),
+                        optix::dot( v, m_binormal ),
+                        optix::dot( v, m_normal   ) );
 }
 
 
-inline Vector3 ONB::inverseTransform( const Vector3& v )const
+LDEVICE inline float3 ONB::inverseTransform( const float3& v )const
 {
-    return  v.x()*m_tangent + v.y()*m_binormal + v.z()*m_normal;
+    return  v.x*m_tangent + v.y*m_binormal + v.z*m_normal;
 }
 
 }
