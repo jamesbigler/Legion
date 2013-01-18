@@ -43,9 +43,10 @@ struct RayGeometry
 //------------------------------------------------------------------------------
 struct RadiancePRD 
 {
-  float3 result;
-  float  importance;
-  int    depth;
+  float3   result;
+  float    importance;
+  int      depth;
+  unsigned count_emitted_light;
 };
 
 //------------------------------------------------------------------------------
@@ -141,7 +142,6 @@ struct BSDFSample
 
 struct LocalGeometry 
 {
-    float3   position;
     float3   position_object;
     float3   geometric_normal;
     float3   shading_normal;
@@ -161,5 +161,9 @@ rtCallableProgram( float3,
 rtCallableProgram( float, 
                    legionPDF,
                    ( float3, legion::LocalGeometry, float3 ) );
+
+rtCallableProgram( float3, 
+                   legionEmission,
+                   ( float3, legion::LocalGeometry ) );
 
 #endif // LEGION_OBJECTS_CUDA_COMMON_HPP_

@@ -158,11 +158,24 @@ void OptiXScene::addGeometry( IGeometry* geometry )
         
         // Create optix Material
         ISurface* surface = geometry->getSurface();
+        const std::string surface_name( surface->name() );
+        const std::string surface_ptx( surface_name + ".ptx" );
         optix::Program evaluate_bsdf = 
-            m_program_mgr.get( surface->name(),
-                               std::string( surface->name() ) + ".ptx",
+            m_program_mgr.get( surface_name,
+                               surface_ptx,
                                surface->evaluateBSDFFunctionName() );
         optix_geometry_instance[ "legionEvaluateBSDF" ]->set( evaluate_bsdf );
+
+        const std::string emission_func_name( surface->emissionFunctionName() );
+        optix::Program emission = 
+            !emission_func_name.empty() ? 
+            m_program_mgr.get( surface_name, surface_ptx, emission_func_name ) :
+            m_program_mgr.get( 
+                    "Surface",
+                    "Surface.ptx",
+                    "legionDefaultEmission" );
+        optix_geometry_instance[ "legionEmission" ]->set( emission );
+
 
         m_top_group->setChildCount( m_top_group->getChildCount()+1u );
         m_top_group->setChild( 

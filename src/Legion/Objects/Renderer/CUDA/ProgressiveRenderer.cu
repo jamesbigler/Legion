@@ -61,6 +61,7 @@ RT_PROGRAM void progressiveRendererRayGen()
         prd.result = make_float3( 0.0f );
         prd.importance = 1.0f;
         prd.depth = 0u;
+        prd.count_emitted_light = 1;
 
         optix::Ray ray = legion::makePrimaryRay( rg.origin, rg.direction );
         rtTrace( legion_top_group, ray, prd );
