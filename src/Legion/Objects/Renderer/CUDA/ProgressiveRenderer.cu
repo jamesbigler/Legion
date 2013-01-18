@@ -24,8 +24,8 @@
 #include <optixu/optixu_math_namespace.h>
 
 
-rtDeclareVariable( uint2, launch_index, rtLaunchIndex, );
-rtDeclareVariable( uint2, launch_dim,   rtLaunchDim, );
+//rtDeclareVariable( uint2, launch_index, rtLaunchIndex, );
+//rtDeclareVariable( uint2, launch_dim,   rtLaunchDim, );
 
 rtDeclareVariable( unsigned, sample_index, , );
 rtDeclareVariable( unsigned, samples_per_pass, , );

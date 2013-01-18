@@ -34,7 +34,7 @@ rtDeclareVariable( legion::LocalGeometry, local_geom, attribute local_geom, );
 RT_PROGRAM void normalAnyHit()
 {
   // this material is opaque, so it fully attenuates all shadow rays
-  shadow_prd.attenuation = make_float3( 0.0f );
+  shadow_prd.occluded = 1u; 
 
   rtTerminateRay();
 }

@@ -10,6 +10,7 @@ set( CUDA_GENERATED_OUTPUT_DIR ${PTX_OUTPUT_DIR} )
 set( CUDA_NVCC_FLAGS "-arch sm_30" )
 CUDA_COMPILE_PTX( ptx_files
     Objects/Camera/CUDA/ThinLens.cu
+    Objects/Geometry/CUDA/Parallelogram.cu
     Objects/Geometry/CUDA/Sphere.cu
     Objects/Renderer/CUDA/ProgressiveRenderer.cu
     Objects/Surface/CUDA/Lambertian.cu
@@ -72,6 +73,8 @@ add_library( legion SHARED
     Objects/Display/ImageFileDisplay.cpp
     Objects/Display/ImageFileDisplay.hpp
     Objects/Geometry/IGeometry.hpp
+    Objects/Geometry/Parallelogram.cpp
+    Objects/Geometry/Parallelogram.hpp
     Objects/Geometry/Sphere.cpp
     Objects/Geometry/Sphere.hpp
     Objects/Geometry/TriMesh.cpp

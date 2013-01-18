@@ -54,15 +54,21 @@ RT_PROGRAM void sphereIntersect( int )
         float root11 = 0.0f;
 
         // refine root1
-        float3 O1 = O + root1 * ray.direction;
-        b = optix::dot(O1, D);
-        c = optix::dot(O1, O1) - radius*radius;
-        disc = b*b - c;
+        /*
+        if( fabsf(root1) > 10.f * radius )
+        {
+            float3 O1 = O + root1 * ray.direction;
+            b = optix::dot(O1, D);
+            c = optix::dot(O1, O1) - radius*radius;
+            disc = b*b - c;
 
-        if(disc > 0.0f) {
-            sdisc = sqrtf(disc);
-            root11 = (-b - sdisc);
+            if(disc > 0.0f)
+            {
+                sdisc = sqrtf(disc);
+                root11 = (-b - sdisc);
+            }
         }
+        */
 
         bool check_second = true;
         if( rtPotentialIntersection( root1 + root11 ) ) {

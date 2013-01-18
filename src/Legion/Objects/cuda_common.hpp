@@ -26,6 +26,22 @@
 #include <optix_world.h>
 #include <Legion/Common/Math/CUDA/Sobol.hpp>
 
+//------------------------------------------------------------------------------
+//
+// Common rtVariables.  These will all be set internally by legion 
+//
+//------------------------------------------------------------------------------
+
+// TODO: document these
+rtDeclareVariable( unsigned, legion_radiance_ray_type, , );
+rtDeclareVariable( unsigned, legion_shadow_ray_type  , , );
+rtDeclareVariable( rtObject, legion_top_group, , );
+
+rtDeclareVariable( uint2,    launch_index, rtLaunchIndex, );
+rtDeclareVariable( uint2,    launch_dim,   rtLaunchDim, );
+
+
+
 namespace legion
 {
 
@@ -35,12 +51,16 @@ struct RayGeometry
     float3 direction;
 };
 
+} // end namespace legion
+
 
 //------------------------------------------------------------------------------
 //
 // this struct is to be used as the per-ray-data for radiance rays
 //
 //------------------------------------------------------------------------------
+namespace legion
+{
 struct RadiancePRD 
 {
   float3   result;
@@ -56,8 +76,14 @@ struct RadiancePRD
 //------------------------------------------------------------------------------
 struct ShadowPRD 
 {
-  float3 attenuation;
+    float3   hit_p;
+    unsigned occluded;
 };
+
+} // end namespace legion
+
+rtDeclareVariable( legion::RadiancePRD, radiance_prd, rtPayload, );
+rtDeclareVariable( legion::ShadowPRD,   shadow_prd,   rtPayload, );
 
 
 //------------------------------------------------------------------------------
@@ -69,6 +95,8 @@ struct ShadowPRD
 // sobol_index should start at the 6th dim
 //
 //------------------------------------------------------------------------------
+namespace legion
+{
 __device__ unsigned generateSobolSamples( const uint2& launch_dim,
                                           const uint2& pixel_coord,
                                           unsigned     sample_index,
@@ -100,21 +128,19 @@ __device__ optix::Ray makePrimaryRay( float3 origin, float3 direction )
     return optix::make_Ray( origin, direction, 0u, 0.0f, RT_DEFAULT_MAX );
 }
 
+__device__ unsigned pointOccluded( float3 p, float3 w_in, float dist )
+{
+    // TODO: epsilon BS
+    ShadowPRD prd;
+    prd.occluded   = 0u;
+    optix::Ray ray = optix::make_Ray( p, w_in, 1u, 0.0001f, dist - 0.001f );
+    rtTrace( legion_top_group, ray, prd );
+
+    return prd.occluded;
+}
 
 } // end namespace legion
 
-//------------------------------------------------------------------------------
-//
-// Common rtVariables.  These will all be set internally by legion 
-//
-//------------------------------------------------------------------------------
-rtDeclareVariable( legion::RadiancePRD, radiance_prd, rtPayload, );
-rtDeclareVariable( legion::ShadowPRD,   shadow_prd,   rtPayload, );
-
-// TODO: document these
-rtDeclareVariable( unsigned, legion_radiance_ray_type, , );
-rtDeclareVariable( unsigned, legion_shadow_ray_type  , , );
-rtDeclareVariable( rtObject, legion_top_group, , );
 
 //------------------------------------------------------------------------------
 //

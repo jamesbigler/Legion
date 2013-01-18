@@ -43,7 +43,8 @@ float3 legionDefaultEmission( float3, legion::LocalGeometry )
 RT_PROGRAM
 void legionAnyHit()
 {
-    shadow_prd.attenuation = make_float3( 0.0f );
+    shadow_prd.hit_p = ray.origin + t_hit * ray.direction;
+    shadow_prd.occluded = 1u; 
     rtTerminateRay();
 }
 
@@ -69,22 +70,25 @@ void legionClosestHit()
 
     for( int i = 0; i < num_lights; ++i )
     {
-        const float3 light_pos = make_float3( 1.0f, 3.0f, 0.0f );
+        //const float3 light_pos = make_float3( 1.0f, 3.0f, 0.0f );
+        const float3 light_pos = make_float3( 0.0f, 10.0f, -4.0f );
         const float3 light_col = make_float3( 1.0f, 1.0f, 1.0f );
+        const float3 hit_point = ray.origin + t_hit * ray.direction;
 
-        bool occluded = false; // Backface and shadow trace
-        if( !occluded )
-        {
-            const float3 hit_point = ray.origin + t_hit * ray.direction;
-            const float3 w_out     = -ray.direction;
-            const float3 w_in      = light_pos - hit_point;
-            
-            result += legionEvaluateBSDF( w_out, local_geom, w_in );
-        }
-
+        float3 w_in = light_pos - hit_point;
+        const float  dist = optix::length( w_in );
+        w_in /= dist;
 
         // occlusion query
+        bool occluded = optix::dot( w_in, local_geom.shading_normal ) < 0.0f;
+        if( !occluded )
+            occluded = legion::pointOccluded( hit_point, w_in, dist );  
 
+        if( !occluded )
+        {
+            const float3 w_out     = -ray.direction;
+            result += legionEvaluateBSDF( w_out, local_geom, w_in );
+        }
     }
 
 
@@ -93,5 +97,5 @@ void legionClosestHit()
     //
 
 
-    radiance_prd.result = result; 
+    radiance_prd.result = result;
 }

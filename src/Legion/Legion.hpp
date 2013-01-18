@@ -24,6 +24,7 @@
 #include <Legion/Objects/Surface/ISurface.hpp>
 #include <Legion/Objects/Surface/Lambertian.hpp>
 #include <Legion/Objects/Geometry/IGeometry.hpp>
+#include <Legion/Objects/Geometry/Parallelogram.hpp>
 #include <Legion/Objects/Geometry/Sphere.hpp>
 #include <Legion/Objects/Geometry/TriMesh.hpp>
 #include <Legion/Objects/Light/ILight.hpp>
