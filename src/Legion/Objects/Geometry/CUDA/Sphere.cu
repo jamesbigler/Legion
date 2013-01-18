@@ -24,62 +24,84 @@
 /// Pure virtual interface for Geometry classes
 
 
-#include <optixu/optixu_math_namespace.h>
-#include <optixu/optixu_aabb_namespace.h>
-#include <optix.h>
+#include <Legion/Objects/cuda_common.hpp>
+
 
 rtDeclareVariable( float3, center, , );
 rtDeclareVariable( float , radius, , );
 
 // TODO: attrs should be in a header which can be included by all clients
-rtDeclareVariable(float3, geometric_normal, attribute geometric_normal, ); 
-rtDeclareVariable(float3, shading_normal, attribute shading_normal, ); 
-
-rtDeclareVariable(optix::Ray, ray, rtCurrentRay, );
+rtDeclareVariable( legion::LocalGeometry, lgeom, attribute local_geom, ); 
+rtDeclareVariable( optix::Ray,            ray,   rtCurrentRay, );
 
 
 RT_PROGRAM void sphereIntersect( int )
 {
-  float3 O = ray.origin - center;
-  float3 D = ray.direction;
+    // TODO: rename these origin, direction
+    float3 O = ray.origin - center;
+    float3 D = ray.direction;
 
-  float b = optix::dot(O, D);
-  float c = optix::dot(O, O)-radius*radius;
-  float disc = b*b-c;
-  if(disc > 0.0f)
-  {
-    float sdisc = sqrtf(disc);
-    float root1 = (-b - sdisc);
+    float b = optix::dot(O, D);
+    float c = optix::dot(O, O)-radius*radius;
+    float disc = b*b-c;
+    if(disc > 0.0f)
+    {
+        float sdisc = sqrtf(disc);
+        float root1 = (-b - sdisc);
 
-    bool do_refine = false;
+        bool do_refine = false;
 
-    float root11 = 0.0f;
+        float root11 = 0.0f;
 
-    // refine root1
-    float3 O1 = O + root1 * ray.direction;
-    b = optix::dot(O1, D);
-    c = optix::dot(O1, O1) - radius*radius;
-    disc = b*b - c;
+        // refine root1
+        float3 O1 = O + root1 * ray.direction;
+        b = optix::dot(O1, D);
+        c = optix::dot(O1, O1) - radius*radius;
+        disc = b*b - c;
 
-    if(disc > 0.0f) {
-        sdisc = sqrtf(disc);
-        root11 = (-b - sdisc);
+        if(disc > 0.0f) {
+            sdisc = sqrtf(disc);
+            root11 = (-b - sdisc);
+        }
+
+        bool check_second = true;
+        if( rtPotentialIntersection( root1 + root11 ) ) {
+
+            const float  t      = root1 + root11;
+            const float3 normal = (O + t*D)/radius;
+
+            // Fill in a localgeometry
+            legion::LocalGeometry lg;
+            lg.position_object  = ray.origin + t*ray.direction;
+            lg.geometric_normal = normal;
+            lg.shading_normal   = normal;
+            lg.texcoord         = make_float2( 0.0f );
+
+            lgeom = lg;
+
+            if(rtReportIntersection(0))
+                check_second = false;
+        } 
+
+        if(check_second) {
+            float root2 = (-b + sdisc) + (do_refine ? root1 : 0);
+            if( rtPotentialIntersection( root2 ) ) {
+                const float  t      = root2; 
+                const float3 normal = (O + t*D)/radius;
+
+                // Fill in a localgeometry
+                legion::LocalGeometry lg;
+                lg.position_object  = ray.origin + t*ray.direction;
+                lg.geometric_normal = normal;
+                lg.shading_normal   = normal;
+                lg.texcoord         = make_float2( 0.0f );
+
+                lgeom = lg;
+
+                rtReportIntersection(0);
+            }
+        }
     }
-
-    bool check_second = true;
-    if( rtPotentialIntersection( root1 + root11 ) ) {
-      shading_normal = geometric_normal = (O + (root1 + root11)*D)/radius;
-      if(rtReportIntersection(0))
-        check_second = false;
-    } 
-    if(check_second) {
-      float root2 = (-b + sdisc) + (do_refine ? root1 : 0);
-      if( rtPotentialIntersection( root2 ) ) {
-        shading_normal = geometric_normal = (O + root2*D)/radius;
-        rtReportIntersection(0);
-      }
-    }
-  }
 }
 
 

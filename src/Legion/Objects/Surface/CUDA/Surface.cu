@@ -20,23 +20,32 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-#ifndef LEGION_OBJECTS_SURFACE_CUDA_SURFACE_HPP_
-#define LEGION_OBJECTS_SURFACE_CUDA_SURFACE_HPP_
+/// \file IGeometry.hpp
+/// Pure virtual interface for Geometry classes
 
-/*
-struct RadiancePRD 
+
+#include <Legion/Objects/cuda_common.hpp>
+
+
+rtDeclareVariable( float3, shading_normal, attribute shading_normal, ); 
+
+
+rtDeclareVariable( RadiancePRD, radiance_prd, rtPayload, );
+rtDeclareVariable( ShadowPRD,   shadow_prd,   rtPayload, );
+
+
+RT_PROGRAM void surfaceAnyHit()
 {
-  float3 result;
-  float  importance;
-  int    depth;
-};
+    shadow_prd.attenuation = make_float3( 0.0f );
+    rtTerminateRay();
+}
 
-
-struct ShadowPRD 
+RT_PROGRAM void surfaceClosestHit()
 {
-  float3 attenuation;
-};
-*/
-
-
-#endif // LEGION_OBJECTS_SURFACE_CUDA_SURFACE_HPP_
+    LoaalGeometry p;
+    radiance_prd.result = 
+        legionEvalueBSDF( 
+        optix::normalize( 
+            rtTransformNormal(RT_OBJECT_TO_WORLD, shading_normal) 
+            ) * 0.5f + 0.5f;
+}

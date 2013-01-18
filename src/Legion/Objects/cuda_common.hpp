@@ -107,6 +107,8 @@ __device__ optix::Ray makePrimaryRay( float3 origin, float3 direction )
 // Common rtVariables.  These will all be set internally by legion 
 //
 //------------------------------------------------------------------------------
+rtDeclareVariable( legion::RadiancePRD, radiance_prd, rtPayload, );
+rtDeclareVariable( legion::ShadowPRD,   shadow_prd,   rtPayload, );
 
 // TODO: document these
 rtDeclareVariable( unsigned, legion_radiance_ray_type, , );
@@ -149,15 +151,15 @@ struct LocalGeometry
 }
 
 rtCallableProgram( legion::BSDFSample,
-                   sampleBSDF,
+                   legionSampleBSDF,
                    ( float2, float3 , legion::LocalGeometry ) );
 
 rtCallableProgram( float3, 
-                   evaluateBSDF,
+                   legionEvaluateBSDF,
                    ( float3 , legion::LocalGeometry, float3 ) );
 
 rtCallableProgram( float, 
-                   pdf,
+                   legionPDF,
                    ( float3, legion::LocalGeometry, float3 ) );
 
 #endif // LEGION_OBJECTS_CUDA_COMMON_HPP_

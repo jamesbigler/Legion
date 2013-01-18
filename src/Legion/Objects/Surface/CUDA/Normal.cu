@@ -24,22 +24,17 @@
 /// Pure virtual interface for Geometry classes
 
 
-#include <Legion/Objects/Surface/CUDA/Surface.hpp>
-#include <optixu/optixu_math_namespace.h>
-#include <optix.h>
+#include <Legion/Objects/cuda_common.hpp>
+//#include <Legion/Objects/Surface/CUDA/Surface.hpp>
 
 
-rtDeclareVariable( float3, shading_normal, attribute shading_normal, ); 
-
-
-rtDeclareVariable( RadiancePRD, radiance_prd, rtPayload, );
-rtDeclareVariable( ShadowPRD,   shadow_prd,   rtPayload, );
+rtDeclareVariable( legion::LocalGeometry, local_geom, attribute local_geom, ); 
 
 
 RT_PROGRAM void normalAnyHit()
 {
   // this material is opaque, so it fully attenuates all shadow rays
-  shadow_prd.attenuation = make_float3(0);
+  shadow_prd.attenuation = make_float3( 0.0f );
 
   rtTerminateRay();
 }
@@ -47,6 +42,6 @@ RT_PROGRAM void normalAnyHit()
 RT_PROGRAM void normalClosestHit()
 {
     radiance_prd.result = optix::normalize( 
-            rtTransformNormal(RT_OBJECT_TO_WORLD, shading_normal) 
+            rtTransformNormal(RT_OBJECT_TO_WORLD, local_geom.shading_normal) 
             ) * 0.5f + 0.5f;
 }
