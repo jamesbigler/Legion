@@ -20,15 +20,16 @@
 // IN THE SOFTWARE.
 // (MIT/X11 License)
 
-#include <Legion/Core/Context.hpp>
-#include <Legion/Renderer/OptiXScene.hpp>
 #include <Legion/Common/Util/Image.hpp>
 #include <Legion/Common/Util/Logger.hpp>
+#include <Legion/Core/Context.hpp>
 #include <Legion/Core/Exception.hpp>
 #include <Legion/Core/VariableContainer.hpp>
 #include <Legion/Objects/Camera/ICamera.hpp>
 #include <Legion/Objects/Geometry/IGeometry.hpp>
 #include <Legion/Objects/Renderer/IRenderer.hpp>
+#include <Legion/Objects/Surface/ISurface.hpp>
+#include <Legion/Renderer/OptiXScene.hpp>
 #include <config.hpp>
 
 using namespace legion;
@@ -147,9 +148,6 @@ void OptiXScene::addGeometry( IGeometry* geometry )
         optix_geometry->setIntersectionProgram( intersect ); 
         optix_geometry->setBoundingBoxProgram( bbox ); 
 
-
-        // Create optix Material
-    
         // Create optix GeometryInstance
         optix::GeometryInstance optix_geometry_instance =
             m_optix_context->createGeometryInstance();
@@ -157,6 +155,14 @@ void OptiXScene::addGeometry( IGeometry* geometry )
         optix_geometry_instance->setMaterialCount( 1u );
         optix_geometry_instance->setMaterial( 0, m_default_mtl );
         optix_geometry_instance->setGeometry( optix_geometry );
+        
+        // Create optix Material
+        ISurface* surface = geometry->getSurface();
+        optix::Program evaluate_bsdf = 
+            m_program_mgr.get( surface->name(),
+                               std::string( surface->name() ) + ".ptx",
+                               surface->evaluateBSDFFunctionName() );
+        optix_geometry_instance[ "legionEvaluateBSDF" ]->set( evaluate_bsdf );
 
         m_top_group->setChildCount( m_top_group->getChildCount()+1u );
         m_top_group->setChild( 
@@ -190,10 +196,13 @@ void OptiXScene::sync()
          ++it )
     {
         IGeometry*              geometry          = it->first; 
+        ISurface*               surface           = geometry->getSurface();
         optix::GeometryInstance geometry_instance = it->second; 
 
         VariableContainer vc( geometry_instance.get() );
         geometry->setVariables( vc );
+        surface->setVariables( vc );
+
     }
 
     /*
@@ -227,15 +236,20 @@ void OptiXScene::initializeOptixContext()
                 m_optix_context->createAcceleration( "Sbvh", "Bvh" ) ); 
         m_optix_context[ "legion_top_group" ]->set( m_top_group );
         
-        // Create default material TODO: from Normal class object
         m_default_mtl = m_optix_context->createMaterial();
         m_default_mtl->setClosestHitProgram(
                 RADIANCE_TYPE,
-                m_program_mgr.get( "Normal", "Normal.ptx", "normalClosestHit" )
+                m_program_mgr.get( 
+                    "Surface", 
+                    "Surface.ptx", 
+                    "legionClosestHit" )
                 );
         m_default_mtl->setAnyHitProgram(
                 SHADOW_TYPE, 
-                m_program_mgr.get( "Normal", "Normal.ptx", "normalAnyHit" )
+                m_program_mgr.get( 
+                    "Surface", 
+                    "Surface.ptx", 
+                    "legionAnyHit" )
                 );
     }
     OPTIX_CATCH_RETHROW;

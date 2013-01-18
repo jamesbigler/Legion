@@ -11,9 +11,10 @@ set( CUDA_NVCC_FLAGS "-arch sm_30" )
 CUDA_COMPILE_PTX( ptx_files
     Objects/Camera/CUDA/ThinLens.cu
     Objects/Geometry/CUDA/Sphere.cu
-    Objects/Surface/CUDA/Normal.cu
-    Objects/Surface/CUDA/Lambertian.cu
     Objects/Renderer/CUDA/ProgressiveRenderer.cu
+    Objects/Surface/CUDA/Lambertian.cu
+    Objects/Surface/CUDA/Normal.cu
+    Objects/Surface/CUDA/Surface.cu
     )
 
 configure_file( "${CMAKE_CURRENT_SOURCE_DIR}/Core/config.hpp.in"

@@ -27,25 +27,22 @@
 #include <Legion/Objects/cuda_common.hpp>
 
 
-rtDeclareVariable( float3, shading_normal, attribute shading_normal, ); 
+rtDeclareVariable( legion::LocalGeometry, local_geom, attribute local_geom, ); 
+rtDeclareVariable( optix::Ray,            ray,        rtCurrentRay, );
 
 
-rtDeclareVariable( RadiancePRD, radiance_prd, rtPayload, );
-rtDeclareVariable( ShadowPRD,   shadow_prd,   rtPayload, );
 
 
-RT_PROGRAM void surfaceAnyHit()
+RT_PROGRAM void legionAnyHit()
 {
     shadow_prd.attenuation = make_float3( 0.0f );
     rtTerminateRay();
 }
 
-RT_PROGRAM void surfaceClosestHit()
+RT_PROGRAM void legionClosestHit()
 {
-    LoaalGeometry p;
-    radiance_prd.result = 
-        legionEvalueBSDF( 
-        optix::normalize( 
-            rtTransformNormal(RT_OBJECT_TO_WORLD, shading_normal) 
-            ) * 0.5f + 0.5f;
+    radiance_prd.result = legionEvaluateBSDF( 
+            -ray.direction, 
+            local_geom, 
+            -ray.direction );
 }
