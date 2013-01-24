@@ -87,6 +87,7 @@ void legionClosestHit()
             const float3 w_out     = -ray.direction;
             result += light_col * 
                       legionSurfaceEvaluateBSDF( w_out, local_geom, w_in );
+            result =  light_sample.point_on_light.position; 
         }
     }
 

@@ -19,7 +19,7 @@ int main( int , char** )
         // params.add( "Kd", legion::Color( 0.5f, 0.5f, 0.5f ) );
         // legion::createSurfaceShader( "Lambertian", "material", params );
         legion::Lambertian lambertian( &ctx );
-        lambertian.setReflectance( legion::Color(  0.9f, 0.5f, 0.5f ) );
+        lambertian.setReflectance( legion::Color(  0.9f, 0.9f, 0.9f ) );
        
         legion::Sphere sphere( &ctx );
         sphere.setCenter( legion::Vector3( 1.0f, 0.0f, -4.0f ) );
@@ -47,7 +47,7 @@ int main( int , char** )
         ctx.setCamera( &cam );
 
         legion::ProgressiveRenderer renderer( &ctx );
-        renderer.setSamplesPerPixel( 64 );
+        renderer.setSamplesPerPixel( 16 );
         renderer.setSamplesPerPass( 8 );
         ctx.setRenderer( &renderer );
 
