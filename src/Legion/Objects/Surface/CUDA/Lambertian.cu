@@ -21,6 +21,7 @@
 // IN THE SOFTWARE.
 
 #include <Legion/Objects/cuda_common.hpp>
+#include <Legion/Objects/Surface/CUDA/Surface.hpp>
 #include <Legion/Common/Math/CUDA/ONB.hpp>
 #include <Legion/Common/Math/CUDA/Math.hpp>
 

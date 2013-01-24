@@ -18,12 +18,12 @@ int main( int , char** )
         // Parameters params;
         // params.add( "Kd", legion::Color( 0.5f, 0.5f, 0.5f ) );
         // legion::createSurfaceShader( "Lambertian", "material", params );
-        legion::Lambertian mtl( &ctx );
-        mtl.setReflectance( legion::Color(  0.9f, 0.5f, 0.5f ) );
+        legion::Lambertian lambertian( &ctx );
+        lambertian.setReflectance( legion::Color(  0.9f, 0.5f, 0.5f ) );
        
         legion::Sphere sphere( &ctx );
-        sphere.setCenter( legion::Vector3( 0.0f, 0.0f, -4.0f ) );
-        sphere.setSurface( &mtl );
+        sphere.setCenter( legion::Vector3( 1.0f, 0.0f, -4.0f ) );
+        sphere.setSurface( &lambertian );
         ctx.addGeometry( &sphere );
         
         legion::Parallelogram pgram( &ctx );
@@ -32,12 +32,16 @@ int main( int , char** )
             legion::Vector3(  20.0f,  0.0f,   0.0f ),
             legion::Vector3(   0.0f,  0.0f, -20.0f )
             );
-        pgram.setSurface( &mtl );
+        pgram.setSurface( &lambertian );
         ctx.addGeometry( &pgram );
 
-        legion::PointLight light( &ctx );
-        light.setPosition( legion::Vector3( 1.0f, 1.0f, 1.0f ) );
-        light.setIntensity( legion::Color( 1.0f, 1.0f, 1.0f ) );
+        legion::DiffuseEmitter emitter( &ctx );
+        emitter.setRadiance( legion::Color(  0.9f, 0.7f, 0.2f ) );
+
+        legion::Sphere light( &ctx );
+        light.setCenter( legion::Vector3( -1.0f, 0.0f, -4.0f ) );
+        light.setSurface( &emitter);
+        ctx.addGeometry( &light );
 
         legion::ThinLens cam( &ctx );
         ctx.setCamera( &cam );

@@ -1,6 +1,6 @@
 
-#ifndef LEGION_OBJECTS_SURFACE_LAMBERTIAN_HPP_
-#define LEGION_OBJECTS_SURFACE_LAMBERTIAN_HPP_
+#ifndef LEGION_OBJECTS_SURFACE_DIFFUSE_EMITTER_H_
+#define LEGION_OBJECTS_SURFACE_DIFFUSE_EMITTER_H_
 
 
 #include <Legion/Objects/Surface/ISurface.hpp>
@@ -12,26 +12,27 @@ namespace legion
 
 class VariableContainer;
 
-class Lambertian : public ISurface
+class DiffuseEmitter : public ISurface
 {
 public:
-    Lambertian( Context* context );
-    ~Lambertian();
+    DiffuseEmitter( Context* context );
+    ~DiffuseEmitter();
     
-    void setReflectance( const Color& reflectance );
+    void setRadiance( const Color& radiance );
     
     const char* name()const;
+    const char* emissionFunctionName()const;
     const char* sampleBSDFFunctionName()const;
     const char* evaluateBSDFFunctionName()const;
     const char* pdfFunctionName()const;
-    const char* emissionFunctionName()const;
 
     void setVariables( VariableContainer& container ) const ;
 
 private:
-    Color m_reflectance;
+    Color m_radiance;
 };
+
 
 }
 
-#endif // LEGION_OBJECTS_SURFACE_LAMBERTIAN_HPP_
+#endif // LEGION_OBJECTS_SURFACE_DIFFUSE_EMITTER_H_

@@ -27,17 +27,10 @@
 #include <Legion/Objects/cuda_common.hpp>
 
 
-rtDeclareVariable( legion::LocalGeometry, local_geom, attribute local_geom, ); 
-rtDeclareVariable( optix::Ray,            ray,        rtCurrentRay, );
-rtDeclareVariable( float,                 t_hit,      rtIntersectionDistance, );
+rtDeclareVariable( legion::LocalGeometry, lgeom,    attribute local_geom, ); 
+rtDeclareVariable( optix::Ray,            ray,      rtCurrentRay, );
+rtDeclareVariable( float,                 t_hit,    rtIntersectionDistance, );
 
-
-
-RT_CALLABLE_PROGRAM 
-float3 legionDefaultEmission( float3, legion::LocalGeometry )
-{
-    return make_float3( 0.0f );
-}
 
 
 RT_PROGRAM
@@ -53,6 +46,10 @@ RT_PROGRAM
 void legionClosestHit()
 {
     float3 result = make_float3( 0.0f );
+    const float3 P = ray.origin + t_hit * ray.direction;
+    
+    legion::LocalGeometry local_geom = lgeom;
+    local_geom.position = P;
 
     //
     // emitted contribution
@@ -60,7 +57,7 @@ void legionClosestHit()
     if( radiance_prd.count_emitted_light )
     {
         const float3 w_out = -ray.direction;
-        result += legionEmission( w_out, local_geom );
+        result += legionSurfaceEmission( w_out, local_geom );
     }
 
     //
@@ -70,24 +67,26 @@ void legionClosestHit()
 
     for( int i = 0; i < num_lights; ++i )
     {
-        //const float3 light_pos = make_float3( 1.0f, 3.0f, 0.0f );
-        const float3 light_pos = make_float3( 0.0f, 10.0f, -4.0f );
-        const float3 light_col = make_float3( 1.0f, 1.0f, 1.0f );
-        const float3 hit_point = ray.origin + t_hit * ray.direction;
 
-        float3 w_in = light_pos - hit_point;
-        const float  dist = optix::length( w_in );
-        w_in /= dist;
+        float2 seed = make_float2( 0.5f );
+        const legion::LightSample light_sample = legionLightSample( seed, P ); 
+
+        float3       w_in       = light_sample.point_on_light.position - P;
+        const float  light_dist = optix::length( w_in );
+        w_in /= light_dist;
 
         // occlusion query
-        bool occluded = optix::dot( w_in, local_geom.shading_normal ) < 0.0f;
+        bool occluded = optix::dot( w_in, local_geom.shading_normal ) <= 0.0f;
         if( !occluded )
-            occluded = legion::pointOccluded( hit_point, w_in, dist );  
+            occluded = legion::pointOccluded( P, w_in, light_dist );  
 
         if( !occluded )
         {
+            const float3 light_col = 
+                legionLightEmission( -w_in, light_sample.point_on_light );
             const float3 w_out     = -ray.direction;
-            result += legionEvaluateBSDF( w_out, local_geom, w_in );
+            result += light_col * 
+                      legionSurfaceEvaluateBSDF( w_out, local_geom, w_in );
         }
     }
 

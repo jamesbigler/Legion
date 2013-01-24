@@ -13,6 +13,7 @@ CUDA_COMPILE_PTX( ptx_files
     Objects/Geometry/CUDA/Parallelogram.cu
     Objects/Geometry/CUDA/Sphere.cu
     Objects/Renderer/CUDA/ProgressiveRenderer.cu
+    Objects/Surface/CUDA/DiffuseEmitter.cu
     Objects/Surface/CUDA/Lambertian.cu
     Objects/Surface/CUDA/Normal.cu
     Objects/Surface/CUDA/Surface.cu
@@ -88,6 +89,8 @@ add_library( legion SHARED
     Objects/Renderer/ProgressiveRenderer.cpp
     Objects/Renderer/ProgressiveRenderer.hpp
     Objects/Surface/ISurface.hpp
+    Objects/Surface/DiffuseEmitter.cpp
+    Objects/Surface/DiffuseEmitter.hpp
     Objects/Surface/Lambertian.cpp
     Objects/Surface/Lambertian.hpp
     Renderer/CUDAProgramManager.cpp

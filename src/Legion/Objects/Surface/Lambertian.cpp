@@ -44,7 +44,13 @@ const char* Lambertian::evaluateBSDFFunctionName()const
 
 const char* Lambertian::pdfFunctionName()const
 {
-    return "lambertianPDFFunctionName";
+    return "lambertianPDF";
+}
+    
+
+const char* Lambertian::emissionFunctionName()const
+{
+    return "nullSurfaceEmission";
 }
 
 

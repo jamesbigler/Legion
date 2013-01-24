@@ -129,6 +129,8 @@ void OptiXScene::addLight( ILight* light )
 
 void OptiXScene::addGeometry( IGeometry* geometry )
 {
+    // TODO: break this into separate creation functions, eg, createMaterial,
+    //       createGeometry, createLight
     try
     {
         // Load the geometry programs
@@ -142,13 +144,17 @@ void OptiXScene::addGeometry( IGeometry* geometry )
                                std::string( geometry->name() ) + ".ptx",
                                geometry->boundingBoxFunctionName() );
 
+        //
         // Create optix Geometry 
+        //
         optix::Geometry optix_geometry = m_optix_context->createGeometry();
         optix_geometry->setPrimitiveCount( geometry->numPrimitives() );
         optix_geometry->setIntersectionProgram( intersect ); 
         optix_geometry->setBoundingBoxProgram( bbox ); 
 
+        //
         // Create optix GeometryInstance
+        //
         optix::GeometryInstance optix_geometry_instance =
             m_optix_context->createGeometryInstance();
         optix_geometry_instance->setGeometry( optix_geometry );
@@ -156,26 +162,60 @@ void OptiXScene::addGeometry( IGeometry* geometry )
         optix_geometry_instance->setMaterial( 0, m_default_mtl );
         optix_geometry_instance->setGeometry( optix_geometry );
         
+        //
         // Create optix Material
+        //
         ISurface* surface = geometry->getSurface();
         const std::string surface_name( surface->name() );
         const std::string surface_ptx( surface_name + ".ptx" );
+       
         optix::Program evaluate_bsdf = 
             m_program_mgr.get( surface_name,
                                surface_ptx,
                                surface->evaluateBSDFFunctionName() );
-        optix_geometry_instance[ "legionEvaluateBSDF" ]->set( evaluate_bsdf );
-
-        const std::string emission_func_name( surface->emissionFunctionName() );
+        optix_geometry_instance[ "legionSurfaceEvaluateBSDF" ]->set( 
+                evaluate_bsdf );
+        
+        optix::Program sample_bsdf = 
+            m_program_mgr.get( surface_name,
+                               surface_ptx,
+                               surface->sampleBSDFFunctionName() );
+        optix_geometry_instance[ "legionSurfaceSampleBSDF" ]->set( 
+                sample_bsdf );
+        
+        optix::Program pdf = 
+            m_program_mgr.get( surface_name,
+                               surface_ptx,
+                               surface->pdfFunctionName() );
+        optix_geometry_instance[ "legionSurfacePDF" ]->set( pdf );
+        
+        const std::string emission_func_name = surface->emissionFunctionName();
         optix::Program emission = 
-            !emission_func_name.empty() ? 
-            m_program_mgr.get( surface_name, surface_ptx, emission_func_name ) :
-            m_program_mgr.get( 
-                    "Surface",
-                    "Surface.ptx",
-                    "legionDefaultEmission" );
-        optix_geometry_instance[ "legionEmission" ]->set( emission );
+            m_program_mgr.get( surface_name,
+                               surface_ptx,
+                               emission_func_name );
+        optix_geometry_instance[ "legionSurfaceEmission" ]->set( emission );
 
+        //
+        // create Light
+        //
+        if( emission_func_name != "nullSurfaceEmission" )
+        {
+            optix::Program sample = 
+                m_program_mgr.get( geometry->name(),
+                                   std::string( geometry->name() ) + ".ptx",
+                                   geometry->sampleFunctionName() );
+
+            // TODO: callable buffer once implemented, move variablecontainer
+            //       setting to sync()
+            m_optix_context[ "legionLightSample"   ]->set( sample );
+            m_optix_context[ "legionLightEmission" ]->set( emission );
+            VariableContainer vc0( sample.get() );
+            geometry->setVariables( vc0 );
+            VariableContainer vc1( emission.get() );
+            surface->setVariables( vc1 );
+            
+        }
 
         m_top_group->setChildCount( m_top_group->getChildCount()+1u );
         m_top_group->setChild( 

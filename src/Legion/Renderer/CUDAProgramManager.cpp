@@ -81,30 +81,20 @@ optix::Program CUDAProgramManager::get(
         }
         catch( optix::Exception& e )
         {
-            if( e.getErrorCode() == RT_ERROR_FILE_NOT_FOUND ) continue;
+            if( e.getErrorCode() == RT_ERROR_FILE_NOT_FOUND )
+                continue;
 
-            LLOG_INFO << "OptiX exception '" 
-                      << m_context->getErrorString( e.getErrorCode() );
+            LLOG_INFO << "Failed to create program from function '" 
+                      << cuda_function_name << "' in file '" 
+                      << cuda_filename << "'";
+
             throw;
         }
-        catch( std::exception& e )
-        {
-        }
-        catch( ... )
-        {
-            LLOG_ERROR << "Unknown exception thrown by optix::Context::"
-                       << "createProgramFromPTXFile\n"
-                       << "\tname: " << name << "\n"
-                       << "\tfile: " << cuda_filename << "\n"
-                       << "\tfunc: " << cuda_function_name;
-            throw;
-        }
-
     }
    
     std::ostringstream iss;
-    iss << "Failed to create program '" << name << "' from function '"
-        << cuda_function_name << "' in file '" << cuda_filename << "'";
+    iss << "Failed to create program from function '" << cuda_function_name 
+        << "' in file '" << cuda_filename << "'";
     throw Exception( iss.str() ); 
 }
 

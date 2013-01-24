@@ -20,11 +20,12 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-/// \file IGeometry.hpp
-/// Pure virtual interface for Geometry classes
 
+// TODO: clean this up, share intersection code, etc
 
 #include <Legion/Objects/cuda_common.hpp>
+#include <Legion/Common/Math/CUDA/ONB.hpp>
+#include <Legion/Common/Math/CUDA/Math.hpp>
 
 
 rtDeclareVariable( float3, center, , );
@@ -33,6 +34,8 @@ rtDeclareVariable( float , radius, , );
 // TODO: attrs should be in a header which can be included by all clients
 rtDeclareVariable( legion::LocalGeometry, lgeom, attribute local_geom, ); 
 rtDeclareVariable( optix::Ray,            ray,   rtCurrentRay, );
+
+
 
 
 RT_PROGRAM void sphereIntersect( int )
@@ -121,5 +124,83 @@ RT_PROGRAM void sphereBoundingBox( int, float result[6] )
   } else {
     aabb->invalidate();
   }
+}
+
+//-----------------------------------------------------------------------------
+//
+//
+//
+//-----------------------------------------------------------------------------
+__device__ __inline__
+bool sphereIntersectI( 
+        float3 origin,
+        float3 direction, 
+        float3 center, 
+        float  radius,
+        float  tmin,
+        float  tmax,
+        legion::LocalGeometry& sample )
+{
+    const float3 temp = origin - center;
+    const float  twoa = 2.0f*optix::dot( direction, direction );
+    const float  b    = 2.0f*optix::dot( direction, temp );
+    const float  c    = optix::dot( temp, temp ) - radius*radius;
+
+    float  discriminant = b*b- 2.0f*twoa*c;
+
+    if( discriminant > 0.0f )
+    {
+        discriminant = sqrtf( discriminant );
+        float t = (-b - discriminant) / twoa;
+        if (t < tmin) t = (-b + discriminant) / twoa;
+
+        if (t >= tmin && t <= tmax) 
+        {
+            // we have a hit -- populate hit record
+            sample.position         = origin + t*direction;
+            sample.position_object  = sample.position;
+            sample.geometric_normal = (sample.position - center) / radius;
+            sample.shading_normal   = sample.geometric_normal;
+            sample.texcoord         = make_float2( 0.0f );
+            return true;
+        }
+    }
+    return false;
+}
+
+RT_CALLABLE_PROGRAM
+legion::LightSample sphereSample( float2 sample_seed, float3 shading_point )
+{
+    legion::LightSample sample;
+    sample.pdf = 0.0f;
+
+    float3 temp = center - shading_point;
+    float d = optix::length( temp );
+    temp /= d;
+    
+    if ( d <= radius )
+        return sample;
+
+    // internal angle of cone surrounding light seen from viewpoint
+    float sin_alpha_max = (radius / d);
+    float cos_alpha_max = sqrtf( 1.0f - sin_alpha_max*sin_alpha_max );
+
+    float q    = 2.0f*legion::PI*( 1.0f - cos_alpha_max ); // solid angle
+    sample.pdf =  1.0f/q;                          // pdf is one / solid angle
+
+    const float phi       = 2.0f*legion::PI*sample_seed.x;
+    const float cos_theta = 1.0f - sample_seed.y * ( 1.0f - cos_alpha_max );
+    const float sin_theta = sqrtf( 1.0f - cos_theta*cos_theta );
+    const float cos_phi = cosf( phi );
+    const float sin_phi = sinf( phi );
+
+    legion::ONB uvw( temp );
+    float3 w_in = make_float3( cos_phi*sin_theta, sin_phi*sin_theta, cos_theta);
+    w_in = uvw.inverseTransform( w_in );
+
+    // TODO: magic numbers
+    if( !sphereIntersectI( shading_point, w_in, center, radius, 0.0f, 1e18f, sample.point_on_light ) )
+        sample.pdf = 0.0f;
+    return sample;
 }
 

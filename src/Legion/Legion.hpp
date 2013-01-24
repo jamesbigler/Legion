@@ -23,6 +23,7 @@
 #include <Legion/Objects/Display/ImageFileDisplay.hpp>
 #include <Legion/Objects/Surface/ISurface.hpp>
 #include <Legion/Objects/Surface/Lambertian.hpp>
+#include <Legion/Objects/Surface/DiffuseEmitter.hpp>
 #include <Legion/Objects/Geometry/IGeometry.hpp>
 #include <Legion/Objects/Geometry/Parallelogram.hpp>
 #include <Legion/Objects/Geometry/Sphere.hpp>
