@@ -201,6 +201,8 @@ legion::LightSample sphereSample( float2 sample_seed, float3 shading_point )
     // TODO: magic numbers
     if( !sphereIntersectI( shading_point, w_in, center, radius, 0.0f, 1e18f, sample.point_on_light ) )
         sample.pdf = 0.0f;
+    if( optix::length( shading_point - sample.point_on_light.position ) == 0.0f )
+        sample.pdf = 0.0f;
     return sample;
 }
 

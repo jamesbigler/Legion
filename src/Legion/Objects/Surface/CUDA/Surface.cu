@@ -26,6 +26,7 @@
 
 #include <Legion/Objects/cuda_common.hpp>
 #include <Legion/Common/Math/CUDA/Sobol.hpp>
+#include <Legion/Common/Math/CUDA/Math.hpp>
 
 
 rtDeclareVariable( legion::LocalGeometry, lgeom,    attribute local_geom, ); 
@@ -75,6 +76,8 @@ void legionClosestHit()
                 legion::Sobol::gen( sobol_index, radiance_prd.sobol_dim++) );
 
         const legion::LightSample light_sample = legionLightSample( seed, P ); 
+        if( light_sample.pdf <= 0.0f )
+            continue;
 
         float3       w_in       = light_sample.point_on_light.position - P;
         const float  light_dist = optix::length( w_in );
@@ -90,12 +93,41 @@ void legionClosestHit()
         {
             const float3 light_col = 
                 legionLightEmission( -w_in, light_sample.point_on_light );
-            const float3 w_out     = -ray.direction;
+            const float3 w_out = -ray.direction;
+            const float3 bsdf  = 
+                legionSurfaceEvaluateBSDF( w_out, local_geom, w_in );
             result += n_dot_wi /
                       light_sample.pdf * 
                       light_col *
-                      legionSurfaceEvaluateBSDF( w_out, local_geom, w_in );
-        //result = legionSurfaceEvaluateBSDF( w_out, local_geom, w_in );
+                      bsdf;
+            if( !legion::finite( result ) )
+            {
+                printf( "ndw: %f lpdf %f lcol %f %f %f bsdf %f %f %f\n",
+                        n_dot_wi,
+                        light_sample.pdf,
+                        light_col.x,
+                        light_col.y,
+                        light_col.z,
+                        bsdf.x,
+                        bsdf.y,
+                        bsdf.z );
+                printf( "\tw_in: %f %f %f local_geom.sn: %f %f %f\n",
+                        w_in.x,
+                        w_in.y,
+                        w_in.z,
+                        local_geom.shading_normal.x,
+                        local_geom.shading_normal.y,
+                        local_geom.shading_normal.z );
+                printf( "\tP: %f %f %f light_p %f %f %f\n",
+                        P.x,
+                        P.y,
+                        P.z,
+                        light_sample.point_on_light.position.x,
+                        light_sample.point_on_light.position.y,
+                        light_sample.point_on_light.position.z );
+            }
+
+
         //result = make_float3( light_sample.pdf ); 
         //result = make_float3( n_dot_wi ); 
         //result = ( light_col ); 

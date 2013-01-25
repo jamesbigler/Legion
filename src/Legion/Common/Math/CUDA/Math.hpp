@@ -11,6 +11,17 @@ namespace legion
     const float TWO_PI     = static_cast<float>( M_PI ) * 2.0f;
     const float ONE_DIV_PI = 1.0f / static_cast<float>( M_PI );
 
+    LDEVICE inline bool nan( float2 x )
+    { return isnan( x.x ) || isnan( x.y ); }
+
+    LDEVICE inline bool nan( float3 x )
+    { return isnan( x.x ) || isnan( x.y ) || isnan( x.z ); }
+    
+    LDEVICE inline bool finite( float2 x )
+    { return isfinite( x.x ) && isfinite( x.y ); }
+
+    LDEVICE inline bool finite( float3 x )
+    { return isfinite( x.x ) && isfinite( x.y ) && isfinite( x.z ); }
 
     LDEVICE inline float lerp( float a, float b, float t )
     {
