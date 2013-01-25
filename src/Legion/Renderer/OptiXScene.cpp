@@ -252,9 +252,13 @@ void OptiXScene::sync()
         ISurface*               surface           = geometry->getSurface();
         optix::GeometryInstance geometry_instance = it->second; 
 
-        VariableContainer vc( geometry_instance.get() );
-        geometry->setVariables( vc );
-        surface->setVariables( vc );
+        optix::Geometry optix_geometry = geometry_instance->getGeometry();
+        VariableContainer geom_vc( optix_geometry.get() );
+        geometry->setVariables( geom_vc );
+
+        optix::Material optix_material = geometry_instance->getMaterial( 0u );
+        VariableContainer mat_vc( optix_material.get() );
+        surface->setVariables( mat_vc );
 
     }
 
