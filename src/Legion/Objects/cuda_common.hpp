@@ -171,7 +171,7 @@ struct BSDFSample
 struct LocalGeometry 
 {
     float3   position;
-    float3   position_object;
+    //float3   position_object;
     float3   geometric_normal;
     float3   shading_normal;
     float2   texcoord;

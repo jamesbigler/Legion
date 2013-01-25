@@ -82,6 +82,7 @@ void ProgressiveRenderer::render( VariableContainer& container )
     // Force pre-compilation and accel structure builds
     //
     {
+        container.setUnsigned( "sample_index", 0 );
         AutoPrintTimer apt( PrintTimeElapsed( "\tCompile/accel build " ) );
         launchOptiX( Index2( 0u, 0u ) );
     }

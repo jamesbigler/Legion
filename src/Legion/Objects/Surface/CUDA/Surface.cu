@@ -29,9 +29,9 @@
 #include <Legion/Common/Math/CUDA/Math.hpp>
 
 
-rtDeclareVariable( legion::LocalGeometry, lgeom,    attribute local_geom, ); 
-rtDeclareVariable( optix::Ray,            ray,      rtCurrentRay, );
-rtDeclareVariable( float,                 t_hit,    rtIntersectionDistance, );
+rtDeclareVariable( legion::LocalGeometry, local_geom, attribute local_geom, ); 
+rtDeclareVariable( optix::Ray,            ray,        rtCurrentRay, );
+rtDeclareVariable( float,                 t_hit,      rtIntersectionDistance, );
 
 
 
@@ -44,14 +44,14 @@ void legionAnyHit()
 }
 
 
+//
+// TODO: i am getting dyn variable lookups!!!!!
+//
+
 RT_PROGRAM
 void legionClosestHit()
 {
     float3 result = make_float3( 0.0f );
-    const float3 P = ray.origin + t_hit * ray.direction;
-    
-    legion::LocalGeometry local_geom = lgeom;
-    local_geom.position = P;
 
     //
     // emitted contribution
@@ -65,13 +65,13 @@ void legionClosestHit()
     //
     // direct lighting
     //
-    const int num_lights = 1;
-
-    for( int i = 0; i < num_lights; ++i )
+    const unsigned num_lights  = 1;
+    const unsigned sobol_index = radiance_prd.sobol_index;
+    const float3   P           = ray.origin + t_hit * ray.direction;
+    for( unsigned i = 0; i < num_lights; ++i )
     {
-        const unsigned sobol_index = radiance_prd.sobol_index;
 
-        float2 seed = make_float2( 
+        const float2 seed = make_float2( 
                 legion::Sobol::gen( sobol_index, radiance_prd.sobol_dim++),
                 legion::Sobol::gen( sobol_index, radiance_prd.sobol_dim++) );
 
@@ -85,18 +85,16 @@ void legionClosestHit()
 
         // occlusion query
         const float n_dot_wi = optix::dot( w_in, local_geom.shading_normal );
-        bool occluded = n_dot_wi <= 0.0f;
+        bool occluded = n_dot_wi <= 0.0f; 
         if( !occluded )
             occluded = legion::pointOccluded( P, w_in, light_dist );  
 
         if( !occluded )
         {
-            const float3 light_col = 
-                legionLightEmission( -w_in, light_sample.point_on_light );
-            const float3 w_out = -ray.direction;
-            const float3 bsdf  = 
-                legionSurfaceEvaluateBSDF( w_out, local_geom, w_in );
-            result +=  light_col * bsdf / light_sample.pdf;
+            const float3 light_col = legionLightEmission( -w_in, light_sample.point_on_light );
+            const float3 w_out     = -ray.direction;
+            const float3 bsdf      = legionSurfaceEvaluateBSDF( w_out, local_geom, w_in );
+            result                +=  light_col * bsdf / light_sample.pdf;
         }
     }
 

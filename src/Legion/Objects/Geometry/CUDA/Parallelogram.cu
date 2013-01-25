@@ -48,7 +48,8 @@ RT_PROGRAM void parallelogramIntersect( int )
 
                     // Fill in a localgeometry
                     legion::LocalGeometry lg;
-                    lg.position_object  = p;
+                    //lg.position_object  = p;
+                    lg.position         = p;
                     lg.geometric_normal = n;
                     lg.shading_normal   = n;
                     lg.texcoord         = make_float2( a1, a2 );

@@ -62,7 +62,6 @@ bool sphereIntersectImpl(
         {
             // we have a hit -- populate hit record
             sample.position         = origin + t*direction;
-            sample.position_object  = sample.position;
             sample.geometric_normal = (sample.position - center) / radius;
             sample.shading_normal   = sample.geometric_normal;
             sample.texcoord         = make_float2( 0.0f );
@@ -118,7 +117,6 @@ bool sphereIntersectImpl2(
 
             // Fill in a localgeometry
             lg.position         = origin + t*direction;
-            lg.position_object  = lg.position; 
             lg.geometric_normal = normal;
             lg.shading_normal   = normal;
             lg.texcoord         = make_float2( 0.0f );
@@ -134,7 +132,6 @@ bool sphereIntersectImpl2(
 
             // Fill in a localgeometry
             lg.position         = origin + t*direction;
-            lg.position_object  = lg.position; 
             lg.geometric_normal = normal;
             lg.shading_normal   = normal;
             lg.texcoord         = make_float2( 0.0f );
@@ -185,7 +182,7 @@ RT_PROGRAM void sphereIntersect( int )
 
             // Fill in a localgeometry
             legion::LocalGeometry lg;
-            lg.position_object  = ray.origin + t*ray.direction;
+            lg.position         = ray.origin + t*ray.direction;
             lg.geometric_normal = normal;
             lg.shading_normal   = normal;
             lg.texcoord         = make_float2( 0.0f );
@@ -206,7 +203,7 @@ RT_PROGRAM void sphereIntersect( int )
 
                 // Fill in a localgeometry
                 legion::LocalGeometry lg;
-                lg.position_object  = ray.origin + t*ray.direction;
+                lg.position         = ray.origin + t*ray.direction;
                 lg.geometric_normal = normal;
                 lg.shading_normal   = normal;
                 lg.texcoord         = make_float2( 0.0f );
@@ -264,7 +261,6 @@ bool sphereIntersectI(
         {
             // we have a hit -- populate hit record
             sample.position         = origin + t*direction;
-            sample.position_object  = sample.position;
             sample.geometric_normal = (sample.position - center) / radius;
             sample.shading_normal   = sample.geometric_normal;
             sample.texcoord         = make_float2( 0.0f );
