@@ -32,54 +32,48 @@ rtDeclareVariable( float3, center, , );
 rtDeclareVariable( float , radius, , );
 
 // TODO: attrs should be in a header which can be included by all clients
-rtDeclareVariable( legion::LocalGeometry, lgeom, attribute local_geom, ); 
+rtDeclareVariable( legion::LocalGeometry, local_geom, attribute local_geom, ); 
 rtDeclareVariable( optix::Ray,            ray,   rtCurrentRay, );
 
-__device__ __inline__
+
+//-----------------------------------------------------------------------------
+//
+// Helpers
+//
+//-----------------------------------------------------------------------------
+
+struct IntersectReporter
+{
+    __device__ __inline__ bool check_t( float t ) { return rtPotentialIntersection( t ); }
+    __device__ __inline__ bool report ( float t, legion::LocalGeometry lg ) 
+    { 
+        local_geom = lg;
+        return rtReportIntersection( t ); 
+    }
+};
+
+
+struct SampleReporter
+{
+    __device__ __inline__ SampleReporter( legion::LocalGeometry& lg ) : local_geom( lg ) {}
+    __device__ __inline__ bool check_t( float t )
+    { return t > 0.0001f; }
+
+    __device__ __inline__ bool report ( float t, legion::LocalGeometry lg ) 
+    { local_geom = lg; return true; }
+
+    legion::LocalGeometry& local_geom;
+};
+
+
+template <typename Reporter>
+static __device__ __inline__
 bool sphereIntersectImpl( 
         float3 origin,
         float3 direction, 
         float3 center, 
         float  radius,
-        float  tmin,
-        float  tmax,
-        legion::LocalGeometry& sample )
-{
-    const float3 temp = origin - center;
-    const float  twoa = 2.0f*optix::dot( direction, direction );
-    const float  b    = 2.0f*optix::dot( direction, temp );
-    const float  c    = optix::dot( temp, temp ) - radius*radius;
-
-    float  discriminant = b*b- 2.0f*twoa*c;
-
-    if( discriminant > 0.0f )
-    {
-        discriminant = sqrtf( discriminant );
-        float t = (-b - discriminant) / twoa;
-        if (t < tmin) t = (-b + discriminant) / twoa;
-
-        if (t >= tmin && t <= tmax) 
-        {
-            // we have a hit -- populate hit record
-            sample.position         = origin + t*direction;
-            sample.geometric_normal = (sample.position - center) / radius;
-            sample.shading_normal   = sample.geometric_normal;
-            sample.texcoord         = make_float2( 0.0f );
-            return true;
-        }
-    }
-    return false;
-}
-
-__device__ __inline__
-bool sphereIntersectImpl2( 
-        float3 origin,
-        float3 direction, 
-        float3 center, 
-        float  radius,
-        float  tmin,
-        float  tmax,
-        legion::LocalGeometry& lg )
+        Reporter& reporter )
 {
     float3 O = origin - center;
     float3 D = direction;
@@ -87,6 +81,9 @@ bool sphereIntersectImpl2(
     float b = optix::dot(O, D);
     float c = optix::dot(O, O)-radius*radius;
     float disc = b*b-c;
+    
+    bool intersection_found = false;
+
     if(disc > 0.0f)
     {
         float sdisc = sqrtf(disc);
@@ -110,41 +107,63 @@ bool sphereIntersectImpl2(
             }
         }
 
-        float  t = root1 + root11;
-        if( t >= tmin && t <= tmax  ) {
+        const float t = root1 + root11;
+        if( reporter.check_t( t ) ) 
+        {
 
             const float3 normal = (O + t*D)/radius;
 
             // Fill in a localgeometry
+            legion::LocalGeometry lg;
             lg.position         = origin + t*direction;
             lg.geometric_normal = normal;
             lg.shading_normal   = normal;
             lg.texcoord         = make_float2( 0.0f );
 
-            return true; 
+            intersection_found = reporter.report( t, lg );
         } 
 
-        float root2 = (-b + sdisc) +  root1;
-        t = root2;
-        if( t >= tmin && t <= tmax  ) {
+        if( !intersection_found )
+        {
+            const float t = (-b + sdisc) +  root1;
+            if( reporter.check_t( t ) ) 
+            {
+                const float3 normal = (O + t*D)/radius;
 
-            const float3 normal = (O + t*D)/radius;
+                // Fill in a localgeometry
+                legion::LocalGeometry lg;
+                lg.position         = origin + t*direction;
+                lg.geometric_normal = normal;
+                lg.shading_normal   = normal;
+                lg.texcoord         = make_float2( 0.0f );
 
-            // Fill in a localgeometry
-            lg.position         = origin + t*direction;
-            lg.geometric_normal = normal;
-            lg.shading_normal   = normal;
-            lg.texcoord         = make_float2( 0.0f );
-
-            return true; 
+                intersection_found = reporter.report( t, lg );
+            }
         }
     }
-    return false;
+
+    return intersection_found;
 }
 
 
+//-----------------------------------------------------------------------------
+//
+//
+//
+//-----------------------------------------------------------------------------
 RT_PROGRAM void sphereIntersect( int )
 {
+    /*
+    // TODO: Bug in optix intersection inlining is breaking this
+    IntersectReporter reporter;
+    sphereIntersectImpl<IntersectReporter>(
+                ray.origin,
+                ray.direction,
+                center,
+                radius,
+                reporter );
+    */
+
     float3 O = ray.origin - center;
     float3 D = ray.direction;
 
@@ -175,9 +194,9 @@ RT_PROGRAM void sphereIntersect( int )
         }
 
         bool check_second = true;
-        if( rtPotentialIntersection( root1 + root11 ) ) {
+        const float t = root1 + root11;
+        if( rtPotentialIntersection( t ) ) {
 
-            const float  t      = root1 + root11;
             const float3 normal = (O + t*D)/radius;
 
             // Fill in a localgeometry
@@ -187,7 +206,7 @@ RT_PROGRAM void sphereIntersect( int )
             lg.shading_normal   = normal;
             lg.texcoord         = make_float2( 0.0f );
 
-            lgeom = lg;
+            local_geom = lg;
 
             if(rtReportIntersection(0))
                 check_second = false;
@@ -195,10 +214,9 @@ RT_PROGRAM void sphereIntersect( int )
 
         if(check_second) {
 
-            float root2 = (-b + sdisc) +  root1;
-            if( rtPotentialIntersection( root2 ) ) {
+            const float t = (-b + sdisc) +  root1;
+            if( rtPotentialIntersection( t ) ) {
 
-                const float  t      = root2; 
                 const float3 normal = (O + t*D)/radius;
 
                 // Fill in a localgeometry
@@ -208,7 +226,7 @@ RT_PROGRAM void sphereIntersect( int )
                 lg.shading_normal   = normal;
                 lg.texcoord         = make_float2( 0.0f );
 
-                lgeom = lg;
+                local_geom = lg;
 
                 rtReportIntersection(0);
             }
@@ -216,6 +234,11 @@ RT_PROGRAM void sphereIntersect( int )
     }
 }
 
+//-----------------------------------------------------------------------------
+//
+//
+//
+//-----------------------------------------------------------------------------
 
 RT_PROGRAM void sphereBoundingBox( int, float result[6] )
 {
@@ -234,41 +257,6 @@ RT_PROGRAM void sphereBoundingBox( int, float result[6] )
 //
 //
 //-----------------------------------------------------------------------------
-__device__ __inline__
-bool sphereIntersectI( 
-        float3 origin,
-        float3 direction, 
-        float3 center, 
-        float  radius,
-        float  tmin,
-        float  tmax,
-        legion::LocalGeometry& sample )
-{
-    const float3 temp = origin - center;
-    const float  twoa = 2.0f*optix::dot( direction, direction );
-    const float  b    = 2.0f*optix::dot( direction, temp );
-    const float  c    = optix::dot( temp, temp ) - radius*radius;
-
-    float  discriminant = b*b- 2.0f*twoa*c;
-
-    if( discriminant > 0.0f )
-    {
-        discriminant = sqrtf( discriminant );
-        float t = (-b - discriminant) / twoa;
-        if (t < tmin) t = (-b + discriminant) / twoa;
-
-        if (t >= tmin && t <= tmax) 
-        {
-            // we have a hit -- populate hit record
-            sample.position         = origin + t*direction;
-            sample.geometric_normal = (sample.position - center) / radius;
-            sample.shading_normal   = sample.geometric_normal;
-            sample.texcoord         = make_float2( 0.0f );
-            return true;
-        }
-    }
-    return false;
-}
 
 RT_CALLABLE_PROGRAM
 legion::LightSample sphereSample( float2 sample_seed, float3 shading_point )
@@ -297,26 +285,18 @@ legion::LightSample sphereSample( float2 sample_seed, float3 shading_point )
     const float sin_phi = sinf( phi );
 
     legion::ONB uvw( temp );
-    float3 w_in = make_float3( cos_phi*sin_theta, sin_phi*sin_theta, cos_theta);
+    float3 w_in = optix::normalize( make_float3( cos_phi*sin_theta, sin_phi*sin_theta, cos_theta) );
     w_in = uvw.inverseTransform( w_in );
 
-    // TODO: magic numbers
-    if( !sphereIntersectImpl(
+    SampleReporter reporter( sample.point_on_light );
+    if( !sphereIntersectImpl<SampleReporter>(
                 shading_point,
-                w_in, center,
+                w_in,
+                center,
                 radius,
-                0.0f,
-                1e18f,
-                sample.point_on_light ) )
+                reporter ) )
         sample.pdf = 0.0f;
 
-    // TODO: optimize
-    w_in = ( shading_point - sample.point_on_light.position );
-    if( w_in.x == 0 && w_in.y == 0 && w_in.z == 0 )
-        sample.pdf = 0.0f;
-
-    //if( optix::length( shading_point - sample.point_on_light.position ) == 0.0f )
-    //    sample.pdf = 0.0f;
     return sample;
 }
 

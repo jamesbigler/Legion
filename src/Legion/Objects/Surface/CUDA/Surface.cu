@@ -70,31 +70,28 @@ void legionClosestHit()
     const float3   P           = ray.origin + t_hit * ray.direction;
     for( unsigned i = 0; i < num_lights; ++i )
     {
-
         const float2 seed = make_float2( 
-                legion::Sobol::gen( sobol_index, radiance_prd.sobol_dim++),
-                legion::Sobol::gen( sobol_index, radiance_prd.sobol_dim++) );
+                legion::Sobol::gen( sobol_index, radiance_prd.sobol_dim++ ),
+                legion::Sobol::gen( sobol_index, radiance_prd.sobol_dim++ )
+                );
 
         const legion::LightSample light_sample = legionLightSample( seed, P ); 
-        if( light_sample.pdf <= 0.0f )
-            continue;
-
-        float3       w_in       = light_sample.point_on_light.position - P;
-        const float  light_dist = optix::length( w_in );
-        w_in /= light_dist;
-
-        // occlusion query
-        const float n_dot_wi = optix::dot( w_in, local_geom.shading_normal );
-        bool occluded = n_dot_wi <= 0.0f; 
-        if( !occluded )
-            occluded = legion::pointOccluded( P, w_in, light_dist );  
-
-        if( !occluded )
+        if( light_sample.pdf > 0.0f )
         {
-            const float3 light_col = legionLightEmission( -w_in, light_sample.point_on_light );
-            const float3 w_out     = -ray.direction;
-            const float3 bsdf      = legionSurfaceEvaluateBSDF( w_out, local_geom, w_in );
-            result                +=  light_col * bsdf / light_sample.pdf;
+            float3       w_in       = light_sample.point_on_light.position - P;
+            const float  light_dist = optix::length( w_in );
+            w_in /= light_dist;
+
+            if( optix::dot( w_in, local_geom.shading_normal ) > 0.0f ) 
+            {
+                if( !legion::pointOccluded( P, w_in, light_dist ) )
+                {
+                    const float3 light_col = legionLightEmission( -w_in, light_sample.point_on_light );
+                    const float3 w_out     = -ray.direction;
+                    const float3 bsdf      = legionSurfaceEvaluateBSDF( w_out, local_geom, w_in );
+                    result                +=  light_col * bsdf / light_sample.pdf;
+                }
+            }
         }
     }
 
