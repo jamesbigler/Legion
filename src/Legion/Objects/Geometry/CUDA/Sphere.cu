@@ -35,12 +35,119 @@ rtDeclareVariable( float , radius, , );
 rtDeclareVariable( legion::LocalGeometry, lgeom, attribute local_geom, ); 
 rtDeclareVariable( optix::Ray,            ray,   rtCurrentRay, );
 
+__device__ __inline__
+bool sphereIntersectImpl( 
+        float3 origin,
+        float3 direction, 
+        float3 center, 
+        float  radius,
+        float  tmin,
+        float  tmax,
+        legion::LocalGeometry& sample )
+{
+    const float3 temp = origin - center;
+    const float  twoa = 2.0f*optix::dot( direction, direction );
+    const float  b    = 2.0f*optix::dot( direction, temp );
+    const float  c    = optix::dot( temp, temp ) - radius*radius;
 
+    float  discriminant = b*b- 2.0f*twoa*c;
+
+    if( discriminant > 0.0f )
+    {
+        discriminant = sqrtf( discriminant );
+        float t = (-b - discriminant) / twoa;
+        if (t < tmin) t = (-b + discriminant) / twoa;
+
+        if (t >= tmin && t <= tmax) 
+        {
+            // we have a hit -- populate hit record
+            sample.position         = origin + t*direction;
+            sample.position_object  = sample.position;
+            sample.geometric_normal = (sample.position - center) / radius;
+            sample.shading_normal   = sample.geometric_normal;
+            sample.texcoord         = make_float2( 0.0f );
+            return true;
+        }
+    }
+    return false;
+}
+
+__device__ __inline__
+bool sphereIntersectImpl2( 
+        float3 origin,
+        float3 direction, 
+        float3 center, 
+        float  radius,
+        float  tmin,
+        float  tmax,
+        legion::LocalGeometry& lg )
+{
+    float3 O = origin - center;
+    float3 D = direction;
+
+    float b = optix::dot(O, D);
+    float c = optix::dot(O, O)-radius*radius;
+    float disc = b*b-c;
+    if(disc > 0.0f)
+    {
+        float sdisc = sqrtf(disc);
+        float root1 = (-b - sdisc);
+
+
+        float root11 = 0.0f;
+
+        // refine root1
+        if( fabsf(root1) > 10.f * radius )
+        {
+            float3 O1 = O + root1 * direction;
+            b = optix::dot(O1, D);
+            c = optix::dot(O1, O1) - radius*radius;
+            disc = b*b - c;
+
+            if(disc > 0.0f)
+            {
+                sdisc = sqrtf(disc);
+                root11 = (-b - sdisc);
+            }
+        }
+
+        float  t = root1 + root11;
+        if( t >= tmin && t <= tmax  ) {
+
+            const float3 normal = (O + t*D)/radius;
+
+            // Fill in a localgeometry
+            lg.position         = origin + t*direction;
+            lg.position_object  = lg.position; 
+            lg.geometric_normal = normal;
+            lg.shading_normal   = normal;
+            lg.texcoord         = make_float2( 0.0f );
+
+            return true; 
+        } 
+
+        float root2 = (-b + sdisc) +  root1;
+        t = root2;
+        if( t >= tmin && t <= tmax  ) {
+
+            const float3 normal = (O + t*D)/radius;
+
+            // Fill in a localgeometry
+            lg.position         = origin + t*direction;
+            lg.position_object  = lg.position; 
+            lg.geometric_normal = normal;
+            lg.shading_normal   = normal;
+            lg.texcoord         = make_float2( 0.0f );
+
+            return true; 
+        }
+    }
+    return false;
+}
 
 
 RT_PROGRAM void sphereIntersect( int )
 {
-    // TODO: rename these origin, direction
     float3 O = ray.origin - center;
     float3 D = ray.direction;
 
@@ -52,12 +159,10 @@ RT_PROGRAM void sphereIntersect( int )
         float sdisc = sqrtf(disc);
         float root1 = (-b - sdisc);
 
-        bool do_refine = false;
 
         float root11 = 0.0f;
 
         // refine root1
-        /*
         if( fabsf(root1) > 10.f * radius )
         {
             float3 O1 = O + root1 * ray.direction;
@@ -71,7 +176,6 @@ RT_PROGRAM void sphereIntersect( int )
                 root11 = (-b - sdisc);
             }
         }
-        */
 
         bool check_second = true;
         if( rtPotentialIntersection( root1 + root11 ) ) {
@@ -93,8 +197,10 @@ RT_PROGRAM void sphereIntersect( int )
         } 
 
         if(check_second) {
-            float root2 = (-b + sdisc) + (do_refine ? root1 : 0);
+
+            float root2 = (-b + sdisc) +  root1;
             if( rtPotentialIntersection( root2 ) ) {
+
                 const float  t      = root2; 
                 const float3 normal = (O + t*D)/radius;
 
@@ -199,10 +305,22 @@ legion::LightSample sphereSample( float2 sample_seed, float3 shading_point )
     w_in = uvw.inverseTransform( w_in );
 
     // TODO: magic numbers
-    if( !sphereIntersectI( shading_point, w_in, center, radius, 0.0f, 1e18f, sample.point_on_light ) )
+    if( !sphereIntersectImpl(
+                shading_point,
+                w_in, center,
+                radius,
+                0.0f,
+                1e18f,
+                sample.point_on_light ) )
         sample.pdf = 0.0f;
-    if( optix::length( shading_point - sample.point_on_light.position ) == 0.0f )
+
+    // TODO: optimize
+    w_in = ( shading_point - sample.point_on_light.position );
+    if( w_in.x == 0 && w_in.y == 0 && w_in.z == 0 )
         sample.pdf = 0.0f;
+
+    //if( optix::length( shading_point - sample.point_on_light.position ) == 0.0f )
+    //    sample.pdf = 0.0f;
     return sample;
 }
 
