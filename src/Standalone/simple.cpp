@@ -22,7 +22,7 @@ int main( int , char** )
         lambertian.setReflectance( legion::Color(  0.9f, 0.9f, 0.9f ) );
        
         legion::Sphere sphere( &ctx );
-        sphere.setCenter( legion::Vector3( 1.0f, 0.0f, -4.0f ) );
+        sphere.setCenter( legion::Vector3( 1.0f, 0.0f, -5.0f ) );
         sphere.setSurface( &lambertian );
         ctx.addGeometry( &sphere );
         
@@ -39,7 +39,7 @@ int main( int , char** )
         emitter.setRadiance( legion::Color(  0.9f, 0.7f, 0.2f ) );
 
         legion::Sphere light( &ctx );
-        light.setCenter( legion::Vector3( -1.0f, 0.0f, -4.0f ) );
+        light.setCenter( legion::Vector3( -1.0f, 0.0f, -5.0f ) );
         light.setSurface( &emitter);
         ctx.addGeometry( &light );
 
@@ -47,8 +47,10 @@ int main( int , char** )
         ctx.setCamera( &cam );
 
         legion::ProgressiveRenderer renderer( &ctx );
-        renderer.setSamplesPerPixel( 16 );
-        renderer.setSamplesPerPass( 8 );
+        renderer.setSamplesPerPixel( 1 );
+        renderer.setSamplesPerPass( 1 );
+        //renderer.setSamplesPerPixel( 64 );
+        //renderer.setSamplesPerPass( 8 );
         ctx.setRenderer( &renderer );
 
         legion::ImageFileDisplay display( &ctx, "simple.exr" );

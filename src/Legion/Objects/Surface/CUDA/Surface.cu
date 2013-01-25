@@ -25,6 +25,7 @@
 
 
 #include <Legion/Objects/cuda_common.hpp>
+#include <Legion/Common/Math/CUDA/Sobol.hpp>
 
 
 rtDeclareVariable( legion::LocalGeometry, lgeom,    attribute local_geom, ); 
@@ -57,7 +58,7 @@ void legionClosestHit()
     if( radiance_prd.count_emitted_light )
     {
         const float3 w_out = -ray.direction;
-        result += legionSurfaceEmission( w_out, local_geom );
+        result = legionSurfaceEmission( w_out, local_geom );
     }
 
     //
@@ -67,8 +68,12 @@ void legionClosestHit()
 
     for( int i = 0; i < num_lights; ++i )
     {
+        const unsigned sobol_index = radiance_prd.sobol_index;
 
-        float2 seed = make_float2( 0.5f );
+        float2 seed = make_float2( 
+                legion::Sobol::gen( sobol_index, radiance_prd.sobol_dim++),
+                legion::Sobol::gen( sobol_index, radiance_prd.sobol_dim++) );
+
         const legion::LightSample light_sample = legionLightSample( seed, P ); 
 
         float3       w_in       = light_sample.point_on_light.position - P;
@@ -76,7 +81,8 @@ void legionClosestHit()
         w_in /= light_dist;
 
         // occlusion query
-        bool occluded = optix::dot( w_in, local_geom.shading_normal ) <= 0.0f;
+        const float n_dot_wi = optix::dot( w_in, local_geom.shading_normal );
+        bool occluded = n_dot_wi <= 0.0f;
         if( !occluded )
             occluded = legion::pointOccluded( P, w_in, light_dist );  
 
@@ -85,9 +91,14 @@ void legionClosestHit()
             const float3 light_col = 
                 legionLightEmission( -w_in, light_sample.point_on_light );
             const float3 w_out     = -ray.direction;
-            result += light_col * 
+            result += n_dot_wi /
+                      light_sample.pdf * 
+                      light_col *
                       legionSurfaceEvaluateBSDF( w_out, local_geom, w_in );
-            result =  light_sample.point_on_light.position; 
+        //result = legionSurfaceEvaluateBSDF( w_out, local_geom, w_in );
+        //result = make_float3( light_sample.pdf ); 
+        //result = make_float3( n_dot_wi ); 
+        //result = ( light_col ); 
         }
     }
 

@@ -65,7 +65,9 @@ struct RadiancePRD
 {
   float3   result;
   float    importance;
-  int      depth;
+  unsigned depth;
+  unsigned sobol_index;
+  unsigned sobol_dim;
   unsigned count_emitted_light;
 };
 

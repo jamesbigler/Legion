@@ -46,21 +46,25 @@ RT_PROGRAM void progressiveRendererRayGen()
         float2 screen_sample;
         float2 lens_sample;
         float  time_sample;
-        legion::generateSobolSamples( launch_dim,
-                                      launch_index,
-                                      current_sample_index,
-                                      screen_sample,
-                                      lens_sample,
-                                      time_sample );
+        const unsigned sobol_index = 
+            legion::generateSobolSamples( 
+                launch_dim,
+                launch_index,
+                current_sample_index,
+                screen_sample,
+                lens_sample,
+                time_sample );
         
         legion::RayGeometry rg = legionCameraCreateRay( lens_sample,
                                                         screen_sample,
                                                         time_sample );
 
         legion::RadiancePRD prd;
-        prd.result = make_float3( 0.0f );
-        prd.importance = 1.0f;
-        prd.depth = 0u;
+        prd.result              = make_float3( 0.0f );
+        prd.importance          = 1.0f;
+        prd.depth               = 0u;
+        prd.sobol_index         = sobol_index; 
+        prd.sobol_dim           = 5u; 
         prd.count_emitted_light = 1;
 
         optix::Ray ray = legion::makePrimaryRay( rg.origin, rg.direction );
