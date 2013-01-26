@@ -44,6 +44,11 @@ int main( int , char** )
         ctx.addGeometry( &light );
 
         legion::ThinLens cam( &ctx );
+        /*
+        cam.setCameraToWorld( 
+                legion::Matrix::translate( 
+                    legion::Vector3( 0.5f, 0.5f, 0.0f ) ) );
+                    */
         ctx.setCamera( &cam );
 
         legion::ProgressiveRenderer renderer( &ctx );

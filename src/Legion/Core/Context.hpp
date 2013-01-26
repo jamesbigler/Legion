@@ -32,20 +32,11 @@ namespace legion
 {
 
 class ICamera;
-class IFilm;
 class IGeometry;
 class ILight;
 class IRenderer;
 class ISurface;
 class PluginContext;
-
-
-// TODO: this is a placeholder struct
-struct RenderParameters
-{
-    unsigned samples_per_pixel;
-    Index2   resolution;
-};
 
 
 class Context : public Noncopyable
@@ -58,7 +49,6 @@ public:
 
     void setRenderer   ( IRenderer* renderer );
     void setCamera     ( ICamera* camera );
-    void setFilm       ( IFilm* film );
     void addGeometry   ( IGeometry* geometry );
     void addLight      ( ILight* light );
 

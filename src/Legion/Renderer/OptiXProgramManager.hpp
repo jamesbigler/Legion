@@ -1,4 +1,4 @@
- 
+
 // Copyright (C) 2011 R. Keith Morley
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -20,41 +20,36 @@
 // IN THE SOFTWARE.
 // (MIT/X11 License)
 
+#ifndef LEGION_RENDERER_OPTIX_PROGRAM_MANAGER_HPP_
+#define LEGION_RENDERER_OPTIX_PROGRAM_MANAGER_HPP_
 
-#include <Legion/Core/Color.hpp>
-#include <Legion/Renderer/Cuda/Shared.hpp>
-#include <Legion/Objects/LightShader/DiffuseLight.hpp>
+#include <optixu/optixpp_namespace.h>
+#include <map>
 
-
-using namespace legion;
-
-
-DiffuseLight::DiffuseLight( Context* context, const std::string& name )
-    : MeshLight( context, name ),
-      m_emittance( 0.0f )
+namespace legion
 {
+
+class OptiXProgramManager
+{
+public:
+    explicit OptiXProgramManager( optix::Context context );
+    ~OptiXProgramManager();
+
+    void addPath( const std::string& path );
+
+    optix::Program get( const std::string& cuda_filename,
+                        const std::string& cuda_function_name );
+
+private:
+    typedef std::map< std::string, optix::Program>   Registry;
+    typedef std::vector<std::string>                 Paths;
+
+    optix::Context  m_context;
+    Registry        m_registry;
+    Paths           m_paths;
+};
+
 }
 
-    
-DiffuseLight::~DiffuseLight()
-{
-}
 
-    
-Color DiffuseLight::power()const
-{
-    LEGION_TODO();
-}
-
-
-Color DiffuseLight::emittance( const LocalGeometry& light_geom,
-                            const Vector3& w_in )const
-{
-    return m_emittance;// * fmaxf( 0.0f,  dot( light_geom.shading_normal, -w_in ) );
-}
-
-
-void DiffuseLight::setEmittance( const Color& emittance )
-{
-    m_emittance = emittance;
-}
+#endif // LEGION_RENDERER_OPTIX_PROGRAM_MANAGER_HPP_

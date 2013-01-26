@@ -110,9 +110,8 @@ LDEVICE inline unsigned Sobol::lookUpSobolIndex( const unsigned m,
     uint32 frame = pass;
     uint64 index = uint64(frame) << m2;
 
-    // TODO: the delta value only depends on frame
-    // and m, thus it can be cached across multiple
-    // function calls, if desired.
+    // the delta value only depends on frame and m, thus it can be cached
+    // across multiple function calls, if desired.
     uint64 delta = 0;
     for (uint32 c = 0; frame; frame >>= 1, ++c)
         if (frame & 1) // Add flipped column m + c + 1.

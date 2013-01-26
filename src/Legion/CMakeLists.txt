@@ -93,8 +93,8 @@ add_library( legion SHARED
     Objects/Surface/DiffuseEmitter.hpp
     Objects/Surface/Lambertian.cpp
     Objects/Surface/Lambertian.hpp
-    Renderer/CUDAProgramManager.cpp
-    Renderer/CUDAProgramManager.hpp
+    Renderer/OptiXProgramManager.cpp
+    Renderer/OptiXProgramManager.hpp
     Renderer/OptiXScene.cpp
     Renderer/OptiXScene.hpp
     )

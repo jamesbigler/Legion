@@ -56,8 +56,6 @@ public:
 
     void setCamera     ( ICamera* camera );
 
-    void setFilm       ( IFilm* film );
-
     void addGeometry( IGeometry* geometry );
 
     void addLight( ILight* light );
@@ -75,7 +73,6 @@ private:
 
     IRenderer*              m_renderer;
     ICamera*                m_camera;
-    IFilm*                  m_film;
     std::vector<IGeometry*> m_geometry;
 };
 
@@ -116,12 +113,6 @@ void Context::Impl::setCamera( ICamera* camera )
 }
 
 
-void Context::Impl::setFilm( IFilm* film )
-{
-    m_optix_scene.setFilm( film );
-}
-
-
 void Context::Impl::addGeometry( IGeometry* geometry )
 {
     m_optix_scene.addGeometry( geometry );
@@ -136,8 +127,7 @@ void Context::Impl::addLight( ILight* light )
 
 void Context::Impl::addAssetPath( const std::string& path )
 {
-    LLOG_INFO << "Adding asset path '" << path << "'";
-    LEGION_TODO();
+    m_optix_scene.addAssetPath( path );
 }
 
 
@@ -189,12 +179,6 @@ void Context::setRenderer( IRenderer* renderer )
 void Context::setCamera( ICamera* camera )
 {
     m_impl->setCamera( camera );
-}
-
-
-void Context::setFilm( IFilm* film )
-{
-    m_impl->setFilm( film );
 }
 
 

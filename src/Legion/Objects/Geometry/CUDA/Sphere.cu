@@ -20,18 +20,13 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-
-// TODO: clean this up, share intersection code, etc
-
 #include <Legion/Objects/cuda_common.hpp>
 #include <Legion/Common/Math/CUDA/ONB.hpp>
 #include <Legion/Common/Math/CUDA/Math.hpp>
 
-
 rtDeclareVariable( float3, center, , );
 rtDeclareVariable( float , radius, , );
 
-// TODO: attrs should be in a header which can be included by all clients
 rtDeclareVariable( legion::LocalGeometry, local_geom, attribute local_geom, ); 
 rtDeclareVariable( optix::Ray,            ray,   rtCurrentRay, );
 

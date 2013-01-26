@@ -4,8 +4,7 @@
 
 #include <Legion/Common/Math/Matrix.hpp>
 #include <Legion/Common/Math/Vector.hpp>
-#include <Legion/Renderer/Cuda/Shared.hpp>
-#include <ostream>
+#include <iosfwd>
 
 namespace legion
 {
@@ -19,15 +18,7 @@ namespace legion
 
     std::ostream& operator<<( std::ostream& out, const legion::Color& c ); 
 
-    std::ostream& operator<<( std::ostream& out, const legion::Ray& ray ); 
-    
     std::ostream& operator<<( std::ostream& out, const legion::Matrix& m ); 
-
-    std::ostream& operator<<( std::ostream& out,
-                              const legion::LocalGeometry& lgeom );
-
-
-
 
 
     template<unsigned DIM, typename TYPE>

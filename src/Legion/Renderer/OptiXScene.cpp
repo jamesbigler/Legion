@@ -86,8 +86,7 @@ OptiXScene::~OptiXScene()
 void OptiXScene::setRenderer( IRenderer* renderer )
 {
     m_raygen_program = 
-            m_program_mgr.get( renderer->name(),
-                               std::string( renderer->name() ) + ".ptx",
+            m_program_mgr.get( std::string( renderer->name() ) + ".ptx",
                                renderer->rayGenProgramName() );
 
     m_optix_context->setRayGenerationProgram( 0, m_raygen_program );
@@ -102,20 +101,12 @@ void OptiXScene::setCamera( ICamera* camera )
     try
     {
         m_create_ray_program = 
-            m_program_mgr.get( camera->name(),
-                               std::string( camera->name() ) + ".ptx",
+            m_program_mgr.get( std::string( camera->name() ) + ".ptx",
                                camera->createRayFunctionName() );
 
         m_optix_context[ "legionCameraCreateRay" ]->set( m_create_ray_program );
     }
     OPTIX_CATCH_RETHROW;
-}
-
-
-void OptiXScene::setFilm( IFilm* film )
-{
-    LLOG_INFO << "Film: " << film;
-    LEGION_TODO();
 }
 
 
@@ -135,13 +126,11 @@ void OptiXScene::addGeometry( IGeometry* geometry )
     {
         // Load the geometry programs
         optix::Program intersect = 
-            m_program_mgr.get( geometry->name(),
-                               std::string( geometry->name() ) + ".ptx",
+            m_program_mgr.get( std::string( geometry->name() ) + ".ptx",
                                geometry->intersectionFunctionName() );
 
         optix::Program bbox = 
-            m_program_mgr.get( geometry->name(),
-                               std::string( geometry->name() ) + ".ptx",
+            m_program_mgr.get( std::string( geometry->name() ) + ".ptx",
                                geometry->boundingBoxFunctionName() );
 
         //
@@ -159,42 +148,42 @@ void OptiXScene::addGeometry( IGeometry* geometry )
             m_optix_context->createGeometryInstance();
         optix_geometry_instance->setGeometry( optix_geometry );
         optix_geometry_instance->setMaterialCount( 1u );
-        optix_geometry_instance->setMaterial( 0, m_default_mtl );
         optix_geometry_instance->setGeometry( optix_geometry );
         
         //
         // Create optix Material
         //
+        optix::Material material = m_optix_context->createMaterial();
+        optix_geometry_instance->setMaterial( 0, material );
+        material->setClosestHitProgram( RADIANCE_TYPE, m_closest_hit_program );
+        material->setAnyHitProgram( SHADOW_TYPE, m_any_hit_program );
+
         ISurface* surface = geometry->getSurface();
         const std::string surface_name( surface->name() );
         const std::string surface_ptx( surface_name + ".ptx" );
        
         optix::Program evaluate_bsdf = 
-            m_program_mgr.get( surface_name,
-                               surface_ptx,
+            m_program_mgr.get( surface_ptx,
                                surface->evaluateBSDFFunctionName() );
-        optix_geometry_instance[ "legionSurfaceEvaluateBSDF" ]->set( 
+        material[ "legionSurfaceEvaluateBSDF" ]->set( 
                 evaluate_bsdf );
         
         optix::Program sample_bsdf = 
-            m_program_mgr.get( surface_name,
-                               surface_ptx,
+            m_program_mgr.get( surface_ptx,
                                surface->sampleBSDFFunctionName() );
-        optix_geometry_instance[ "legionSurfaceSampleBSDF" ]->set( 
+        material[ "legionSurfaceSampleBSDF" ]->set( 
                 sample_bsdf );
         
         optix::Program pdf = 
-            m_program_mgr.get( surface_name,
-                               surface_ptx,
+            m_program_mgr.get( surface_ptx,
                                surface->pdfFunctionName() );
-        optix_geometry_instance[ "legionSurfacePDF" ]->set( pdf );
+        material[ "legionSurfacePDF" ]->set( pdf );
         
         const std::string emission_func_name = surface->emissionFunctionName();
         optix::Program emission = 
-            m_program_mgr.get( surface_name,
-                               surface_ptx,
+            m_program_mgr.get( surface_ptx,
                                emission_func_name );
-        optix_geometry_instance[ "legionSurfaceEmission" ]->set( emission );
+        material[ "legionSurfaceEmission" ]->set( emission );
 
         //
         // create Light
@@ -202,8 +191,7 @@ void OptiXScene::addGeometry( IGeometry* geometry )
         if( emission_func_name != "nullSurfaceEmission" )
         {
             optix::Program sample = 
-                m_program_mgr.get( geometry->name(),
-                                   std::string( geometry->name() ) + ".ptx",
+                m_program_mgr.get( std::string( geometry->name() ) + ".ptx",
                                    geometry->sampleFunctionName() );
 
             // TODO: callable buffer once implemented, move variablecontainer
@@ -226,6 +214,12 @@ void OptiXScene::addGeometry( IGeometry* geometry )
         m_geometry.insert(std::make_pair( geometry, optix_geometry_instance ) );
     }
     OPTIX_CATCH_RETHROW;
+}
+
+
+void OptiXScene::addAssetPath( const std::string& path )
+{
+    m_program_mgr.addPath( path );
 }
 
 
@@ -293,21 +287,18 @@ void OptiXScene::initializeOptixContext()
                 m_optix_context->createAcceleration( "Sbvh", "Bvh" ) ); 
         m_optix_context[ "legion_top_group" ]->set( m_top_group );
         
-        m_default_mtl = m_optix_context->createMaterial();
-        m_default_mtl->setClosestHitProgram(
-                RADIANCE_TYPE,
-                m_program_mgr.get( 
-                    "Surface", 
+        m_closest_hit_program = 
+            m_program_mgr.get( 
                     "Surface.ptx", 
-                    "legionClosestHit" )
-                );
-        m_default_mtl->setAnyHitProgram(
-                SHADOW_TYPE, 
+                    "legionClosestHit"
+                    );
+                
+        m_any_hit_program = 
                 m_program_mgr.get( 
-                    "Surface", 
                     "Surface.ptx", 
-                    "legionAnyHit" )
-                );
+                    "legionAnyHit"
+                    );
+
     }
     OPTIX_CATCH_RETHROW;
 }

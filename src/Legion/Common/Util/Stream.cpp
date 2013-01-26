@@ -2,8 +2,6 @@
 #include <Legion/Common/Math/Matrix.hpp>
 #include <Legion/Common/Util/Stream.hpp>
 #include <Legion/Core/Color.hpp>
-#include <Legion/Core/Ray.hpp>
-#include <Legion/Renderer/Cuda/Shared.hpp>
 #include <optixu/optixu_math_stream.h>
 
 #include <iostream>
@@ -23,14 +21,6 @@ std::ostream& legion::operator<<( std::ostream& out, const legion::Color& c )
 }
 
 
-std::ostream& legion::operator<<( std::ostream& out, const legion::Ray& ray )
-{
-    out << "( " << ray.origin() << " " << ray.direction() 
-        << " " << ray.tMax() << ", " << ray.time() << " )";
-    return out;
-}
-    
-
 std::ostream& legion::operator<<( std::ostream& out, const legion::Matrix& m )
 {
     out << std::fixed 
@@ -39,19 +29,5 @@ std::ostream& legion::operator<<( std::ostream& out, const legion::Matrix& m )
         << " " << m[ 8] << ", " << m[ 9] << ", " << m[10] << ", " << m[11] 
         << " " << m[12] << ", " << m[13] << ", " << m[14] << ", " << m[15]
         << "]";
-    return out;
-}
-
-
-std::ostream& legion::operator<<( std::ostream& out,
-                                  const legion::LocalGeometry& lgeom)
-{
-    out << "pos       :" << lgeom.position         << "\n"
-        << "obj_pos   :" << lgeom.position_object  << "\n"
-        << "geo_norm  :" << lgeom.geometric_normal << "\n"
-        << "shade_norm:" << lgeom.shading_normal   << "\n"
-        << "texcoord  :" << lgeom.texcoord         << "\n"
-        << "mat_id    :" << lgeom.material_id;
-        
     return out;
 }

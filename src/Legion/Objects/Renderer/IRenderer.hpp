@@ -62,7 +62,6 @@ public:
     virtual void           render( VariableContainer& container )=0;
 
 protected:
-    // TODO: pimpl
     IDisplay* m_display;
     Index2    m_resolution;
     unsigned  m_samples_per_pixel;
