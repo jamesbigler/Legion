@@ -54,7 +54,7 @@ const char* Lambertian::emissionFunctionName()const
 }
 
 
-void Lambertian::setVariables( VariableContainer& container ) const
+void Lambertian::setVariables( const VariableContainer& container ) const
 {
     container.setFloat( "reflectance", m_reflectance );
 }

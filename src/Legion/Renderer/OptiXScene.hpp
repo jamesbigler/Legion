@@ -44,10 +44,11 @@ public:
     OptiXScene();
     ~OptiXScene();
 
-    void setRenderer( IRenderer* renderer );
-    void setCamera  ( ICamera*   camera );
-    void addLight   ( ILight*    light );
-    void addGeometry( IGeometry* geometry );
+    void setRenderer   ( IRenderer*    renderer );
+    void setCamera     ( ICamera*      camera );
+    void setEnvironment( IEnvironment* environment );
+    void addLight      ( ILight*       light );
+    void addGeometry   ( IGeometry*    geometry );
 
     void addAssetPath( const std::string& path );
     void sync();
@@ -67,12 +68,16 @@ private:
     optix::Program          m_create_ray_program;
     optix::Program          m_closest_hit_program;
     optix::Program          m_any_hit_program;
+    optix::Program          m_environment_sample;
+    optix::Program          m_environment_evaluate;
+    optix::Program          m_environment_program;
     optix::GeometryGroup    m_top_group;
 
     OptiXProgramManager     m_program_mgr;
 
     IRenderer*              m_renderer;
     ICamera*                m_camera;
+    IEnvironment*           m_environment;
     IFilm*                  m_film;
     std::vector<ILight*>    m_lights;
     GeometryMap             m_geometry;

@@ -23,20 +23,6 @@
 #ifndef LEGION_OBJECTS_SURFACE_CUDA_SURFACE_HPP_
 #define LEGION_OBJECTS_SURFACE_CUDA_SURFACE_HPP_
 
-/*
-struct RadiancePRD 
-{
-  float3 result;
-  float  importance;
-  int    depth;
-};
-
-
-struct ShadowPRD 
-{
-  float3 attenuation;
-};
-*/
 
 RT_CALLABLE_PROGRAM
 float3 nullSurfaceEmission( float3 w_out, legion::LocalGeometry p )

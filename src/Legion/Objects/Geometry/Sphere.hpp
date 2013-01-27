@@ -60,7 +60,7 @@ public:
     void        setCenter( Vector3 center );
     void        setRadius( float radius );
 
-    void setVariables( VariableContainer& container )const;
+    void setVariables( const VariableContainer& container )const;
 
 private:
     Matrix    m_transform;

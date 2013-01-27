@@ -21,43 +21,46 @@
 // IN THE SOFTWARE.
 
 
-#ifndef LEGION_OBJECTS_IOBJECT_OBJECT_HPP_
-#define LEGION_OBJECTS_IOBJECT_OBJECT_HPP_
+/// \file IEnvironment.hpp
+/// Pure virtual interface for Environment classes
 
-#include <Legion/Core/Context.hpp>
-#include <Legion/Core/PluginContext.hpp>
-#include <optixu/optixpp_namespace.h>
+
+#ifndef LEGION_OBJECTS_ENVIRONMENT_CONSTANT_ENVIRONMENT_HPP_
+#define LEGION_OBJECTS_ENVIRONMENT_CONSTANT_ENVIRONMENT_HPP_
+
+#include <Legion/Objects/Environment/IEnvironment.hpp>
+#include <Legion/Core/Color.hpp>
 
 namespace legion
 {
 
-class VariableContainer;
 
-class IObject
+/// Pure virtual interface for Environment objects
+class ConstantEnvironment : public IEnvironment 
 {
 public:
-    IObject( Context* context );
+    ConstantEnvironment( Context* context );
 
-    virtual ~IObject();
+    ~ConstantEnvironment();
 
-    PluginContext& getPluginContext();
+    /// Return the name of this Environment type.  The associated PTX file
+    /// should be named {name()}.ptx
+    const char* name() const;
 
-    void           launchOptiX( const Index2& dimensions );
+    /// Return the name of this Environment's cuda ray generation function 
+    const char* evaluateFunctionName() const;
 
-    optix::Buffer  createOptiXBuffer( unsigned type,
-                                      RTformat format,
-                                      unsigned width  = 0u,
-                                      unsigned height = 0u,
-                                      unsigned depth  = 0u );
+    virtual const char* sampleFunctionName() const;
 
-
-    virtual void setVariables( const VariableContainer& ) const {}
-
+    void setRadiance( const Color& radiance );
+    
+    void setVariables( const VariableContainer& container ) const;
 private:
-    PluginContext& m_plugin_context;
+
+    Color m_radiance;
 };
+
 
 }
 
-
-#endif // LEGION_OBJECTS_IOBJECTS_OBJECT_HPP_
+#endif // LEGION_OBJECTS_ENVIRONMENT_CONSTANT_ENVIRONMENT_HPP_

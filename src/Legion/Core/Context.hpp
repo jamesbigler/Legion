@@ -33,6 +33,7 @@ namespace legion
 
 class ICamera;
 class IGeometry;
+class IEnvironment;
 class ILight;
 class IRenderer;
 class ISurface;
@@ -47,10 +48,11 @@ public:
     Context();
     ~Context();
 
-    void setRenderer   ( IRenderer* renderer );
-    void setCamera     ( ICamera* camera );
-    void addGeometry   ( IGeometry* geometry );
-    void addLight      ( ILight* light );
+    void setRenderer   ( IRenderer*    renderer    );
+    void setCamera     ( ICamera*      camera      );
+    void setEnvironment( IEnvironment* environment );
+    void addGeometry   ( IGeometry*    geometry    );
+    void addLight      ( ILight*       light       );
 
 
     void addAssetPath( const std::string& path );

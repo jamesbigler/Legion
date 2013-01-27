@@ -56,7 +56,9 @@ public:
 
     void setCamera     ( ICamera* camera );
 
-    void addGeometry( IGeometry* geometry );
+    void setEnvironment( IEnvironment* environment );
+
+    void addGeometry   ( IGeometry* geometry );
 
     void addLight( ILight* light );
 
@@ -110,6 +112,12 @@ void Context::Impl::setCamera( ICamera* camera )
 {
     m_camera = camera;
     m_optix_scene.setCamera( camera );
+}
+
+
+void Context::Impl::setEnvironment( IEnvironment* environment )
+{
+    m_optix_scene.setEnvironment( environment );
 }
 
 
@@ -179,6 +187,12 @@ void Context::setRenderer( IRenderer* renderer )
 void Context::setCamera( ICamera* camera )
 {
     m_impl->setCamera( camera );
+}
+
+
+void Context::setEnvironment( IEnvironment* environment )
+{
+    m_impl->setEnvironment( environment );
 }
 
 

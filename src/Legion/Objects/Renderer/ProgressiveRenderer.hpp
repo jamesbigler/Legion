@@ -48,7 +48,7 @@ public:
     optix::Buffer  getOutputBuffer()const;
     void           render( VariableContainer& container );
     
-    void setVariables( VariableContainer& container ) const;
+    void setVariables( const VariableContainer& container ) const;
 private:
     optix::Buffer m_output_buffer;
     unsigned      m_samples_per_pass;

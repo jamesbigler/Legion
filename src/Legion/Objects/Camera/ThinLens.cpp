@@ -87,7 +87,7 @@ void ThinLens::setViewPlane( float l, float r, float b, float t )
 }
 
 
-void ThinLens::setVariables( VariableContainer& container ) const
+void ThinLens::setVariables( const VariableContainer& container ) const
 {
     container.setMatrix( "camera_to_world", m_camera_to_world );
     container.setFloat ( "focal_distance",  m_focal_distance );

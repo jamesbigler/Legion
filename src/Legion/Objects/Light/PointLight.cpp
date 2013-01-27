@@ -32,7 +32,7 @@ PointLight::PointLight( Context* context )
 }
 
 
-void PointLight::setVariables( VariableContainer& /*container*/ ) const
+void PointLight::setVariables( const VariableContainer& /*container*/ ) const
 {
 }
 

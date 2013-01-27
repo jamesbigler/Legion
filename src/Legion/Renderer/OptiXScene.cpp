@@ -27,6 +27,7 @@
 #include <Legion/Core/VariableContainer.hpp>
 #include <Legion/Objects/Camera/ICamera.hpp>
 #include <Legion/Objects/Geometry/IGeometry.hpp>
+#include <Legion/Objects/Environment/IEnvironment.hpp>
 #include <Legion/Objects/Renderer/IRenderer.hpp>
 #include <Legion/Objects/Surface/ISurface.hpp>
 #include <Legion/Renderer/OptiXScene.hpp>
@@ -105,6 +106,47 @@ void OptiXScene::setCamera( ICamera* camera )
                                camera->createRayFunctionName() );
 
         m_optix_context[ "legionCameraCreateRay" ]->set( m_create_ray_program );
+    }
+    OPTIX_CATCH_RETHROW;
+}
+
+
+void OptiXScene::setEnvironment( IEnvironment* environment )
+{
+    m_environment = environment;
+    if( !m_environment_program )
+    {
+        m_environment_program = 
+            m_program_mgr.get( "Environment.ptx", "legionEnvironment" );
+        m_optix_context->setMissProgram( RADIANCE_TYPE, m_environment_program );
+    }
+    try
+    {
+        m_environment_evaluate = 
+            m_program_mgr.get( std::string( environment->name() ) + ".ptx",
+                               environment->evaluateFunctionName() );
+
+        m_environment_program[ "legionEnvironmentEvaluate" ]->set( 
+                m_environment_evaluate 
+                );
+
+        const std::string sample_func_name = environment->sampleFunctionName();
+
+        if( sample_func_name != "nullEnvironmentSample" )
+        {
+            m_environment_sample = 
+                m_program_mgr.get( std::string( environment->name() ) + ".ptx",
+                        environment->sampleFunctionName() );
+
+            // TODO: callable buffer once implemented, move variablecontainer
+            //       setting to sync()
+            m_optix_context[ "legionLightSample"   ]->set( 
+                    m_environment_sample
+                    );
+            m_optix_context[ "legionLightEmission" ]->set( 
+                    m_environment_evaluate 
+                    );
+        }
     }
     OPTIX_CATCH_RETHROW;
 }
@@ -235,9 +277,17 @@ void OptiXScene::sync()
     VariableContainer renderer_vc( m_raygen_program.get() );
     m_renderer->setVariables( renderer_vc );
         
+    // TODO
     VariableContainer vc( m_create_ray_program.get() );
     m_camera->setVariables( vc );
         
+    if( m_environment_sample )
+        m_environment->setVariables( 
+                VariableContainer( m_environment_sample.get() ) );
+    if( m_environment_evaluate )
+        m_environment->setVariables( 
+                VariableContainer( m_environment_evaluate.get() ) );
+
     for( GeometryMap::iterator it = m_geometry.begin();
          it != m_geometry.end();
          ++it )

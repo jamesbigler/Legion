@@ -25,6 +25,6 @@
 
 using namespace legion;
 
-void TriMesh::setVariables( VariableContainer& /*container*/ ) const
+void TriMesh::setVariables( const VariableContainer& /*container*/ ) const
 {
 }

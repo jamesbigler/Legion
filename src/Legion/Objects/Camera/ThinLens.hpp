@@ -65,7 +65,7 @@ public:
     void setViewPlane( float l, float r, float b, float t );
 
     /// See IObject::setVariables
-    void setVariables( VariableContainer& container ) const;
+    void setVariables( const VariableContainer& container ) const;
     
 private:
     Matrix       m_camera_to_world;  ///< Camera-to-world transform

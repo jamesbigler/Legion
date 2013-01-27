@@ -12,6 +12,8 @@ CUDA_COMPILE_PTX( ptx_files
     Objects/Camera/CUDA/ThinLens.cu
     Objects/Geometry/CUDA/Parallelogram.cu
     Objects/Geometry/CUDA/Sphere.cu
+    Objects/Environment/CUDA/Environment.cu
+    Objects/Environment/CUDA/ConstantEnvironment.cu
     Objects/Renderer/CUDA/ProgressiveRenderer.cu
     Objects/Surface/CUDA/DiffuseEmitter.cu
     Objects/Surface/CUDA/Lambertian.cu
@@ -73,6 +75,9 @@ add_library( legion SHARED
     Objects/Display/IDisplay.hpp
     Objects/Display/ImageFileDisplay.cpp
     Objects/Display/ImageFileDisplay.hpp
+    Objects/Environment/ConstantEnvironment.cpp
+    Objects/Environment/ConstantEnvironment.hpp
+    Objects/Environment/IEnvironment.hpp
     Objects/Geometry/IGeometry.hpp
     Objects/Geometry/Parallelogram.cpp
     Objects/Geometry/Parallelogram.hpp

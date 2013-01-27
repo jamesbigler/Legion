@@ -37,18 +37,17 @@ class VariableContainer
 {
 public:
     explicit VariableContainer( optix::ScopedObj* scoped );
-    void setFloat( const std::string& name, float val );
-    void setFloat( const std::string& name, const Vector2& val );
-    void setFloat( const std::string& name, const Vector3& val );
-    void setFloat( const std::string& name, const Vector4& val );
+    void setFloat( const std::string& name, float val          )const;
+    void setFloat( const std::string& name, const Vector2& val )const;
+    void setFloat( const std::string& name, const Vector3& val )const;
+    void setFloat( const std::string& name, const Vector4& val )const;
+    void setFloat( const std::string& name, const Color& val   )const;
 
-    void setFloat( const std::string& name, const Color& val );
+    void setUnsigned( const std::string& name, unsigned val )const;
 
-    void setUnsigned( const std::string& name, unsigned val );
+    void setMatrix( const std::string& name, const Matrix& val )const;
 
-    void setMatrix( const std::string& name, const Matrix& val );
-
-    void setBuffer( const std::string& name, optix::Buffer val );
+    void setBuffer( const std::string& name, optix::Buffer val )const;
 
 private:
     optix::ScopedObj* m_scoped;

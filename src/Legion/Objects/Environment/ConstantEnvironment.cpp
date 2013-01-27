@@ -20,44 +20,48 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
+#include <Legion/Objects/Environment/ConstantEnvironment.hpp>
+#include <Legion/Core/VariableContainer.hpp>
 
-#ifndef LEGION_OBJECTS_IOBJECT_OBJECT_HPP_
-#define LEGION_OBJECTS_IOBJECT_OBJECT_HPP_
+using namespace legion;
 
-#include <Legion/Core/Context.hpp>
-#include <Legion/Core/PluginContext.hpp>
-#include <optixu/optixpp_namespace.h>
-
-namespace legion
+ConstantEnvironment::ConstantEnvironment( Context* context )
+    : IEnvironment( context ),
+      m_radiance( 0.5f, 0.5f, 0.5f )
 {
-
-class VariableContainer;
-
-class IObject
-{
-public:
-    IObject( Context* context );
-
-    virtual ~IObject();
-
-    PluginContext& getPluginContext();
-
-    void           launchOptiX( const Index2& dimensions );
-
-    optix::Buffer  createOptiXBuffer( unsigned type,
-                                      RTformat format,
-                                      unsigned width  = 0u,
-                                      unsigned height = 0u,
-                                      unsigned depth  = 0u );
-
-
-    virtual void setVariables( const VariableContainer& ) const {}
-
-private:
-    PluginContext& m_plugin_context;
-};
-
 }
 
 
-#endif // LEGION_OBJECTS_IOBJECTS_OBJECT_HPP_
+ConstantEnvironment::~ConstantEnvironment()
+{
+}
+
+
+const char* ConstantEnvironment::name() const
+{
+    return "ConstantEnvironment";
+}
+
+
+const char* ConstantEnvironment::evaluateFunctionName() const
+{
+    return "constantEnvironmentEvaluate";
+}
+
+
+const char* ConstantEnvironment::sampleFunctionName() const
+{
+    return "nullEnvironmentSample";
+}
+
+
+void ConstantEnvironment::setRadiance( const Color& radiance )
+{
+    m_radiance = radiance;
+}
+
+
+void ConstantEnvironment::setVariables( const VariableContainer& container ) const
+{
+    container.setFloat( "radiance", m_radiance );
+}

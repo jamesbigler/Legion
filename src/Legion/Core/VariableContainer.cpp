@@ -45,50 +45,50 @@ VariableContainer::VariableContainer( optix::ScopedObj* scoped )
 }
 
 
-void VariableContainer::setFloat( const std::string& name, float val )
+void VariableContainer::setFloat( const std::string& name, float val ) const
 {
     getVariable( m_scoped, name )->setFloat( val );
 }
 
 
-void VariableContainer::setFloat( const std::string& name, const Vector2& val )
+void VariableContainer::setFloat( const std::string& name, const Vector2& val ) const
 {
     getVariable( m_scoped, name )->setFloat( val.x(), val.y() );
 }
 
 
-void VariableContainer::setFloat( const std::string& name, const Vector3& val )
+void VariableContainer::setFloat( const std::string& name, const Vector3& val )const
 {
     getVariable( m_scoped, name )->setFloat( val.x(), val.y(), val.z() );
 }
 
 
-void VariableContainer::setFloat( const std::string& name, const Vector4& val )
+void VariableContainer::setFloat( const std::string& name, const Vector4& val ) const
 {
     getVariable( m_scoped, name )->
         setFloat( val.x(), val.y(), val.z(), val.w() );
 }
 
 
-void VariableContainer::setFloat( const std::string& name, const Color& val )
+void VariableContainer::setFloat( const std::string& name, const Color& val ) const
 {
     getVariable( m_scoped, name )->setFloat( val.r(), val.g(), val.b() );
 }
 
 
-void VariableContainer::setUnsigned( const std::string& name, unsigned val )
+void VariableContainer::setUnsigned( const std::string& name, unsigned val ) const
 {
     getVariable( m_scoped, name )->setUint( val );
 }
 
 
-void VariableContainer::setMatrix( const std::string& name, const Matrix& val ) 
+void VariableContainer::setMatrix( const std::string& name, const Matrix& val )  const
 {
     getVariable( m_scoped, name )->setMatrix4x4fv( false, val.getData() );
 }
     
 
-void VariableContainer::setBuffer( const std::string& name, optix::Buffer val )
+void VariableContainer::setBuffer( const std::string& name, optix::Buffer val ) const
 {
     getVariable( m_scoped, name )->set( val );
 }

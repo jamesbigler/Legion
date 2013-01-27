@@ -42,7 +42,7 @@ class PointLight : public ILight
 public:
     PointLight( Context* context );
 
-    void setVariables( VariableContainer& container ) const;
+    void setVariables( const VariableContainer& container ) const;
     
     void setIntensity( const Color& intensity );
     void setPosition( const Vector3& position );

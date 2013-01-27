@@ -21,6 +21,8 @@
 #include <Legion/Objects/Camera/ThinLens.hpp>
 #include <Legion/Objects/Display/IDisplay.hpp>
 #include <Legion/Objects/Display/ImageFileDisplay.hpp>
+#include <Legion/Objects/Environment/IEnvironment.hpp>
+#include <Legion/Objects/Environment/ConstantEnvironment.hpp>
 #include <Legion/Objects/Surface/ISurface.hpp>
 #include <Legion/Objects/Surface/Lambertian.hpp>
 #include <Legion/Objects/Surface/DiffuseEmitter.hpp>

@@ -36,7 +36,7 @@ class VariableContainer;
 class TriMesh : public IGeometry
 {
 public:
-    void setVariables( VariableContainer& container ) const;
+    void setVariables( const VariableContainer& container ) const;
 };
 
 

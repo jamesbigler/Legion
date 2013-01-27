@@ -122,7 +122,7 @@ void Sphere::setRadius( float radius )
 }
 
 
-void Sphere::setVariables( VariableContainer& container ) const
+void Sphere::setVariables( const VariableContainer& container ) const
 {
     container.setFloat( "center", m_center );
     container.setFloat( "radius", m_radius );

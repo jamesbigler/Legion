@@ -225,6 +225,11 @@ rtCallableProgram( legion::LightSample,
 
 rtCallableProgram( float3,
                    legionLightEmission,
-                   ( float3, legion::LocalGeometry ) ); // ( shading_point )
+                   ( float3, legion::LocalGeometry ) ); // (w_in, shading_point)
+
+// TODO: unify env lighting and light source lighting???
+rtCallableProgram( float3,
+                   legionEnvironmentEvaluate,
+                   ( float3 ) ); // ( dir )
 
 #endif // LEGION_OBJECTS_CUDA_COMMON_HPP_

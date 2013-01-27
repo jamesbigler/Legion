@@ -20,44 +20,11 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
+#include <Legion/Objects/cuda_common.hpp>
 
-#ifndef LEGION_OBJECTS_IOBJECT_OBJECT_HPP_
-#define LEGION_OBJECTS_IOBJECT_OBJECT_HPP_
+rtDeclareVariable( float3, radiance, , );
 
-#include <Legion/Core/Context.hpp>
-#include <Legion/Core/PluginContext.hpp>
-#include <optixu/optixpp_namespace.h>
-
-namespace legion
+RT_CALLABLE_PROGRAM float3 constantEnvironmentEvaluate( float3 dir )
 {
-
-class VariableContainer;
-
-class IObject
-{
-public:
-    IObject( Context* context );
-
-    virtual ~IObject();
-
-    PluginContext& getPluginContext();
-
-    void           launchOptiX( const Index2& dimensions );
-
-    optix::Buffer  createOptiXBuffer( unsigned type,
-                                      RTformat format,
-                                      unsigned width  = 0u,
-                                      unsigned height = 0u,
-                                      unsigned depth  = 0u );
-
-
-    virtual void setVariables( const VariableContainer& ) const {}
-
-private:
-    PluginContext& m_plugin_context;
-};
-
+    return radiance; 
 }
-
-
-#endif // LEGION_OBJECTS_IOBJECTS_OBJECT_HPP_

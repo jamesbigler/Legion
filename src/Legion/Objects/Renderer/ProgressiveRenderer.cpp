@@ -124,7 +124,7 @@ void ProgressiveRenderer::render( VariableContainer& container )
 }
     
 
-void ProgressiveRenderer::setVariables( VariableContainer& container ) const
+void ProgressiveRenderer::setVariables( const VariableContainer& container ) const
 {
     container.setBuffer  ( "output_buffer", m_output_buffer );
     container.setUnsigned( "samples_per_pass", m_samples_per_pass );
