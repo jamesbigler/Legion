@@ -54,7 +54,7 @@ float3 radiance( unsigned sobol_index, float3 origin, float3 direction )
         if( legion::Sobol::gen( sobol_index, sobol_dim ) > p_continue  )
             break;
 
-        attenuation   *= p_continue;
+        attenuation   /= p_continue;
         ray.direction  = prd.direction;
         ray.origin     = prd.origin;
         prd.sobol_dim += 1;
