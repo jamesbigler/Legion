@@ -26,5 +26,6 @@ rtDeclareVariable( optix::Ray, ray, rtCurrentRay, );
 
 RT_PROGRAM void legionEnvironment()
 {
-    radiance_prd.result = legionEnvironmentEvaluate( ray.direction );
+    radiance_prd.radiance = legionEnvironmentEvaluate( ray.direction );
+    radiance_prd.done     = true;
 }

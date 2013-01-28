@@ -17,7 +17,6 @@ CUDA_COMPILE_PTX( ptx_files
     Objects/Renderer/CUDA/ProgressiveRenderer.cu
     Objects/Surface/CUDA/DiffuseEmitter.cu
     Objects/Surface/CUDA/Lambertian.cu
-    Objects/Surface/CUDA/Normal.cu
     Objects/Surface/CUDA/Surface.cu
     )
 

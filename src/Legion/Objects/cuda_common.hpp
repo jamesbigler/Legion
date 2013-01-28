@@ -61,14 +61,18 @@ struct RayGeometry
 //------------------------------------------------------------------------------
 namespace legion
 {
+
+// TODO: pack this
 struct RadiancePRD 
 {
-  float3   result;
-  float    importance;
-  unsigned depth;
-  unsigned sobol_index;
-  unsigned sobol_dim;
-  unsigned count_emitted_light;
+    float3   origin;
+    float3   direction;
+    float3   radiance;
+    float3   attenuation;
+    unsigned sobol_index;
+    unsigned sobol_dim;
+    unsigned count_emitted_light;
+    unsigned done;
 };
 
 //------------------------------------------------------------------------------
@@ -127,7 +131,7 @@ __device__ unsigned generateSobolSamples( const uint2& launch_dim,
 
 __device__ optix::Ray makePrimaryRay( float3 origin, float3 direction )
 {
-    return optix::make_Ray( origin, direction, 0u, 0.0f, RT_DEFAULT_MAX );
+    return optix::make_Ray( origin, direction, 0u, 0.001f, RT_DEFAULT_MAX );
 }
 
 __device__ unsigned pointOccluded( float3 p, float3 w_in, float dist )

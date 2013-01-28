@@ -21,6 +21,7 @@
 // IN THE SOFTWARE.
 
 #include <Legion/Objects/cuda_common.hpp>
+#include <Legion/Objects/Renderer/CUDA/Renderer.hpp>
 #include <optixu/optixu_math_namespace.h>
 
 
@@ -59,17 +60,37 @@ RT_PROGRAM void progressiveRendererRayGen()
                                                         screen_sample,
                                                         time_sample );
 
-        legion::RadiancePRD prd;
-        prd.result              = make_float3( 0.0f );
-        prd.importance          = 1.0f;
-        prd.depth               = 0u;
-        prd.sobol_index         = sobol_index; 
-        prd.sobol_dim           = 5u; 
-        prd.count_emitted_light = 1;
+        /*
+        {
+            const float3 origin = rg.origin;
+            const float3 direction = rg.direction;
+            legion::RadiancePRD prd;
+            prd.attenuation         = make_float3( 1.0f );
+            prd.sobol_index         = sobol_index; 
+            prd.sobol_dim           = 5u; 
+            prd.count_emitted_light = 1;
+            prd.done                = false;
 
-        optix::Ray ray = legion::makePrimaryRay( rg.origin, rg.direction );
-        rtTrace( legion_top_group, ray, prd );
-        result += prd.result;
+            float3 radiance = make_float3( 0.0f );
+            //for( int i = 0; i < 5; ++i )
+            do
+            {
+                optix::Ray ray = legion::makePrimaryRay( origin, direction );
+                rtTrace( legion_top_group, ray, prd );
+
+                radiance += prd.radiance * prd.attenuation;
+
+                const float p_continue = fmaxf( prd.attenuation );
+                if( legion::Sobol::gen( sobol_index, prd.sobol_dim++ ) > p_continue )
+                    break;
+                prd.attenuation /= p_continue;
+
+            } while ( !prd.done );
+
+            result += radiance;
+        }
+        */
+        result += legion::radiance( sobol_index, rg.origin, rg.direction );
     }
 
     const float  spp    = static_cast<float>( samples_per_pass );

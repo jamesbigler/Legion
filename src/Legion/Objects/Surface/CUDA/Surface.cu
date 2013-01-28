@@ -48,7 +48,7 @@ void legionAnyHit()
 RT_PROGRAM
 void legionClosestHit()
 {
-    float3 result = make_float3( 0.0f );
+    float3 radiance = make_float3( 0.0f );
 
     //
     // emitted contribution
@@ -56,7 +56,7 @@ void legionClosestHit()
     if( radiance_prd.count_emitted_light )
     {
         const float3 w_out = -ray.direction;
-        result = legionSurfaceEmission( w_out, local_geom );
+        radiance  = legionSurfaceEmission( w_out, local_geom );
     }
 
     //
@@ -95,15 +95,33 @@ void legionClosestHit()
                                 local_geom, 
                                 w_in );
 
-                    result +=  light_col * bsdf / light_sample.pdf;
+                    radiance +=  light_col * bsdf / light_sample.pdf;
                 }
             }
         }
     }
 
-    //
+    // TODO: move up above lighting
     // indirect lighting
     //
+    unsigned sobol_dim = radiance_prd.sobol_dim;
+    const float2 seed = 
+        make_float2( 
+            legion::Sobol::gen( sobol_index, sobol_dim++ ),
+            legion::Sobol::gen( sobol_index, sobol_dim++ ) );
+    radiance_prd.sobol_dim = sobol_dim;
 
-    radiance_prd.result = result;
+    const float3 w_out = -ray.direction;
+    legion::BSDFSample bsdf_sample = 
+        legionSurfaceSampleBSDF( seed, w_out, local_geom );
+
+    radiance_prd.origin       = P;
+    radiance_prd.direction    = bsdf_sample.w_in;
+    radiance_prd.attenuation  = bsdf_sample.f_over_pdf;
+    radiance_prd.done         = false; 
+
+    //
+    // Report result
+    // 
+    radiance_prd.radiance = radiance;
 }
