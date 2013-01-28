@@ -1,8 +1,6 @@
-
 cmake_minimum_required( VERSION 2.8 )
-project( Legion ) 
 
-message( "Compiler ID: ${CMAKE_CXX_COMPILER_ID}" )
+project( Legion ) 
 
 set( CMAKE_MODULE_PATH
      "${CMAKE_SOURCE_DIR}/CMake"

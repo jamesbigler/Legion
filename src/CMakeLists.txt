@@ -25,7 +25,7 @@ set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O2 -g")
 find_package( OptiX REQUIRED )
 find_package( CUDA 4.0 REQUIRED )
 find_package( CUDA 4.0 REQUIRED )
-find_package( OPENEXR REQUIRED )
+find_package( OpenEXR REQUIRED )
 find_package( Boost COMPONENTS thread REQUIRED )
 
 
