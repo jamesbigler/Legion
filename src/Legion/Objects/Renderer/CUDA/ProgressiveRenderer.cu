@@ -60,9 +60,16 @@ RT_PROGRAM void progressiveRendererRayGen()
         result += legion::radiance( sobol_index, rg.origin, rg.direction );
     }
 
-    const float  spp    = static_cast<float>( samples_per_pass );
-    const float4 prev   = output_buffer[ launch_index ];
-    const float4 cur    = make_float4( result / spp, 1.0f );
-    const float4 final  = optix::lerp( prev, cur, spp / ( spp+sample_index ) );
-    output_buffer[ launch_index ] = final;
+    if( sample_index == 0 )
+    {
+        output_buffer[ launch_index ] = make_float4( result, 1.0f );
+    }
+    else
+    {
+        const float  spp    = static_cast<float>( samples_per_pass );
+        const float4 prev   = output_buffer[ launch_index ];
+        const float4 cur    = make_float4( result / spp, 1.0f );
+        const float4 final  = optix::lerp( prev, cur, spp / ( spp+sample_index ) );
+        output_buffer[ launch_index ] = final;
+    }
 }

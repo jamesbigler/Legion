@@ -12,7 +12,7 @@ using namespace legion;
 // gettimeofday based implementation for linux
 //
 
-#include <sys/Time.h>
+#include <sys/time.h>
 
 namespace
 {

@@ -31,7 +31,7 @@
 #include <Legion/Core/VariableContainer.hpp>
 #include <Legion/Objects/Geometry/Sphere.hpp>
 #include <Legion/Objects/Renderer/IRenderer.hpp>
-#include <Legion/Renderer/OptixScene.hpp>
+#include <Legion/Renderer/OptiXScene.hpp>
 
 
 using namespace legion;

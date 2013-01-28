@@ -2,7 +2,6 @@
 #include <Legion/Common/Math/Matrix.hpp>
 #include <Legion/Common/Util/Stream.hpp>
 #include <Legion/Core/Color.hpp>
-#include <optixu/optixu_math_stream.h>
 
 #include <iostream>
 #include <iomanip>
