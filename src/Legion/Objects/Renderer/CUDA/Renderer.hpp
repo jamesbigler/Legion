@@ -26,7 +26,7 @@ namespace legion
 {
 
 __device__
-float3 radiance( unsigned sobol_index, float3 origin, float3 direction )
+float3 radiance( uint64 sobol_index, float3 origin, float3 direction )
 {
     legion::RadiancePRD prd;
     prd.radiance            = make_float3( 0.0f );
@@ -50,14 +50,12 @@ float3 radiance( unsigned sobol_index, float3 origin, float3 direction )
 
         attenuation             *= prd.attenuation;
         const float p_continue   = fmaxf( attenuation );
-        const unsigned sobol_dim = prd.sobol_dim;
-        if( legion::Sobol::gen( sobol_index, sobol_dim ) > p_continue  )
+        if( legion::Sobol::gen( sobol_index, prd.sobol_dim++ ) > p_continue  )
             break;
 
         attenuation   /= p_continue;
         ray.direction  = prd.direction;
         ray.origin     = prd.origin;
-        prd.sobol_dim += 1;
         prd.done       = true;
     }
 

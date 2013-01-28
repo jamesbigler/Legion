@@ -3,10 +3,14 @@
 #define LEGION_COMMON_MATH_MATH_HPP_
 
 #include <optixu/optixu_math_namespace.h>
+#include <Legion/Common/Util/Preprocessor.hpp>
 
 
 namespace legion
 {
+    typedef unsigned           uint32;
+    typedef unsigned long long uint64;
+
     const float PI         = static_cast<float>( M_PI );
     const float TWO_PI     = static_cast<float>( M_PI ) * 2.0f;
     const float ONE_DIV_PI = 1.0f / static_cast<float>( M_PI );

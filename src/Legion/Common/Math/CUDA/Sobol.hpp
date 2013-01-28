@@ -24,6 +24,7 @@
 #define LEGION_COMMON_MATH_SOBOL_HPP_
 
 #include <Legion/Common/Math/CUDA/sobol_matrices.hpp>
+#include <Legion/Common/Math/CUDA/Math.hpp>
 #include <Legion/Common/Util/Preprocessor.hpp>
 
 namespace legion
@@ -33,34 +34,34 @@ namespace legion
 class Sobol
 {
 public:
+
     /// Generate a single element A_i,dim of the Sobol sequence which is the
     /// dimth dimension of the ith sobol vector. Scrambled by s. 
-    LDEVICE static float    gen ( unsigned i, unsigned dim, unsigned s = 0u );
-    LDEVICE static unsigned genu( unsigned i, unsigned dim, unsigned s = 0u );
+    LDEVICE static float    gen ( uint64 i, unsigned dim, unsigned s = 0u );
+    LDEVICE static unsigned genu( uint64 i, unsigned dim, unsigned s = 0u );
 
     // 2^m should be > film max_dim
     LDEVICE static void getRasterPos( const unsigned m,
                                       const unsigned pass,
                                       const uint2&   pixel,
                                       float2&        raster_pos,
-                                      unsigned&      sobol_index );
+                                      uint64&        sobol_index );
 
 private:
-    LDEVICE static unsigned lookUpSobolIndex( const unsigned m,
-                                              const unsigned pass,
-                                              const uint2&   pixel );
+    LDEVICE static uint64 lookUpSobolIndex( const unsigned m,
+                                            const unsigned pass,
+                                            const uint2&   pixel );
     LDEVICE Sobol();
 };
 
 
-LDEVICE inline float Sobol::gen( unsigned i, unsigned dim,  unsigned scramble )
+LDEVICE inline float Sobol::gen( uint64 i, unsigned dim,  unsigned scramble )
 {
-    return __int_as_float( 0x3F800000 | ( genu( i, dim, scramble ) >> 9 ) ) 
-                           - 1.0f;
+    return __int_as_float( 0x3F800000 | (genu( i, dim, scramble ) >> 9 ))-1.0f;
 }
 
 
-LDEVICE inline unsigned Sobol::genu( unsigned i, unsigned dim,  unsigned s )
+LDEVICE inline unsigned Sobol::genu( uint64 i, unsigned dim,  unsigned s )
 {
     const unsigned int adr = dim*(52/4);
     unsigned int result = 0;
@@ -99,12 +100,10 @@ LDEVICE inline unsigned Sobol::genu( unsigned i, unsigned dim,  unsigned s )
 // This function courtesy of Alex Keller, based on 'Enumerating Quasi-Monte
 // Carlo Point Sequences in Elementary Intervals', Gruenschloß, Raab, and
 // Keller
-LDEVICE inline unsigned Sobol::lookUpSobolIndex( const unsigned m,
-                                                 const unsigned pass,
-                                                 const uint2&  pixel )
+LDEVICE inline uint64 Sobol::lookUpSobolIndex( const unsigned m,
+                                               const unsigned pass,
+                                               const uint2&  pixel )
 {
-    typedef unsigned int       uint32;
-    typedef unsigned long long uint64;
     
     const uint32 m2 = m << 1;
     uint32 frame = pass;
@@ -134,7 +133,7 @@ LDEVICE inline void Sobol::getRasterPos( const unsigned m,
                                          const unsigned pass,
                                          const uint2&   pixel,
                                          float2&        raster_pos,
-                                         unsigned&      sobol_index )
+                                         uint64& sobol_index )
 {
   sobol_index = lookUpSobolIndex( m, pass, pixel );
   raster_pos.x = static_cast<float>( Sobol::genu( sobol_index, 0 ) ) /

@@ -69,7 +69,7 @@ struct RadiancePRD
     float3   direction;
     float3   radiance;
     float3   attenuation;
-    unsigned sobol_index;
+    unsigned long long sobol_index;
     unsigned sobol_dim;
     unsigned count_emitted_light;
     unsigned done;
@@ -103,18 +103,18 @@ rtDeclareVariable( legion::ShadowPRD,   shadow_prd,   rtPayload, );
 //------------------------------------------------------------------------------
 namespace legion
 {
-__device__ unsigned generateSobolSamples( const uint2& launch_dim,
-                                          const uint2& pixel_coord,
-                                          unsigned     sample_index,
-                                          float2&      screen_sample,
-                                          float2&      lens_sample,
-                                          float&       time_sample )
+__device__ uint64 generateSobolSamples( const uint2&   launch_dim,
+                                        const uint2&   pixel_coord,
+                                        legion::uint64 sample_index,
+                                        float2&        screen_sample,
+                                        float2&        lens_sample,
+                                        float&         time_sample )
 {
     const float2 inv_dim = make_float2( 1.0f ) / 
                            make_float2( launch_dim.x, launch_dim.y );
 
     screen_sample = make_float2(0.5f );
-    unsigned sobol_index;
+    legion::uint64 sobol_index;
     legion::Sobol::getRasterPos( 12, // 2^m should be > film max_dim
                                  sample_index,
                                  pixel_coord,

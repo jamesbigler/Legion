@@ -25,9 +25,6 @@
 #include <optixu/optixu_math_namespace.h>
 
 
-//rtDeclareVariable( uint2, launch_index, rtLaunchIndex, );
-//rtDeclareVariable( uint2, launch_dim,   rtLaunchDim, );
-
 rtDeclareVariable( unsigned, sample_index, , );
 rtDeclareVariable( unsigned, samples_per_pass, , );
 
@@ -47,7 +44,7 @@ RT_PROGRAM void progressiveRendererRayGen()
         float2 screen_sample;
         float2 lens_sample;
         float  time_sample;
-        const unsigned sobol_index = 
+        const legion::uint64 sobol_index = 
             legion::generateSobolSamples( 
                 launch_dim,
                 launch_index,
@@ -60,36 +57,6 @@ RT_PROGRAM void progressiveRendererRayGen()
                                                         screen_sample,
                                                         time_sample );
 
-        /*
-        {
-            const float3 origin = rg.origin;
-            const float3 direction = rg.direction;
-            legion::RadiancePRD prd;
-            prd.attenuation         = make_float3( 1.0f );
-            prd.sobol_index         = sobol_index; 
-            prd.sobol_dim           = 5u; 
-            prd.count_emitted_light = 1;
-            prd.done                = false;
-
-            float3 radiance = make_float3( 0.0f );
-            //for( int i = 0; i < 5; ++i )
-            do
-            {
-                optix::Ray ray = legion::makePrimaryRay( origin, direction );
-                rtTrace( legion_top_group, ray, prd );
-
-                radiance += prd.radiance * prd.attenuation;
-
-                const float p_continue = fmaxf( prd.attenuation );
-                if( legion::Sobol::gen( sobol_index, prd.sobol_dim++ ) > p_continue )
-                    break;
-                prd.attenuation /= p_continue;
-
-            } while ( !prd.done );
-
-            result += radiance;
-        }
-        */
         result += legion::radiance( sobol_index, rg.origin, rg.direction );
     }
 
@@ -99,9 +66,3 @@ RT_PROGRAM void progressiveRendererRayGen()
     const float4 final  = optix::lerp( prev, cur, spp / ( spp+sample_index ) );
     output_buffer[ launch_index ] = final;
 }
-
-
-
-
-
-

@@ -44,14 +44,13 @@ void legionAnyHit()
 }
 
 
-
 RT_PROGRAM
 void legionClosestHit()
 {
     float3 radiance = make_float3( 0.0f );
 
     //
-    // emitted contribution
+    // Emitted contribution
     //
     if( radiance_prd.count_emitted_light )
     {
@@ -59,12 +58,31 @@ void legionClosestHit()
         radiance  = legionSurfaceEmission( w_out, local_geom );
     }
 
+    // 
+    // Indirect lighting
+    //
+    const unsigned sobol_index = radiance_prd.sobol_index;
+    const float2 seed = 
+        make_float2( 
+            legion::Sobol::gen( sobol_index, radiance_prd.sobol_dim++ ),
+            legion::Sobol::gen( sobol_index, radiance_prd.sobol_dim++ ) );
+
+    const float3 w_out = -ray.direction;
+    legion::BSDFSample bsdf_sample = 
+        legionSurfaceSampleBSDF( seed, w_out, local_geom );
+
+    const float3 P = ray.origin + t_hit * ray.direction;
+
+    radiance_prd.origin              = P;
+    radiance_prd.direction           = bsdf_sample.w_in;
+    radiance_prd.attenuation         = bsdf_sample.f_over_pdf;
+    radiance_prd.done                = false; 
+    radiance_prd.count_emitted_light = false; 
+
     //
     // direct lighting
     //
     const unsigned num_lights  = 1;
-    const unsigned sobol_index = radiance_prd.sobol_index;
-    const float3   P           = ray.origin + t_hit * ray.direction;
     for( unsigned i = 0; i < num_lights; ++i )
     {
         const float2 seed = 
@@ -100,25 +118,6 @@ void legionClosestHit()
             }
         }
     }
-
-    // TODO: move up above lighting
-    // indirect lighting
-    //
-    unsigned sobol_dim = radiance_prd.sobol_dim;
-    const float2 seed = 
-        make_float2( 
-            legion::Sobol::gen( sobol_index, sobol_dim++ ),
-            legion::Sobol::gen( sobol_index, sobol_dim++ ) );
-    radiance_prd.sobol_dim = sobol_dim;
-
-    const float3 w_out = -ray.direction;
-    legion::BSDFSample bsdf_sample = 
-        legionSurfaceSampleBSDF( seed, w_out, local_geom );
-
-    radiance_prd.origin       = P;
-    radiance_prd.direction    = bsdf_sample.w_in;
-    radiance_prd.attenuation  = bsdf_sample.f_over_pdf;
-    radiance_prd.done         = false; 
 
     //
     // Report result
