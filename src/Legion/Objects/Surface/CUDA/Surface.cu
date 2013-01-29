@@ -43,18 +43,6 @@ void legionAnyHit()
     rtTerminateRay();
 }
 
-__inline__ __device__ float pdfAreaToSolidAngle(
-        float area_pdf,
-        float distance,
-        float cosine )
-{
-        return area_pdf * sqrtf( distance ) / fabsf( cosine );
-}
-
-__inline__ __device__ float powerHeuristic(float pdf1, float pdf2)
-{ float temp = pdf1*pdf1; return temp/(temp+pdf2*pdf2); }
-
-
 
 RT_PROGRAM
 void legionClosestHit() // MIS
@@ -70,8 +58,8 @@ void legionClosestHit() // MIS
     {
         const float  cosine   = optix::dot( w_out, local_geom.shading_normal );
         const float  area_pdf = 1.0f / legionSurfaceArea;
-        const float  sa_pdf   = pdfAreaToSolidAngle( area_pdf, t_hit, cosine );
-        w =  powerHeuristic( radiance_prd.pdf, sa_pdf );
+        const float  sa_pdf   = legion::pdfAreaToSolidAngle( area_pdf, t_hit, cosine );
+        w =  legion::powerHeuristic( radiance_prd.pdf, sa_pdf );
 
         // TODO: attenuate prd.attenuation here? 
     }
@@ -94,9 +82,8 @@ void legionClosestHit() // MIS
     const float  cosine   = optix::dot( bsdf_sample.w_in, local_geom.shading_normal ); // TODO: redundant
     radiance_prd.origin              = P;
     radiance_prd.direction           = bsdf_sample.w_in;
-    radiance_prd.attenuation         = bsdf_sample.f_over_pdf  * cosine;
+    radiance_prd.attenuation         = bsdf_sample.f_over_pdf * cosine;
     radiance_prd.done                = false; 
-    radiance_prd.done                = true;/////////////////////////////////// 
     radiance_prd.pdf                 = bsdf_sample.pdf; 
     radiance_prd.count_emitted_light = false; 
 
@@ -133,7 +120,7 @@ void legionClosestHit() // MIS
                         const float3 light_radiance = legionLightEmission( -w_in, light_sample.point_on_light );
 
                         const float3 w_out  = -ray.direction;
-                        const float  weight = powerHeuristic( light_sample.pdf, bsdf_pdf );
+                        const float  weight = legion::powerHeuristic( light_sample.pdf, bsdf_pdf );
 
                         const float3 bsdf   = legionSurfaceEvaluateBSDF( w_out, local_geom, w_in );
                         radiance +=  light_radiance * bsdf * ( cos_theta * weight / light_sample.pdf );

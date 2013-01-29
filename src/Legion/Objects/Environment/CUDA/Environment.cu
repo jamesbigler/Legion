@@ -21,11 +21,21 @@
 // IN THE SOFTWARE.
 
 #include <Legion/Objects/cuda_common.hpp>
+#include <Legion/Common/Math/CUDA/Math.hpp>
 
 rtDeclareVariable( optix::Ray, ray, rtCurrentRay, );
 
 RT_PROGRAM void legionEnvironment()
 {
-    radiance_prd.radiance = legionEnvironmentEvaluate( ray.direction );
+    float w = 1.0f;
+    if( !radiance_prd.count_emitted_light )
+    {
+        /*
+        float pdf = legion::ONE_DIV_PI * 0.25f;
+        w = legion::powerHeuristic( radiance_prd.pdf, pdf );
+        */
+    }
+    const float3 radiance = legionEnvironmentEvaluate( ray.direction );
+    radiance_prd.radiance = w * radiance;
     radiance_prd.done     = true;
 }

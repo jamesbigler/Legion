@@ -47,17 +47,19 @@ float3 radiance( uint64 sobol_index, float3 origin, float3 direction )
         
         radiance += prd.radiance * attenuation;
         if( prd.done )
+        {
             break;
+        }
 
-        attenuation             *= prd.attenuation;
-        const float p_continue   = fmaxf( attenuation );
-        if( legion::Sobol::gen( sobol_index, prd.sobol_dim++ ) > p_continue  )
+        attenuation                       *= prd.attenuation;
+        const float    p_continue          = fmaxf( attenuation );
+        const unsigned RR_SOBOL_DIM_OFFSET = 64;
+        if( legion::Sobol::gen( sobol_index, RR_SOBOL_DIM_OFFSET+i ) > p_continue  )
             break;
 
         attenuation   /= p_continue;
         ray.direction  = prd.direction;
         ray.origin     = prd.origin;
-        prd.done       = true;
     }
 
     return radiance;
