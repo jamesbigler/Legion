@@ -81,6 +81,10 @@ private:
     IFilm*                  m_film;
     std::vector<ILight*>    m_lights;
     GeometryMap             m_geometry;
+    
+    unsigned                m_num_lights;
+
+    static const unsigned   MAX_LIGHTS=5u; // Hack until rtCallableBuffer
 };
 
 }

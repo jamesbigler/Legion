@@ -69,7 +69,8 @@ OptiXScene::OptiXScene()
       m_program_mgr( m_optix_context ),
       m_renderer( 0u ),
       m_camera( 0u ),
-      m_film( 0u )
+      m_film( 0u ),
+      m_num_lights( 0u )
 {
     m_program_mgr.addPath( PTX_DIR );
     initializeOptixContext();
@@ -114,38 +115,43 @@ void OptiXScene::setCamera( ICamera* camera )
 void OptiXScene::setEnvironment( IEnvironment* environment )
 {
     m_environment = environment;
-    if( !m_environment_program )
-    {
-        m_environment_program = 
-            m_program_mgr.get( "Environment.ptx", "legionEnvironment" );
-        m_optix_context->setMissProgram( RADIANCE_TYPE, m_environment_program );
-    }
+
     try
     {
+        // If we have not created a miss program, create now
+        if( !m_environment_program )
+        {
+            m_environment_program = 
+                m_program_mgr.get( "Environment.ptx", "legionEnvironment" );
+            m_optix_context->setMissProgram( RADIANCE_TYPE, m_environment_program );
+        }
+
+        // Get environment programs
         m_environment_evaluate = 
             m_program_mgr.get( std::string( environment->name() ) + ".ptx",
                                environment->evaluateFunctionName() );
 
+        m_environment_sample = 
+            m_program_mgr.get( std::string( environment->name() ) + ".ptx",
+                    environment->sampleFunctionName() );
+
+        // Set miss program evaluator
         m_environment_program[ "legionEnvironmentEvaluate" ]->set( 
                 m_environment_evaluate 
                 );
 
-        const std::string sample_func_name = environment->sampleFunctionName();
-
-        if( sample_func_name != "nullEnvironmentSample" )
+        // Add light
+        if( m_num_lights <= MAX_LIGHTS )
         {
-            m_environment_sample = 
-                m_program_mgr.get( std::string( environment->name() ) + ".ptx",
-                        environment->sampleFunctionName() );
+            std::stringstream ss;
+            ss << "legionLightSample_" << m_num_lights;
+            m_optix_context[ ss.str() ]->set( m_environment_sample);
 
-            // TODO: callable buffer once implemented, move variablecontainer
-            //       setting to sync()
-            m_optix_context[ "legionLightSample"   ]->set( 
-                    m_environment_sample
-                    );
-            m_optix_context[ "legionLightEmission" ]->set( 
-                    m_environment_evaluate 
-                    );
+            ss.str( "" );
+            ss << "legionLightEvaluate_" << m_num_lights;
+            m_optix_context[ ss.str() ]->set( m_environment_evaluate );
+
+            ++m_num_lights;
         }
     }
     OPTIX_CATCH_RETHROW;
@@ -207,46 +213,47 @@ void OptiXScene::addGeometry( IGeometry* geometry )
         optix::Program evaluate_bsdf = 
             m_program_mgr.get( surface_ptx,
                                surface->evaluateBSDFFunctionName() );
-        material[ "legionSurfaceEvaluateBSDF" ]->set( 
-                evaluate_bsdf );
+        material[ "legionSurfaceEvaluateBSDF" ]->set( evaluate_bsdf );
         
         optix::Program sample_bsdf = 
-            m_program_mgr.get( surface_ptx,
-                               surface->sampleBSDFFunctionName() );
-        material[ "legionSurfaceSampleBSDF" ]->set( 
-                sample_bsdf );
+            m_program_mgr.get( surface_ptx, surface->sampleBSDFFunctionName() );
+        material[ "legionSurfaceSampleBSDF" ]->set( sample_bsdf );
         
         optix::Program pdf = 
-            m_program_mgr.get( surface_ptx,
-                               surface->pdfFunctionName() );
+            m_program_mgr.get( surface_ptx, surface->pdfFunctionName() );
         material[ "legionSurfacePDF" ]->set( pdf );
         
         const std::string emission_func_name = surface->emissionFunctionName();
         optix::Program emission = 
-            m_program_mgr.get( surface_ptx,
-                               emission_func_name );
+            m_program_mgr.get( surface_ptx, emission_func_name );
         material[ "legionSurfaceEmission" ]->set( emission );
 
         //
-        // create Light
+        // Add Light
         //
-        if( emission_func_name != "nullSurfaceEmission" )
+        if( emission_func_name != "nullSurfaceEmission" && 
+            m_num_lights <= MAX_LIGHTS )
         {
             optix::Program sample = 
                 m_program_mgr.get( std::string( geometry->name() ) + ".ptx",
                                    geometry->sampleFunctionName() );
 
-            // TODO: callable buffer once implemented, move variablecontainer
-            //       setting to sync()
-            m_optix_context[ "legionLightSample"   ]->set( sample );
-            m_optix_context[ "legionLightEmission" ]->set( emission );
+            std::stringstream ss;
+            ss << "legionLightSample_" << m_num_lights;
+            m_optix_context[ ss.str() ]->set( sample );
 
+            ss.str( "" );
+            ss << "legionLightEvaluate_" << m_num_lights;
+            m_optix_context[ ss.str() ]->set( emission );
+
+            // TODO: move to sync
             VariableContainer vc0( sample.get() );
             geometry->setVariables( vc0 );
 
             VariableContainer vc1( emission.get() );
             surface->setVariables( vc1 );
-            
+
+            ++m_num_lights;
         }
 
         m_top_group->setChildCount( m_top_group->getChildCount()+1u );

@@ -20,11 +20,25 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-#include <Legion/Objects/cuda_common.hpp>
+#include <Legion/Objects/Environment/CUDA/Environment.hpp>
+#include <Legion/Objects/Light/CUDA/Light.hpp>
 
 rtDeclareVariable( float3, radiance, , );
 
-RT_CALLABLE_PROGRAM float3 constantEnvironmentEvaluate( float3 dir )
+RT_CALLABLE_PROGRAM float3 constantEnvironmentEvaluate( float3 dir, float, float3 )
 {
     return radiance; 
+}
+
+legion::LightSample constantEnvironmentSample( float2 sample_seed, float3 shading_point, float3 shading_normal )
+{
+    legion::LightSample sample;
+
+    // TODO: sample hemisphere instead
+
+    legion::uniformSampleSphere( sample_seed, sample.w_in, sample.pdf );
+    sample.distance = 1e16f;
+    sample.normal   = -sample.w_in;
+
+    return sample; 
 }

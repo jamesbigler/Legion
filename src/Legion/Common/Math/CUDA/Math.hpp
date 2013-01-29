@@ -75,6 +75,21 @@ namespace legion
 
         return make_float2( r*cosf( phi ), r*sinf( phi ) );
     }
+
+
+    LDEVICE inline void uniformSampleSphere( 
+            float2  seed,
+            float3& dir,
+            float&  pdf )
+    {
+        float phi       = 2.0f * legion::PI * seed.x;
+        float cos_theta = 1.0f - 2.0f * seed.y;
+        float sin_theta = sqrtf( 1.0f - cos_theta * cos_theta);
+        dir = make_float3( cosf( phi ) * sin_theta,
+                           sinf( phi ) * sin_theta,
+                           cos_theta );
+        pdf = ONE_DIV_PI * 0.25f;
+    }
 }
 
 #endif //LEGION_COMMON_MATH_MATH_HPP_

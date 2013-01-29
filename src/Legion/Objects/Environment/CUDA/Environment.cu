@@ -20,7 +20,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-#include <Legion/Objects/cuda_common.hpp>
+#include <Legion/Objects/Environment/CUDA/Environment.hpp>
 #include <Legion/Common/Math/CUDA/Math.hpp>
 
 rtDeclareVariable( optix::Ray, ray, rtCurrentRay, );
@@ -35,7 +35,7 @@ RT_PROGRAM void legionEnvironment()
         w = legion::powerHeuristic( radiance_prd.pdf, pdf );
         */
     }
-    const float3 radiance = legionEnvironmentEvaluate( ray.direction );
+    const float3 radiance = legionEnvironmentEvaluate( ray.direction, 0.0f, make_float3( 0.0f ) );
     radiance_prd.radiance = w * radiance;
     radiance_prd.done     = true;
 }

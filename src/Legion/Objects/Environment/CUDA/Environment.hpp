@@ -20,46 +20,14 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-#ifndef LEGION_OBJECTS_SURFACE_CUDA_SURFACE_HPP_
-#define LEGION_OBJECTS_SURFACE_CUDA_SURFACE_HPP_
+#ifndef LEGION_OBJECTS_SURFACE_CUDA_ENVIRONMENT_HPP_
+#define LEGION_OBJECTS_SURFACE_CUDA_ENVIRONMENT_HPP_
 
 #include <Legion/Objects/cuda_common.hpp>
 
-
-//------------------------------------------------------------------------------
-//
-// Null surface programs
-//
-//------------------------------------------------------------------------------
-
-RT_CALLABLE_PROGRAM
-float3 nullSurfaceEmission( float3 w_in, float3 light_point, float3 light_emission )
-{
-    return make_float3( 0.0f );
-}
+// float3 legionLightEmission( float3 w_in, float UNUSED_DISTANCE, float3 UNUSED_POINT_ON_LIGHT )
+rtCallableProgram( float3, legionEnvironmentEvaluate, ( float3, float, float3 ) );
 
 
-RT_CALLABLE_PROGRAM
-legion::BSDFSample nullSurfaceSampleBSDF( float2 seed, float3 w_out, legion::LocalGeometry p )
-{
-    legion::BSDFSample sample;
-    sample.w_in       = make_float3( 0.0f );
-    sample.f_over_pdf = make_float3( 0.0f );
-    return sample;
-}
+#endif // LEGION_OBJECTS_SURFACE_CUDA_ENVIRONMENT_HPP_
 
-
-RT_CALLABLE_PROGRAM
-float3 nullSurfaceEvaluateBSDF( float3 w_out, legion::LocalGeometry p, float3 w_in )
-{
-    return make_float3( 0.0f ); 
-}
-
-
-RT_CALLABLE_PROGRAM
-float nullSurfacePDF( float3 w_out, legion::LocalGeometry p, float3 w_in )
-{
-    return 0.0f;
-}
-
-#endif // LEGION_OBJECTS_SURFACE_CUDA_SURFACE_HPP_

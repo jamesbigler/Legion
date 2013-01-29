@@ -177,7 +177,6 @@ struct BSDFSample
 struct LocalGeometry 
 {
     float3   position;
-    //float3   position_object;
     float3   geometric_normal;
     float3   shading_normal;
     float2   texcoord;
@@ -203,40 +202,5 @@ rtCallableProgram( float3,
                    legionSurfaceEmission,
                    ( float3, legion::LocalGeometry ) ); 
 
-//------------------------------------------------------------------------------
-//
-// Lighting
-//
-//------------------------------------------------------------------------------
-
-
-namespace legion
-{
-
-struct LightSample 
-{
-    legion::LocalGeometry point_on_light;
-    float  pdf; 
-};
-
-}
-
-// TODO: these will become rtCallableBuffers soon (once I implement in optix)
-
-// This comes from the IGeometry if it is an area light, ILight if it is a
-// non-physical light
-rtCallableProgram( legion::LightSample,
-                   legionLightSample,
-                   ( float2, float3 ) ); // ( sample_seed, shading_point )
-
-
-rtCallableProgram( float3,
-                   legionLightEmission,
-                   ( float3, legion::LocalGeometry ) ); // (w_in, shading_point)
-
-// TODO: unify env lighting and light source lighting???
-rtCallableProgram( float3,
-                   legionEnvironmentEvaluate,
-                   ( float3 ) ); // ( dir )
 
 #endif // LEGION_OBJECTS_CUDA_COMMON_HPP_

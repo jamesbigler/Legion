@@ -21,6 +21,8 @@
 // IN THE SOFTWARE.
 
 #include <Legion/Objects/cuda_common.hpp>
+#include <Legion/Objects/Light/CUDA/Light.hpp>
+#include <Legion/Objects/Surface/CUDA/Surface.hpp>
 #include <Legion/Common/Math/CUDA/ONB.hpp>
 #include <Legion/Common/Math/CUDA/Math.hpp>
 
@@ -39,9 +41,16 @@ rtDeclareVariable( optix::Ray,            ray,   rtCurrentRay, );
 
 struct IntersectReporter
 {
-    __device__ __inline__ bool check_t( float t ) { return rtPotentialIntersection( t ); }
-    __device__ __inline__ bool report ( float t, legion::LocalGeometry lg ) 
+    __device__ __inline__ bool check_t( float t )
+    { return rtPotentialIntersection( t ); }
+
+    __device__ __inline__ bool report ( float t, float3 normal ) 
     { 
+        legion::LocalGeometry lg;
+        lg.position         = ray.origin + t*ray.direction;
+        lg.geometric_normal = normal;
+        lg.shading_normal   = normal;
+        lg.texcoord         = make_float2( 0.0f );
         local_geom = lg;
         return rtReportIntersection( t ); 
     }
@@ -50,14 +59,19 @@ struct IntersectReporter
 
 struct SampleReporter
 {
-    __device__ __inline__ SampleReporter( legion::LocalGeometry& lg ) : local_geom( lg ) {}
+    __device__ __inline__ SampleReporter( legion::LightSample& sample_ ) : sample( sample_ ) {}
+
     __device__ __inline__ bool check_t( float t )
     { return t > 0.0001f; }
 
-    __device__ __inline__ bool report ( float t, legion::LocalGeometry lg ) 
-    { local_geom = lg; return true; }
+    __device__ __inline__ bool report ( float t, float3 normal ) 
+    {
+        sample.distance = t;
+        sample.normal   = normal;
+        return true;
+    }
 
-    legion::LocalGeometry& local_geom;
+    legion::LightSample& sample;
 };
 
 
@@ -105,17 +119,8 @@ bool sphereIntersectImpl(
         const float t = root1 + root11;
         if( reporter.check_t( t ) ) 
         {
-
             const float3 normal = (O + t*D)/radius;
-
-            // Fill in a localgeometry
-            legion::LocalGeometry lg;
-            lg.position         = origin + t*direction;
-            lg.geometric_normal = normal;
-            lg.shading_normal   = normal;
-            lg.texcoord         = make_float2( 0.0f );
-
-            intersection_found = reporter.report( t, lg );
+            intersection_found = reporter.report( t, normal );
         } 
 
         if( !intersection_found )
@@ -124,15 +129,7 @@ bool sphereIntersectImpl(
             if( reporter.check_t( t ) ) 
             {
                 const float3 normal = (O + t*D)/radius;
-
-                // Fill in a localgeometry
-                legion::LocalGeometry lg;
-                lg.position         = origin + t*direction;
-                lg.geometric_normal = normal;
-                lg.shading_normal   = normal;
-                lg.texcoord         = make_float2( 0.0f );
-
-                intersection_found = reporter.report( t, lg );
+                intersection_found = reporter.report( t, normal );
             }
         }
     }
@@ -254,7 +251,7 @@ RT_PROGRAM void sphereBoundingBox( int, float result[6] )
 //-----------------------------------------------------------------------------
 
 RT_CALLABLE_PROGRAM
-legion::LightSample sphereSample( float2 sample_seed, float3 shading_point )
+legion::LightSample sphereSample( float2 sample_seed, float3 shading_point, float3 shading_normal )
 {
     legion::LightSample sample;
     sample.pdf = 0.0f;
@@ -280,13 +277,13 @@ legion::LightSample sphereSample( float2 sample_seed, float3 shading_point )
     const float sin_phi = sinf( phi );
 
     legion::ONB uvw( temp );
-    float3 w_in = optix::normalize( make_float3( cos_phi*sin_theta, sin_phi*sin_theta, cos_theta) );
-    w_in = uvw.inverseTransform( w_in );
+    sample.w_in = optix::normalize( make_float3( cos_phi*sin_theta, sin_phi*sin_theta, cos_theta) );
+    sample.w_in = uvw.inverseTransform( sample.w_in );
 
-    SampleReporter reporter( sample.point_on_light );
+    SampleReporter reporter( sample );
     if( !sphereIntersectImpl<SampleReporter>(
                 shading_point,
-                w_in,
+                sample.w_in,
                 center,
                 radius,
                 reporter ) )

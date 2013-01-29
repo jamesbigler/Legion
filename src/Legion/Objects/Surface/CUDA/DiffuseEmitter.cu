@@ -28,11 +28,9 @@
 rtDeclareVariable( float3, radiance, , );
 
 RT_CALLABLE_PROGRAM
-float3 diffuseEmitterEmission( float3 w_out, legion::LocalGeometry p )
+float3 diffuseEmitterEmission( float3 w_out, float3 on_light )
 {
-    return optix::dot( w_out, p.shading_normal) <= 0.0f ?
-           make_float3( 0.0f )                          :
-           radiance;
+    return radiance;
 }
 
 
