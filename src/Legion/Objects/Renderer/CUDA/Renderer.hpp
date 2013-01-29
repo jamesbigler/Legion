@@ -31,6 +31,7 @@ float3 radiance( uint64 sobol_index, float3 origin, float3 direction )
     legion::RadiancePRD prd;
     prd.radiance            = make_float3( 0.0f );
     prd.attenuation         = make_float3( 1.0f );
+    prd.pdf                 = 1.0f;
     prd.sobol_index         = sobol_index; 
     prd.sobol_dim           = 5u; 
     prd.count_emitted_light = 1;

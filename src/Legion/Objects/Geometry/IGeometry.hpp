@@ -49,6 +49,7 @@ public:
     virtual const char* sampleFunctionName()      const=0;
 
     virtual unsigned    numPrimitives()const=0;
+    virtual float       area()const=0;
 
     virtual void        setTransform( const Matrix& transform )=0;
     virtual Matrix      getTransform() const=0;

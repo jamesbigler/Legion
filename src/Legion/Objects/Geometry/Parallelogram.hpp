@@ -50,6 +50,7 @@ public:
     const char* sampleFunctionName()const;
 
     unsigned    numPrimitives()const;
+    float       area()const;
 
     void        setTransform( const Matrix& transform );
     Matrix      getTransform() const;

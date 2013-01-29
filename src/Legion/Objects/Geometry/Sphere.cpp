@@ -24,6 +24,7 @@
 
 #include <Legion/Objects/Geometry/Sphere.hpp>
 #include <Legion/Common/Util/Logger.hpp>
+#include <Legion/Common/Math/Math.hpp>
 #include <Legion/Core/VariableContainer.hpp>
 
 
@@ -83,6 +84,12 @@ const char* Sphere::sampleFunctionName()const
 unsigned Sphere::numPrimitives()const
 {
     return 1u;
+}
+
+
+float Sphere::area()const
+{
+    return 4.0*legion::PI*m_radius*m_radius;
 }
 
 

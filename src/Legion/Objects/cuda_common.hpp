@@ -69,10 +69,11 @@ struct RadiancePRD
     float3   direction;
     float3   radiance;
     float3   attenuation;
+    float    pdf;
     unsigned long long sobol_index;
     unsigned sobol_dim;
-    unsigned count_emitted_light;
-    unsigned done;
+    short count_emitted_light;
+    short done;
 };
 
 //------------------------------------------------------------------------------
@@ -170,6 +171,7 @@ struct BSDFSample
 {
     float3 w_in;
     float3 f_over_pdf;
+    float pdf;
 };
 
 struct LocalGeometry 
@@ -196,6 +198,7 @@ rtCallableProgram( float,
                    ( float3, legion::LocalGeometry, float3 ) );
 
 // (w_out, shading_point)
+rtDeclareVariable( float, legionSurfaceArea, , );
 rtCallableProgram( float3, 
                    legionSurfaceEmission,
                    ( float3, legion::LocalGeometry ) ); 

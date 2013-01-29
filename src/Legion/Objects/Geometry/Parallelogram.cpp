@@ -86,6 +86,12 @@ unsigned Parallelogram::numPrimitives()const
 }
 
 
+float Parallelogram::area()const
+{
+    return cross( m_U, m_V ).length();
+}
+
+
 void Parallelogram::setTransform( const Matrix& transform )
 {
     m_transform = transform;

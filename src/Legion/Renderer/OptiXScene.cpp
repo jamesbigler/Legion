@@ -240,8 +240,10 @@ void OptiXScene::addGeometry( IGeometry* geometry )
             //       setting to sync()
             m_optix_context[ "legionLightSample"   ]->set( sample );
             m_optix_context[ "legionLightEmission" ]->set( emission );
+
             VariableContainer vc0( sample.get() );
             geometry->setVariables( vc0 );
+
             VariableContainer vc1( emission.get() );
             surface->setVariables( vc1 );
             
@@ -303,6 +305,7 @@ void OptiXScene::sync()
         optix::Material optix_material = geometry_instance->getMaterial( 0u );
         VariableContainer mat_vc( optix_material.get() );
         surface->setVariables( mat_vc );
+        mat_vc.setFloat( "legionSurfaceArea", geometry->area() );
 
     }
 
