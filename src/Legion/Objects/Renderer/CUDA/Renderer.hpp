@@ -46,10 +46,9 @@ float3 radiance( uint64 sobol_index, float3 origin, float3 direction )
         rtTrace( legion_top_group, ray, prd );
         
         radiance += prd.radiance * attenuation;
+
         if( prd.done )
-        {
             break;
-        }
 
         attenuation                       *= prd.attenuation;
         const float    p_continue          = fmaxf( attenuation );

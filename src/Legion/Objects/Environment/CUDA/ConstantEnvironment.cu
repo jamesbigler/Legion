@@ -54,7 +54,7 @@ legion::LightSample constantEnvironmentSample(
     // TODO: sample hemisphere instead
 
     legion::uniformSampleSphere( sample_seed, sample.w_in, sample.pdf );
-    sample.distance = 1e16f;
+    sample.distance = 1e8f; // TODO: magic number
     sample.normal   = -sample.w_in;
 
     return sample; 

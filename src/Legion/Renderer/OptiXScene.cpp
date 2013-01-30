@@ -283,7 +283,8 @@ void OptiXScene::sync()
     // TODO: have defaults objects for all of these
     LEGION_ASSERT( m_renderer );
     LEGION_ASSERT( m_camera );
-   
+  
+    m_optix_context[ "legionLightCount" ]->setUint( m_num_lights );
     //
     // Update optix variables for all objects
     //

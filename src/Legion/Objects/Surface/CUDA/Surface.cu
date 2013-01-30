@@ -68,10 +68,12 @@ void legionClosestHit() // MIS
     }
     radiance  = w * legionSurfaceEmission( w_out, local_geom );
 
+    const float3 P = ray.origin + t_hit * ray.direction;
+    const unsigned sobol_index = radiance_prd.sobol_index;
+
     // 
     // Indirect lighting
     //
-    const unsigned sobol_index = radiance_prd.sobol_index;
     const float2 bsdf_seed = 
         make_float2( 
                 legion::Sobol::gen( sobol_index, radiance_prd.sobol_dim++ ),
@@ -80,7 +82,6 @@ void legionClosestHit() // MIS
     legion::BSDFSample bsdf_sample = 
         legionSurfaceSampleBSDF( bsdf_seed, w_out, local_geom );
 
-    const float3 P = ray.origin + t_hit * ray.direction;
 
     const float  cosine   = optix::dot( bsdf_sample.w_in, local_geom.shading_normal ); // TODO: redundant
     radiance_prd.origin              = P;
@@ -113,6 +114,8 @@ void legionClosestHit() // MIS
         {
             const float3 w_out    = -ray.direction;
             const float  bsdf_pdf = legionSurfacePDF( w_out, local_geom, light_sample.w_in ); // TODO: fold into evaluate
+
+
             if( bsdf_pdf > 0.0f ) // TODO: redundant with above check on dot product
             {
 
@@ -124,11 +127,14 @@ void legionClosestHit() // MIS
                                 light_sample.w_in, 
                                 light_sample.distance,
                                 light_sample.normal );
+            
 
                     const float3 w_out  = -ray.direction;
                     const float  weight = legion::powerHeuristic( light_sample.pdf*choose_light_p, bsdf_pdf );
 
                     const float3 bsdf   = legionSurfaceEvaluateBSDF( w_out, local_geom, light_sample.w_in );
+
+
                     radiance +=  light_radiance * bsdf * ( cos_theta * weight / ( light_sample.pdf*choose_light_p ) );
                 }
             }
