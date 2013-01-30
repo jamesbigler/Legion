@@ -46,8 +46,9 @@ public:
     /// be named {name()}.ptx
     virtual const char* name()const=0;
 
-    /// Return the name of this Environment's cuda ray generation function 
-    virtual const char* evaluateFunctionName()const=0;
+    virtual const char* missEvaluateFunctionName()const=0;
+
+    virtual const char* lightEvaluateFunctionName()const=0;
 
     virtual const char* sampleFunctionName()const=0;
 };

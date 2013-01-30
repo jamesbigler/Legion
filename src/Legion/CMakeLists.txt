@@ -14,6 +14,7 @@ CUDA_COMPILE_PTX( ptx_files
     Objects/Geometry/CUDA/Sphere.cu
     Objects/Environment/CUDA/Environment.cu
     Objects/Environment/CUDA/ConstantEnvironment.cu
+    Objects/Light/CUDA/Light.cu
     Objects/Renderer/CUDA/ProgressiveRenderer.cu
     Objects/Surface/CUDA/DiffuseEmitter.cu
     Objects/Surface/CUDA/Lambertian.cu
@@ -86,6 +87,7 @@ add_library( legion SHARED
     Objects/Geometry/TriMesh.hpp
     Objects/IObject.cpp
     Objects/IObject.hpp
+    Objects/Light/CUDA/Light.hpp
     Objects/Light/ILight.hpp
     Objects/Light/PointLight.cpp
     Objects/Light/PointLight.hpp

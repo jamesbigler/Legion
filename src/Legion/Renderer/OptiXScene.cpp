@@ -127,17 +127,21 @@ void OptiXScene::setEnvironment( IEnvironment* environment )
         }
 
         // Get environment programs
-        m_environment_evaluate = 
+        m_environment_miss_evaluate = 
             m_program_mgr.get( std::string( environment->name() ) + ".ptx",
-                               environment->evaluateFunctionName() );
+                               environment->missEvaluateFunctionName() );
+
+        m_environment_light_evaluate = 
+            m_program_mgr.get( std::string( environment->name() ) + ".ptx",
+                               environment->lightEvaluateFunctionName() );
 
         m_environment_sample = 
             m_program_mgr.get( std::string( environment->name() ) + ".ptx",
                     environment->sampleFunctionName() );
 
         // Set miss program evaluator
-        m_environment_program[ "legionEnvironmentEvaluate" ]->set( 
-                m_environment_evaluate 
+        m_optix_context[ "legionEnvironmentMissEvaluate" ]->set( 
+                m_environment_miss_evaluate 
                 );
 
         // Add light
@@ -149,7 +153,7 @@ void OptiXScene::setEnvironment( IEnvironment* environment )
 
             ss.str( "" );
             ss << "legionLightEvaluate_" << m_num_lights;
-            m_optix_context[ ss.str() ]->set( m_environment_evaluate );
+            m_optix_context[ ss.str() ]->set( m_environment_light_evaluate );
 
             ++m_num_lights;
         }
@@ -293,9 +297,34 @@ void OptiXScene::sync()
     if( m_environment_sample )
         m_environment->setVariables( 
                 VariableContainer( m_environment_sample.get() ) );
-    if( m_environment_evaluate )
+
+    if( m_environment_miss_evaluate )
         m_environment->setVariables( 
-                VariableContainer( m_environment_evaluate.get() ) );
+                VariableContainer( m_environment_miss_evaluate.get() ) );
+    
+    if( m_environment_light_evaluate )
+        m_environment->setVariables( 
+                VariableContainer( m_environment_light_evaluate.get() ) );
+
+
+    // Set up null functions for unused light variables
+    for( unsigned i = m_num_lights; i < MAX_LIGHTS; ++i )
+    {
+        optix::Program null_light_sample = 
+          m_program_mgr.get( "Light.ptx", "nullLightSample" );
+
+        optix::Program null_light_evaluate = 
+          m_program_mgr.get( "Light.ptx", "nullLightEvaluate" );
+
+        std::stringstream ss;
+        ss << "legionLightSample_" << i;
+        m_optix_context[ ss.str() ]->set( null_light_sample );
+
+        ss.str( "" );
+        ss << "legionLightEvaluate_" << i;
+        m_optix_context[ ss.str() ]->set( null_light_evaluate );
+    }
+
 
     for( GeometryMap::iterator it = m_geometry.begin();
          it != m_geometry.end();
@@ -313,7 +342,6 @@ void OptiXScene::sync()
         VariableContainer mat_vc( optix_material.get() );
         surface->setVariables( mat_vc );
         mat_vc.setFloat( "legionSurfaceArea", geometry->area() );
-
     }
 
     /*

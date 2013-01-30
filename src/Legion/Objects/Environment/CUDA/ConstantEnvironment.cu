@@ -25,12 +25,29 @@
 
 rtDeclareVariable( float3, radiance, , );
 
-RT_CALLABLE_PROGRAM float3 constantEnvironmentEvaluate( float3 dir, float, float3 )
+RT_CALLABLE_PROGRAM
+float3 constantEnvironmentMissEvaluate( 
+        float3 dir ) 
 {
     return radiance; 
 }
 
-legion::LightSample constantEnvironmentSample( float2 sample_seed, float3 shading_point, float3 shading_normal )
+
+RT_CALLABLE_PROGRAM
+float3 constantEnvironmentLightEvaluate( 
+        float3 dir, 
+        float, 
+        float3 )
+{
+    return radiance; 
+}
+
+
+RT_CALLABLE_PROGRAM 
+legion::LightSample constantEnvironmentSample( 
+        float2 sample_seed,
+        float3 shading_point,
+        float3 shading_normal )
 {
     legion::LightSample sample;
 

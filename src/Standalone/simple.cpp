@@ -47,8 +47,7 @@ int main( int , char** )
         ctx.setCamera( &cam );
 
         legion::ConstantEnvironment env( &ctx );
-        //env.setRadiance( legion::Color( 0.529f, 0.808f, 0.922f )*0.5f );
-        env.setRadiance( legion::Color( 0.0f, 0.0f, 0.0f ) );
+        env.setRadiance( legion::Color( 0.529f, 0.808f, 0.922f )*0.5f );
         ctx.setEnvironment( &env );
 
         legion::ProgressiveRenderer renderer( &ctx );

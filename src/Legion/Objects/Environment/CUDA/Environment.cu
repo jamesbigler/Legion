@@ -35,7 +35,7 @@ RT_PROGRAM void legionEnvironment()
         w = legion::powerHeuristic( radiance_prd.pdf, pdf );
         */
     }
-    const float3 radiance = legionEnvironmentEvaluate( ray.direction, 0.0f, make_float3( 0.0f ) );
+    const float3 radiance = legionEnvironmentMissEvaluate( ray.direction );
     radiance_prd.radiance = w * radiance;
     radiance_prd.done     = true;
 }

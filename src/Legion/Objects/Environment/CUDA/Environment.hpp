@@ -25,8 +25,8 @@
 
 #include <Legion/Objects/cuda_common.hpp>
 
-// float3 legionLightEmission( float3 w_in, float UNUSED_DISTANCE, float3 UNUSED_POINT_ON_LIGHT )
-rtCallableProgram( float3, legionEnvironmentEvaluate, ( float3, float, float3 ) );
+// float3 legionEnvironmentMissEvaluate( float3 w_in )
+rtCallableProgram( float3, legionEnvironmentMissEvaluate, ( float3 ) );
 
 
 #endif // LEGION_OBJECTS_SURFACE_CUDA_ENVIRONMENT_HPP_

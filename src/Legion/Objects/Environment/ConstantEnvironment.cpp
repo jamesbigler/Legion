@@ -43,15 +43,21 @@ const char* ConstantEnvironment::name() const
 }
 
 
-const char* ConstantEnvironment::evaluateFunctionName() const
+const char* ConstantEnvironment::missEvaluateFunctionName() const
 {
-    return "constantEnvironmentEvaluate";
+    return "constantEnvironmentMissEvaluate";
+}
+
+
+const char* ConstantEnvironment::lightEvaluateFunctionName() const
+{
+    return "constantEnvironmentLightEvaluate";
 }
 
 
 const char* ConstantEnvironment::sampleFunctionName() const
 {
-    return "nullEnvironmentSample";
+    return "constantEnvironmentSample";
 }
 
 

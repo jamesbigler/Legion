@@ -47,10 +47,12 @@ public:
     /// should be named {name()}.ptx
     const char* name() const;
 
-    /// Return the name of this Environment's cuda ray generation function 
-    const char* evaluateFunctionName() const;
 
-    virtual const char* sampleFunctionName() const;
+    const char* missEvaluateFunctionName()const;
+
+    const char* lightEvaluateFunctionName()const;
+
+    const char* sampleFunctionName() const;
 
     void setRadiance( const Color& radiance );
     

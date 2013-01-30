@@ -69,7 +69,8 @@ private:
     optix::Program          m_closest_hit_program;
     optix::Program          m_any_hit_program;
     optix::Program          m_environment_sample;
-    optix::Program          m_environment_evaluate;
+    optix::Program          m_environment_light_evaluate;
+    optix::Program          m_environment_miss_evaluate;
     optix::Program          m_environment_program;
     optix::GeometryGroup    m_top_group;
 
