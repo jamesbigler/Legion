@@ -110,7 +110,6 @@ void legionClosestHit() // MIS
                     legion::Sobol::gen( sobol_index, radiance_prd.sobol_dim++ )
                     );
 
-        // TODO fold lightEvaluate into this
         const float3 P = ray.origin + t_hit * ray.direction;
         const float3 N = local_geom.shading_normal;
         const legion::LightSample light_sample = 
@@ -155,7 +154,7 @@ void legionClosestHit() // MIS
 
 /*
 RT_PROGRAM
-void legionClosestHit2() // No mis`
+void legionClosestHit() // No mis`
 {
     float3 radiance = make_float3( 0.0f );
 
@@ -192,44 +191,51 @@ void legionClosestHit2() // No mis`
     //
     // direct lighting
     //
-    const unsigned num_lights  = 1;
-    for( unsigned i = 0; i < num_lights; ++i )
     {
+        const unsigned sobol_index = radiance_prd.sobol_index;
+        const float choose_light_seed =
+            legion::Sobol::gen( sobol_index, radiance_prd.sobol_dim++ );
+
+        const unsigned light_index = choose_light_seed * legionLightCount;
+
         const float2 seed = 
             make_float2( 
-                legion::Sobol::gen( sobol_index, radiance_prd.sobol_dim++ ),
-                legion::Sobol::gen( sobol_index, radiance_prd.sobol_dim++ ) );
+                    legion::Sobol::gen( sobol_index, radiance_prd.sobol_dim++ ),
+                    legion::Sobol::gen( sobol_index, radiance_prd.sobol_dim++ ) );
 
-        const legion::LightSample light_sample = legionLightSample( seed, P ); 
+        const float3 N = local_geom.shading_normal;
+        const legion::LightSample light_sample = legion::lightSample( light_index, seed, P, N ); 
         if( light_sample.pdf > 0.0f )
         {
-            float3       w_in       = light_sample.point_on_light.position - P;
-            const float  light_dist = optix::length( w_in );
-            w_in /= light_dist;
+            const float3 w_in       = light_sample.w_in;
+            const float  light_dist = light_sample.distance; 
 
             if( optix::dot( w_in, local_geom.shading_normal ) > 0.0f ) 
             {
                 if( !legion::pointOccluded( P, w_in, light_dist ) )
                 {
-                    const float3 light_col = 
-                        legionLightEmission( 
-                                -w_in, 
-                                light_sample.point_on_light );
+                    const float3 light_radiance = 
+                        legion::lightEvaluate( 
+                                light_index, 
+                                light_sample.w_in, 
+                                light_sample.distance,
+                                light_sample.normal );
+
 
                     const float3 w_out = -ray.direction;
-                    const float3 bsdf = 
+                    const float4 bsdf = 
                         legionSurfaceEvaluateBSDF( 
                                 w_out, 
                                 local_geom, 
                                 w_in );
 
-                    radiance +=  light_col * bsdf / light_sample.pdf;
+                    radiance +=  light_radiance * make_float3( bsdf ) / light_sample.pdf;
                 }
             }
         }
     }
 
-    //
+//
     // Report result
     // 
     radiance_prd.radiance = radiance;

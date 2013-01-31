@@ -47,10 +47,10 @@ float3 radiance( uint64 sobol_index, float3 origin, float3 direction )
         
         radiance += prd.radiance * attenuation;
 
-        if( prd.done )
-            break;
 
-        attenuation                       *= prd.attenuation;
+        if( prd.done || attenuation.x + attenuation.y + attenuation.z < 0.001f )
+            break;
+        attenuation *= prd.attenuation;
         /*
         const float    p_continue          = fmaxf( attenuation );
         const unsigned RR_SOBOL_DIM_OFFSET = 64;
