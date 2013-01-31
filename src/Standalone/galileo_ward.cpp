@@ -61,8 +61,8 @@ int main( int , char** )
         /*
         legion::Sphere light( &ctx );
         light.setCenter( legion::Vector3( -0.5f, 5.0f, 3.5f ) );
-        light.setSurface( &emitter);
         */
+
         legion::Parallelogram light( &ctx );
         light.setAnchorUV( 
             legion::Vector3(  2.0f, 5.0f, 2.0f ),
@@ -90,7 +90,7 @@ int main( int , char** )
         renderer.setResolution( legion::Index2( 800u, 600u ) );
         //renderer.setSamplesPerPixel( 1 );
         //renderer.setSamplesPerPass( 1 );
-        renderer.setSamplesPerPixel( 32 );
+        renderer.setSamplesPerPixel( 32*4 );
         renderer.setSamplesPerPass( 8 );
         ctx.setRenderer( &renderer );
 

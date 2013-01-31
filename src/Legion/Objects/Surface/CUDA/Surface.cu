@@ -115,6 +115,8 @@ void legionClosestHit() // MIS
         const legion::LightSample light_sample = 
             legion::lightSample( light_index, light_seed, P, N ); 
 
+
+
         const float3 w_in      = light_sample.w_in;
         const float  light_pdf = light_sample.pdf*choose_light_p;
         const float  cos_theta = optix::dot( w_in, N );
@@ -133,6 +135,8 @@ void legionClosestHit() // MIS
             {
                 const float  weight = legion::powerHeuristic( light_pdf, bsdf_pdf );
                 const float3 atten  = bsdf_val*( weight / ( light_pdf ) );
+
+
                 const float3 light_radiance = 
                     legion::lightEvaluate( 
                             light_index, 

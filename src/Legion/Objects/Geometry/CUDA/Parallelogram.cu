@@ -99,11 +99,18 @@ legion::LightSample parallelogramSample( float2 sample_seed, float3 shading_poin
 
      sample.distance = optix::length( on_light - shading_point );
      sample.w_in     = ( on_light - shading_point ) / sample.distance;
-     float cosine    = -optix::dot( shading_point, sample.w_in);
+     float cosine    = optix::dot( sample.w_in, shading_normal );
      if ( cosine > 0.0f )
      {
          sample.pdf = inv_area*sample.distance*sample.distance / cosine;
          sample.normal = make_float3( plane );
+         /*
+         if( launch_index.x == 10 && launch_dim.y - launch_index.y == 10 )
+             printf( "n: %f %f %f\n", 
+                     sample.normal.x,
+                     sample.normal.y,
+                     sample.normal.z );
+                     */
      }
 
      return sample;
