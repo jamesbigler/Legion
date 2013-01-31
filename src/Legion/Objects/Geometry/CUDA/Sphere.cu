@@ -319,5 +319,5 @@ float spherePDF( float3 w_in, float3 p )
     float q = 2.0f*legion::PI*( 1.0f - cos_alpha_max );
 
     // pdf is one over solid angle
-    return 1/q;
+    return 1.0f/q;
 }

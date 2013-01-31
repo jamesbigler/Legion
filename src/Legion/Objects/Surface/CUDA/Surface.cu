@@ -129,7 +129,6 @@ void legionClosestHit() // MIS
 
                     const float3 w_out  = -ray.direction;
                     const float  weight = legion::powerHeuristic( light_sample.pdf*choose_light_p, bsdf_pdf );
-
                     const float3 bsdf   = legionSurfaceEvaluateBSDF( w_out, local_geom, light_sample.w_in );
 
 
