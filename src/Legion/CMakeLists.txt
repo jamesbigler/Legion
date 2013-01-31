@@ -10,15 +10,16 @@ set( CUDA_GENERATED_OUTPUT_DIR ${PTX_OUTPUT_DIR} )
 set( CUDA_NVCC_FLAGS "-arch sm_30" )
 CUDA_COMPILE_PTX( ptx_files
     Objects/Camera/CUDA/ThinLens.cu
+    Objects/Environment/CUDA/ConstantEnvironment.cu
+    Objects/Environment/CUDA/Environment.cu
     Objects/Geometry/CUDA/Parallelogram.cu
     Objects/Geometry/CUDA/Sphere.cu
-    Objects/Environment/CUDA/Environment.cu
-    Objects/Environment/CUDA/ConstantEnvironment.cu
     Objects/Light/CUDA/Light.cu
     Objects/Renderer/CUDA/ProgressiveRenderer.cu
     Objects/Surface/CUDA/DiffuseEmitter.cu
     Objects/Surface/CUDA/Lambertian.cu
     Objects/Surface/CUDA/Surface.cu
+    Objects/Surface/CUDA/Ward.cu
     )
 
 configure_file( "${CMAKE_CURRENT_SOURCE_DIR}/Core/config.hpp.in"
@@ -94,11 +95,13 @@ add_library( legion SHARED
     Objects/Renderer/IRenderer.hpp
     Objects/Renderer/ProgressiveRenderer.cpp
     Objects/Renderer/ProgressiveRenderer.hpp
-    Objects/Surface/ISurface.hpp
     Objects/Surface/DiffuseEmitter.cpp
     Objects/Surface/DiffuseEmitter.hpp
+    Objects/Surface/ISurface.hpp
     Objects/Surface/Lambertian.cpp
     Objects/Surface/Lambertian.hpp
+    Objects/Surface/Ward.cpp
+    Objects/Surface/Ward.hpp
     Renderer/OptiXProgramManager.cpp
     Renderer/OptiXProgramManager.hpp
     Renderer/OptiXScene.cpp

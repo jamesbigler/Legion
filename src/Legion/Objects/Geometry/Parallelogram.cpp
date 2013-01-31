@@ -143,8 +143,11 @@ void Parallelogram::setVariables( const VariableContainer& container ) const
     const Vector3 v1 = m_U / dot( m_U, m_U );
     const Vector3 v2 = m_V / dot( m_V, m_V );
 
-    container.setFloat( "anchor", m_anchor );
-    container.setFloat( "plane",  plane    );
-    container.setFloat( "v1",     v1       );
-    container.setFloat( "v2",     v2       );
+    container.setFloat( "inv_area", 1.0f / area() );
+    container.setFloat( "anchor",   m_anchor      );
+    container.setFloat( "plane",    plane         );
+    container.setFloat( "v1",       v1            );
+    container.setFloat( "v2",       v2            );
+    container.setFloat( "U",        m_U           );
+    container.setFloat( "V",        m_V           );
 }

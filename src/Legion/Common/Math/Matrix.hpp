@@ -88,6 +88,10 @@ public:
     static Matrix translate( const Vector3& vec );
 
     static Matrix scale( const Vector3& vec );
+    
+    static Matrix lookAt( const Vector3& eye,
+                          const Vector3& at,
+                          const Vector3& up );
 
     static Matrix identity();
 
@@ -490,6 +494,39 @@ inline Matrix Matrix::scale( const Vector3& vec )
     m[5] = vec.y();
     m[10]= vec.z();
     return m; 
+}
+
+
+inline Matrix Matrix::lookAt( const Vector3& eye,
+                              const Vector3& at,
+                              const Vector3& up )
+{
+
+
+    // create a viewing matrix
+    Vector3 w = normalize( eye - at );
+    Vector3 u = normalize( cross( up, w ) );
+    Vector3 v = cross( w, u );
+
+    Matrix view = identity();
+    view[ 0] = u.x();
+    view[ 1] = u.y();
+    view[ 2] = u.z();
+    view[ 4] = v.x();
+    view[ 5] = v.y();
+    view[ 6] = v.z();
+    view[ 8] = w.x();
+    view[ 9] = w.y();
+    view[10] = w.z();
+
+    // translate eye to xyz origin
+    Matrix move = identity();
+    move[ 3] = -(eye.x());
+    move[ 7] = -(eye.y());
+    move[11] = -(eye.z());
+
+    Matrix ret = ( view * move ).inverse();
+    return ret;
 }
 
 

@@ -21,15 +21,19 @@
 // IN THE SOFTWARE.
 
 #include <Legion/Objects/cuda_common.hpp>
+#include <Legion/Objects/Light/CUDA/Light.hpp>
 
 // TODO: attrs should be in a header which can be included by all clients
 rtDeclareVariable( legion::LocalGeometry, lgeom, attribute local_geom, ); 
 rtDeclareVariable( optix::Ray,            ray,   rtCurrentRay, );
 
-rtDeclareVariable( float4, plane,  , );
-rtDeclareVariable( float3, v1,     , );
-rtDeclareVariable( float3, v2,     , );
-rtDeclareVariable( float3, anchor, , );
+rtDeclareVariable( float4, plane,    , );
+rtDeclareVariable( float3, v1,       , );
+rtDeclareVariable( float3, v2,       , );
+rtDeclareVariable( float3, U,        , );
+rtDeclareVariable( float3, V,        , );
+rtDeclareVariable( float3, anchor,   , );
+rtDeclareVariable( float,  inv_area, , );
 
 RT_PROGRAM void parallelogramIntersect( int )
 {
@@ -85,19 +89,55 @@ RT_PROGRAM void parallelogramBoundingBox( int, float result[6] )
 
 
 RT_CALLABLE_PROGRAM
-float parallelogramPDF( float3 w_in, float3 p )
+legion::LightSample parallelogramSample( float2 sample_seed, float3 shading_point, float3 shading_normal )
 {
 
-    /*
-    // Intersect pgram here...
-    // ...
+     legion::LightSample sample;
+     sample.pdf = 0.0f;
 
-    Vector3 to_light = localrec.p - rec.p;
-    double dist      = to_light.makeUnitVector();
-    double cosine    = -dot(localrec.uvw.w(),to_light);
-    if ( cosine <= 0.0 )
-        return 0.0;
-    return inverse_area*dist*dist / cosine;
-    */
-    return 1.0f;
+     const float3 on_light = anchor + sample_seed.x*U + sample_seed.y*V;
+
+     sample.distance = optix::length( on_light - shading_point );
+     sample.w_in     = ( on_light - shading_point ) / sample.distance;
+     float cosine    = -optix::dot( shading_point, sample.w_in);
+     if ( cosine > 0.0f )
+     {
+         sample.pdf = inv_area*sample.distance*sample.distance / cosine;
+         sample.normal = make_float3( plane );
+     }
+
+     return sample;
+}
+
+
+RT_CALLABLE_PROGRAM
+float parallelogramPDF( float3 w_in, float3 shading_point )
+{
+    const float3 n  = make_float3( plane );
+    const float  dt = optix::dot( w_in, n );
+    const float  t  = ( plane.w - optix::dot( n, shading_point ) ) / dt;
+
+    float pdf = 0.0f;
+
+    // Intersect pgram 
+    if( t > 0.0f ) 
+    {
+        const float3 p  = shading_point + w_in * t;
+        const float3 vi = p - anchor;
+        const float  a1 = optix::dot(v1, vi);
+        if( a1 >= 0.0f && a1 <= 1.0f )
+        {
+            const float a2 = optix::dot( v2, vi );
+            if( a2 >= 0.0f && a2 <= 1.0f )
+            {
+                double dist   = t; 
+                double cosine = -optix::dot( n, w_in );
+                if ( cosine > 0.0f )
+                {
+                    pdf = inv_area*dist*dist / cosine;
+                }
+            }
+        }
+    }
+    return pdf;
 }

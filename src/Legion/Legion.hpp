@@ -25,6 +25,7 @@
 #include <Legion/Objects/Environment/ConstantEnvironment.hpp>
 #include <Legion/Objects/Surface/ISurface.hpp>
 #include <Legion/Objects/Surface/Lambertian.hpp>
+#include <Legion/Objects/Surface/Ward.hpp>
 #include <Legion/Objects/Surface/DiffuseEmitter.hpp>
 #include <Legion/Objects/Geometry/IGeometry.hpp>
 #include <Legion/Objects/Geometry/Parallelogram.hpp>
