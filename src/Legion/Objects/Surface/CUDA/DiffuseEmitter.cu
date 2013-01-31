@@ -28,7 +28,7 @@
 rtDeclareVariable( float3, radiance, , );
 
 RT_CALLABLE_PROGRAM
-float3 diffuseEmitterEmission( float3 w_out, float3 on_light )
+float3 diffuseEmitterEmission( float3 w_in, float3 on_light )
 {
     return radiance;
 }

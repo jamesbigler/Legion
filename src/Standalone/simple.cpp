@@ -54,7 +54,7 @@ int main( int , char** )
         legion::ProgressiveRenderer renderer( &ctx );
         //renderer.setSamplesPerPixel( 1 );
         //renderer.setSamplesPerPass( 1 );
-        renderer.setSamplesPerPixel( 64*4 );
+        renderer.setSamplesPerPixel( 32 );
         renderer.setSamplesPerPass( 8 );
         ctx.setRenderer( &renderer );
 

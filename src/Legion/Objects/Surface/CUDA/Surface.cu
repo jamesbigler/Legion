@@ -50,89 +50,127 @@ RT_PROGRAM
 void legionClosestHit() // MIS
 {
     float3 radiance = make_float3( 0.0f );
+    const float  choose_light_p = 1.0f / static_cast<float>( legionLightCount );
 
     //
     // Emitted contribution
     //
-    float w                     = 1.0f;
-    const float3 w_out          = -ray.direction;
-    const float  choose_light_p = 1.0f / static_cast<float>( legionLightCount );
-    const float3 P = ray.origin + t_hit * ray.direction;
-    if( !radiance_prd.count_emitted_light )
     {
-        const float light_pdf = legionLightPDF( ray.direction, P ); 
-        w = legion::powerHeuristic( radiance_prd.pdf, light_pdf*choose_light_p );
+        const float3 w_in = ray.direction;
+        float mis_weight  = 1.0f;
+        if( !radiance_prd.count_emitted_light )
+        {
+            const float3 P        = ray.origin;
+            const float  light_pdf = legionLightPDF( w_in, P ) * choose_light_p;
+            const float  bsdf_pdf  = radiance_prd.pdf;
+            mis_weight = legion::powerHeuristic( bsdf_pdf, light_pdf );
+        }
+        radiance  = mis_weight * legionSurfaceEmission( w_in, local_geom );
     }
-    radiance  = w * legionSurfaceEmission( w_out, local_geom );
 
-    const unsigned sobol_index = radiance_prd.sobol_index;
 
     // 
     // Indirect lighting
     //
-    const float2 bsdf_seed = 
-        make_float2( 
-                legion::Sobol::gen( sobol_index, radiance_prd.sobol_dim++ ),
-                legion::Sobol::gen( sobol_index, radiance_prd.sobol_dim++ ) );
+    {
+        const unsigned sobol_index = radiance_prd.sobol_index;
+        const float2 bsdf_seed = 
+            make_float2( 
+                    legion::Sobol::gen( sobol_index, radiance_prd.sobol_dim++ ),
+                    legion::Sobol::gen( sobol_index, radiance_prd.sobol_dim++ )
+                    );
 
-    legion::BSDFSample bsdf_sample = 
-        legionSurfaceSampleBSDF( bsdf_seed, w_out, local_geom );
+        const float3 w_out = -ray.direction;
+        legion::BSDFSample bsdf_sample = 
+            legionSurfaceSampleBSDF( bsdf_seed, w_out, local_geom );
 
+        const float3 P = ray.origin + t_hit * ray.direction;
 
-    const float  cosine   = optix::dot( bsdf_sample.w_in, local_geom.shading_normal ); // TODO: redundant
-    radiance_prd.origin              = P;
-    radiance_prd.direction           = bsdf_sample.w_in;
-    radiance_prd.attenuation         = bsdf_sample.f_over_pdf;// * cosine;
-    radiance_prd.done                = false; 
-    radiance_prd.pdf                 = bsdf_sample.pdf; 
-    radiance_prd.count_emitted_light = false; 
+        radiance_prd.origin              = P;
+        radiance_prd.direction           = bsdf_sample.w_in;
+        radiance_prd.attenuation         = bsdf_sample.f_over_pdf;
+        radiance_prd.pdf                 = bsdf_sample.pdf; 
+        radiance_prd.done                = false; 
+        radiance_prd.count_emitted_light = false; 
+    }
 
     
     //
     // direct lighting
     //
-
-    // TODO: If not bsdf.isSingular
-    const float    choose_light_seed = legion::Sobol::gen( sobol_index, radiance_prd.sobol_dim++ );
-    const unsigned light_index       = choose_light_seed * legionLightCount;
-
-    const float2 light_seed = 
-        make_float2( 
-                legion::Sobol::gen( sobol_index, radiance_prd.sobol_dim++ ),
-                legion::Sobol::gen( sobol_index, radiance_prd.sobol_dim++ ) );
-
-    // TODO fold lightEvaluate into this
-    const legion::LightSample light_sample = 
-        legion::lightSample( light_index, light_seed, P, local_geom.shading_normal  ); 
-
-    if( light_sample.pdf > 0.0f )
     {
-        const float cos_theta = optix::dot( light_sample.w_in, local_geom.shading_normal );
-        if( cos_theta > 0.0f ) 
+
+        const unsigned sobol_index = radiance_prd.sobol_index;
+        const float choose_light_seed =
+            legion::Sobol::gen( 
+                sobol_index, 
+                radiance_prd.sobol_dim++
+                );
+        const unsigned light_index = choose_light_seed * legionLightCount;
+
+        const float2 light_seed = 
+            make_float2( 
+                    legion::Sobol::gen( sobol_index, radiance_prd.sobol_dim++ ),
+                    legion::Sobol::gen( sobol_index, radiance_prd.sobol_dim++ )
+                    );
+
+        // TODO fold lightEvaluate into this
+        const float3 P = ray.origin + t_hit * ray.direction;
+        const legion::LightSample light_sample = 
+            legion::lightSample( 
+                    light_index, 
+                    light_seed, 
+                    P, 
+                    local_geom.shading_normal ); 
+
+        if( light_sample.pdf > 0.0f )
         {
-            const float3 w_out    = -ray.direction;
-            const float  bsdf_pdf = legionSurfacePDF( w_out, local_geom, light_sample.w_in ); // TODO: fold into evaluate
+            const float cos_theta = 
+                optix::dot( 
+                        light_sample.w_in,
+                        local_geom.shading_normal );
 
-
-            if( bsdf_pdf > 0.0f ) // TODO: redundant with above check on dot product
+            if( cos_theta > 0.0f ) 
             {
+                const float3 w_out    = -ray.direction;
+                const float  bsdf_pdf = 
+                    legionSurfacePDF( 
+                            w_out, 
+                            local_geom, 
+                            light_sample.w_in ); // TODO: fold into evaluate
 
-                if( !legion::pointOccluded( P, light_sample.w_in, light_sample.distance ) )
+
+                // TODO: redundant with above check on dot product
+                if( bsdf_pdf > 0.0f )
                 {
-                    const float3 light_radiance = 
-                        legion::lightEvaluate( 
-                                light_index, 
+
+                    if( !legion::pointOccluded( P, 
                                 light_sample.w_in, 
-                                light_sample.distance,
-                                light_sample.normal );
-            
+                                light_sample.distance ) )
+                    {
+                        const float3 light_radiance = 
+                            legion::lightEvaluate( 
+                                    light_index, 
+                                    light_sample.w_in, 
+                                    light_sample.distance,
+                                    light_sample.normal );
 
-                    const float3 w_out  = -ray.direction;
-                    const float  weight = legion::powerHeuristic( light_sample.pdf*choose_light_p, bsdf_pdf );
-                    const float3 bsdf   = legionSurfaceEvaluateBSDF( w_out, local_geom, light_sample.w_in );
 
+                        const float light_pdf = light_sample.pdf*choose_light_p;
+                        const float3 w_out  = -ray.direction;
+                        const float  weight = legion::powerHeuristic( 
+                                light_pdf, bsdf_pdf );
+                        const float3 bsdf  = 
+                            legionSurfaceEvaluateBSDF( 
+                                    w_out, 
+                                    local_geom, 
+                                    light_sample.w_in );
 
-                    radiance +=  light_radiance * bsdf * ( weight  / ( light_sample.pdf*choose_light_p ) );
+                        radiance += 
+                            light_radiance * 
+                            bsdf * 
+                            ( weight  / ( light_sample.pdf*choose_light_p ) );
+                    }
                 }
             }
         }
