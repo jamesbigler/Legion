@@ -51,16 +51,20 @@ struct RayGeometry
     float3 direction;
 };
 
-} // end namespace legion
 
+struct LocalGeometry 
+{
+    float3   position;
+    float3   geometric_normal;
+    float3   shading_normal;
+    float2   texcoord;
+};
 
 //------------------------------------------------------------------------------
 //
 // this struct is to be used as the per-ray-data for radiance rays
 //
 //------------------------------------------------------------------------------
-namespace legion
-{
 
 // TODO: pack this
 struct RadiancePRD 
@@ -159,48 +163,10 @@ rtCallableProgram( legion::RayGeometry,
                    (float2, float2, float ) );
 
 
-//------------------------------------------------------------------------------
-//
-// Surface helpers
-//
-//------------------------------------------------------------------------------
-
 namespace legion
 {
-struct BSDFSample
-{
-    float3 w_in;
-    float3 f_over_pdf;
-    float pdf;
-};
-
-struct LocalGeometry 
-{
-    float3   position;
-    float3   geometric_normal;
-    float3   shading_normal;
-    float2   texcoord;
-};
 
 }
-
-rtCallableProgram( legion::BSDFSample,
-                   legionSurfaceSampleBSDF,
-                   ( float2, float3 , legion::LocalGeometry ) );
-
-rtCallableProgram( float3, 
-                   legionSurfaceEvaluateBSDF,
-                   ( float3 , legion::LocalGeometry, float3 ) );
-
-rtCallableProgram( float, 
-                   legionSurfacePDF,
-                   ( float3, legion::LocalGeometry, float3 ) );
-
-// (w_out, shading_point)
-rtDeclareVariable( float, legionSurfaceArea, , );
-rtCallableProgram( float3, 
-                   legionSurfaceEmission,
-                   ( float3, legion::LocalGeometry ) ); 
 
 
 #endif // LEGION_OBJECTS_CUDA_COMMON_HPP_

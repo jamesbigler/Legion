@@ -57,13 +57,14 @@ legion::BSDFSample lambertianSampleBSDF(
 
 
 RT_CALLABLE_PROGRAM
-float3 lambertianEvaluateBSDF(
+float4 lambertianEvaluateBSDF(
         float3 w_out,
         legion::LocalGeometry p,
         float3 w_in )
 {
-    float cosine = fmaxf( 0.0f, optix::dot( w_in, p.shading_normal ) );
-    return cosine * legion::ONE_DIV_PI * reflectance;
+    const float cosine = fmaxf( 0.0f, optix::dot( w_in, p.shading_normal ) );
+    const float pdf    = cosine * legion::ONE_DIV_PI;
+    return make_float4( pdf * reflectance, pdf );
 }
 
 

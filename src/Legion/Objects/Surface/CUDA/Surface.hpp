@@ -26,6 +26,39 @@
 #include <Legion/Objects/cuda_common.hpp>
 
 
+namespace legion
+{
+struct BSDFSample
+{
+    float3 w_in;
+    float3 f_over_pdf;
+    float pdf;
+};
+
+}
+
+rtCallableProgram( legion::BSDFSample,
+                   legionSurfaceSampleBSDF,
+                   ( float2, float3 , legion::LocalGeometry ) );
+
+// ( bsdf,pdf ) legionSurfaceEvaluateBSDF(
+//                   float3 w_in,
+//                   LocalGeometry p,
+//                   float3 w_out)
+rtCallableProgram( float4, 
+                   legionSurfaceEvaluateBSDF,
+                   ( float3 , legion::LocalGeometry, float3 ) );
+
+rtCallableProgram( float, 
+                   legionSurfacePDF,
+                   ( float3, legion::LocalGeometry, float3 ) );
+
+// (w_out, shading_point)
+rtDeclareVariable( float, legionSurfaceArea, , );
+rtCallableProgram( float3, 
+                   legionSurfaceEmission,
+                   ( float3, legion::LocalGeometry ) ); 
+
 //------------------------------------------------------------------------------
 //
 // Null surface programs

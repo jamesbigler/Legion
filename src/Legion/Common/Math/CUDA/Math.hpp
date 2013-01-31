@@ -53,6 +53,12 @@ namespace legion
     }
 
 
+    LDEVICE inline bool isBlack( float3 x )
+    {
+        return x.x == 0.0f && x.y == 0.0f && x.z == 0.0f;
+    }
+
+
     LDEVICE inline float2 squareToDisk( float2 sample )
     {
         const float PI_4 = static_cast<float>( M_PI ) / 4.0f;
