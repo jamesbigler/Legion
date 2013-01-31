@@ -21,6 +21,7 @@
 // IN THE SOFTWARE.
 
 #include <Legion/Objects/Environment/CUDA/Environment.hpp>
+#include <Legion/Objects/Light/CUDA/Light.hpp>
 #include <Legion/Common/Math/CUDA/Math.hpp>
 
 rtDeclareVariable( optix::Ray, ray, rtCurrentRay, );
@@ -30,10 +31,9 @@ RT_PROGRAM void legionEnvironment()
     float w = 1.0f;
     if( !radiance_prd.count_emitted_light )
     {
-        /*
-        float pdf = legion::ONE_DIV_PI * 0.25f;
-        w = legion::powerHeuristic( radiance_prd.pdf, pdf );
-        */
+        const float light_pick_p = 1.0f / legionLightCount;
+        const float pdf          = legion::ONE_DIV_PI * 0.25f;
+        w = legion::powerHeuristic( radiance_prd.pdf, pdf*light_pick_p );
     }
     const float3 radiance = legionEnvironmentMissEvaluate( ray.direction );
     radiance_prd.radiance = w * radiance;

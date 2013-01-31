@@ -57,18 +57,14 @@ void legionClosestHit() // MIS
     float w                     = 1.0f;
     const float3 w_out          = -ray.direction;
     const float  choose_light_p = 1.0f / static_cast<float>( legionLightCount );
+    const float3 P = ray.origin + t_hit * ray.direction;
     if( !radiance_prd.count_emitted_light )
     {
-        const float  cosine   = optix::dot( w_out, local_geom.shading_normal );
-        const float  area_pdf = 1.0f / legionSurfaceArea;
-        const float  sa_pdf   = legion::pdfAreaToSolidAngle( area_pdf, t_hit, cosine );
-        w =  legion::powerHeuristic( radiance_prd.pdf, sa_pdf*choose_light_p  );
-
-        // TODO: attenuate prd.attenuation here? 
+        const float light_pdf = legionLightPDF( ray.direction, P ); 
+        w = legion::powerHeuristic( radiance_prd.pdf, light_pdf*choose_light_p );
     }
     radiance  = w * legionSurfaceEmission( w_out, local_geom );
 
-    const float3 P = ray.origin + t_hit * ray.direction;
     const unsigned sobol_index = radiance_prd.sobol_index;
 
     // 
@@ -86,11 +82,12 @@ void legionClosestHit() // MIS
     const float  cosine   = optix::dot( bsdf_sample.w_in, local_geom.shading_normal ); // TODO: redundant
     radiance_prd.origin              = P;
     radiance_prd.direction           = bsdf_sample.w_in;
-    radiance_prd.attenuation         = bsdf_sample.f_over_pdf * cosine;
+    radiance_prd.attenuation         = bsdf_sample.f_over_pdf;// * cosine;
     radiance_prd.done                = false; 
     radiance_prd.pdf                 = bsdf_sample.pdf; 
     radiance_prd.count_emitted_light = false; 
 
+    
     //
     // direct lighting
     //
@@ -104,6 +101,7 @@ void legionClosestHit() // MIS
                 legion::Sobol::gen( sobol_index, radiance_prd.sobol_dim++ ),
                 legion::Sobol::gen( sobol_index, radiance_prd.sobol_dim++ ) );
 
+    // TODO fold lightEvaluate into this
     const legion::LightSample light_sample = 
         legion::lightSample( light_index, light_seed, P, local_geom.shading_normal  ); 
 
@@ -135,7 +133,7 @@ void legionClosestHit() // MIS
                     const float3 bsdf   = legionSurfaceEvaluateBSDF( w_out, local_geom, light_sample.w_in );
 
 
-                    radiance +=  light_radiance * bsdf * ( cos_theta * weight / ( light_sample.pdf*choose_light_p ) );
+                    radiance +=  light_radiance * bsdf * ( weight  / ( light_sample.pdf*choose_light_p ) );
                 }
             }
         }

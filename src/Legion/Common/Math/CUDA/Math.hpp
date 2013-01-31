@@ -49,7 +49,7 @@ namespace legion
         float distance,
         float cosine )
     {
-        return area_pdf * sqrtf( distance ) / fabsf( cosine );
+        return area_pdf * distance * distance / fabsf( cosine );
     }
 
 

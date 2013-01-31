@@ -232,6 +232,12 @@ void OptiXScene::addGeometry( IGeometry* geometry )
             m_program_mgr.get( surface_ptx, emission_func_name );
         material[ "legionSurfaceEmission" ]->set( emission );
 
+        optix::Program light_pdf = 
+          m_program_mgr.get( std::string( geometry->name() ) + ".ptx",
+                             geometry->pdfFunctionName() );
+        optix_geometry_instance[ "legionLightPDF" ]->set( light_pdf );
+
+
         //
         // Add Light
         //
@@ -335,8 +341,8 @@ void OptiXScene::sync()
         ISurface*               surface           = geometry->getSurface();
         optix::GeometryInstance geometry_instance = it->second; 
 
-        optix::Geometry optix_geometry = geometry_instance->getGeometry();
-        VariableContainer geom_vc( optix_geometry.get() );
+        //optix::Geometry optix_geometry = geometry_instance->getGeometry();
+        VariableContainer geom_vc( geometry_instance.get() );
         geometry->setVariables( geom_vc );
 
         optix::Material optix_material = geometry_instance->getMaterial( 0u );

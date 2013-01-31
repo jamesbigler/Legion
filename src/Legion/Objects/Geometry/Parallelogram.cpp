@@ -80,6 +80,12 @@ const char* Parallelogram::sampleFunctionName()const
 }
 
 
+const char* Parallelogram::pdfFunctionName()const
+{
+    return "parallelogramPDF";
+}
+
+
 unsigned Parallelogram::numPrimitives()const
 {
     return 1u;

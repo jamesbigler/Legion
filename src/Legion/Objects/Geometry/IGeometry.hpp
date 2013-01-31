@@ -47,6 +47,7 @@ public:
     virtual const char* intersectionFunctionName()const=0;
     virtual const char* boundingBoxFunctionName() const=0;
     virtual const char* sampleFunctionName()      const=0;
+    virtual const char* pdfFunctionName()         const=0;
 
     virtual unsigned    numPrimitives()const=0;
     virtual float       area()const=0;

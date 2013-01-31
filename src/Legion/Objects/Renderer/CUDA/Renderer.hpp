@@ -51,12 +51,14 @@ float3 radiance( uint64 sobol_index, float3 origin, float3 direction )
             break;
 
         attenuation                       *= prd.attenuation;
+        /*
         const float    p_continue          = fmaxf( attenuation );
         const unsigned RR_SOBOL_DIM_OFFSET = 64;
         if( legion::Sobol::gen( sobol_index, RR_SOBOL_DIM_OFFSET+i ) > p_continue  )
             break;
 
         attenuation   /= p_continue;
+        */
         ray.direction  = prd.direction;
         ray.origin     = prd.origin;
     }

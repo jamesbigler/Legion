@@ -80,6 +80,10 @@ const char* Sphere::sampleFunctionName()const
     return "sphereSample";
 }
 
+const char* Sphere::pdfFunctionName()const
+{
+    return "spherePDF";
+}
 
 unsigned Sphere::numPrimitives()const
 {

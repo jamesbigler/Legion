@@ -83,3 +83,21 @@ RT_PROGRAM void parallelogramBoundingBox( int, float result[6] )
   }
 }
 
+
+RT_CALLABLE_PROGRAM
+float parallelogramPDF( float3 w_in, float3 p )
+{
+
+    /*
+    // Intersect pgram here...
+    // ...
+
+    Vector3 to_light = localrec.p - rec.p;
+    double dist      = to_light.makeUnitVector();
+    double cosine    = -dot(localrec.uvw.w(),to_light);
+    if ( cosine <= 0.0 )
+        return 0.0;
+    return inverse_area*dist*dist / cosine;
+    */
+    return 1.0f;
+}

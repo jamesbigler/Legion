@@ -292,3 +292,32 @@ legion::LightSample sphereSample( float2 sample_seed, float3 shading_point, floa
     return sample;
 }
 
+
+RT_CALLABLE_PROGRAM
+float spherePDF( float3 w_in, float3 p )
+{
+    float3 temp = center - p;
+
+    float d = optix::length( temp );
+    float r = radius;
+    temp /= d;
+
+    if ( d <= r )
+    {
+        return 0.0f;
+    }
+
+    // internal angle of cone surrounding light seen from viewpoint
+    float sin_alpha_max = r / d;
+    float cos_alpha_max = sqrtf( 1.0f - sin_alpha_max*sin_alpha_max);
+
+    // check to see if direction misses light
+    if( optix::dot( w_in, temp ) < cos_alpha_max )
+        return 0.0f;
+
+    // solid angle
+    float q = 2.0f*legion::PI*( 1.0f - cos_alpha_max );
+
+    // pdf is one over solid angle
+    return 1/q;
+}

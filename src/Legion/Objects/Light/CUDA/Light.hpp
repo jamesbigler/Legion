@@ -45,6 +45,11 @@ struct LightSample
 
 rtDeclareVariable( unsigned, legionLightCount, , );
 
+
+//float legionLightPDF( float3 w_in, float3 p )
+rtCallableProgram( float, legionLightPDF, ( float3, float3 ) ); 
+
+
 // LightSample legionLightSample( float2 seed, float3 shading_point, float3 shading_normal )
 rtCallableProgram( legion::LightSample, legionLightSample_0, ( float2, float3, float3 ) ); 
 rtCallableProgram( legion::LightSample, legionLightSample_1, ( float2, float3, float3 ) ); 

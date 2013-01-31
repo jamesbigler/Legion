@@ -47,13 +47,14 @@ int main( int , char** )
         ctx.setCamera( &cam );
 
         legion::ConstantEnvironment env( &ctx );
-        env.setRadiance( legion::Color( 0.529f, 0.808f, 0.922f )*0.5f );
+        //env.setRadiance( legion::Color( 0.529f, 0.808f, 0.922f )*0.5f );
+        env.setRadiance( legion::Color( 0.529f, 0.808f, 0.922f )*0.0f );
         ctx.setEnvironment( &env );
 
         legion::ProgressiveRenderer renderer( &ctx );
         //renderer.setSamplesPerPixel( 1 );
         //renderer.setSamplesPerPass( 1 );
-        renderer.setSamplesPerPixel( 32*4 );
+        renderer.setSamplesPerPixel( 64*4 );
         renderer.setSamplesPerPass( 8 );
         ctx.setRenderer( &renderer );
 

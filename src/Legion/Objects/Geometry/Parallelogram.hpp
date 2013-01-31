@@ -48,6 +48,7 @@ public:
     const char* intersectionFunctionName()const;
     const char* boundingBoxFunctionName()const;
     const char* sampleFunctionName()const;
+    const char* pdfFunctionName()const;
 
     unsigned    numPrimitives()const;
     float       area()const;
