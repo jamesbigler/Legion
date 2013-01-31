@@ -19,13 +19,22 @@ int main( int , char** )
         // params.add( "Kd", legion::Color( 0.5f, 0.5f, 0.5f ) );
         // legion::createSurfaceShader( "Lambertian", "material", params );
         legion::Ward yellow_yogurt( &ctx );
-        yellow_yogurt.setReflectance( legion::Color( 0.9f, 0.83f, 0.46f ) );
+        yellow_yogurt.setDiffuseReflectance( legion::Color(0.9f, 0.83f, 0.46f) );
+        yellow_yogurt.setSpecularReflectance( legion::Color(1.0f, 1.0f, 1.0f) );
+        yellow_yogurt.setAlphaU( 0.05f );
+        yellow_yogurt.setAlphaV( 0.05f );
        
         legion::Ward blue_yogurt( &ctx );
-        blue_yogurt.setReflectance( legion::Color( 0.53f, 0.64f, 0.81f ) );
+        blue_yogurt.setDiffuseReflectance( legion::Color(0.53f, 0.64f, 0.81f) );
+        blue_yogurt.setSpecularReflectance( legion::Color(1.0f, 1.0f, 1.0f) );
+        blue_yogurt.setAlphaU( 0.05f );
+        blue_yogurt.setAlphaV( 0.05f );
         
         legion::Ward chrome( &ctx );
-        chrome.setReflectance( legion::Color( 0.0f, 0.0f, 0.0f ) );
+        chrome.setDiffuseReflectance( legion::Color(0.0f, 0.0f, 0.0f) );
+        chrome.setSpecularReflectance( legion::Color(1.0f, 1.0f, 1.0f) );
+        chrome.setAlphaU( 0.01f );
+        chrome.setAlphaV( 0.01f );
 
         legion::Lambertian matte_white( &ctx );
         matte_white.setReflectance( legion::Color( 1.0f, 1.0f, 1.0f ) );

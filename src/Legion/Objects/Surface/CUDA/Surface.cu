@@ -73,8 +73,9 @@ void legionClosestHit() // MIS
     //
     {
         const unsigned sobol_index = radiance_prd.sobol_index;
-        const float2 bsdf_seed = 
-            make_float2( 
+        const float3 bsdf_seed = 
+            make_float3( 
+                    legion::Sobol::gen( sobol_index, radiance_prd.sobol_dim++ ),
                     legion::Sobol::gen( sobol_index, radiance_prd.sobol_dim++ ),
                     legion::Sobol::gen( sobol_index, radiance_prd.sobol_dim++ )
                     );

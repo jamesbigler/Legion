@@ -29,7 +29,7 @@ rtDeclareVariable( float3, reflectance, , );
 
 RT_CALLABLE_PROGRAM
 legion::BSDFSample lambertianSampleBSDF( 
-        float2 seed,
+        float3 seed,
         float3 w_out,
         legion::LocalGeometry p )
 {
@@ -37,7 +37,7 @@ legion::BSDFSample lambertianSampleBSDF(
 
     // sample hemisphere with cosine density by uniformly sampling
     // unit disk and projecting up to hemisphere
-    float2 on_disk( legion::squareToDisk( seed ) );
+    float2 on_disk( legion::squareToDisk( make_float2( seed ) ) );
     const float x = on_disk.x;
     const float y = on_disk.y;
           float z = 1.0f - x*x -y*y;

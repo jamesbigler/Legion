@@ -18,7 +18,10 @@ public:
     Ward( Context* context );
     ~Ward();
     
-    void setReflectance( const Color& reflectance );
+    void setDiffuseReflectance( const Color& reflectance );
+    void setSpecularReflectance( const Color& reflectance );
+    void setAlphaU( float alpha_u );
+    void setAlphaV( float alpha_v );
     
     const char* name()const;
     const char* sampleBSDFFunctionName()const;
@@ -29,7 +32,11 @@ public:
     void setVariables( const VariableContainer& container ) const ;
 
 private:
-    Color m_reflectance;
+    Color m_diffuse_reflectance;
+    Color m_specular_reflectance;
+    float m_alpha_u;
+    float m_alpha_v;
+
 };
 
 }

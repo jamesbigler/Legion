@@ -39,7 +39,7 @@ struct BSDFSample
 
 rtCallableProgram( legion::BSDFSample,
                    legionSurfaceSampleBSDF,
-                   ( float2, float3 , legion::LocalGeometry ) );
+                   ( float3, float3 , legion::LocalGeometry ) );
 
 // ( bsdf,pdf ) legionSurfaceEvaluateBSDF(
 //                   float3 w_in,

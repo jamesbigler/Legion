@@ -49,6 +49,10 @@ public:
   LDEVICE float3 binormal()const;
   LDEVICE float3 normal()const;
 
+  LDEVICE float3 u()const;
+  LDEVICE float3 v()const;
+  LDEVICE float3 w()const;
+
 private:
   float3 m_tangent;
   float3 m_binormal;
@@ -90,6 +94,24 @@ LDEVICE inline float3 ONB::binormal()const
 
 
 LDEVICE inline float3 ONB::normal()const
+{
+    return m_normal;
+}
+
+
+LDEVICE inline float3 ONB::u()const
+{
+    return m_tangent;
+}
+
+
+LDEVICE inline float3 ONB::v()const
+{
+    return m_binormal;
+}
+
+
+LDEVICE inline float3 ONB::w()const
 {
     return m_normal;
 }
