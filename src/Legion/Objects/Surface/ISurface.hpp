@@ -23,6 +23,7 @@ public:
     virtual const char* name()const=0;
     virtual const char* sampleBSDFFunctionName()const=0;
     virtual const char* evaluateBSDFFunctionName()const=0;
+    // TODO: make this bsdfPDFFunctionName
     virtual const char* pdfFunctionName()const=0;
     virtual const char* emissionFunctionName()const=0;
 

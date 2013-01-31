@@ -98,7 +98,6 @@ void legionClosestHit() // MIS
     // direct lighting
     //
     {
-
         const unsigned sobol_index = radiance_prd.sobol_index;
         const float choose_light_seed =
             legion::Sobol::gen( sobol_index, radiance_prd.sobol_dim++ );
@@ -121,9 +120,10 @@ void legionClosestHit() // MIS
         const float  light_pdf = light_sample.pdf*choose_light_p;
         const float  cos_theta = optix::dot( w_in, N );
 
-        if( light_sample.pdf > 0.0f && cos_theta > 0.0f )
+        if( light_pdf > 0.0f && 
+            cos_theta > 0.0f && 
+            !legion::pointOccluded( P, w_in, light_sample.distance ) )
         {
-            // TODO: fold into evaluate
             const float3 w_out = -ray.direction;
             const float4 bsdf  = legionSurfaceEvaluateBSDF( 
                     w_out, local_geom, w_in );
@@ -132,20 +132,16 @@ void legionClosestHit() // MIS
 
             if( bsdf_pdf > 0.0f )
             {
+                const float  weight = legion::powerHeuristic( light_pdf, bsdf_pdf );
+                const float3 atten  = bsdf_val*( weight / ( light_pdf ) );
+                const float3 light_radiance = 
+                    legion::lightEvaluate( 
+                            light_index, 
+                            light_sample.w_in, 
+                            light_sample.distance,
+                            light_sample.normal );
 
-                if( !legion::pointOccluded( P, w_in, light_sample.distance ) )
-                {
-                    const float3 light_radiance = 
-                        legion::lightEvaluate( 
-                                light_index, 
-                                light_sample.w_in, 
-                                light_sample.distance,
-                                light_sample.normal );
-
-                    const float weight = 
-                        legion::powerHeuristic( light_pdf, bsdf_pdf );
-                    radiance += light_radiance*bsdf_pdf*( weight / ( light_pdf ) );
-                }
+                radiance += light_radiance*atten;
             }
         }
     }
