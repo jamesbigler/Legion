@@ -32,6 +32,7 @@
 #include <Legion/Objects/Geometry/Sphere.hpp>
 #include <Legion/Objects/Renderer/IRenderer.hpp>
 #include <Legion/Renderer/OptiXScene.hpp>
+#include <fstream>
 
 
 using namespace legion;
@@ -72,6 +73,7 @@ private:
     PluginManager   m_plugin_mgr;
     OptiXScene      m_optix_scene;
     PluginContext   m_plugin_context;
+    std::ofstream   m_log_file;
 
     IRenderer*              m_renderer;
     ICamera*                m_camera;
@@ -83,8 +85,10 @@ private:
 Context::Impl::Impl( Context* context ) 
     : m_plugin_mgr( context ),
       m_optix_scene(),
-      m_plugin_context( m_optix_scene.getOptiXContext() )
+      m_plugin_context( m_optix_scene.getOptiXContext() ),
+      m_log_file( "legion.log" )
 {
+    Log::setStream( m_log_file );
   /*
     m_plugin_mgr.registerPlugin<IGeometry>( "Sphere", &Sphere::create );
 

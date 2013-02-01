@@ -39,10 +39,13 @@ public:
 
     virtual ~IDisplay() {}
 
-    virtual void updateFrame  ( const Index2& /* resolution */,
-                                const float*  /* pixels     */ ) {}
-    virtual void completeFrame( const Index2& resolution,
-                                const float* pixels ) = 0;
+    virtual void beginScene    ( const std::string& scene_name )=0;
+    virtual void setUpdateCount( unsigned m_update_count       )=0;
+    virtual void beginFrame    (                               )=0;
+    virtual void updateFrame   ( const Index2&  resolution,
+                                 const float*   pixels         )=0;
+    virtual void completeFrame ( const Index2& resolution,
+                                 const float* pixels           )=0;
 };
 
 }

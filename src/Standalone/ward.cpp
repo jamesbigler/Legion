@@ -8,12 +8,15 @@ int main( int , char** )
     {
         legion::Context ctx;
 
+        legion::ImageFileDisplay display( &ctx, "ward.exr" );
+        display.beginScene( "ward" );
+        
         // TODO: ctx.log.setReportingLevel( legion::Log::INFO );
         //     : each api class can have log func which calls m_ctx.log() 
         legion::Log::setReportingLevel( legion::Log::INFO );
 
         // TODO: can be defined as ctx.log.info()
-        LLOG_INFO << "galileo ward scene ...";
+        LLOG_INFO << "ward scene ...";
         
         // Parameters params;
         // params.add( "Kd", legion::Color( 0.5f, 0.5f, 0.5f ) );
@@ -100,11 +103,9 @@ int main( int , char** )
         legion::ProgressiveRenderer renderer( &ctx );
         renderer.setResolution( legion::Index2( 800u, 600u ) );
         renderer.setSamplesPerPixel( 64*4 );
+        renderer.setDisplay( &display );
         ctx.setRenderer( &renderer );
 
-        legion::ImageFileDisplay display( &ctx, "galileo_ward.exr" );
-        renderer.setDisplay( &display );
-        
         ctx.render();
     }
     catch( legion::Exception& e )

@@ -8,6 +8,10 @@ int main( int , char** )
     {
         legion::Context ctx;
 
+        legion::ImageFileDisplay display( &ctx, "simple.exr" );
+        display.beginScene( "simple" );
+        
+
         // TODO: ctx.log.setReportingLevel( legion::Log::INFO );
         //     : each api class can have log func which calls m_ctx.log() 
         legion::Log::setReportingLevel( legion::Log::INFO );
@@ -58,12 +62,10 @@ int main( int , char** )
         ctx.setEnvironment( &env );
 
         legion::ProgressiveRenderer renderer( &ctx );
-        renderer.setSamplesPerPixel( 32*4*2 );
+        renderer.setSamplesPerPixel( 32*2 );
+        renderer.setDisplay( &display );
         ctx.setRenderer( &renderer );
 
-        legion::ImageFileDisplay display( &ctx, "simple.exr" );
-        renderer.setDisplay( &display );
-        
         ctx.render();
     }
     catch( legion::Exception& e )

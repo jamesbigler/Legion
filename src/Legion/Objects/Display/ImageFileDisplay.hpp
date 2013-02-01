@@ -24,6 +24,7 @@
 #define LEGION_OBJECTS_DISPLAY_IMAGE_FILE_DISPLAY_HPP_
 
 #include <Legion/Objects/Display/IDisplay.hpp>
+#include <Legion/Common/Util/Timer.hpp>
 #include <string>
 
 namespace legion
@@ -36,9 +37,22 @@ class ImageFileDisplay : public IDisplay
 public:
     ImageFileDisplay( Context* context, const char* filename );
 
-    void completeFrame( const Index2& resolution, const float* pixels );
+
+    void beginScene    ( const std::string& scene_name );
+    void setUpdateCount( unsigned m_update_count );
+    void beginFrame    ();
+    void updateFrame   ( const Index2& resolution, const float* pixels );
+    void completeFrame ( const Index2& resolution, const float* pixels );
 private:
-    std::string m_filename;
+    static const int  s_field_width = 28;
+
+    std::string       m_scene_name;
+    unsigned          m_update_count;
+    unsigned          m_cur_update;
+    std::string       m_filename;
+    Timer             m_preprocess_timer;
+    Timer             m_render_timer;
+    Timer             m_postprocess_timer;
 };
 
 }

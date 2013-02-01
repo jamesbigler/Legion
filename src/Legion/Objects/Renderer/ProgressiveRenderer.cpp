@@ -79,7 +79,10 @@ void ProgressiveRenderer::render( VariableContainer& container )
     // Progressive loop
     //
     srand48( 12345678 );
+
     LoopTimerInfo progressive_updates( "\tProgressive loop    :" );
+    m_display->setUpdateCount( getSamplesPerPixel() );
+    m_display->beginFrame();
     for( unsigned i = 0; i < getSamplesPerPixel(); ++i )
     {
         LoopTimer timer( progressive_updates );
