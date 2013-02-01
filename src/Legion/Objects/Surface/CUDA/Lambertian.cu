@@ -49,8 +49,9 @@ legion::BSDFSample lambertianSampleBSDF(
     sample.w_in = onb.inverseTransform( make_float3( x, y, z ) );
 
     // calculate pdf
-    sample.pdf        = z * legion::ONE_DIV_PI;
-    sample.f_over_pdf = reflectance;
+    sample.pdf         = z * legion::ONE_DIV_PI;
+    sample.f_over_pdf  = reflectance;
+    sample.is_specular = false;
 
     return sample;
 }

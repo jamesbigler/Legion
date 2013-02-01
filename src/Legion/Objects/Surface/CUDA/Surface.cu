@@ -61,8 +61,9 @@ void legionClosestHit() // MIS
             const float3 P          = ray.origin;
             const float  light_pdf  = legionLightPDF( w_in, P )*choose_light_p;
             const float  bsdf_pdf   = radiance_prd.pdf;
-            const float  mis_weight = legion::powerHeuristic( bsdf_pdf,
-                                                              light_pdf );
+            //const float  mis_weight = legion::powerHeuristic( bsdf_pdf,
+            //                                                  light_pdf );
+            const float  mis_weight = 0.5f;
             radiance *= mis_weight;
         }
     }
@@ -86,11 +87,24 @@ void legionClosestHit() // MIS
 
         const float3 P = ray.origin + t_hit * ray.direction;
 
+        if( !legion::finite( bsdf_sample.f_over_pdf ) )
+            printf( "%u,%u: f/pdf: %f %f %f pdf: %f w_in: %f %f %f is_spec %u \n",
+                    launch_index.x, launch_index.y,
+                    bsdf_sample.f_over_pdf.x,
+                    bsdf_sample.f_over_pdf.y,
+                    bsdf_sample.f_over_pdf.z,
+                    bsdf_sample.pdf,
+                    bsdf_sample.w_in.x,
+                    bsdf_sample.w_in.y,
+                    bsdf_sample.is_specular
+                    );
+        
+
         radiance_prd.origin              = P;
         radiance_prd.direction           = bsdf_sample.w_in;
         radiance_prd.attenuation         = bsdf_sample.f_over_pdf;
         radiance_prd.pdf                 = bsdf_sample.pdf; 
-        radiance_prd.done                = false; 
+        radiance_prd.done                = false;
         radiance_prd.count_emitted_light = false; 
 
     }
@@ -99,7 +113,6 @@ void legionClosestHit() // MIS
     //
     // direct lighting
     //
-    /*
     {
         const unsigned sobol_index = radiance_prd.sobol_index;
         const float choose_light_seed =
@@ -137,8 +150,7 @@ void legionClosestHit() // MIS
 
             if( bsdf_pdf > 0.0f )
             {
-                const float  weight = 1.0f;
-                    legion::powerHeuristic( light_pdf, bsdf_pdf );
+                const float  weight = 0.5f;// legion::powerHeuristic( light_pdf, bsdf_pdf );
                 const float3 atten  = bsdf_val*( weight / ( light_pdf ) );
 
 
@@ -153,7 +165,6 @@ void legionClosestHit() // MIS
             }
         }
     }
-    */
 
     //
     // Report result
