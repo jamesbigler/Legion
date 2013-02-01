@@ -98,10 +98,11 @@ void legionClosestHit() // MIS
     //
     {
         const unsigned sobol_index = radiance_prd.sobol_index;
-        const float choose_light_seed =
-            legion::Sobol::gen( sobol_index, radiance_prd.sobol_dim++ );
+        //const float choose_light_seed =
+        //    legion::Sobol::gen( sobol_index, radiance_prd.sobol_dim++ );
 
-        const unsigned light_index = choose_light_seed * legionLightCount;
+        const unsigned light_index = radiance_prd.light_index;////////////////////////choose_light_seed * legionLightCount;
+        //const unsigned light_index = choose_light_seed * legionLightCount;
 
         const float2 light_seed = 
             make_float2( 

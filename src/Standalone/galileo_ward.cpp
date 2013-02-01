@@ -99,10 +99,7 @@ int main( int , char** )
 
         legion::ProgressiveRenderer renderer( &ctx );
         renderer.setResolution( legion::Index2( 800u, 600u ) );
-        //renderer.setSamplesPerPixel( 1 );
-        //renderer.setSamplesPerPass( 1 );
         renderer.setSamplesPerPixel( 64*4 );
-        renderer.setSamplesPerPass( 8 );
         ctx.setRenderer( &renderer );
 
         legion::ImageFileDisplay display( &ctx, "galileo_ward.exr" );

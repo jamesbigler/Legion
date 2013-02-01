@@ -43,6 +43,13 @@ int main( int , char** )
         light.setSurface( &emitter);
         ctx.addGeometry( &light );
 
+        /*
+        legion::Sphere light2( &ctx );
+        light2.setCenter( legion::Vector3( -1.0f, 2.0f, -5.0f ) );
+        light2.setSurface( &emitter);
+        ctx.addGeometry( &light2 );
+        */
+
         legion::ThinLens cam( &ctx );
         ctx.setCamera( &cam );
 
@@ -51,10 +58,7 @@ int main( int , char** )
         ctx.setEnvironment( &env );
 
         legion::ProgressiveRenderer renderer( &ctx );
-        //renderer.setSamplesPerPixel( 1 );
-        //renderer.setSamplesPerPass( 1 );
         renderer.setSamplesPerPixel( 32*4*2 );
-        renderer.setSamplesPerPass( 8 );
         ctx.setRenderer( &renderer );
 
         legion::ImageFileDisplay display( &ctx, "simple.exr" );

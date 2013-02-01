@@ -26,7 +26,7 @@ namespace legion
 {
 
 __device__
-float3 radiance( uint64 sobol_index, float3 origin, float3 direction )
+float3 radiance( uint64 sobol_index, float3 origin, float3 direction, unsigned light_idx )
 {
     legion::RadiancePRD prd;
     prd.radiance            = make_float3( 0.0f );
@@ -36,6 +36,7 @@ float3 radiance( uint64 sobol_index, float3 origin, float3 direction )
     prd.sobol_dim           = 5u; 
     prd.count_emitted_light = 1;
     prd.done                = true;
+    prd.light_index          = light_idx;
 
     float3 radiance    = make_float3( 0.0f );
     float3 attenuation = make_float3( 1.0f );

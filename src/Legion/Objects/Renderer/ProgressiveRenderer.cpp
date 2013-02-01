@@ -30,8 +30,7 @@
 using namespace legion;
 
 ProgressiveRenderer::ProgressiveRenderer( Context* context ) 
-   : IRenderer( context ),
-     m_samples_per_pass( 8u )
+   : IRenderer( context )
 {
     m_output_buffer = createOptiXBuffer( RT_BUFFER_OUTPUT,
                                          RT_FORMAT_FLOAT4 );
@@ -43,18 +42,6 @@ ProgressiveRenderer::~ProgressiveRenderer()
 }
 
     
-void ProgressiveRenderer::setSamplesPerPass( unsigned samples_per_pass )
-{
-    m_samples_per_pass =  samples_per_pass;
-}
-
-
-unsigned ProgressiveRenderer::getSamplesPerPass()const
-{
-    return m_samples_per_pass;
-}
-
-
 const char* ProgressiveRenderer::name()const
 {
     return "ProgressiveRenderer";
@@ -82,7 +69,8 @@ void ProgressiveRenderer::render( VariableContainer& container )
     // Force pre-compilation and accel structure builds
     //
     {
-        container.setUnsigned( "sample_index", 0 );
+        container.setUnsigned( "sample_index", 0u   );
+        container.setFloat   ( "light_seed"  , 0.0f );
         AutoPrintTimer apt( PrintTimeElapsed( "\tCompile/accel build " ) );
         launchOptiX( Index2( 0u, 0u ) );
     }
@@ -90,11 +78,14 @@ void ProgressiveRenderer::render( VariableContainer& container )
     //
     // Progressive loop
     //
+    srand48( 12345678 );
     LoopTimerInfo progressive_updates( "\tProgressive loop    :" );
-    for( unsigned i = 0; i < getSamplesPerPixel(); i += m_samples_per_pass )
+    for( unsigned i = 0; i < getSamplesPerPixel(); ++i )
     {
         LoopTimer timer( progressive_updates );
-        container.setUnsigned( "sample_index", i );
+
+        container.setUnsigned( "sample_index", i         );
+        container.setFloat   ( "light_seed"  , drand48() );
         launchOptiX( getResolution() );
         m_display->updateFrame( 
             getResolution(), 
@@ -126,7 +117,8 @@ void ProgressiveRenderer::render( VariableContainer& container )
 
 void ProgressiveRenderer::setVariables( const VariableContainer& container ) const
 {
-    container.setBuffer  ( "output_buffer", m_output_buffer );
-    container.setUnsigned( "samples_per_pass", m_samples_per_pass );
+    container.setBuffer  ( "output_buffer",     m_output_buffer      );
+    container.setBuffer  ( "output_buffer",     m_output_buffer      );
+    container.setUnsigned( "samples_per_pixel", getSamplesPerPixel() );
 }
 
