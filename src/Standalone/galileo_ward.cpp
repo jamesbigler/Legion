@@ -19,7 +19,7 @@ int main( int , char** )
         // params.add( "Kd", legion::Color( 0.5f, 0.5f, 0.5f ) );
         // legion::createSurfaceShader( "Lambertian", "material", params );
         legion::Ward yellow_yogurt( &ctx );
-        yellow_yogurt.setDiffuseReflectance( legion::Color(0.9f, 0.83f, 0.46f) );
+        yellow_yogurt.setDiffuseReflectance( legion::Color(0.9f, 0.83f, 0.46f));
         yellow_yogurt.setSpecularReflectance( legion::Color(1.0f, 1.0f, 1.0f) );
         yellow_yogurt.setAlphaU( 0.05f );
         yellow_yogurt.setAlphaV( 0.05f );
@@ -99,7 +99,7 @@ int main( int , char** )
         renderer.setResolution( legion::Index2( 800u, 600u ) );
         //renderer.setSamplesPerPixel( 1 );
         //renderer.setSamplesPerPass( 1 );
-        renderer.setSamplesPerPixel( 32*4 );
+        renderer.setSamplesPerPixel( 16 );
         renderer.setSamplesPerPass( 8 );
         ctx.setRenderer( &renderer );
 

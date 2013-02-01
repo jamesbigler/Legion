@@ -92,12 +92,14 @@ void legionClosestHit() // MIS
         radiance_prd.pdf                 = bsdf_sample.pdf; 
         radiance_prd.done                = false; 
         radiance_prd.count_emitted_light = false; 
+
     }
 
     
     //
     // direct lighting
     //
+    /*
     {
         const unsigned sobol_index = radiance_prd.sobol_index;
         const float choose_light_seed =
@@ -116,8 +118,6 @@ void legionClosestHit() // MIS
         const legion::LightSample light_sample = 
             legion::lightSample( light_index, light_seed, P, N ); 
 
-
-
         const float3 w_in      = light_sample.w_in;
         const float  light_pdf = light_sample.pdf*choose_light_p;
         const float  cos_theta = optix::dot( w_in, N );
@@ -132,9 +132,13 @@ void legionClosestHit() // MIS
             const float  bsdf_pdf = bsdf.w;
             const float3 bsdf_val = make_float3( bsdf );
 
+            radiance_prd.radiance = bsdf_val;
+            return;
+
             if( bsdf_pdf > 0.0f )
             {
-                const float  weight = legion::powerHeuristic( light_pdf, bsdf_pdf );
+                const float  weight = 1.0f;
+                    legion::powerHeuristic( light_pdf, bsdf_pdf );
                 const float3 atten  = bsdf_val*( weight / ( light_pdf ) );
 
 
@@ -149,6 +153,7 @@ void legionClosestHit() // MIS
             }
         }
     }
+    */
 
     //
     // Report result
