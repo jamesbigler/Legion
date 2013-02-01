@@ -43,6 +43,8 @@ float3 radiance( uint64 sobol_index, float3 origin, float3 direction )
     
     for( unsigned i = 0u; i < 2; ++i ) 
     {
+        prd.done     = true;
+        prd.radiance = make_float3( 0.0f );
         rtTrace( legion_top_group, ray, prd );
         
         radiance += prd.radiance * attenuation;

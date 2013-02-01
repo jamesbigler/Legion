@@ -31,6 +31,9 @@ namespace legion
     LDEVICE inline bool finite( float3 x )
     { return isfinite( x.x ) && isfinite( x.y ) && isfinite( x.z ); }
 
+    LDEVICE inline bool finite( float4 x )
+    { return isfinite( x.x ) && isfinite( x.y ) && isfinite( x.z ) && 
+             isfinite( x.w ); }
 
     LDEVICE inline float lerp( float a, float b, float t )
     {

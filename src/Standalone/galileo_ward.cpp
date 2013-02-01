@@ -91,9 +91,11 @@ int main( int , char** )
               legion::Vector3( 0.0f,  1.0f, 0.0f ) ) );
         ctx.setCamera( &cam );
 
+        /*
         legion::ConstantEnvironment env( &ctx );
         env.setRadiance( legion::Color( 0.0f, 0.0f, 0.0f ) );
         ctx.setEnvironment( &env );
+        */
 
         legion::ProgressiveRenderer renderer( &ctx );
         renderer.setResolution( legion::Index2( 800u, 600u ) );
