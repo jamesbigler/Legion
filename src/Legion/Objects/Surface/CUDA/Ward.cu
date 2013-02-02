@@ -55,6 +55,21 @@ float diffusePDF( float3 w_out, float3 normal, float3 w_in )
 
 
 static __device__ __inline__
+float3 diffuseEval( float3 w_out, float3 normal, float3 w_in )
+{
+    return legion::ONE_DIV_PI*optix::dot( normal, w_in) * diff_reflectance;
+}
+
+
+static __device__ __inline__
+float4 diffuseEvalPDF( float3 w_out, float3 normal, float3 w_in )
+{
+    const float g = legion::ONE_DIV_PI*optix::dot( normal, w_in);
+    return make_float4( diff_reflectance*g, g );
+}
+
+
+static __device__ __inline__
 float specularPDF( float3 w_out, float3 normal, float3 w_in )
 {
     float cos_in  = optix::dot( w_in,  normal );
@@ -68,19 +83,13 @@ float specularPDF( float3 w_out, float3 normal, float3 w_in )
     const float  inv_alpha_u = 1.0f / alpha_u;
     const float  inv_alpha_v = 1.0f / alpha_v;
 
-    const float  ward_exp_term = wardExpTerm( inv_alpha_u, inv_alpha_v, H, onb );
-    const float  spec_pdf      = 0.25f * legion::ONE_DIV_PI * inv_alpha_u * inv_alpha_v /
-                                 ( optix::dot(H, w_out) * n_dot_h*n_dot_h*n_dot_h ) *
-                                 ward_exp_term;
+    const float  ward_exp_term = wardExpTerm( inv_alpha_u, inv_alpha_v, H, onb);
+    const float  spec_pdf = 
+        0.25f * legion::ONE_DIV_PI * inv_alpha_u * inv_alpha_v /
+        ( optix::dot(H, w_out) * n_dot_h*n_dot_h*n_dot_h ) *
+        ward_exp_term;
 
     return spec_pdf;
-}
-
-
-static __device__ __inline__
-float3 diffuseEval( float3 w_out, float3 normal, float3 w_in )
-{
-    return optix::dot( w_in, normal )*legion::ONE_DIV_PI * diff_reflectance;
 }
 
 
@@ -96,9 +105,10 @@ float3 specularEval( float3 w_out, float3 normal, float3 w_in )
     const float3 H           = optix::normalize( w_out + w_in );
     const float  inv_alpha_u = 1.0f / alpha_u;
     const float  inv_alpha_v = 1.0f / alpha_v;
-    const float  spec_coeff = cos_in * legion::ONE_DIV_PI *
-                              0.25f * inv_alpha_u * inv_alpha_v / sqrtf( cos_in*cos_out ) *
-                              wardExpTerm( inv_alpha_u, inv_alpha_v, H, onb );
+    const float  spec_coeff = 
+        cos_in * legion::ONE_DIV_PI *
+        0.25f * inv_alpha_u * inv_alpha_v / sqrtf( cos_in*cos_out ) *
+        wardExpTerm( inv_alpha_u, inv_alpha_v, H, onb );
 
     return spec_coeff * spec_reflectance;
 }
@@ -116,18 +126,38 @@ float4 specularEvalPDF( float3 w_out, float3 normal, float3 w_in )
     const float  inv_alpha_u = 1.0f / alpha_u;
     const float  inv_alpha_v = 1.0f / alpha_v;
 
-    const float  ward_exp_term = wardExpTerm( inv_alpha_u, inv_alpha_v, H, onb );
-    const float  spec_coeff    = 0.25f * cos_in * legion::ONE_DIV_PI *
-                                 inv_alpha_u * inv_alpha_v / sqrtf( cos_in*cos_out ) *
-                                 ward_exp_term;
+    const float  ward_exp_term = wardExpTerm( inv_alpha_u, inv_alpha_v, H, onb);
+    const float  spec_coeff    
+        = 0.25f * cos_in * legion::ONE_DIV_PI *
+          inv_alpha_u * inv_alpha_v / sqrtf( cos_in*cos_out ) *
+          ward_exp_term;
 
-    const float  n_dot_h       = optix::dot( normal, H );
-    const float  spec_pdf      = 0.25f * legion::ONE_DIV_PI * inv_alpha_u * inv_alpha_v /
-                                 ( optix::dot(H, w_out) * n_dot_h*n_dot_h*n_dot_h ) *
-                                 ward_exp_term;
+    const float  n_dot_h  = optix::dot( normal, H );
+    const float  spec_pdf = 0.25f * legion::ONE_DIV_PI * 
+                            inv_alpha_u * inv_alpha_v /
+                            ( optix::dot(H, w_out) * n_dot_h*n_dot_h*n_dot_h ) *
+                            ward_exp_term;
 
     return make_float4( spec_coeff * spec_reflectance, spec_pdf );
 }
+
+
+static __device__ __inline__
+float4 wardEvalPDF( float3 w_out, float3 N, float3 w_in, float diff_weight )
+{
+    const float4 spec     = specularEvalPDF( w_out, N, w_in );
+    const float  spec_pdf = spec.w; 
+    const float3 spec_val = make_float3( spec ); 
+
+    const float4 diff     = diffuseEvalPDF( w_out, N, w_in );
+    const float  diff_pdf = diff.w; 
+    const float3 diff_val = make_float3( diff ); 
+
+    const float  pdf      = optix::lerp( spec_pdf, diff_pdf, diff_weight );
+
+    return make_float4( spec_val + diff_val, pdf );
+}
+
 
 
 RT_CALLABLE_PROGRAM
@@ -155,15 +185,10 @@ legion::BSDFSample wardSampleBSDF(
 
         // calculate pdf
         const float3 N = p.shading_normal;
-
-        const float  diffuse_pdf  = z * legion::ONE_DIV_PI;
-        const float  specular_pdf = specularPDF( w_out, N, sample.w_in );
-        sample.pdf = optix::lerp( specular_pdf, diffuse_pdf, diffuse_weight );
-
-        const float3 diff_val = diffuseEval( w_out, N, sample.w_in );
-        const float3 spec_val = specularEval( w_out, N, sample.w_in );
+        const float4 ward = wardEvalPDF( w_out, N, sample.w_in, diffuse_weight);
+        sample.pdf        = ward.w;
         sample.f_over_pdf = sample.pdf > 0.00001f            ? 
-                            (diff_val+spec_val) / sample.pdf :
+                            make_float3( ward )/ sample.pdf  :
                             make_float3( 0.0f );
         sample.is_specular = 0u; 
     }
@@ -182,17 +207,20 @@ legion::BSDFSample wardSampleBSDF(
         else if (xi1 < 0.5f)
         {
             xi1 = 4.0f * (xi1 - 0.25f);
-            phi_h = legion::PI - atanf(alpha_v * tanf(0.5f * legion::PI * xi1) / alpha_u);
+            phi_h = legion::PI - atanf(alpha_v * tanf(0.5f * legion::PI * xi1) /
+                    alpha_u);
         }
         else if (xi1 < 0.75f)
         {
             xi1 = 4.0f * (xi1 - 0.5f);
-            phi_h = legion::PI + atanf(alpha_v * tanf(0.5 * legion::PI * xi1) / alpha_u);
+            phi_h = legion::PI + atanf(alpha_v * tanf(0.5f * legion::PI * xi1) /
+                    alpha_u);
         }
         else
         {
             xi1 = 4.0f * (xi1 - 0.75f);
-            phi_h = legion::PI*2.0f - atanf(alpha_v * tanf( 0.5f * legion::PI * xi1) / alpha_u);
+            phi_h = legion::PI*2.0f - 
+                    atanf(alpha_v * tanf( 0.5f * legion::PI * xi1) / alpha_u);
         }
 
         float cos_phi_h = cosf( phi_h );
@@ -200,7 +228,10 @@ legion::BSDFSample wardSampleBSDF(
         float x_coeff   = cos_phi_h / alpha_u;
         float y_coeff   = sin_phi_h / alpha_v;
 
-        float theta_h   = atanf( sqrtf( -logf( xi2 ) / ( x_coeff*x_coeff + y_coeff*y_coeff ) ) );
+        float theta_h = 
+            atanf( sqrtf( -logf( xi2 ) / 
+                        ( x_coeff*x_coeff + y_coeff*y_coeff ) ) );
+
         float sin_theta_h = sinf( theta_h );
         float cos_theta_h = 1.0f - sin_theta_h*sin_theta_h;
         if (cos_theta_h > 0.0f)
@@ -214,22 +245,16 @@ legion::BSDFSample wardSampleBSDF(
 
 
         legion::ONB onb( p.shading_normal );
-        float3 H = onb.inverseTransform( make_float3( x, y, z ) );
+        const float3 H    = onb.inverseTransform( make_float3( x, y, z ) );
+        sample.w_in       = optix::reflect( -w_out, H );
         
-        sample.w_in = optix::reflect( -w_out, H );
-        
-        const float3 N = p.shading_normal;
-        const float  diffuse_pdf  = diffusePDF( w_out, N, sample.w_in );
-        const float  specular_pdf = specularPDF( w_out, N, sample.w_in );
-        sample.pdf = optix::lerp( specular_pdf, diffuse_pdf, diffuse_weight );
-
-        const float3 diff_val = diffuseEval( w_out, N, sample.w_in );
-        const float3 spec_val = specularEval( w_out, N, sample.w_in );
+        const float3 N    = p.shading_normal;
+        const float4 ward = wardEvalPDF( w_out, N, sample.w_in, diffuse_weight);
+        sample.pdf        = ward.w;
         sample.f_over_pdf = sample.pdf > 0.00001f            ? 
-                            (diff_val+spec_val) / sample.pdf :
+                            make_float3( ward )/ sample.pdf  :
                             make_float3( 0.0f );
         sample.is_specular  = 1u; 
-
     }
         
     return sample;
@@ -247,27 +272,8 @@ float4 wardEvaluateBSDF(
     if( cos_in <= 0.0f || cos_out <= 0.0f )
         return make_float4( 0.0f );
 
-    const float3 N            = p.shading_normal;
-    const float  diffuse_pdf  = diffusePDF( w_out, N, w_in );
-    const float  specular_pdf = specularPDF( w_out, N, w_in );
-    const float  pdf          = optix::lerp( specular_pdf, diffuse_pdf, diffuse_weight );
-
-    const float3 diff_val     = diffuseEval( w_out, N, w_in );
-    const float3 spec_val     = specularEval( w_out, N, w_in );
-    return make_float4( spec_val + diff_val, pdf );
-    
-    /*
-    legion::ONB  onb( p.shading_normal );
-    const float3 H          = optix::normalize( w_out + w_in );
-    const float  spec_pdf   = specularPDF( w_out, p.shading_normal, w_in ); 
-    const float  spec_coeff = 0.25f / 
-                              ( alpha_u * alpha_v * sqrtf( cos_in*cos_out ) ) *
-                              wardExpTerm( 1.0f/alpha_u, 1.0f/alpha_v, H, onb );
-    const float3 spec_val   = spec_coeff * spec_reflectance;
-
-    const float pdf =  optix::lerp( spec_pdf, diff_pdf, diffuse_weight );
-    return make_float4( pdf*( spec_val + diff_val ), pdf );
-    */
+    const float3 N = p.shading_normal;
+    return wardEvalPDF( w_out, N, w_in, diffuse_weight);
 }
 
 
