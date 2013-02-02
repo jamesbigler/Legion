@@ -57,9 +57,9 @@ float diffusePDF( float3 w_out, float3 normal, float3 w_in )
 static __device__ __inline__
 float specularPDF( float3 w_out, float3 normal, float3 w_in )
 {
-    float n_dot_l = optix::dot( w_in, normal );
-    float n_dot_v = optix::dot( w_out, normal );
-    if( n_dot_l <= 0.0f || n_dot_v <= 0.0f )
+    float cos_in  = optix::dot( w_in,  normal );
+    float cos_out = optix::dot( w_out, normal );
+    if( cos_in <= 0.0f || cos_out <= 0.0f )
         return 0.0f;
 
     legion::ONB onb( normal );
@@ -67,12 +67,13 @@ float specularPDF( float3 w_out, float3 normal, float3 w_in )
     const float  n_dot_h = optix::dot( normal, H );
     const float  inv_alpha_u = 1.0f / alpha_u;
     const float  inv_alpha_v = 1.0f / alpha_v;
-    float pdf = 
-        0.25f * legion::ONE_DIV_PI * inv_alpha_u * inv_alpha_v /
-        ( optix::dot(H, w_out) * n_dot_h*n_dot_h*n_dot_h ) *
-        wardExpTerm( inv_alpha_u, inv_alpha_v, H, onb );
 
-    return pdf;
+    const float  ward_exp_term = wardExpTerm( inv_alpha_u, inv_alpha_v, H, onb );
+    const float  spec_pdf      = 0.25f * legion::ONE_DIV_PI * inv_alpha_u * inv_alpha_v /
+                                 ( optix::dot(H, w_out) * n_dot_h*n_dot_h*n_dot_h ) *
+                                 ward_exp_term;
+
+    return spec_pdf;
 }
 
 
@@ -100,6 +101,32 @@ float3 specularEval( float3 w_out, float3 normal, float3 w_in )
                               wardExpTerm( inv_alpha_u, inv_alpha_v, H, onb );
 
     return spec_coeff * spec_reflectance;
+}
+
+static __device__ __inline__
+float4 specularEvalPDF( float3 w_out, float3 normal, float3 w_in )
+{
+    legion::ONB  onb( normal );
+    const float  cos_in  = optix::dot( w_in,  normal );
+    const float  cos_out = optix::dot( w_out, normal );
+    if( cos_in <= 0.0f || cos_out <= 0.0f )
+        return make_float4( 0.0f );
+
+    const float3 H           = optix::normalize( w_out + w_in );
+    const float  inv_alpha_u = 1.0f / alpha_u;
+    const float  inv_alpha_v = 1.0f / alpha_v;
+
+    const float  ward_exp_term = wardExpTerm( inv_alpha_u, inv_alpha_v, H, onb );
+    const float  spec_coeff    = 0.25f * cos_in * legion::ONE_DIV_PI *
+                                 inv_alpha_u * inv_alpha_v / sqrtf( cos_in*cos_out ) *
+                                 ward_exp_term;
+
+    const float  n_dot_h       = optix::dot( normal, H );
+    const float  spec_pdf      = 0.25f * legion::ONE_DIV_PI * inv_alpha_u * inv_alpha_v /
+                                 ( optix::dot(H, w_out) * n_dot_h*n_dot_h*n_dot_h ) *
+                                 ward_exp_term;
+
+    return make_float4( spec_coeff * spec_reflectance, spec_pdf );
 }
 
 
