@@ -348,7 +348,7 @@ void OptiXScene::sync()
         optix::Material optix_material = geometry_instance->getMaterial( 0u );
         VariableContainer mat_vc( optix_material.get() );
         surface->setVariables( mat_vc );
-        mat_vc.setFloat( "legionSurfaceArea", geometry->area() );
+        //mat_vc.setFloat( "legionSurfaceArea", geometry->area() );
     }
 
     /*

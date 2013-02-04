@@ -14,6 +14,7 @@ CUDA_COMPILE_PTX( ptx_files
     Objects/Environment/CUDA/Environment.cu
     Objects/Geometry/CUDA/Parallelogram.cu
     Objects/Geometry/CUDA/Sphere.cu
+    Objects/Geometry/CUDA/TriMesh.cu
     Objects/Light/CUDA/Light.cu
     Objects/Renderer/CUDA/ProgressiveRenderer.cu
     Objects/Surface/CUDA/DiffuseEmitter.cu

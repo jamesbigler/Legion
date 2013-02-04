@@ -36,7 +36,72 @@ class VariableContainer;
 class TriMesh : public IGeometry
 {
 public:
+    TriMesh( Context* context );
+
+    struct Vertex
+    {
+        Vector3 p;
+        Vector3 n;
+        Vector2 uv;
+    };
+    
+    struct VertexN
+    {
+        Vector3 p;
+        Vector3 n;
+    };
+
+    struct VertexUV
+    {
+        Vector3 p;
+        Vector2 uv;
+    };
+
+
+    const char* name()const;
+    const char* intersectionFunctionName()const;
+    const char* boundingBoxFunctionName()const;
+    const char* sampleFunctionName()const;
+    const char* pdfFunctionName()const;
+
+    unsigned    numPrimitives()const;
+    float       area()const;
+
+    void        setTransform( const Matrix& transform );
+    Matrix      getTransform() const;
+
+    void        setSurface( ISurface* surface );
+    ISurface*   getSurface()const;
+
+    void        setTriangles( const std::vector<Vector3>& vertices,
+                              const std::vector<Index3>& triangles );
+
+    void        setTriangles( const std::vector<VertexUV>& vertices,
+                              const std::vector<Index3>& triangles );
+
+    void        setTriangles( const std::vector<VertexN>& vertices,
+                              const std::vector<Index3>& triangles );
+
+    void        setTriangles( const std::vector<Vertex>& vertices,
+                              const std::vector<Index3>& triangles );
+
     void setVariables( const VariableContainer& container ) const;
+private:
+    enum VertexType
+    {
+        P=0,
+        PN,
+        PUV,
+        PNUV
+    };
+    
+    optix::Buffer    m_triangles;    // uint3
+    optix::Buffer    m_vertices;     // float3, Vertex, VertexN, or VertexUV
+    VertexType       m_vertex_type;
+    float            m_area;
+    
+    Matrix           m_transform;
+    ISurface*        m_surface;
 };
 
 

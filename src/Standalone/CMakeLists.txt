@@ -5,6 +5,9 @@ target_link_libraries( simple legion )
 add_executable( ward ward.cpp)
 target_link_libraries( ward legion )
 
+add_executable( teapot teapot.cpp)
+target_link_libraries( teapot legion )
+
 #add_executable( sphere sphere.cpp )
 #target_link_libraries( sphere legion)
 
