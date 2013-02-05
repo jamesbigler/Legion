@@ -54,7 +54,7 @@ const char* DiffuseEmitter::emissionFunctionName()const
 }
 
 
-void DiffuseEmitter::setVariables( const VariableContainer& container ) const
+void DiffuseEmitter::setVariables( VariableContainer& container ) const
 {
     container.setFloat( "radiance", m_radiance );
 }

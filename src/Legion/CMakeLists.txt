@@ -21,6 +21,7 @@ CUDA_COMPILE_PTX( ptx_files
     Objects/Surface/CUDA/Lambertian.cu
     Objects/Surface/CUDA/Surface.cu
     Objects/Surface/CUDA/Ward.cu
+    Objects/Texture/CUDA/Texture.cu
     )
 
 configure_file( "${CMAKE_CURRENT_SOURCE_DIR}/Core/config.hpp.in"
@@ -103,6 +104,14 @@ add_library( legion SHARED
     Objects/Surface/Lambertian.hpp
     Objects/Surface/Ward.cpp
     Objects/Surface/Ward.hpp
+    Objects/Texture/ConstantTexture.cpp
+    Objects/Texture/ConstantTexture.hpp
+    Objects/Texture/ITexture.cpp
+    Objects/Texture/ITexture.hpp
+    Objects/Texture/ImageTexture.cpp
+    Objects/Texture/ImageTexture.hpp
+    Objects/Texture/PerlinTexture.cpp
+    Objects/Texture/PerlinTexture.hpp
     Renderer/OptiXProgramManager.cpp
     Renderer/OptiXProgramManager.hpp
     Renderer/OptiXScene.cpp

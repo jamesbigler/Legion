@@ -75,7 +75,7 @@ const char* Ward::emissionFunctionName()const
 }
 
 
-void Ward::setVariables( const VariableContainer& container ) const
+void Ward::setVariables( VariableContainer& container ) const
 {
     container.setFloat( "diff_reflectance", m_diffuse_reflectance  );
     container.setFloat( "spec_reflectance", m_specular_reflectance );

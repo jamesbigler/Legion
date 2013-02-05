@@ -15,7 +15,7 @@ Log::Log()
 
 Log::~Log()
 {
-    *s_out << "\n";
+    *s_out << std::endl;
 }
 
 

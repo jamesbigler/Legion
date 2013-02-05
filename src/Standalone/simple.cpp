@@ -22,8 +22,11 @@ int main( int , char** )
         // Parameters params;
         // params.add( "Kd", legion::Color( 0.5f, 0.5f, 0.5f ) );
         // legion::createSurfaceShader( "Lambertian", "material", params );
+        legion::ConstantTexture white( &ctx );
+        white.set( legion::Color(  1.0f, 1.0f, 1.0f ) );
+
         legion::Lambertian lambertian( &ctx );
-        lambertian.setReflectance( legion::Color(  1.0f, 1.0f, 1.0f ) );
+        lambertian.setReflectance( &white );
        
         legion::Sphere sphere( &ctx );
         sphere.setCenter( legion::Vector3( 1.0f, 0.0f, -5.0f ) );

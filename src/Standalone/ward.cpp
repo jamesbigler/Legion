@@ -39,8 +39,11 @@ int main( int , char** )
         chrome.setAlphaU( 0.01f );
         chrome.setAlphaV( 0.01f );
 
+        legion::ConstantTexture white( &ctx );
+        white.set( legion::Color(  1.0f, 1.0f, 1.0f ) );
+
         legion::Lambertian matte_white( &ctx );
-        matte_white.setReflectance( legion::Color( 1.0f, 1.0f, 1.0f ) );
+        matte_white.setReflectance( &white ); 
 
         legion::Sphere chrome_sphere( &ctx );
         chrome_sphere.setCenter( legion::Vector3( -0.25f, 0.0f, 0.0f ) );

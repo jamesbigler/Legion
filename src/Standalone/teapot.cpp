@@ -47,8 +47,11 @@ int main( int , char** )
 
         LLOG_INFO << "teapot scene ...";
         
+        legion::ConstantTexture white( &ctx );
+        white.set( legion::Color(  1.0f, 1.0f, 1.0f ) );
+
         legion::Lambertian lambertian( &ctx );
-        lambertian.setReflectance( legion::Color(  0.7f, 0.7f, 0.7f ) );
+        lambertian.setReflectance( &white );
        
         std::vector<legion::Index3> triangles;
         std::vector<legion::Vector3> vertices;

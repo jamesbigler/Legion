@@ -74,6 +74,33 @@ optix::Buffer IObject::createOptiXBuffer( unsigned type,
 }
 
 
+optix::TextureSampler IObject::createOptiXTextureSampler(
+        optix::Buffer      buffer,
+        RTwrapmode         wrap,
+        RTfiltermode       filter,
+        RTtextureindexmode index,
+        RTtexturereadmode  read,
+        float              aniso
+        )
+{
+    optix::Context        context = m_plugin_context.getOptiXContext();
+    optix::TextureSampler sampler = context->createTextureSampler();
+
+    sampler->setWrapMode     ( 0, wrap );
+    sampler->setWrapMode     ( 1, wrap );
+    sampler->setWrapMode     ( 2, wrap );
+    sampler->setIndexingMode ( index   );
+    sampler->setReadMode     ( read    );
+    sampler->setMaxAnisotropy( aniso   );
+    sampler->setMipLevelCount( 1u      );
+    sampler->setArraySize    ( 1u      );
+
+    sampler->setBuffer( 0u, 0u, buffer );
+    sampler->setFilteringModes( filter, filter, RT_FILTER_NONE );
+    return sampler;
+}
+
+
 void IObject::launchOptiX( const Index2& dimensions )
 {
     m_plugin_context.getOptiXContext()->launch( 

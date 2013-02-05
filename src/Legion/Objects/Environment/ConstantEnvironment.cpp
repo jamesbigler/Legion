@@ -67,7 +67,7 @@ void ConstantEnvironment::setRadiance( const Color& radiance )
 }
 
 
-void ConstantEnvironment::setVariables( const VariableContainer& container ) const
+void ConstantEnvironment::setVariables( VariableContainer& container ) const
 {
     container.setFloat( "radiance", m_radiance );
 }

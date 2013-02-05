@@ -196,7 +196,14 @@ RT_PROGRAM void sphereIntersect( int )
             lg.position         = ray.origin + t*ray.direction;
             lg.geometric_normal = normal;
             lg.shading_normal   = normal;
-            lg.texcoord         = make_float2( 0.0f );
+
+            float theta = acosf( 0.9999f * normal.y );
+            float phi   = atan2( normal.x, normal.z );
+            if (phi < 0.0f ) phi += legion::TWO_PI;
+
+            lg.texcoord = make_float2( 
+                    phi*legion::ONE_DIV_TWO_PI, 
+                    ( legion::PI - theta ) * legion::ONE_DIV_PI );
 
             local_geom = lg;
 
@@ -211,12 +218,20 @@ RT_PROGRAM void sphereIntersect( int )
 
                 const float3 normal = (O + t*D)/radius;
 
+
                 // Fill in a localgeometry
                 legion::LocalGeometry lg;
                 lg.position         = ray.origin + t*ray.direction;
                 lg.geometric_normal = normal;
                 lg.shading_normal   = normal;
-                lg.texcoord         = make_float2( 0.0f );
+
+                float theta = acosf( 0.9999f * normal.y );
+                float phi   = atan2( normal.x, normal.z );
+                if (phi < 0.0f ) phi += legion::TWO_PI;
+
+                lg.texcoord = make_float2( 
+                        phi*legion::ONE_DIV_TWO_PI, 
+                        ( legion::PI - theta ) * legion::ONE_DIV_PI );
 
                 local_geom = lg;
 

@@ -42,16 +42,25 @@ public:
 
     PluginContext& getPluginContext();
 
-    void           launchOptiX( const Index2& dimensions );
+    void launchOptiX( const Index2& dimensions );
 
-    optix::Buffer  createOptiXBuffer( unsigned type,
-                                      RTformat format,
-                                      unsigned width  = 0u,
-                                      unsigned height = 0u,
-                                      unsigned depth  = 0u );
+    optix::Buffer createOptiXBuffer(
+            unsigned type,
+            RTformat format,
+            unsigned width  = 0u,
+            unsigned height = 0u,
+            unsigned depth  = 0u );
+    
+    optix::TextureSampler createOptiXTextureSampler(
+            optix::Buffer      buffer,
+            RTwrapmode         wrap   = RT_WRAP_REPEAT,
+            RTfiltermode       filter = RT_FILTER_LINEAR,
+            RTtextureindexmode index  = RT_TEXTURE_INDEX_NORMALIZED_COORDINATES,
+            RTtexturereadmode  read   = RT_TEXTURE_READ_NORMALIZED_FLOAT, 
+            float              aniso  = 1.0f
+            );
 
-
-    virtual void setVariables( const VariableContainer& ) const {}
+    virtual void setVariables( VariableContainer& ) const {}
 
 private:
     PluginContext& m_plugin_context;

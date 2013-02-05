@@ -8,7 +8,8 @@ using namespace legion;
 
 
 Lambertian::Lambertian( Context* context )
-    : ISurface( context )
+    : ISurface( context ),
+      m_reflectance( 0 )
 {
 }
 
@@ -18,7 +19,7 @@ Lambertian::~Lambertian()
 }
 
 
-void Lambertian::setReflectance( const Color& reflectance )
+void Lambertian::setReflectance( const ITexture* reflectance )
 {
     m_reflectance = reflectance;
 }
@@ -54,7 +55,7 @@ const char* Lambertian::emissionFunctionName()const
 }
 
 
-void Lambertian::setVariables( const VariableContainer& container ) const
+void Lambertian::setVariables( VariableContainer& container ) const
 {
-    container.setFloat( "reflectance", m_reflectance );
+    container.setTexture( "reflectance", m_reflectance );
 }

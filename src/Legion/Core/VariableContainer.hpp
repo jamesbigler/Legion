@@ -26,31 +26,36 @@
 
 #include <Legion/Common/Math/Vector.hpp>
 #include <optixu/optixpp_namespace.h>
+#include <vector>
 
 namespace legion
 {
 
 class Matrix;
 class Color;
+class ITexture;
 
 class VariableContainer
 {
 public:
+    typedef std::vector< std::pair<std::string, const ITexture*> > Textures;
     explicit VariableContainer( optix::ScopedObj* scoped );
-    void setFloat( const std::string& name, float val          )const;
-    void setFloat( const std::string& name, const Vector2& val )const;
-    void setFloat( const std::string& name, const Vector3& val )const;
-    void setFloat( const std::string& name, const Vector4& val )const;
-    void setFloat( const std::string& name, const Color& val   )const;
 
-    void setUnsigned( const std::string& name, unsigned val )const;
+    void setFloat   ( const std::string& name, const Vector2& val )const;
+    void setFloat   ( const std::string& name, const Vector3& val )const;
+    void setFloat   ( const std::string& name, const Vector4& val )const;
+    void setFloat   ( const std::string& name, const Color& val   )const;
+    void setFloat   ( const std::string& name, float val          )const;
+    void setUnsigned( const std::string& name, unsigned val       )const;
+    void setMatrix  ( const std::string& name, const Matrix& val  )const;
+    void setBuffer  ( const std::string& name, optix::Buffer val  )const;
+    void setTexture ( const std::string& name, const ITexture* val);
 
-    void setMatrix( const std::string& name, const Matrix& val )const;
-
-    void setBuffer( const std::string& name, optix::Buffer val )const;
-
+    
+    const Textures& getTextures()const   { return m_textures; }
 private:
-    optix::ScopedObj* m_scoped;
+    optix::ScopedObj*  m_scoped;
+    Textures           m_textures;
 };
 
 }

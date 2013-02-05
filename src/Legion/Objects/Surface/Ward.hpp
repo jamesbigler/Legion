@@ -29,7 +29,7 @@ public:
     const char* pdfFunctionName()const;
     const char* emissionFunctionName()const;
 
-    void setVariables( const VariableContainer& container ) const ;
+    void setVariables( VariableContainer& container ) const ;
 
 private:
     Color m_diffuse_reflectance;

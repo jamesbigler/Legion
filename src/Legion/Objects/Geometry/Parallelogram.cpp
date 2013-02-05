@@ -134,7 +134,7 @@ void Parallelogram::setAnchorUV(
 
 
 
-void Parallelogram::setVariables( const VariableContainer& container ) const
+void Parallelogram::setVariables( VariableContainer& container ) const
 {
     const Vector3 normal = normalize( cross( m_U, m_V ) );
     const float   d      = dot( normal, m_anchor );

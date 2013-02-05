@@ -56,7 +56,7 @@ public:
 
     void setRadiance( const Color& radiance );
     
-    void setVariables( const VariableContainer& container ) const;
+    void setVariables( VariableContainer& container ) const;
 private:
 
     Color m_radiance;

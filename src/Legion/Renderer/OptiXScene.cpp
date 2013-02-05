@@ -30,6 +30,7 @@
 #include <Legion/Objects/Environment/IEnvironment.hpp>
 #include <Legion/Objects/Renderer/IRenderer.hpp>
 #include <Legion/Objects/Surface/ISurface.hpp>
+#include <Legion/Objects/Texture/ITexture.hpp>
 #include <Legion/Renderer/OptiXScene.hpp>
 #include <config.hpp>
 
@@ -294,24 +295,33 @@ void OptiXScene::sync()
     //
     // Update optix variables for all objects
     //
-    VariableContainer renderer_vc( m_raygen_program.get() );
-    m_renderer->setVariables( renderer_vc );
+    {
+        VariableContainer vc( m_raygen_program.get() );
+        m_renderer->setVariables( vc );
+    }
         
-    // TODO
-    VariableContainer vc( m_create_ray_program.get() );
-    m_camera->setVariables( vc );
+    {
+        VariableContainer vc( m_create_ray_program.get() );
+        m_camera->setVariables( vc );
+    }
         
     if( m_environment_sample )
-        m_environment->setVariables( 
-                VariableContainer( m_environment_sample.get() ) );
+    {
+        VariableContainer vc( m_environment_sample.get() );
+        m_environment->setVariables( vc );
+    }
 
     if( m_environment_miss_evaluate )
-        m_environment->setVariables( 
-                VariableContainer( m_environment_miss_evaluate.get() ) );
+    {
+        VariableContainer vc( m_environment_miss_evaluate.get() );
+        m_environment->setVariables( vc );
+    }
     
     if( m_environment_light_evaluate )
-        m_environment->setVariables( 
-                VariableContainer( m_environment_light_evaluate.get() ) );
+    {
+        VariableContainer vc( m_environment_light_evaluate.get() );
+        m_environment->setVariables( vc ); 
+    }
 
 
     // Set up null functions for unused light variables
@@ -348,7 +358,14 @@ void OptiXScene::sync()
         optix::Material optix_material = geometry_instance->getMaterial( 0u );
         VariableContainer mat_vc( optix_material.get() );
         surface->setVariables( mat_vc );
-        //mat_vc.setFloat( "legionSurfaceArea", geometry->area() );
+
+        const VariableContainer::Textures& textures = mat_vc.getTextures();
+        for( VariableContainer::Textures::const_iterator it = textures.begin();
+             it != textures.end();
+             ++it )
+        {
+            setTextureVariables( optix_material, it->first, it->second );
+        }
     }
 
     /*
@@ -394,6 +411,101 @@ void OptiXScene::initializeOptixContext()
                     "legionAnyHit"
                     );
 
+        m_default_texture_proc1 =
+                m_program_mgr.get( 
+                    "Texture.ptx", 
+                    "legionDefaultTextureProc1"
+                    );
+        
+        m_default_texture_proc2 =
+                m_program_mgr.get( 
+                    "Texture.ptx", 
+                    "legionDefaultTextureProc2"
+                    );
+        
+        m_default_texture_proc4 =
+                m_program_mgr.get( 
+                    "Texture.ptx", 
+                    "legionDefaultTextureProc4"
+                    );
+
     }
     OPTIX_CATCH_RETHROW;
 }
+
+
+void OptiXScene::setTextureVariables( optix::Material    mat,
+                                      const std::string& name,
+                                      const ITexture*    tex )
+{
+    const ITexture::Type type = tex->getType();
+    std::cerr << "Got a texture of type: " << type << std::endl;
+    const unsigned val_dim = tex->getValueDim();
+    float    v[4];
+    tex->getConstValue( v );
+
+    mat[ name + "_type__" ]->setUint( tex->getType() );
+
+    const std::string cname = name + "_const__";
+    const std::string tname = name + "_texid__";
+    const std::string pname = name + "_proc__";
+    if( type == ITexture::TYPE_CONSTANT )
+    {
+        switch( val_dim )
+        {
+            case 1: 
+                {
+                    mat[ cname ]->set1fv( v );
+                    mat[ pname ]->set( m_default_texture_proc1 );
+                    mat[ tname ]->setInt( -1 );
+                    break;
+                }
+            case 2: 
+                {
+                    mat[ cname ]->set2fv( v );
+                    mat[ pname ]->set( m_default_texture_proc2 );
+                    mat[ tname ]->setInt( -1 );
+                    break;
+                }
+            case 4:
+                {
+                    mat[ cname ]->set4fv( v );
+                    mat[ pname ]->set( m_default_texture_proc4 );
+                    mat[ tname ]->setInt( -1 );
+                    break;
+                }
+            default: 
+                throw Exception( "Invalid texture result dim: " + name );
+        };
+    }
+    else
+    {
+        switch( val_dim )
+        {
+            case 1: 
+                {
+                    mat[ cname ]->setFloat( 0.0f );
+                    mat[ pname ]->set( m_default_texture_proc1 );
+                    mat[ tname ]->setInt( tex->getTexID() );
+                    break;
+                }
+            case 2: 
+                {
+                    mat[ cname ]->setFloat( 0.0f, 0.0f );
+                    mat[ pname ]->set( m_default_texture_proc2 );
+                    mat[ tname ]->setInt( tex->getTexID() );
+                    break;
+                }
+            case 4:
+                {
+                    mat[ cname ]->setFloat( 0.0f, 0.0f, 0.0f, 0.0f );
+                    mat[ pname ]->set( m_default_texture_proc4 );
+                    mat[ tname ]->setInt( tex->getTexID() );
+                    break;
+                }
+            default: 
+                throw Exception( "Invalid texture result dim: " + name );
+        };
+    }
+}
+

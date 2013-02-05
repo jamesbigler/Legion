@@ -51,44 +51,58 @@ void VariableContainer::setFloat( const std::string& name, float val ) const
 }
 
 
-void VariableContainer::setFloat( const std::string& name, const Vector2& val ) const
+void VariableContainer::setFloat( const std::string& name,
+                                  const Vector2& val ) const
 {
     getVariable( m_scoped, name )->setFloat( val.x(), val.y() );
 }
 
 
-void VariableContainer::setFloat( const std::string& name, const Vector3& val )const
+void VariableContainer::setFloat( const std::string& name,
+                                  const Vector3& val )const
 {
     getVariable( m_scoped, name )->setFloat( val.x(), val.y(), val.z() );
 }
 
 
-void VariableContainer::setFloat( const std::string& name, const Vector4& val ) const
+void VariableContainer::setFloat( const std::string& name,
+                                  const Vector4& val ) const
 {
-    getVariable( m_scoped, name )->
-        setFloat( val.x(), val.y(), val.z(), val.w() );
+    getVariable( m_scoped, name )->setFloat( 
+            val.x(), val.y(), val.z(), val.w() );
 }
 
 
-void VariableContainer::setFloat( const std::string& name, const Color& val ) const
+void VariableContainer::setFloat( const std::string& name,
+                                  const Color& val ) const
 {
     getVariable( m_scoped, name )->setFloat( val.r(), val.g(), val.b() );
 }
 
 
-void VariableContainer::setUnsigned( const std::string& name, unsigned val ) const
+void VariableContainer::setUnsigned( const std::string& name,
+                                     unsigned val ) const
 {
     getVariable( m_scoped, name )->setUint( val );
 }
 
 
-void VariableContainer::setMatrix( const std::string& name, const Matrix& val )  const
+void VariableContainer::setMatrix( const std::string& name,
+                                   const Matrix& val )  const
 {
-    getVariable( m_scoped, name )->setMatrix4x4fv( false, val.getData() );
+    getVariable( m_scoped, name )->setMatrix4x4fv( false,
+                                                   val.getData() );
 }
     
 
-void VariableContainer::setBuffer( const std::string& name, optix::Buffer val ) const
+void VariableContainer::setBuffer( const std::string& name,
+                                   optix::Buffer val ) const
 {
     getVariable( m_scoped, name )->set( val );
+}
+
+void VariableContainer::setTexture( const std::string& name, 
+                                    const ITexture* val )
+{
+    m_textures.push_back( std::make_pair( name, val ) );
 }

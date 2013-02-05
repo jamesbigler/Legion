@@ -234,7 +234,7 @@ void TriMesh::setTriangles( const std::vector<Vertex>& /*vertices*/,
 }
 
 
-void TriMesh::setVariables( const VariableContainer& container ) const
+void TriMesh::setVariables( VariableContainer& container ) const
 {
 
     switch( m_vertex_type )

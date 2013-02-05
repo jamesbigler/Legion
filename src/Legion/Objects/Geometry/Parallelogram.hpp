@@ -63,7 +63,7 @@ public:
                              const Vector3& U,
                              const Vector3& V );
                          
-    void setVariables( const VariableContainer& container )const;
+    void setVariables( VariableContainer& container )const;
 
 private:
     Matrix    m_transform;

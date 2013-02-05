@@ -85,7 +85,7 @@ public:
     void        setTriangles( const std::vector<Vertex>& vertices,
                               const std::vector<Index3>& triangles );
 
-    void setVariables( const VariableContainer& container ) const;
+    void setVariables( VariableContainer& container ) const;
 private:
     enum VertexType
     {

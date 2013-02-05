@@ -60,6 +60,9 @@ private:
     static const unsigned SHADOW_TYPE   = 1u;
 
     void initializeOptixContext();
+    void setTextureVariables( optix::Material    mat,
+                              const std::string& name,
+                              const ITexture*    tex );
 
     typedef std::map<IGeometry*, optix::GeometryInstance > GeometryMap;
 
@@ -72,6 +75,9 @@ private:
     optix::Program          m_environment_light_evaluate;
     optix::Program          m_environment_miss_evaluate;
     optix::Program          m_environment_program;
+    optix::Program          m_default_texture_proc1;
+    optix::Program          m_default_texture_proc2;
+    optix::Program          m_default_texture_proc4;
     optix::GeometryGroup    m_top_group;
 
     OptiXProgramManager     m_program_mgr;

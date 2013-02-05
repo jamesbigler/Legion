@@ -23,6 +23,7 @@
 
 #include <Legion/Common/Util/Image.hpp>
 #include <Legion/Core/Exception.hpp>
+#include <ImfArray.h>
 #include <ImfOutputFile.h>
 #include <ImfInputFile.h>
 #include <ImfRgbaFile.h>
@@ -83,5 +84,42 @@ bool legion::writeOpenEXR( const std::string& filename,
     file.setFrameBuffer( frame_buffer );
     file.writePixels( height );
 
+    return true;
+}
+
+
+bool legion::readOpenEXR(  const std::string& filename,
+                           optix::Buffer buffer )
+{
+
+    Imf::RgbaInputFile file( filename.c_str() );
+
+    Imath::Box2i dw  = file.dataWindow();
+    unsigned width  = dw.max.x - dw.min.x + 1;
+    unsigned height = dw.max.y - dw.min.y + 1;
+    Imf::Array2D<Imf::Rgba> pixels;
+    pixels.resizeErase( height, width );
+
+    file.setFrameBuffer( &pixels[0][0] - dw.min.x - dw.min.y*width, 1, width );
+    file.readPixels( dw.min.y, dw.max.y );
+    
+    buffer->setFormat( RT_FORMAT_FLOAT4 );
+    buffer->setSize( width, height );
+
+    optix::float4* data = reinterpret_cast<optix::float4*>( buffer->map() );
+    for( unsigned i = 0; i < width; ++i )
+    {
+        for( unsigned j = 0; j < height; ++j )
+        {
+            unsigned idx = ((height-1-j)*width + i);
+
+            data[idx].x = pixels[j][i].r;
+            data[idx].y = pixels[j][i].g;
+            data[idx].z = pixels[j][i].b;
+            data[idx].w = pixels[j][i].a;
+        }
+    }
+
+    buffer->unmap();
     return true;
 }

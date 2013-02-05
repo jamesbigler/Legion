@@ -11,6 +11,7 @@ namespace legion
 {
 
 class VariableContainer;
+class ITexture;
 
 class Lambertian : public ISurface
 {
@@ -18,7 +19,7 @@ public:
     Lambertian( Context* context );
     ~Lambertian();
     
-    void setReflectance( const Color& reflectance );
+    void setReflectance( const ITexture* reflectance );
     
     const char* name()const;
     const char* sampleBSDFFunctionName()const;
@@ -26,10 +27,10 @@ public:
     const char* pdfFunctionName()const;
     const char* emissionFunctionName()const;
 
-    void setVariables( const VariableContainer& container ) const ;
+    void setVariables( VariableContainer& container ) const ;
 
 private:
-    Color m_reflectance;
+    const ITexture* m_reflectance;
 };
 
 }

@@ -22,10 +22,14 @@
 
 #include <Legion/Objects/cuda_common.hpp>
 #include <Legion/Objects/Surface/CUDA/Surface.hpp>
+#include <Legion/Objects/Texture/CUDA/Texture.hpp>
 #include <Legion/Common/Math/CUDA/ONB.hpp>
 #include <Legion/Common/Math/CUDA/Math.hpp>
 
-rtDeclareVariable( float3, reflectance, , );
+//rtDeclareVariable( float3, reflectance, , );
+
+legionDeclareTexture( float4, reflectance );
+
 
 RT_CALLABLE_PROGRAM
 legion::BSDFSample lambertianSampleBSDF( 
@@ -48,9 +52,9 @@ legion::BSDFSample lambertianSampleBSDF(
     legion::ONB onb( p.shading_normal );
     sample.w_in = onb.inverseTransform( make_float3( x, y, z ) );
 
-    // calculate pdf
+    const float4 R     =  legionTex( reflectance, p.texcoord, p.position );
     sample.pdf         = z * legion::ONE_DIV_PI;
-    sample.f_over_pdf  = reflectance;
+    sample.f_over_pdf  = make_float3( R );
     sample.is_specular = false;
 
     return sample;
@@ -63,9 +67,10 @@ float4 lambertianEvaluateBSDF(
         legion::LocalGeometry p,
         float3 w_in )
 {
-    const float cosine = fmaxf( 0.0f, optix::dot( w_in, p.shading_normal ) );
-    const float pdf    = cosine * legion::ONE_DIV_PI;
-    return make_float4( pdf * reflectance, pdf );
+    const float4 R      =  legionTex( reflectance, p.texcoord, p.position );
+    const float  cosine = fmaxf( 0.0f, optix::dot( w_in, p.shading_normal ) );
+    const float  pdf    = cosine * legion::ONE_DIV_PI;
+    return make_float4( pdf * make_float3( R ), pdf );
 }
 
 
