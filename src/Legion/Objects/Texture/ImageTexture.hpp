@@ -24,8 +24,8 @@
 /// \file ImageTexture.hpp
 /// Pure virtual interface for Texture Shaders
 
-#ifndef LEGION_OBJECTS_TEXTURE_IMAGE_TEXTURE_H_
-#define LEGION_OBJECTS_TEXTURE_IMAGE_TEXTURE_H_
+#ifndef LEGION_OBJECTS_TEXTURE_IMAGE_TEXTURE_HPP_
+#define LEGION_OBJECTS_TEXTURE_IMAGE_TEXTURE_HPP_
 
 #include <Legion/Objects/Texture/ITexture.hpp>
 #include <Legion/Common/Math/Vector.hpp>
@@ -33,8 +33,6 @@
 
 namespace legion
 {
-
-class Color;
 
 /// Image value textures.
 class ImageTexture : public ITexture
@@ -58,4 +56,4 @@ private:
 
 }
 
-#endif // LEGION_OBJECTS_TEXTURE_IMAGE_TEXTURE_H_
+#endif // LEGION_OBJECTS_TEXTURE_IMAGE_TEXTURE_HPP_

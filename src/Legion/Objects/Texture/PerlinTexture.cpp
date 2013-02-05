@@ -23,19 +23,15 @@
 
 #include <Legion/Objects/Texture/PerlinTexture.hpp>
 #include <Legion/Core/VariableContainer.hpp>
-#include <Legion/Core/Color.hpp>
 
 using namespace legion;
 
 
 PerlinTexture::PerlinTexture( Context* context )
-    : ITexture( context ),
-      m_val_dim( 1u )
+    : ProceduralTexture( context ),
+      m_c0( 0.9f, 0.9f, 0.9f ),
+      m_c1( 0.1f, 0.1f, 0.1f )
 {
-    m_val[0] = 
-    m_val[1] = 
-    m_val[2] = 
-    m_val[3] = 0.0f;
 }
 
 
@@ -44,58 +40,39 @@ PerlinTexture::~PerlinTexture()
 }
 
 
-void PerlinTexture::set( const Color&   c )
+void PerlinTexture::setColors( const Color& c0, const Color& c1 )
 {
-    m_val_dim = 4u;
-    m_val[0] = c.r();
-    m_val[1] = c.g();
-    m_val[2] = c.b();
-    m_val[2] = 1.0f;
+    m_c0 = c0;
+    m_c1 = c1;
 }
 
 
-void PerlinTexture::set( const float&   f )
-{
-    m_val_dim = 1u;
-    m_val[0] = f; 
-}
-
-
-void PerlinTexture::set( const Vector2& v )
-{
-    m_val_dim = 2u;
-    m_val[0] = v.x();
-    m_val[1] = v.y();
-}
-
-
-void PerlinTexture::set( const Vector4& v )
-{
-    m_val_dim = 4u;
-    m_val[0] = v.x();
-    m_val[1] = v.y();
-    m_val[2] = v.z();
-    m_val[3] = v.w();
-}
-
-    
 ITexture::Type PerlinTexture::getType()const
 {
-    return TYPE_CONSTANT;
+    return TYPE_PROCEDURAL;
 }
 
 
 unsigned PerlinTexture::getValueDim()const
 {
-    return m_val_dim;
+    return 4u;
 }
 
 
-void PerlinTexture::getConstValue( float* val )const
+const char* PerlinTexture::name()const
 {
-    for( unsigned i = 0u; i < m_val_dim; ++i )
-        val[i] = m_val[i];
-    for( unsigned i = m_val_dim; i < MAX_VALUE_DIM; ++i )
-        val[i] = 0.0f;
+    return "PerlinTexture";
 }
 
+
+const char* PerlinTexture::proceduralFunctionName()const
+{
+    return "perlinTextureProc";
+}
+
+
+void PerlinTexture::setVariables( VariableContainer& container )const 
+{
+    container.setFloat( "c0", m_c0 );
+    container.setFloat( "c1", m_c1 );
+}

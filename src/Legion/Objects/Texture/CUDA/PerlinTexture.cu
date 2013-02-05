@@ -1,6 +1,7 @@
 
-// Copyright (C) 2011 R. Keith Morley
-//
+// Copyright (C) 2011 R. Keith Morley 
+// 
+// (MIT/X11 License)
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to
 // deal in the Software without restriction, including without limitation the
@@ -18,39 +19,14 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
-// (MIT/X11 License)
 
-#ifndef LEGION_RENDERER_OPTIX_PROGRAM_MANAGER_HPP_
-#define LEGION_RENDERER_OPTIX_PROGRAM_MANAGER_HPP_
+#include <Legion/Objects/cuda_common.hpp>
 
-#include <optixu/optixpp_namespace.h>
-#include <map>
+rtDeclareVariable( float3, c0, , );
+rtDeclareVariable( float3, c1, , );
 
-namespace legion
-{
-
-class OptiXProgramManager
-{
-public:
-    explicit OptiXProgramManager( optix::Context context );
-    ~OptiXProgramManager();
-
-    void addPath( const std::string& path );
-
-    optix::Program get( const std::string& cuda_filename,
-                        const std::string& cuda_function_name,
-                        bool  use_cache=true );
-
-private:
-    typedef std::map< std::string, optix::Program>   Registry;
-    typedef std::vector<std::string>                 Paths;
-
-    optix::Context  m_context;
-    Registry        m_registry;
-    Paths           m_paths;
-};
-
+RT_CALLABLE_PROGRAM
+float4 perlinTextureProc( float2, float3 )
+{ 
+    return make_float4( (c0 + c1)*0.5f, 1.0f );
 }
-
-
-#endif // LEGION_RENDERER_OPTIX_PROGRAM_MANAGER_HPP_

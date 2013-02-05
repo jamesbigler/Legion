@@ -1,6 +1,7 @@
 
-// Copyright (C) 2011 R. Keith Morley
-//
+// Copyright (C) 2011 R. Keith Morley 
+// 
+// (MIT/X11 License)
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to
 // deal in the Software without restriction, including without limitation the
@@ -18,39 +19,33 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
-// (MIT/X11 License)
 
-#ifndef LEGION_RENDERER_OPTIX_PROGRAM_MANAGER_HPP_
-#define LEGION_RENDERER_OPTIX_PROGRAM_MANAGER_HPP_
 
-#include <optixu/optixpp_namespace.h>
-#include <map>
+/// \file ProceduralTexture.hpp
+/// Pure virtual interface for Texture Shaders
+
+#ifndef LEGION_OBJECTS_TEXTURE_PROCEDURAL_TEXTURE_HPP_
+#define LEGION_OBJECTS_TEXTURE_PROCEDURAL_TEXTURE_HPP_
+
+#include <Legion/Objects/Texture/ITexture.hpp>
+#include <Legion/Common/Math/Vector.hpp>
+
 
 namespace legion
 {
 
-class OptiXProgramManager
+/// Procedural value textures.
+class ProceduralTexture : public ITexture
 {
 public:
-    explicit OptiXProgramManager( optix::Context context );
-    ~OptiXProgramManager();
+    ProceduralTexture( Context* context ) : ITexture( context ) {}
 
-    void addPath( const std::string& path );
+    virtual ~ProceduralTexture() {}
 
-    optix::Program get( const std::string& cuda_filename,
-                        const std::string& cuda_function_name,
-                        bool  use_cache=true );
-
-private:
-    typedef std::map< std::string, optix::Program>   Registry;
-    typedef std::vector<std::string>                 Paths;
-
-    optix::Context  m_context;
-    Registry        m_registry;
-    Paths           m_paths;
+    virtual const char* name()const=0;
+    virtual const char* proceduralFunctionName()const=0;
 };
 
 }
 
-
-#endif // LEGION_RENDERER_OPTIX_PROGRAM_MANAGER_HPP_
+#endif // LEGION_OBJECTS_TEXTURE_PROCEDURAL_TEXTURE_HPP_

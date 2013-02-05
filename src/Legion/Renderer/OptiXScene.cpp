@@ -439,18 +439,18 @@ void OptiXScene::setTextureVariables( optix::Material    mat,
                                       const ITexture*    tex )
 {
     const ITexture::Type type = tex->getType();
-    std::cerr << "Got a texture of type: " << type << std::endl;
     const unsigned val_dim = tex->getValueDim();
-    float    v[4];
-    tex->getConstValue( v );
 
     mat[ name + "_type__" ]->setUint( tex->getType() );
 
     const std::string cname = name + "_const__";
     const std::string tname = name + "_texid__";
     const std::string pname = name + "_proc__";
+
     if( type == ITexture::TYPE_CONSTANT )
     {
+        float    v[4];
+        tex->getConstValue( v );
         switch( val_dim )
         {
             case 1: 
@@ -478,7 +478,7 @@ void OptiXScene::setTextureVariables( optix::Material    mat,
                 throw Exception( "Invalid texture result dim: " + name );
         };
     }
-    else
+    else if( type == ITexture::TYPE_IMAGE )
     {
         switch( val_dim )
         {
@@ -501,6 +501,44 @@ void OptiXScene::setTextureVariables( optix::Material    mat,
                     mat[ cname ]->setFloat( 0.0f, 0.0f, 0.0f, 0.0f );
                     mat[ pname ]->set( m_default_texture_proc4 );
                     mat[ tname ]->setInt( tex->getTexID() );
+                    break;
+                }
+            default: 
+                throw Exception( "Invalid texture result dim: " + name );
+        };
+    }
+    else // ( type == ITexture::TYPE_PROCEDURAL )
+    {
+        optix::Program proc =  
+            m_program_mgr.get( std::string( tex->name() ) + ".ptx",
+                    tex->proceduralFunctionName(),
+                    false
+                    );
+
+        VariableContainer vc( proc.get() );
+        tex->setVariables( vc );
+
+        switch( val_dim )
+        {
+            case 1: 
+                {
+                    mat[ cname ]->setFloat( 0.0f );
+                    mat[ pname ]->set( proc );
+                    mat[ tname ]->setInt( -1 );
+                    break;
+                }
+            case 2: 
+                {
+                    mat[ cname ]->setFloat( 0.0f, 0.0f );
+                    mat[ pname ]->set( proc );
+                    mat[ tname ]->setInt( -1 );
+                    break;
+                }
+            case 4:
+                {
+                    mat[ cname ]->setFloat( 0.0f, 0.0f, 0.0f, 0.0f );
+                    mat[ pname ]->set( proc );
+                    mat[ tname ]->setInt( -1 );
                     break;
                 }
             default: 

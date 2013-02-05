@@ -27,35 +27,35 @@
 #ifndef LEGION_OBJECTS_TEXTURE_PERLIN_TEXTURE_H_
 #define LEGION_OBJECTS_TEXTURE_PERLIN_TEXTURE_H_
 
-#include <Legion/Objects/Texture/ITexture.hpp>
+#include <Legion/Objects/Texture/ProceduralTexture.hpp>
 #include <Legion/Common/Math/Vector.hpp>
+#include <Legion/Core/Color.hpp>
 
 
 namespace legion
 {
 
-class Color;
 
 /// Perlin value textures.
-class PerlinTexture : public ITexture
+class PerlinTexture : public ProceduralTexture
 {
 public:
     PerlinTexture( Context* context );
 
     ~PerlinTexture();
 
-    void set( const Color&   c ); // Padded to float4
-    void set( const float&   f );
-    void set( const Vector2& v );
-    void set( const Vector4& v );
-    
-    Type     getType()const;
-    unsigned getValueDim()const;
-    void     getConstValue( float* val )const;
+    void        setColors( const Color& c0, const Color& c1 );
 
+    Type        getType()const;
+    unsigned    getValueDim()const;
+
+    const char* name()const;
+    const char* proceduralFunctionName()const;
+
+    void setVariables( VariableContainer& ) const;
 private:
-    unsigned   m_val_dim;
-    float      m_val[ ITexture::MAX_VALUE_DIM ];
+    Color m_c0;
+    Color m_c1;
 };
 
 

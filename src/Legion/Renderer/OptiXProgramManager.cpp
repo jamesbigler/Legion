@@ -47,14 +47,16 @@ void OptiXProgramManager::addPath( const std::string& path )
 
 optix::Program OptiXProgramManager::get( 
         const std::string& cuda_filename,
-        const std::string& cuda_function_name )
+        const std::string& cuda_function_name,
+        bool use_cache )
 {
     
     const std::string lookup_name   = cuda_filename + cuda_function_name;
-    Registry::iterator it = m_registry.find( lookup_name );
-    if( it != m_registry.end() )
+    if( use_cache )
     {
-        return it->second;
+        Registry::iterator it = m_registry.find( lookup_name );
+        if( it != m_registry.end() )
+            return it->second;
     }
                            
     for( Paths::iterator path = m_paths.begin(); path != m_paths.end(); ++path )
@@ -69,7 +71,8 @@ optix::Program OptiXProgramManager::get(
                         );
             if( p )
             {
-                m_registry.insert( std::make_pair( lookup_name, p ) );
+                if( use_cache )
+                  m_registry.insert( std::make_pair( lookup_name, p ) );
                 return p;
             }
         }

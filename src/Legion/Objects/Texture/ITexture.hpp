@@ -24,8 +24,8 @@
 /// \file ITexture.hpp
 /// Pure virtual interface for Texture Shaders
 
-#ifndef LEGION_OBJECTS_TEXTURE_ITEXTURE_H_
-#define LEGION_OBJECTS_TEXTURE_ITEXTURE_H_
+#ifndef LEGION_OBJECTS_TEXTURE_ITEXTURE_HPP_
+#define LEGION_OBJECTS_TEXTURE_ITEXTURE_HPP_
 
 #include <Legion/Objects/IObject.hpp>
 
@@ -76,4 +76,4 @@ public:
 
 }
 
-#endif // LEGION_OBJECTS_TEXTURE_ITEXTURE_H_
+#endif // LEGION_OBJECTS_TEXTURE_ITEXTURE_HPP_

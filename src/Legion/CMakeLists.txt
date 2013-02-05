@@ -22,6 +22,7 @@ CUDA_COMPILE_PTX( ptx_files
     Objects/Surface/CUDA/Surface.cu
     Objects/Surface/CUDA/Ward.cu
     Objects/Texture/CUDA/Texture.cu
+    Objects/Texture/CUDA/PerlinTexture.cu
     )
 
 configure_file( "${CMAKE_CURRENT_SOURCE_DIR}/Core/config.hpp.in"

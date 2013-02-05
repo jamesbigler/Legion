@@ -32,5 +32,5 @@ float2 legionDefaultTextureProc2( float2, float3 )
 
 RT_CALLABLE_PROGRAM
 float4 legionDefaultTextureProc4( float2, float3 )
-{ return make_float4( 0.0f ); }
+{ return make_float4( 0.0f, 1.0f, 0.0f, 0.0f ); }
 

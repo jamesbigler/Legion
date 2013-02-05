@@ -25,7 +25,6 @@ int main( int , char** )
         brick_tex.set( "../src/Standalone/data/bricks.exr" );
 
         legion::PerlinTexture perlin_tex( &ctx );
-        perlin_tex.set( legion::Color(  1.0f, 1.0f, 1.0f ) );
 
         //
         // Surfaces 
@@ -40,7 +39,7 @@ int main( int , char** )
         perlin.setReflectance( &perlin_tex );
        
         legion::DiffuseEmitter emitter( &ctx );
-        emitter.setRadiance( legion::Color(  9.0f, 9.0f, 9.0f ) );
+        emitter.setRadiance( legion::Color(  4.0f, 4.0f, 4.0f ) );
         
         //
         // Geometry 
@@ -82,7 +81,7 @@ int main( int , char** )
         ctx.setCamera( &cam );
 
         legion::ProgressiveRenderer renderer( &ctx );
-        renderer.setSamplesPerPixel( 32 );
+        renderer.setSamplesPerPixel( 128 );
         renderer.setDisplay( &display );
         ctx.setRenderer( &renderer );
 

@@ -46,7 +46,6 @@ float wardExpTerm( float inv_ax, float inv_ay, float3 H, const legion::ONB uvw )
 }
 
 
-
 static __device__ __inline__
 float diffusePDF( float3 w_out, float3 normal, float3 w_in )
 {
