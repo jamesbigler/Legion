@@ -51,14 +51,20 @@ public:
     PluginManager( Context* ctx );
     ~PluginManager();
 
+
     std::vector<std::string> registeredPluginNames()const;
 
     template <typename PType>
-    void registerPlugin( const std::string& name, 
-                         PType* (*create)( Context* ctx, const Parameters& params ) );
+    void registerPlugin( 
+            const std::string& name, 
+            PType* (*create)( Context* ctx, const Parameters& params )
+            );
 
     template <typename PType>
-    PType* create( const std::string& name, const Parameters& params );
+    PType* create( 
+            const std::string& name, 
+            const Parameters& params
+            );
 private:
     class Impl;
     //std::unique_ptr<Impl> m_impl;

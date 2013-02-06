@@ -35,17 +35,20 @@ namespace legion
 {
 
 class Color;
+class Parameters;
 
 /// Constant value textures.
 class ConstantTexture : public ITexture
 {
 public:
+    static ITexture* create( Context* context, const Parameters& params );
+
     ConstantTexture( Context* context );
 
     ~ConstantTexture();
 
-    void set( const Color&   c ); // Padded to float4
     void set( const float&   f );
+    void set( const Color&   c ); // Padded to float4
     void set( const Vector2& v );
     void set( const Vector4& v );
     

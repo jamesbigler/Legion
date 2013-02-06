@@ -11,6 +11,7 @@
 #include <Legion/Common/Math/Vector.hpp>
 #include <Legion/Common/Util/Assert.hpp>
 #include <Legion/Common/Util/Logger.hpp>
+#include <Legion/Common/Util/Parameters.hpp>
 #include <Legion/Common/Util/Stream.hpp>
 #include <Legion/Core/Color.hpp>
 #include <Legion/Core/Context.hpp>
@@ -34,8 +35,8 @@
 #include <Legion/Objects/Surface/Lambertian.hpp>
 #include <Legion/Objects/Surface/Ward.hpp>
 #include <Legion/Objects/Texture/ConstantTexture.hpp>
+#include <Legion/Objects/Texture/ITexture.hpp>
 #include <Legion/Objects/Texture/ImageTexture.hpp>
 #include <Legion/Objects/Texture/PerlinTexture.hpp>
-#include <Legion/Objects/Texture/ITexture.hpp>
 
 #endif // LEGION_LEGION_HPP_

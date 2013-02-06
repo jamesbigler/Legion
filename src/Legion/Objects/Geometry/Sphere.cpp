@@ -24,6 +24,7 @@
 
 #include <Legion/Objects/Geometry/Sphere.hpp>
 #include <Legion/Common/Util/Logger.hpp>
+#include <Legion/Common/Util/Parameters.hpp>
 #include <Legion/Common/Math/Math.hpp>
 #include <Legion/Core/VariableContainer.hpp>
 
@@ -33,7 +34,10 @@ using namespace legion;
 
 IGeometry* Sphere::create( Context* context, const Parameters& params )
 {
-    return new Sphere( context, params );
+    Sphere* sphere = new Sphere( context );
+    sphere->setCenter( params.get( "center",  Vector3( 0.0f ) ) );
+    sphere->setRadius( params.get( "radius",  0.5f            ) );
+    return sphere;
 }
 
 Sphere::Sphere( Context* context )
@@ -43,17 +47,6 @@ Sphere::Sphere( Context* context )
       m_center( 0.0f, 0.0f, 0.0f ),
       m_surface( 0 )
 {
-}
-
-
-Sphere::Sphere( Context* context, const Parameters& /*params*/)
-    : IGeometry( context ),
-      m_transform( Matrix::identity() ),
-      m_radius( 1.0f ),
-      m_center( 0.0f, 0.0f, 0.0f ),
-      m_surface( 0 )
-{
-    LLOG_INFO << "\t\tSphere::Sphere( params );";
 }
 
 

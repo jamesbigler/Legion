@@ -22,10 +22,44 @@
 
 
 #include <Legion/Objects/Texture/ConstantTexture.hpp>
-#include <Legion/Core/VariableContainer.hpp>
+
+#include <Legion/Common/Util/Parameters.hpp>
 #include <Legion/Core/Color.hpp>
+#include <Legion/Core/VariableContainer.hpp>
 
 using namespace legion;
+
+
+ITexture* ConstantTexture::create( Context* context, const Parameters& params )
+{
+    ConstantTexture* texture = new ConstantTexture( context );
+
+    //
+    // We dont know a priori what value type this texture so we have to search
+    //
+    Color c;
+    if( params.get( "value", c ) )
+    {
+        texture->set( c );
+        return texture;
+    }
+    
+    Vector3 v;
+    if( params.get( "value", v ) )
+    {
+        texture->set( Vector4( v.x(), v.y(), v.z(), 1.0f ) );
+        return texture;
+    }
+
+    float f;
+    if( params.get( "value", f ) )
+    {
+        texture->set( f ); 
+        return texture;
+    }
+
+    return texture;
+}
 
 
 ConstantTexture::ConstantTexture( Context* context )

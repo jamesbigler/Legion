@@ -72,11 +72,13 @@ int main( int , char** )
         light.setSurface( &emitter );
         ctx.addGeometry( &light);
 
-
         legion::ThinLens cam( &ctx );
         legion::Matrix cam_to_world = 
-            legion::Matrix::translate( legion::Vector3( 0.0f, 0.0f, -4.5f) ) *
-            legion::Matrix::rotate( legion::PI, legion::Vector3( 0.0f, 1.0f, 0.0f) );
+            legion::Matrix::translate( 
+                    legion::Vector3( 0.0f, 0.0f, -4.5f) ) *
+            legion::Matrix::rotate( 
+                    legion::PI,
+                    legion::Vector3( 0.0f, 1.0f, 0.0f) );
         cam.setCameraToWorld( cam_to_world );
         ctx.setCamera( &cam );
 

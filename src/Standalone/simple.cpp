@@ -19,14 +19,14 @@ int main( int , char** )
         // TODO: can be defined as ctx.log.info()
         LLOG_INFO << "simple scene ...";
         
-        // Parameters params;
-        // params.add( "Kd", legion::Color( 0.5f, 0.5f, 0.5f ) );
-        // legion::createSurfaceShader( "Lambertian", "material", params );
-        legion::ConstantTexture white( &ctx );
-        white.set( legion::Color(  1.0f, 1.0f, 1.0f ) );
+        legion::Parameters params;
+        params.set( "value", legion::Color( 1.0f, 1.0f, 1.0f ) );
+        // TODO: legion::createSurfaceShader( "Lambertian", "material", params );
+        legion::ITexture* white =
+            legion::ConstantTexture::create( &ctx, params );
 
         legion::Lambertian lambertian( &ctx );
-        lambertian.setReflectance( &white );
+        lambertian.setReflectance( white );
        
         legion::Sphere sphere( &ctx );
         sphere.setCenter( legion::Vector3( 1.0f, 0.0f, -5.0f ) );
@@ -49,13 +49,6 @@ int main( int , char** )
         light.setCenter( legion::Vector3( -1.0f, 0.0f, -5.0f ) );
         light.setSurface( &emitter);
         ctx.addGeometry( &light );
-
-        /*
-        legion::Sphere light2( &ctx );
-        light2.setCenter( legion::Vector3( -1.0f, 2.0f, -5.0f ) );
-        light2.setSurface( &emitter);
-        ctx.addGeometry( &light2 );
-        */
 
         legion::ThinLens cam( &ctx );
         ctx.setCamera( &cam );

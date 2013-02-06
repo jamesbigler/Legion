@@ -42,7 +42,6 @@ public:
     static IGeometry* create( Context* context, const Parameters& params );
 
     Sphere( Context* context );
-    Sphere( Context* context, const Parameters& params );
     
     const char* name()const;
     const char* intersectionFunctionName()const;

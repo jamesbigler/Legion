@@ -22,7 +22,7 @@ class Vector
 {
 public:
     Vector();
-    Vector( TYPE t );
+    explicit Vector( TYPE t );
     Vector( TYPE x, TYPE y );                      // Only valid for Vector<2>
     Vector( TYPE x, TYPE y, TYPE z );              // Only valid for Vector<3>
     Vector( TYPE x, TYPE y, TYPE z, TYPE w  );     // Only valid for Vector<4>
