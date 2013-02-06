@@ -45,6 +45,7 @@ public:
     ~PerlinTexture();
 
     void        setColors( const Color& c0, const Color& c1 );
+    void        setScale( float scale );
 
     Type        getType()const;
     unsigned    getValueDim()const;
@@ -56,6 +57,7 @@ public:
 private:
     Color m_c0;
     Color m_c1;
+    float m_scale;
 };
 
 

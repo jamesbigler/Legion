@@ -75,13 +75,13 @@ int main( int , char** )
 
         legion::ThinLens cam( &ctx );
         legion::Matrix cam_to_world = 
-            legion::Matrix::translate( legion::Vector3( 0.0f, 0.0f, -5.0f) ) *
+            legion::Matrix::translate( legion::Vector3( 0.0f, 0.0f, -4.5f) ) *
             legion::Matrix::rotate( legion::PI, legion::Vector3( 0.0f, 1.0f, 0.0f) );
         cam.setCameraToWorld( cam_to_world );
         ctx.setCamera( &cam );
 
         legion::ProgressiveRenderer renderer( &ctx );
-        renderer.setSamplesPerPixel( 128 );
+        renderer.setSamplesPerPixel( 32 );
         renderer.setDisplay( &display );
         ctx.setRenderer( &renderer );
 

@@ -30,7 +30,8 @@ using namespace legion;
 PerlinTexture::PerlinTexture( Context* context )
     : ProceduralTexture( context ),
       m_c0( 0.9f, 0.9f, 0.9f ),
-      m_c1( 0.1f, 0.1f, 0.1f )
+      m_c1( 0.1f, 0.1f, 0.1f ),
+      m_scale( 10.0f )
 {
 }
 
@@ -44,6 +45,12 @@ void PerlinTexture::setColors( const Color& c0, const Color& c1 )
 {
     m_c0 = c0;
     m_c1 = c1;
+}
+
+
+void PerlinTexture::setScale( float scale )
+{
+    m_scale = scale;
 }
 
 
@@ -75,4 +82,5 @@ void PerlinTexture::setVariables( VariableContainer& container )const
 {
     container.setFloat( "c0", m_c0 );
     container.setFloat( "c1", m_c1 );
+    container.setFloat( "scale", m_scale );
 }

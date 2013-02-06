@@ -42,12 +42,13 @@ namespace legion
     }
 
 
-    float trilerp( 
-            float s, float t, float u,
-            const float& x000, const float& x100,
-            const float& x010, const float& x110,
-            const float& x001, const float& x101,
-            const float& x011, const float& x111 )
+    template<typename T>
+    LDEVICE T trilerp( 
+            const T& x000, const T& x100,
+            const T& x010, const T& x110,
+            const T& x001, const T& x101,
+            const T& x011, const T& x111,
+            float s, float t, float u )
     {
         return optix::lerp(
                 optix::bilerp( x000, x100, x010, x110, s, t ),
