@@ -40,6 +40,21 @@ namespace legion
     {
         return a + t*(b-a);
     }
+
+
+    float trilerp( 
+            float s, float t, float u,
+            const float& x000, const float& x100,
+            const float& x010, const float& x110,
+            const float& x001, const float& x101,
+            const float& x011, const float& x111 )
+    {
+        return optix::lerp(
+                optix::bilerp( x000, x100, x010, x110, s, t ),
+                optix::bilerp( x001, x101, x011, x111, s, t ),
+                u);
+    }
+
     
     LDEVICE inline float powerHeuristic(float pdf1, float pdf2)
     { 

@@ -21,6 +21,7 @@
 // IN THE SOFTWARE.
 
 #include <Legion/Objects/cuda_common.hpp>
+#include <Legion/Common/Math/CUDA/PerlinNoise.hpp>
 
 rtDeclareVariable( float3, c0, , );
 rtDeclareVariable( float3, c1, , );

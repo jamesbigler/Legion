@@ -1,30 +1,24 @@
+// Copyright (C) 2011 R. Keith Morley 
+// 
+// (MIT/X11 License)
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to
+// deal in the Software without restriction, including without limitation the
+// rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+// sell copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+// IN THE SOFTWARE.
 
-#include <math/float3.h>
-
-/**
- * class PerlinNoise
- *
- * Perlin Noise is a pseudorandom scalar function defined on
- * n-dimensional space, described in the paper, "An Image
- * Synthesizer," by Ken Perlin from SIGGRAPH 1985.  Additional
- * information can also be found in the paper, "Improving Noise," also
- * by Perlin, from SIGGRAPH 2002.
- *
- * In this implementation, noise is defined on R^3.  One- and
- * two-dimensional versions are available by projecting the
- * corresponding points "upward" into R^3.  All noise values lie in
- * the range [-1, 1].
- *
- * Vector-valued noise is attained by taking the gradient of the
- * scalar noise function.  "Turbulent" noise is attained by adding
- * scaled versions of the scalar noise function at varying
- * frequencies.  Turbulent noise values lie in the range [-1, 1].
- *
- * In this implementation, the noise, vector noise, and turbulent
- * noise functions are periodic with period 256 along all three
- * dimensions.  This version of noise is completely deterministic; no
- * random values are involved.
- **/
 
 #ifndef LEGION_COMMON_MATH_CUDA_PERLIN_NOISE_HPP_
 #define LEGION_COMMON_MATH_CUDA_PERLIN_NOISE_HPP_
@@ -32,6 +26,31 @@
 namespace legion
 {
 
+
+/// 
+/// \class PerlinNoise
+/// 
+/// Perlin Noise is a pseudorandom scalar function defined on
+/// n-dimensional space, described in the paper, "An Image
+/// Synthesizer," by Ken Perlin from SIGGRAPH 1985.  Additional
+/// information can also be found in the paper, "Improving Noise," also
+/// by Perlin, from SIGGRAPH 2002.
+/// 
+/// In this implementation, noise is defined on R^3.  One- and
+/// two-dimensional versions are available by projecting the
+/// corresponding points "upward" into R^3.  All noise values lie in
+/// the range [-1, 1].
+/// 
+/// Vector-valued noise is attained by taking the gradient of the
+/// scalar noise function.  "Turbulent" noise is attained by adding
+/// scaled versions of the scalar noise function at varying
+/// frequencies.  Turbulent noise values lie in the range [-1, 1].
+/// 
+/// In this implementation, the noise, vector noise, and turbulent
+/// noise functions are periodic with period 256 along all three
+/// dimensions.  This version of noise is completely deterministic; no
+/// random values are involved.
+/// 
 class PerlinNoise
 {
 public:
@@ -40,8 +59,8 @@ public:
   LDEVICE static float  turbulence( const float3& v, unsigned int octaves);
 
 private:
-  LDEVICE const static float3       s_gradients[16];
-  LDEVICE const static unsigned int s_permute[256];
+  const static float3       s_gradients[16];
+  const static unsigned int s_permute[256];
 
   LDEVICE inline static float3 gradient( int i, int j, int k );
   LDEVICE inline static float blend ( float x );
@@ -53,9 +72,9 @@ private:
 /// Returns gradient vector for given three-dimensional integer lattice point.
 LDEVICE inline float3 PerlinNoise::gradient(int i, int j, int k)
 {
-  return _gradients[ 0xF & _permute[ 0xFF & 
-                     ( k + _permute[ 0xFF & 
-                     ( j + _permute[ 0xFF & i ] ) ] ) ] ];
+  return s_gradients[ 0xF & s_permute[ 0xFF & 
+                      ( k + s_permute[ 0xFF & 
+                      ( j + s_permute[ 0xFF & i ] ) ] ) ] ];
 }
 
 
@@ -74,12 +93,11 @@ LDEVICE inline float PerlinNoise::dBlend( float x )
   return ( 30.0f*x*x*( 1.0f + x*( -2.0f + x ) ) );
 }
 
-}
 
 
 
 /// Table of gradient vectors used in generating Perlin Noise.
-LDEVICE const float3 PerlinNoise::s_gradients[16] =
+const float3 legion::PerlinNoise::s_gradients[16] =
 {
   make_float3(  1.0f,  1.0f,  0.0f ),
   make_float3( -1.0f,  1.0f,  0.0f ),
@@ -100,7 +118,7 @@ LDEVICE const float3 PerlinNoise::s_gradients[16] =
 };
 
 /// Permutation used as a hash table for gradient vector lookups.
-LDEVICE const unsigned PerlinNoise::s_permute[256] =
+const unsigned PerlinNoise::s_permute[256] =
 {
   241,  96,  11, 170, 166,  80, 123, 154,  28, 248, 212, 151,  12,  67, 201, 112,
    73,  70, 223, 144, 225,   0, 131,  50, 191, 202,  15, 138,  35, 161,  95, 252,
@@ -123,33 +141,36 @@ LDEVICE const unsigned PerlinNoise::s_permute[256] =
 
 /// This function returns a consistent, pseudorandom noise value for all points
 //in 3-space.  All noise values lie in the range [-1, 1].
-float PerlinNoise::noise( const float3& v )
+LDEVICE float PerlinNoise::noise( const float3& v )
 {
-  int floors[3];
-  float3 stu;
-  
-  for ( int i = 0; i < 3; ++i)
-  {
-    floors[i] = static_cast<int>(floor(v[i]));
-    stu[i] = v[i] - floors[i];
-  }
+  int3    f;
+  float3  stu;
+    
+  f.x = static_cast<int>( floor( v.x ) );
+  f.y = static_cast<int>( floor( v.y ) );
+  f.z = static_cast<int>( floor( v.z ) );
 
-  return GRTlerp(blend(stu[0]), blend(stu[1]), blend(stu[2]),
-		 dot(stu, gradient(floors[0], floors[1], floors[2])), 
-		 dot(stu - float3(1.0f, 0.0f, 0.0f), gradient(floors[0] + 1, floors[1], floors[2])),
-		 dot(stu - float3(0.0f, 1.0f, 0.0f), gradient(floors[0], floors[1] + 1, floors[2])),
-		 dot(stu - float3(1.0f, 1.0f, 0.0f), gradient(floors[0] + 1, floors[1] + 1, floors[2])),
-		 dot(stu - float3(0.0f, 0.0f, 1.0f), gradient(floors[0], floors[1], floors[2] + 1)),
-		 dot(stu - float3(1.0f, 0.0f, 1.0f), gradient(floors[0] + 1, floors[1], floors[2] + 1)),
-		 dot(stu - float3(0.0f, 1.0f, 1.0f), gradient(floors[0], floors[1] + 1, floors[2] + 1)),
-		 dot(stu - float3(1.0f, 1.0f, 1.0f), gradient(floors[0] + 1, floors[1] + 1, floors[2] + 1)));
+  stu.x = v.x - f.x;
+  stu.y = v.y - f.y;
+  stu.z = v.z - f.z;
+  
+  using optix::dot;
+  return legion::trilerp( blend( stu.x ), blend(stu.y ), blend( stu.z ),
+		 dot( stu, gradient( f.x, f.y, f.z ) ), 
+     dot( stu-make_float3(1.0f, 0.0f, 0.0f), gradient( f.x+1, f.y  , f.z  )),
+     dot( stu-make_float3(0.0f, 1.0f, 0.0f), gradient( f.x  , f.y+1, f.z  )),
+     dot( stu-make_float3(1.0f, 1.0f, 0.0f), gradient( f.x+1, f.y+1, f.z  )),
+     dot( stu-make_float3(0.0f, 0.0f, 1.0f), gradient( f.x  , f.y  , f.z+1)),
+     dot( stu-make_float3(1.0f, 0.0f, 1.0f), gradient( f.x+1, f.y  , f.z+1)),
+     dot( stu-make_float3(0.0f, 1.0f, 1.0f), gradient( f.x  , f.y+1, f.z+1)),
+     dot( stu-make_float3(1.0f, 1.0f, 1.0f), gradient( f.x+1, f.y+1, f.z+1)));
 }
 
 
 /**
  * This function returns the gradient of noise(v).
  **/
-float3 PerlinNoise::vectorNoise(const float3& v) {
+LDEVICE float3 PerlinNoise::vectorNoise(const float3& v) {
   int i, floors[3];
   float3 stu, tvNoise, grads[8];
   float blends[3], noiseVals[8];
@@ -206,7 +227,7 @@ float3 PerlinNoise::vectorNoise(const float3& v) {
  * This function returns "turbulent" noise for each point in space.
  * The returned value is in the range [-1, 1].
  **/
-float PerlinNoise::turbulence(const float3& v, unsigned int octaves) {
+LDEVICE float PerlinNoise::turbulence(const float3& v, unsigned int octaves) {
   unsigned int i;
   float t(0.0f), scale(1.0f);
 
@@ -215,6 +236,8 @@ float PerlinNoise::turbulence(const float3& v, unsigned int octaves) {
     scale *= 2.0f;
   }
   return (0.5 * t);
+}
+
 }
 
 #endif // LEGION_COMMON_MATH_CUDA_PERLIN_NOISE_HPP_

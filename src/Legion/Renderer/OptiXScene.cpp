@@ -447,6 +447,7 @@ void OptiXScene::setTextureVariables( optix::Material    mat,
     const std::string tname = name + "_texid__";
     const std::string pname = name + "_proc__";
 
+    // TODO: combine some of this logic
     if( type == ITexture::TYPE_CONSTANT )
     {
         float    v[4];
