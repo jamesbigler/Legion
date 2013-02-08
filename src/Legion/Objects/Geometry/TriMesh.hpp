@@ -36,6 +36,8 @@ class VariableContainer;
 class TriMesh : public IGeometry
 {
 public:
+    static IGeometry* create( Context* context, const Parameters& params );
+
     TriMesh( Context* context );
 
     struct Vertex

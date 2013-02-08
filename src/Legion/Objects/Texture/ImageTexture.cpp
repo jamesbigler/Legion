@@ -26,8 +26,19 @@
 #include <Legion/Common/Util/Image.hpp>
 #include <Legion/Core/Color.hpp>
 #include <Legion/Core/VariableContainer.hpp>
+#include <Legion/Common/Util/Parameters.hpp>
 
 using namespace legion;
+
+ITexture* ImageTexture::create( Context* context, const Parameters& params )
+{
+    ImageTexture* image_tex = new ImageTexture( context );
+    std::string filename;
+    if( !params.get( "filename", filename ) )
+        throw Exception( "ImageTexture::create(): no filename provided" );
+    image_tex->set( filename );
+    return image_tex;
+}
 
 
 ImageTexture::ImageTexture( Context* context )

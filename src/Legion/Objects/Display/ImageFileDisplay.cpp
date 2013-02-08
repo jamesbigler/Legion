@@ -23,10 +23,20 @@
 
 #include <Legion/Objects/Display/ImageFileDisplay.hpp>
 #include <Legion/Common/Util/Image.hpp>
+#include <Legion/Common/Util/Parameters.hpp>
 #include <iostream>
 #include <iomanip>
 
 using namespace legion;
+
+IDisplay* ImageFileDisplay::create( Context* context, const Parameters& params )
+{
+    return new ImageFileDisplay(
+            context, 
+            params.get( "filename", std::string( "legion.exr" ) ).c_str()
+            );
+}
+
 
 ImageFileDisplay::ImageFileDisplay( Context* context, const char* filename )
     : IDisplay( context ),

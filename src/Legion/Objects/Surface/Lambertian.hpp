@@ -16,6 +16,8 @@ class ITexture;
 class Lambertian : public ISurface
 {
 public:
+    static ISurface* create( Context* context, const Parameters& params );
+
     Lambertian( Context* context );
     ~Lambertian();
     

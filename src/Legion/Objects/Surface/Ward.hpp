@@ -15,6 +15,8 @@ class VariableContainer;
 class Ward : public ISurface
 {
 public:
+    static ISurface* create( Context* context, const Parameters& params );
+
     Ward( Context* context );
     ~Ward();
     

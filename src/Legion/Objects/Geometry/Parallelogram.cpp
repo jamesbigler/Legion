@@ -24,28 +24,24 @@
 
 #include <Legion/Objects/Geometry/Parallelogram.hpp>
 #include <Legion/Core/VariableContainer.hpp>
+#include <Legion/Common/Util/Parameters.hpp>
 
 
 using namespace legion;
     
-
+    
 IGeometry* Parallelogram::create( Context* context, const Parameters& params )
 {
-    return new Parallelogram( context, params );
+    Parallelogram* pgram = new Parallelogram( context );
+    const Vector3 anchor = params.get( "anchor", Vector3(-0.5f, 0.0f, -0.5f ) );
+    const Vector3 U      = params.get( "U"     , Vector3( 1.0f, 0.0f,  0.0f ) );
+    const Vector3 V      = params.get( "V"     , Vector3( 0.0f, 0.0f, -1.0f ) );
+    pgram->setAnchorUV( anchor, U, V );
+    return pgram;
 }
+
 
 Parallelogram::Parallelogram( Context* context )
-    : IGeometry( context ),
-      m_transform( Matrix::identity() ),
-      m_anchor( -0.5f, -0.5f, -0.5f ),
-      m_U( 1.0f, 0.0f, 0.0f ),
-      m_V( 0.0f, 0.0f, -1.0f ),
-      m_surface( 0 )
-{
-}
-
-
-Parallelogram::Parallelogram( Context* context, const Parameters& /*params*/)
     : IGeometry( context ),
       m_transform( Matrix::identity() ),
       m_anchor( -0.5f, -0.5f, -0.5f ),

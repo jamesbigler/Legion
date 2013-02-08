@@ -29,10 +29,28 @@
 #include <Legion/Core/Exception.hpp>
 #include <Legion/Core/PluginContext.hpp>
 #include <Legion/Core/VariableContainer.hpp>
-#include <Legion/Objects/Geometry/Sphere.hpp>
 #include <Legion/Objects/Renderer/IRenderer.hpp>
 #include <Legion/Renderer/OptiXScene.hpp>
 #include <fstream>
+
+
+// TODO: For object registration.  Better way to do this???  Perhaps a static
+//       object which registers plugins?
+
+#include <Legion/Objects/Camera/ThinLens.hpp>
+#include <Legion/Objects/Display/ImageFileDisplay.hpp>
+#include <Legion/Objects/Environment/ConstantEnvironment.hpp>
+#include <Legion/Objects/Geometry/Parallelogram.hpp>
+#include <Legion/Objects/Geometry/Sphere.hpp>
+#include <Legion/Objects/Geometry/TriMesh.hpp>
+#include <Legion/Objects/Renderer/ProgressiveRenderer.hpp>
+#include <Legion/Objects/Surface/DiffuseEmitter.hpp>
+#include <Legion/Objects/Surface/Lambertian.hpp>
+#include <Legion/Objects/Surface/Ward.hpp>
+#include <Legion/Objects/Texture/ConstantTexture.hpp>
+#include <Legion/Objects/Texture/ImageTexture.hpp>
+#include <Legion/Objects/Texture/PerlinTexture.hpp>
+
 
 
 using namespace legion;
@@ -52,16 +70,21 @@ class Context::Impl
 public:
     Impl( Context* context );
     ~Impl();
+    
+    ICamera*      createCamera     ( const char* name, const Parameters& p );
+    IDisplay*     createDisplay    ( const char* name, const Parameters& p );
+    IEnvironment* createEnvironment( const char* name, const Parameters& p );
+    IGeometry*    createGeometry   ( const char* name, const Parameters& p );
+    ILight*       createLight      ( const char* name, const Parameters& p );
+    IRenderer*    createRenderer   ( const char* name, const Parameters& p );
+    ISurface*     createSurface    ( const char* name, const Parameters& p );
+    ITexture*     createTexture    ( const char* name, const Parameters& p );
 
     void setRenderer   ( IRenderer* renderer );
-
     void setCamera     ( ICamera* camera );
-
     void setEnvironment( IEnvironment* environment );
-
     void addGeometry   ( IGeometry* geometry );
-
-    void addLight( ILight* light );
+    void addLight      ( ILight* light );
 
     void addAssetPath( const std::string& path );
 
@@ -89,6 +112,21 @@ Context::Impl::Impl( Context* context )
       m_log_file( "legion.log" )
 {
     Log::setStream( m_log_file );
+    PluginManager& pm = m_plugin_mgr;
+    pm.registerPlugin( "ThinLens",            &ThinLens::create            );
+    pm.registerPlugin( "ImageFileDisplay",    &ImageFileDisplay::create    );
+    pm.registerPlugin( "ConstantEnvironment", &ConstantEnvironment::create );
+    pm.registerPlugin( "Sphere",              &Sphere::create              );
+    pm.registerPlugin( "TriMesh",             &TriMesh::create             );
+    pm.registerPlugin( "Parallelogram"      , &Parallelogram::create       );
+    pm.registerPlugin( "ProgressiveRenderer", &ProgressiveRenderer::create );
+    pm.registerPlugin( "DiffuseEmitter",      &DiffuseEmitter::create      );
+    pm.registerPlugin( "Lambertian",          &Lambertian::create          );
+    pm.registerPlugin( "Ward",                &Ward::create                );
+    pm.registerPlugin( "ConstantTexture",     &ConstantTexture::create     );
+    pm.registerPlugin( "ImageTexture",        &ImageTexture::create        );
+    pm.registerPlugin( "PerlinTexture",       &PerlinTexture::create       );
+
   /*
     m_plugin_mgr.registerPlugin<IGeometry>( "Sphere", &Sphere::create );
 
@@ -102,6 +140,54 @@ Context::Impl::Impl( Context* context )
 
 Context::Impl::~Impl() 
 {
+}
+
+
+ICamera* Context::Impl::createCamera( const char* name, const Parameters& p )
+{
+    return m_plugin_mgr.create<ICamera>( name, p );
+}
+
+
+IDisplay* Context::Impl::createDisplay( const char* name, const Parameters& p )
+{
+    return m_plugin_mgr.create<IDisplay>( name, p );
+}
+
+
+IEnvironment* Context::Impl::createEnvironment( const char* name, const Parameters& p )
+{
+    return m_plugin_mgr.create<IEnvironment>( name, p );
+}
+
+
+IGeometry* Context::Impl::createGeometry( const char* name, const Parameters& p )
+{
+    return m_plugin_mgr.create<IGeometry>( name, p );
+}
+
+
+ILight* Context::Impl::createLight( const char* name, const Parameters& p )
+{
+    return m_plugin_mgr.create<ILight>( name, p );
+}
+
+
+IRenderer* Context::Impl::createRenderer( const char* name, const Parameters& p )
+{
+    return m_plugin_mgr.create<IRenderer>( name, p );
+}
+
+
+ISurface* Context::Impl::createSurface( const char* name, const Parameters& p )
+{
+    return m_plugin_mgr.create<ISurface>( name, p );
+}
+
+
+ITexture* Context::Impl::createTexture( const char* name, const Parameters& p )
+{
+    return m_plugin_mgr.create<ITexture>( name, p );
 }
 
 
@@ -181,7 +267,6 @@ Context::~Context()
 {
 }
 
-
 void Context::setRenderer( IRenderer* renderer )
 {
     m_impl->setRenderer( renderer );
@@ -227,4 +312,52 @@ void Context::render()
 PluginContext& Context::getPluginContext()
 {
     return m_impl->getPluginContext();
+}
+
+
+ICamera* Context::createCamera( const char* name, const Parameters& p )
+{
+    return m_impl->createCamera( name, p );
+}
+
+
+IDisplay* Context::createDisplay( const char* name, const Parameters& p )
+{
+    return m_impl->createDisplay( name, p );
+}
+
+
+IEnvironment* Context::createEnvironment( const char* name, const Parameters& p)
+{
+    return m_impl->createEnvironment( name, p );
+}
+
+
+IGeometry* Context::createGeometry( const char* name, const Parameters& p )
+{
+    return m_impl->createGeometry( name, p );
+}
+
+
+ILight* Context::createLight( const char* name, const Parameters& p )
+{
+    return m_impl->createLight( name, p );
+}
+
+
+IRenderer* Context::createRenderer ( const char* name, const Parameters& p )
+{
+    return m_impl->createRenderer( name, p );
+}
+
+
+ISurface* Context::createSurface( const char* name, const Parameters& p )
+{
+    return m_impl->createSurface( name, p );
+}
+
+
+ITexture* Context::createTexture( const char* name, const Parameters& p )
+{
+    return m_impl->createTexture( name, p );
 }

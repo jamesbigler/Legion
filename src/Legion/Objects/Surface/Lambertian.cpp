@@ -2,9 +2,21 @@
 
 #include <Legion/Objects/Surface/Lambertian.hpp>
 #include <Legion/Core/VariableContainer.hpp>
+#include <Legion/Common/Util/Parameters.hpp>
 
 
 using namespace legion;
+
+    
+ISurface* Lambertian::create( Context* context, const Parameters& params )
+{
+    Lambertian* lambertian = new Lambertian( context );
+    lambertian->setReflectance( 
+            params.get( "reflectance", static_cast<ITexture*>( 0 ) )
+            );
+    return lambertian;
+}
+
 
 
 Lambertian::Lambertian( Context* context )

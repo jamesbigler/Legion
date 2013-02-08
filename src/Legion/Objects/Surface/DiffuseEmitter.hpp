@@ -15,6 +15,8 @@ class VariableContainer;
 class DiffuseEmitter : public ISurface
 {
 public:
+    static ISurface* create( Context* context, const Parameters& params );
+
     DiffuseEmitter( Context* context );
     ~DiffuseEmitter();
     

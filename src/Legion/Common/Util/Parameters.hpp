@@ -42,9 +42,11 @@ class Parameters
 public:
     enum ParameterType
     {
-        TYPE_FLOAT,
         TYPE_INT,
-        TYPE_VECTOR,
+        TYPE_FLOAT,
+        TYPE_VECTOR2,
+        TYPE_VECTOR3,
+        TYPE_VECTOR4,
         TYPE_COLOR,
         TYPE_MATRIX,
         TYPE_TEXTURE,
@@ -60,7 +62,9 @@ public:
     bool get( const std::string& name, float&       val )const;
     bool get( const std::string& name, int&         val )const;
     bool get( const std::string& name, ITexture*&   val )const;
+    bool get( const std::string& name, Vector2&     val )const;
     bool get( const std::string& name, Vector3&     val )const;
+    bool get( const std::string& name, Vector4&     val )const;
     bool get( const std::string& name, Color&       val )const;
     bool get( const std::string& name, Matrix&      val )const;
     bool get( const std::string& name, std::string& val )const;
@@ -68,7 +72,9 @@ public:
     bool set( const std::string& name, float              val );
     bool set( const std::string& name, int                val );
     bool set( const std::string& name, ITexture*          val );
+    bool set( const std::string& name, const Vector2&     val );
     bool set( const std::string& name, const Vector3&     val );
+    bool set( const std::string& name, const Vector4&     val );
     bool set( const std::string& name, const Color&       val );
     bool set( const std::string& name, const Matrix&      val );
     bool set( const std::string& name, const std::string& val );
@@ -88,7 +94,9 @@ private:
 
     typedef std::map<std::string, Param<float> >       FloatParams;
     typedef std::map<std::string, Param<int> >         IntParams;
-    typedef std::map<std::string, Param<Vector3> >     VectorParams;
+    typedef std::map<std::string, Param<Vector2> >     Vector2Params;
+    typedef std::map<std::string, Param<Vector3> >     Vector3Params;
+    typedef std::map<std::string, Param<Vector4> >     Vector4Params;
     typedef std::map<std::string, Param<Color> >       ColorParams;
     typedef std::map<std::string, Param<Matrix> >      MatrixParams;
     typedef std::map<std::string, Param<std::string> > StringParams;
@@ -96,7 +104,9 @@ private:
 
     FloatParams     m_float_params;
     IntParams       m_int_params;
-    VectorParams    m_vector_params;
+    Vector2Params   m_vector2_params;
+    Vector3Params   m_vector3_params;
+    Vector4Params   m_vector4_params;
     ColorParams     m_color_params;
     MatrixParams    m_matrix_params;
     StringParams    m_string_params;

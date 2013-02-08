@@ -30,28 +30,10 @@
 
 using namespace legion;
 
-
-
-
-
-
-
-
-
-
-
-
-
-#include <iostream>
-    
-
-
-
-
-
-
-
-
+IGeometry* TriMesh::create( Context* /*context*/, const Parameters& /*params*/ )
+{
+    LEGION_TODO();
+}
 
 
 TriMesh::TriMesh( Context* context )
@@ -143,25 +125,6 @@ ISurface* TriMesh::getSurface()const
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 void TriMesh::setTriangles( const std::vector<Vector3>& vertices,
                             const std::vector<Index3>& triangles )
 {
@@ -188,25 +151,6 @@ void TriMesh::setTriangles( const std::vector<Vector3>& vertices,
                vertices.end(),
                reinterpret_cast<Vector3*>( m_vertices->map() ) );
     m_vertices->unmap();
-
-    /*
-    float* f = (float*)m_vertices->map();
-    for( unsigned i = 0; i < vertices.size(); ++i )
-    {
-        std::cerr << "v " << f[i*3+0] << " " << f[i*3+1] << " " << f[i*3+2] 
-                  << std::endl;
-    }
-    m_vertices->unmap();
-
-    unsigned* u = (unsigned*)m_triangles->map();
-    for( unsigned i = 0; i < triangles.size(); ++i )
-    {
-        std::cerr << "f " << u[i*3+0] << " " << u[i*3+1] << " " << u[i*3+2] 
-                  << std::endl;
-    }
-    m_triangles->unmap();
-    exit(0);
-    */
 }
 
 

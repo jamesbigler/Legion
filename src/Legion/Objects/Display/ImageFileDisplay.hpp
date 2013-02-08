@@ -35,8 +35,9 @@ class VariableContainer;
 class ImageFileDisplay : public IDisplay
 {
 public:
-    ImageFileDisplay( Context* context, const char* filename );
+    static IDisplay* create( Context* context, const Parameters& params );
 
+    ImageFileDisplay( Context* context, const char* filename );
 
     void beginScene    ( const std::string& scene_name );
     void setUpdateCount( unsigned m_update_count );

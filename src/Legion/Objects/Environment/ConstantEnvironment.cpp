@@ -22,8 +22,21 @@
 
 #include <Legion/Objects/Environment/ConstantEnvironment.hpp>
 #include <Legion/Core/VariableContainer.hpp>
+#include <Legion/Common/Util/Parameters.hpp>
+
 
 using namespace legion;
+
+IEnvironment* ConstantEnvironment::create(
+        Context* context,
+        const Parameters& params
+        )
+{
+    ConstantEnvironment* const_env = new ConstantEnvironment( context );
+    const_env->setRadiance( params.get( "radiance", Color(0.5f, 0.5f, 0.5f) ) );
+    return const_env;
+}
+
 
 ConstantEnvironment::ConstantEnvironment( Context* context )
     : IEnvironment( context ),

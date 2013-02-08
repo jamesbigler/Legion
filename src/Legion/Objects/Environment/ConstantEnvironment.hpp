@@ -39,6 +39,8 @@ namespace legion
 class ConstantEnvironment : public IEnvironment 
 {
 public:
+    static IEnvironment* create( Context* context, const Parameters& params );
+
     ConstantEnvironment( Context* context );
 
     ~ConstantEnvironment();

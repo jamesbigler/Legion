@@ -23,9 +23,21 @@
 
 #include <Legion/Objects/Camera/ThinLens.hpp>
 #include <Legion/Core/VariableContainer.hpp>
+#include <Legion/Common/Util/Parameters.hpp>
 
 
 using namespace legion;
+
+ICamera* ThinLens::create( Context* context, const Parameters& params )
+{
+    const Vector4 default_vp( -0.5f, 0.5f, -0.375f, 0.375f );
+
+    ThinLens* thinlens = new ThinLens( context );
+    thinlens->setFocalDistance ( params.get( "focal_distance",  1.0f       ) );
+    thinlens->setApertureRadius( params.get( "aperture_radius", 0.0f       ) );
+    thinlens->setViewPlane     ( params.get( "view_plane",      default_vp ) );
+    return thinlens;
+}
 
 
 ThinLens::ThinLens( Context* context ) 
@@ -80,10 +92,12 @@ void ThinLens::setApertureRadius( float radius )
 
 void ThinLens::setViewPlane( float l, float r, float b, float t )
 {
-    m_view_plane[ 0 ] = l;
-    m_view_plane[ 1 ] = r;
-    m_view_plane[ 2 ] = b;
-    m_view_plane[ 3 ] = t;
+    setViewPlane( Vector4( l, r, b, t ) );
+}
+
+void ThinLens::setViewPlane( const Vector4& lrbt )
+{
+    m_view_plane = lrbt;
 }
 
 

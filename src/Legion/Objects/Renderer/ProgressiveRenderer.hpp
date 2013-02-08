@@ -37,6 +37,8 @@ class IDisplay;
 class ProgressiveRenderer : public IRenderer
 {
 public:
+    static IRenderer* create( Context* context, const Parameters& params );
+
     ProgressiveRenderer( Context* context );
     ~ProgressiveRenderer();
 

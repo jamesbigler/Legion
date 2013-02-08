@@ -21,16 +21,17 @@ int main( int , char** )
         
         legion::Parameters params;
         params.set( "value", legion::Color( 1.0f, 1.0f, 1.0f ) );
-        // TODO: legion::createSurfaceShader( "Lambertian", "material", params );
-        legion::ITexture* white =
-            legion::ConstantTexture::create( &ctx, params );
+        legion::ITexture* white_tex = 
+            ctx.createTexture( "ConstantTexture", params);
 
-        legion::Lambertian lambertian( &ctx );
-        lambertian.setReflectance( white );
-       
+        params.clear();
+        params.set( "reflectance", white_tex );
+        legion::ISurface* lambertian =
+            ctx.createSurface( "Lambertian", params);
+
         legion::Sphere sphere( &ctx );
         sphere.setCenter( legion::Vector3( 1.0f, 0.0f, -5.0f ) );
-        sphere.setSurface( &lambertian );
+        sphere.setSurface( lambertian );
         ctx.addGeometry( &sphere );
         
         legion::Parallelogram pgram( &ctx );
@@ -39,7 +40,7 @@ int main( int , char** )
             legion::Vector3(  20.0f,  0.0f,   0.0f ),
             legion::Vector3(   0.0f,  0.0f, -20.0f )
             );
-        pgram.setSurface( &lambertian );
+        pgram.setSurface( lambertian );
         ctx.addGeometry( &pgram );
 
         legion::DiffuseEmitter emitter( &ctx );
@@ -66,6 +67,7 @@ int main( int , char** )
     }
     catch( legion::Exception& e )
     {
+        std::cerr << e.what();
         LLOG_ERROR << e.what();
     }
 }

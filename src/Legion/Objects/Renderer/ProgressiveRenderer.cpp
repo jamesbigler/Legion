@@ -28,6 +28,13 @@
 #include <Legion/Common/Util/Logger.hpp>
 
 using namespace legion;
+    
+
+IRenderer* ProgressiveRenderer::create( Context* context, const Parameters& )
+{
+    return new ProgressiveRenderer( context );
+}
+
 
 ProgressiveRenderer::ProgressiveRenderer( Context* context ) 
    : IRenderer( context )

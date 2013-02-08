@@ -32,10 +32,14 @@ namespace legion
 
 class Context;
 class ICamera;
-class IFilm;
+class IDisplay;
+class IEnvironment;
 class IGeometry;
 class ILight;
+class IRenderer;
 class ISurface;
+class ITexture;
+
 class Parameters;
 
 
@@ -84,10 +88,13 @@ private:
             const Parameters& params );
 
 FORWARD_DECLARE_PLUGIN_SPECIALIZATIONS( ICamera        )
-FORWARD_DECLARE_PLUGIN_SPECIALIZATIONS( IFilm          )
+FORWARD_DECLARE_PLUGIN_SPECIALIZATIONS( IDisplay       )
+FORWARD_DECLARE_PLUGIN_SPECIALIZATIONS( IEnvironment   )
 FORWARD_DECLARE_PLUGIN_SPECIALIZATIONS( IGeometry      )
 FORWARD_DECLARE_PLUGIN_SPECIALIZATIONS( ILight         )
-FORWARD_DECLARE_PLUGIN_SPECIALIZATIONS( ISurface )
+FORWARD_DECLARE_PLUGIN_SPECIALIZATIONS( IRenderer      )
+FORWARD_DECLARE_PLUGIN_SPECIALIZATIONS( ISurface       )
+FORWARD_DECLARE_PLUGIN_SPECIALIZATIONS( ITexture       )
 
 #undef FORWARD_DECLARE_PLUGIN_SPECIALIZATIONS
 

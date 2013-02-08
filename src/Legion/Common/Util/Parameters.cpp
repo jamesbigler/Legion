@@ -59,7 +59,9 @@ namespace
 
 PARAMETERS_GET_IMPL( FloatParams,   m_float_params,   float       );
 PARAMETERS_GET_IMPL( IntParams,     m_int_params,     int         );
-PARAMETERS_GET_IMPL( VectorParams,  m_vector_params,  Vector3     );
+PARAMETERS_GET_IMPL( Vector2Params, m_vector2_params, Vector2     );
+PARAMETERS_GET_IMPL( Vector3Params, m_vector3_params, Vector3     );
+PARAMETERS_GET_IMPL( Vector4Params, m_vector4_params, Vector4     );
 PARAMETERS_GET_IMPL( ColorParams,   m_color_params,   Color       );
 PARAMETERS_GET_IMPL( MatrixParams,  m_matrix_params,  Matrix      );
 PARAMETERS_GET_IMPL( StringParams,  m_string_params,  std::string );
@@ -85,7 +87,9 @@ PARAMETERS_GET_IMPL( TextureParams, m_texture_params, ITexture*   );
 PARAMETERS_SET_IMPL    ( m_float_params,   float       );
 PARAMETERS_SET_IMPL    ( m_int_params,     int         );
 PARAMETERS_SET_IMPL    ( m_texture_params, ITexture*   );
-PARAMETERS_SET_REF_IMPL( m_vector_params,  Vector3     );
+PARAMETERS_SET_REF_IMPL( m_vector2_params, Vector2     );
+PARAMETERS_SET_REF_IMPL( m_vector3_params, Vector3     );
+PARAMETERS_SET_REF_IMPL( m_vector4_params, Vector4     );
 PARAMETERS_SET_REF_IMPL( m_color_params,   Color       );
 PARAMETERS_SET_REF_IMPL( m_matrix_params,  Matrix      );
 PARAMETERS_SET_REF_IMPL( m_string_params,  std::string );
@@ -99,8 +103,14 @@ void Parameters::reportUnused( std::ostream& out )const
     std::for_each( m_int_params.begin(), m_int_params.end(), 
                    ReportUnused<IntParams::value_type>( out ) );
     
-    std::for_each( m_vector_params.begin(), m_vector_params.end(), 
-                   ReportUnused<VectorParams::value_type>( out ) );
+    std::for_each( m_vector2_params.begin(), m_vector2_params.end(), 
+                   ReportUnused<Vector2Params::value_type>( out ) );
+
+    std::for_each( m_vector3_params.begin(), m_vector3_params.end(), 
+                   ReportUnused<Vector3Params::value_type>( out ) );
+
+    std::for_each( m_vector4_params.begin(), m_vector4_params.end(), 
+                   ReportUnused<Vector4Params::value_type>( out ) );
 
     std::for_each( m_color_params.begin(), m_color_params.end(), 
                    ReportUnused<ColorParams::value_type>( out ) );
@@ -120,7 +130,9 @@ void Parameters::clear()
 {
     m_float_params.clear();
     m_int_params.clear();
-    m_vector_params.clear();
+    m_vector2_params.clear();
+    m_vector3_params.clear();
+    m_vector4_params.clear();
     m_color_params.clear();
     m_matrix_params.clear();
     m_string_params.clear();

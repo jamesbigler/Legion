@@ -38,8 +38,9 @@ namespace legion
 class ImageTexture : public ITexture
 {
 public:
-    ImageTexture( Context* context );
+    static ITexture* create( Context* context, const Parameters& params );
 
+    ImageTexture( Context* context );
     ~ImageTexture();
 
     void set( const std::string& filename ); 

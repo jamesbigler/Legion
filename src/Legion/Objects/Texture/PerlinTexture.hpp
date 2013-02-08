@@ -40,8 +40,9 @@ namespace legion
 class PerlinTexture : public ProceduralTexture
 {
 public:
-    PerlinTexture( Context* context );
+    static ITexture* create( Context* context, const Parameters& params );
 
+    PerlinTexture( Context* context );
     ~PerlinTexture();
 
     void        setColors( const Color& c0, const Color& c1 );

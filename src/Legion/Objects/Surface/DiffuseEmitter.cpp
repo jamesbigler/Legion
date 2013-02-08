@@ -2,13 +2,23 @@
 
 #include <Legion/Objects/Surface/DiffuseEmitter.hpp>
 #include <Legion/Core/VariableContainer.hpp>
+#include <Legion/Common/Util/Parameters.hpp>
 
 
 using namespace legion;
 
 
+ISurface* DiffuseEmitter::create( Context* context, const Parameters& params )
+{
+    DiffuseEmitter* de = new DiffuseEmitter( context );
+    de->setRadiance( params.get( "radiance", Color( 1.0f, 1.0f, 1.0f ) ) );
+    return de;
+}
+
+
 DiffuseEmitter::DiffuseEmitter( Context* context )
-    : ISurface( context )
+    : ISurface( context ),
+      m_radiance( 1.0f, 1.0f, 1.0f )
 {
 }
 

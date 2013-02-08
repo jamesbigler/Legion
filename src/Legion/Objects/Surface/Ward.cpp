@@ -2,9 +2,26 @@
 
 #include <Legion/Objects/Surface/Ward.hpp>
 #include <Legion/Core/VariableContainer.hpp>
+#include <Legion/Common/Util/Parameters.hpp>
 
 
 using namespace legion;
+
+    
+ISurface* Ward::create( Context* context, const Parameters& params )
+{
+    Ward* ward = new Ward( context );
+    ward->setDiffuseReflectance(  
+            params.get( "diffuse_reflectance", Color( 0.5f, 0.5f, 0.5f ) )
+            );
+    ward->setSpecularReflectance( 
+            params.get( "specular_reflectance", Color( 0.5f, 0.5f, 0.5f ) )
+            );
+    ward->setAlphaU( params.get( "alpha_u", 0.0f ) );
+    ward->setAlphaV( params.get( "alpha_v", 0.0f ) );
+
+    return ward;
+}
 
 
 Ward::Ward( Context* context )

@@ -38,6 +38,8 @@ namespace legion
 class ThinLens : public ICamera
 {
 public:
+    static ICamera* create( Context* context, const Parameters& params );
+
     /// Create a ThinLens object
     ThinLens( Context* context );
 
@@ -63,6 +65,7 @@ public:
 
     ///
     void setViewPlane( float l, float r, float b, float t );
+    void setViewPlane( const Vector4& lrbt );
 
     /// See IObject::setVariables
     void setVariables( VariableContainer& container ) const;

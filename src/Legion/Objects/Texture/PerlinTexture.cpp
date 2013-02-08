@@ -23,8 +23,20 @@
 
 #include <Legion/Objects/Texture/PerlinTexture.hpp>
 #include <Legion/Core/VariableContainer.hpp>
+#include <Legion/Common/Util/Parameters.hpp>
 
 using namespace legion;
+
+ITexture* PerlinTexture::create( Context* context, const Parameters& params )
+{
+    PerlinTexture* perlin = new PerlinTexture( context );
+
+    perlin->setColors( params.get( "c0", Color( 0.9f, 0.9f, 0.9f ) ), 
+                       params.get( "c1", Color( 0.1f, 0.1f, 0.1f ) ) ); 
+    perlin->setScale(  params.get( "scale", 10.0f ) );
+
+    return perlin;
+}
 
 
 PerlinTexture::PerlinTexture( Context* context )
