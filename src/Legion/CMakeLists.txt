@@ -46,6 +46,8 @@ add_library( legion SHARED
     Common/Math/Vector.hpp
     Common/Util/Assert.hpp
     Common/Util/AutoTimerHelpers.hpp
+    Common/Util/Factory.cpp
+    Common/Util/Factory.hpp
     Common/Util/Image.cpp
     Common/Util/Image.hpp
     Common/Util/Logger.cpp
@@ -53,8 +55,6 @@ add_library( legion SHARED
     Common/Util/Noncopyable.hpp
     Common/Util/Parameters.cpp
     Common/Util/Parameters.hpp
-    Common/Util/Plugin.cpp
-    Common/Util/Plugin.hpp
     Common/Util/Singleton.hpp
     Common/Util/Stream.cpp
     Common/Util/Stream.hpp
@@ -66,10 +66,8 @@ add_library( legion SHARED
     Core/Color.hpp
     Core/Context.cpp
     Core/Context.hpp
-    Core/Declarations.hpp
     Core/Exception.cpp
     Core/Exception.hpp
-    Core/Ray.hpp
     Core/VariableContainer.cpp
     Core/VariableContainer.hpp
     Legion.hpp

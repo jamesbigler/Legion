@@ -20,9 +20,9 @@
 // IN THE SOFTWARE.
 
 
+#include <Legion/Common/Util/Factory.hpp>
 #include <Legion/Common/Util/Logger.hpp>
 #include <Legion/Common/Util/Parameters.hpp>
-#include <Legion/Common/Util/Plugin.hpp>
 #include <Legion/Common/Util/Preprocessor.hpp>
 #include <Legion/Common/Util/Timer.hpp>
 #include <Legion/Core/Context.hpp>
@@ -32,7 +32,6 @@
 #include <Legion/Objects/Renderer/IRenderer.hpp>
 #include <Legion/Renderer/OptiXScene.hpp>
 #include <fstream>
-
 
 // TODO: For object registration.  Better way to do this???  Perhaps a static
 //       object which registers plugins?
@@ -50,8 +49,6 @@
 #include <Legion/Objects/Texture/ConstantTexture.hpp>
 #include <Legion/Objects/Texture/ImageTexture.hpp>
 #include <Legion/Objects/Texture/PerlinTexture.hpp>
-
-
 
 using namespace legion;
 
@@ -93,7 +90,7 @@ public:
     PluginContext& getPluginContext();
 
 private:
-    PluginManager   m_plugin_mgr;
+    Factory         m_factory;
     OptiXScene      m_optix_scene;
     PluginContext   m_plugin_context;
     std::ofstream   m_log_file;
@@ -106,35 +103,26 @@ private:
 
 
 Context::Impl::Impl( Context* context ) 
-    : m_plugin_mgr( context ),
+    : m_factory( context ),
       m_optix_scene(),
       m_plugin_context( m_optix_scene.getOptiXContext() ),
       m_log_file( "legion.log" )
 {
     Log::setStream( m_log_file );
-    PluginManager& pm = m_plugin_mgr;
-    pm.registerPlugin( "ThinLens",            &ThinLens::create            );
-    pm.registerPlugin( "ImageFileDisplay",    &ImageFileDisplay::create    );
-    pm.registerPlugin( "ConstantEnvironment", &ConstantEnvironment::create );
-    pm.registerPlugin( "Sphere",              &Sphere::create              );
-    pm.registerPlugin( "TriMesh",             &TriMesh::create             );
-    pm.registerPlugin( "Parallelogram"      , &Parallelogram::create       );
-    pm.registerPlugin( "ProgressiveRenderer", &ProgressiveRenderer::create );
-    pm.registerPlugin( "DiffuseEmitter",      &DiffuseEmitter::create      );
-    pm.registerPlugin( "Lambertian",          &Lambertian::create          );
-    pm.registerPlugin( "Ward",                &Ward::create                );
-    pm.registerPlugin( "ConstantTexture",     &ConstantTexture::create     );
-    pm.registerPlugin( "ImageTexture",        &ImageTexture::create        );
-    pm.registerPlugin( "PerlinTexture",       &PerlinTexture::create       );
-
-  /*
-    m_plugin_mgr.registerPlugin<IGeometry>( "Sphere", &Sphere::create );
-
-    Parameters params;
-    IGeometry* geo = m_plugin_mgr.create<IGeometry>( "Sphere", params );
-    LLOG_INFO << "\tSphere: " << geo;
-    //Geometry* geo = ctx->create<Geometry>( "Sphere", properties );
-  */
+    Factory& f = m_factory;
+    f.registerObject( "ThinLens",            &ThinLens::create            );
+    f.registerObject( "ImageFileDisplay",    &ImageFileDisplay::create    );
+    f.registerObject( "ConstantEnvironment", &ConstantEnvironment::create );
+    f.registerObject( "Sphere",              &Sphere::create              );
+    f.registerObject( "TriMesh",             &TriMesh::create             );
+    f.registerObject( "Parallelogram"      , &Parallelogram::create       );
+    f.registerObject( "ProgressiveRenderer", &ProgressiveRenderer::create );
+    f.registerObject( "DiffuseEmitter",      &DiffuseEmitter::create      );
+    f.registerObject( "Lambertian",          &Lambertian::create          );
+    f.registerObject( "Ward",                &Ward::create                );
+    f.registerObject( "ConstantTexture",     &ConstantTexture::create     );
+    f.registerObject( "ImageTexture",        &ImageTexture::create        );
+    f.registerObject( "PerlinTexture",       &PerlinTexture::create       );
 }
 
 
@@ -145,49 +133,49 @@ Context::Impl::~Impl()
 
 ICamera* Context::Impl::createCamera( const char* name, const Parameters& p )
 {
-    return m_plugin_mgr.create<ICamera>( name, p );
+    return m_factory.createCamera( name, p );
 }
 
 
 IDisplay* Context::Impl::createDisplay( const char* name, const Parameters& p )
 {
-    return m_plugin_mgr.create<IDisplay>( name, p );
+    return m_factory.createDisplay( name, p );
 }
 
 
 IEnvironment* Context::Impl::createEnvironment( const char* name, const Parameters& p )
 {
-    return m_plugin_mgr.create<IEnvironment>( name, p );
+    return m_factory.createEnvironment( name, p );
 }
 
 
 IGeometry* Context::Impl::createGeometry( const char* name, const Parameters& p )
 {
-    return m_plugin_mgr.create<IGeometry>( name, p );
+    return m_factory.createGeometry( name, p );
 }
 
 
 ILight* Context::Impl::createLight( const char* name, const Parameters& p )
 {
-    return m_plugin_mgr.create<ILight>( name, p );
+    return m_factory.createLight( name, p );
 }
 
 
 IRenderer* Context::Impl::createRenderer( const char* name, const Parameters& p )
 {
-    return m_plugin_mgr.create<IRenderer>( name, p );
+    return m_factory.createRenderer( name, p );
 }
 
 
 ISurface* Context::Impl::createSurface( const char* name, const Parameters& p )
 {
-    return m_plugin_mgr.create<ISurface>( name, p );
+    return m_factory.createSurface( name, p );
 }
 
 
 ITexture* Context::Impl::createTexture( const char* name, const Parameters& p )
 {
-    return m_plugin_mgr.create<ITexture>( name, p );
+    return m_factory.createTexture( name, p );
 }
 
 
