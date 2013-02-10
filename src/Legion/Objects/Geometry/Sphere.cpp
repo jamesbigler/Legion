@@ -43,7 +43,7 @@ IGeometry* Sphere::create( Context* context, const Parameters& params )
 Sphere::Sphere( Context* context )
     : IGeometry( context ),
       m_transform( Matrix::identity() ),
-      m_radius( 1.0f ),
+      m_radius( 0.5f ),
       m_center( 0.0f, 0.0f, 0.0f ),
       m_surface( 0 )
 {

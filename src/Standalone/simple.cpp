@@ -31,6 +31,7 @@ int main( int , char** )
 
         legion::Sphere sphere( &ctx );
         sphere.setCenter( legion::Vector3( 1.0f, 0.0f, -5.0f ) );
+        sphere.setRadius( 1.0f ); 
         sphere.setSurface( lambertian );
         ctx.addGeometry( &sphere );
         
@@ -48,6 +49,7 @@ int main( int , char** )
 
         legion::Sphere light( &ctx );
         light.setCenter( legion::Vector3( -1.0f, 0.0f, -5.0f ) );
+        light.setRadius( 1.0f ); 
         light.setSurface( &emitter);
         ctx.addGeometry( &light );
 

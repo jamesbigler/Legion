@@ -25,8 +25,8 @@ public:
     void  setGreen( float g )      { m_c[1] = g; }
     void  setBlue ( float b )      { m_c[2] = b; }
 
-    float  operator[]( unsigned idx )const;
-    float& operator[]( unsigned idx );
+    float  operator[]( unsigned idx )const { return m_c[idx]; }
+    float& operator[]( unsigned idx )      { return m_c[idx]; }
 
     Color& operator= ( const Color& rhs );
     Color& operator*=( const Color& rhs );

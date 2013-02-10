@@ -28,8 +28,8 @@ template<size_t> struct StaticAssertionChecker       {};
 /// Static (compile time) assertion.
 /// \param condition   The condition to be tested
 #define LEGION_STATIC_ASSERT( condition )                                      \
-    typedef StaticAssertionChecker<                                            \
-    sizeof( StaticAssertionFailure<(bool)(condition)> ) >                      \
+    typedef legion::StaticAssertionChecker<                                    \
+    sizeof( legion::StaticAssertionFailure<(bool)(condition)> ) >              \
     LEGION_JOIN( _static_assertion_checker_, __LINE__ )
 
 
@@ -39,7 +39,7 @@ template<size_t> struct StaticAssertionChecker       {};
 //
 //------------------------------------------------------------------------------
 #define LEGION_TODO()                                                          \
-    throw Exception( std::string( __PRETTY_FUNCTION__ ) +                      \
+    throw legion::Exception( std::string( __PRETTY_FUNCTION__ ) +              \
                      ": Unimplemented code path taken (TODO)");
 
 
@@ -55,7 +55,7 @@ template<size_t> struct StaticAssertionChecker       {};
         {                                                                      \
             std::stringstream ss;                                              \
             ss << __FILE__ << " (" << __LINE__ << "): " << #cond;              \
-            throw AssertionFailure( ss.str() );                                \
+            throw legion::AssertionFailure( ss.str() );                        \
         }                                                                      \
     } while( 0 )
 

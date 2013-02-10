@@ -20,8 +20,8 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-#ifndef LEGION_CORE_CONTEXT_H_
-#define LEGION_CORE_CONTEXT_H_
+#ifndef LEGION_CORE_CONTEXT_HPP_
+#define LEGION_CORE_CONTEXT_HPP_
 
 #include <Legion/Common/Util/Noncopyable.hpp>
 #include <Legion/Common/Math/Vector.hpp>
@@ -81,4 +81,4 @@ private:
 
 
 }
-#endif // LEGION_CORE_CONTEXT_H_
+#endif // LEGION_CORE_CONTEXT_HPP_
