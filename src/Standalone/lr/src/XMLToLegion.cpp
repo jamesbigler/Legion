@@ -52,6 +52,17 @@ Target lexical_cast( const Source& arg )
     return result;
 }
 
+
+template<>
+Vector2 lexical_cast<Vector2, std::string>( const std::string& arg )
+{
+    std::stringstream oss( arg );
+    Vector2 result;
+    oss >> result[0] >> result[1];
+    return result;
+}
+
+
 template<>
 Vector3 lexical_cast<Vector3, std::string>( const std::string& arg )
 {
@@ -60,6 +71,17 @@ Vector3 lexical_cast<Vector3, std::string>( const std::string& arg )
     oss >> result[0] >> result[1] >> result[2];
     return result;
 }
+
+
+template<>
+Vector4 lexical_cast<Vector4, std::string>( const std::string& arg )
+{
+    std::stringstream oss( arg );
+    Vector4 result;
+    oss >> result[0] >> result[1] >> result[2] >> result[3];
+    return result;
+}
+
 
 template<>
 Color lexical_cast<Color, std::string>( const std::string& arg )
@@ -126,6 +148,7 @@ void XMLToLegion::loadParams( const XMLNode* node )
         }
         else if( type == "vector2" )
         {
+            m_params.set( name, lexical_cast<Vector2>( value ) );
         }
         else if( type == "vector3" )
         {
@@ -133,6 +156,7 @@ void XMLToLegion::loadParams( const XMLNode* node )
         }
         else if( type == "vector4" )
         {
+            m_params.set( name, lexical_cast<Vector4>( value ) );
         }
         else if( type == "color" )
         {
