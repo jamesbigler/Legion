@@ -20,48 +20,23 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-#ifndef LR_XML_TO_LEGION_HPP_
-#define LR_XML_TO_LEGION_HPP_
+#ifndef LR_UTIL_HPP_
+#define LR_UTIL_HPP_
 
 #include <rapidxml/rapidxml.hpp>
-#include <Legion/Legion.hpp>
-#include <memory>
-#include <map>
 
+//------------------------------------------------------------------------------
+//
+//
+//
+//------------------------------------------------------------------------------
 
 namespace lr
 {
 
-class XMLToLegion
-{
-public:
-    typedef rapidxml::xml_node<>       XMLNode; 
-    typedef rapidxml::xml_attribute<>  XMLAttribute; 
-
-    explicit XMLToLegion( const XMLNode* root, bool use_gui );
-    ~XMLToLegion();
-
-    legion::Context* getContext() { return m_ctx.get(); }
-
-private:
-    typedef std::map<std::string, legion::ITexture*>  Textures;
-    typedef std::map<std::string, legion::ISurface*>  Surfaces;
-
-    void loadParams( const XMLNode* node );
-
-    legion::IDisplay* createDisplay ( const XMLNode* display_node );
-    void              createRenderer( legion::IDisplay* display,
-                                      const XMLNode* renderer_node );
-    void              createCamera  ( const XMLNode* camera_node );
-    void              createScene   ( const XMLNode* scene_node );
-
-    std::auto_ptr<legion::Context>   m_ctx;
-    bool                             m_gui;
-    Textures                         m_textures;
-    Surfaces                         m_surfaces;
-    legion::Parameters               m_params;
-};
+rapidxml::xml_node<>*    parseScene( const char* filename );
+bool                     readFile  ( const char* filename, char** contents );
 
 }
 
-#endif // LR_XML_TO_LEGION_HPP_
+#endif //  LR_UTIL_HPP_

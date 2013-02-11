@@ -24,12 +24,12 @@
 #include <Legion/Legion.hpp>
 #include <rapidxml/rapidxml.hpp>
 #include <XMLToLegion.hpp>
+#include <gui/QtDisplay.hpp>
 #include <iostream>
 #include <stdexcept>
 #include <sstream>
 
-
-using namespace legion;
+using namespace lr;
 
 //------------------------------------------------------------------------------
 //
@@ -53,10 +53,11 @@ Target lexical_cast( const Source& arg )
 
 
 template<>
-Vector2 lexical_cast<Vector2, std::string>( const std::string& arg )
+legion::Vector2 lexical_cast<legion::Vector2, std::string>( 
+        const std::string& arg )
 {
     std::stringstream oss( arg );
-    Vector2 result;
+    legion::Vector2 result;
     if( !( oss >> result[0] >> result[1] ) ||
         !( oss >> std::ws ).eof()        )
         throw std::runtime_error( "lexical_cast failure." );
@@ -65,10 +66,11 @@ Vector2 lexical_cast<Vector2, std::string>( const std::string& arg )
 
 
 template<>
-Vector3 lexical_cast<Vector3, std::string>( const std::string& arg )
+legion::Vector3 lexical_cast<legion::Vector3, std::string>(
+        const std::string& arg )
 {
     std::stringstream oss( arg );
-    Vector3 result;
+    legion::Vector3 result;
     if( !( oss >> result[0] >> result[1] >> result[2] ) ||
         !( oss >> std::ws ).eof()                     )
         throw std::runtime_error( "lexical_cast failure." );
@@ -77,10 +79,11 @@ Vector3 lexical_cast<Vector3, std::string>( const std::string& arg )
 
 
 template<>
-Vector4 lexical_cast<Vector4, std::string>( const std::string& arg )
+legion::Vector4 lexical_cast<legion::Vector4, std::string>(
+        const std::string& arg )
 {
     std::stringstream oss( arg );
-    Vector4 result;
+    legion::Vector4 result;
     if( !( oss >> result[0] >> result[1] >> result[2] >> result[3] ) ||
         !( oss >> std::ws ).eof()                                  )
         throw std::runtime_error( "lexical_cast failure." );
@@ -89,10 +92,11 @@ Vector4 lexical_cast<Vector4, std::string>( const std::string& arg )
 
 
 template<>
-Matrix lexical_cast<Matrix, std::string>( const std::string& arg )
+legion::Matrix lexical_cast<legion::Matrix, std::string>(
+        const std::string& arg )
 {
     std::stringstream oss( arg );
-    Matrix result;
+    legion::Matrix result;
     if( !(oss >> result[ 0] >> result[ 1] >> result[ 2] >> result[ 3]
               >> result[ 4] >> result[ 5] >> result[ 6] >> result[ 7]
               >> result[ 8] >> result[ 9] >> result[10] >> result[11]
@@ -104,10 +108,11 @@ Matrix lexical_cast<Matrix, std::string>( const std::string& arg )
 
 
 template<>
-Color lexical_cast<Color, std::string>( const std::string& arg )
+legion::Color lexical_cast<legion::Color, std::string>(
+        const std::string& arg )
 {
     std::stringstream oss( arg );
-    Color result;
+    legion::Color result;
     if( !( oss >> result[0] >> result[1] >> result[2] ) ||
         !( oss >> std::ws ).eof()                     )
         throw std::runtime_error( "lexical_cast failure." );
@@ -116,9 +121,15 @@ Color lexical_cast<Color, std::string>( const std::string& arg )
 
 }
 
+//------------------------------------------------------------------------------
+//
+// 
+//
+//------------------------------------------------------------------------------
 
-XMLToLegion::XMLToLegion( const XMLNode* node )
-    : m_ctx( new legion::Context )
+XMLToLegion::XMLToLegion( const XMLNode* node, bool use_gui )
+    : m_ctx( new legion::Context ),
+      m_gui( use_gui )
 {
     if( !node )
         throw std::runtime_error( "No 'legion_scene' node found in XML" );
@@ -128,8 +139,6 @@ XMLToLegion::XMLToLegion( const XMLNode* node )
     createRenderer( display, node->first_node( "renderer" ) );
     createCamera  ( node->first_node( "camera" ) );
     createScene   ( node->first_node( "scene" ) );
-
-    m_ctx->render();
 }
 
 
@@ -174,27 +183,27 @@ void XMLToLegion::loadParams( const XMLNode* node )
         }
         else if( type == "vector2" )
         {
-            m_params.set( name, lexical_cast<Vector2>( value ) );
+            m_params.set( name, lexical_cast<legion::Vector2>( value ) );
         }
         else if( type == "vector3" )
         {
-            m_params.set( name, lexical_cast<Vector3>( value ) );
+            m_params.set( name, lexical_cast<legion::Vector3>( value ) );
         }
         else if( type == "vector4" )
         {
-            m_params.set( name, lexical_cast<Vector4>( value ) );
+            m_params.set( name, lexical_cast<legion::Vector4>( value ) );
         }
         else if( type == "color" )
         {
-            m_params.set( name, lexical_cast<Color>( value ) );
+            m_params.set( name, lexical_cast<legion::Color>( value ) );
         }
         else if( type == "matrix" )
         {
-            m_params.set( name, lexical_cast<Matrix>( value ) );
+            m_params.set( name, lexical_cast<legion::Matrix>( value ) );
         }
         else if( type == "texture" )
         {
-            ITexture* texture_value = m_textures[ value ];
+            legion::ITexture* texture_value = m_textures[ value ];
             if( !texture_value )
                 throw std::runtime_error( "XMLToLegion: Unknown texture "
                                           "referenced '" + value + "'" );
@@ -211,6 +220,9 @@ void XMLToLegion::loadParams( const XMLNode* node )
 
 legion::IDisplay* XMLToLegion::createDisplay( const XMLNode* display_node )
 {
+    if( m_gui )
+        return new QtDisplay( m_ctx.get() );
+        
     if( !display_node )
         throw std::runtime_error( "XMLToLegion: XML file missing display node");
 
@@ -228,7 +240,7 @@ legion::IDisplay* XMLToLegion::createDisplay( const XMLNode* display_node )
 }
 
 
-void XMLToLegion::createRenderer( IDisplay* display,
+void XMLToLegion::createRenderer( legion::IDisplay* display,
                                   const XMLNode* renderer_node )
 {
     LEGION_ASSERT( display );
@@ -246,7 +258,8 @@ void XMLToLegion::createRenderer( IDisplay* display,
 
     const char* renderer_type = attr->value();
     loadParams( renderer_node );
-    IRenderer* renderer = m_ctx->createRenderer( renderer_type, m_params );
+    legion::IRenderer* renderer =
+        m_ctx->createRenderer( renderer_type, m_params );
     
     renderer->setDisplay( display );
     attr = renderer_node->first_attribute( "samples_per_pixel" );
@@ -273,7 +286,7 @@ void XMLToLegion::createCamera( const XMLNode* camera_node )
 
     const char* camera_type = attr->value();
     loadParams( camera_node );
-    ICamera* camera = m_ctx->createCamera( camera_type, m_params );
+    legion::ICamera* camera = m_ctx->createCamera( camera_type, m_params );
 
     m_ctx->setCamera( camera );
 }
@@ -368,7 +381,7 @@ void XMLToLegion::createScene( const XMLNode* scene_node )
                   << std::endl;
 
         loadParams( geometry_node );
-        IGeometry* geometry = 
+        legion::IGeometry* geometry = 
             m_ctx->createGeometry( type_attr->value(), m_params );
         geometry->setSurface( m_surfaces[ surf_attr->value() ] );
 

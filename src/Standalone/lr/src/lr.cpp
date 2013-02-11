@@ -21,10 +21,10 @@
 // IN THE SOFTWARE.
 
 
-#include <rapidxml/rapidxml.hpp>
-#include <XMLToLegion.hpp>
 #include <iostream>
-#include <fstream>
+#include <Util.hpp>
+#include <XMLToLegion.hpp>
+#include <gui/GUI.hpp>
 
 //------------------------------------------------------------------------------
 //
@@ -32,8 +32,7 @@
 //
 //------------------------------------------------------------------------------
 
-rapidxml::xml_node<>* parseScene( const char* filename );
-bool readFile( const char* filename, char** contents );
+void                     printUsageAndExit( const char* argv0 );
 
 //------------------------------------------------------------------------------
 //
@@ -41,51 +40,13 @@ bool readFile( const char* filename, char** contents );
 //
 //------------------------------------------------------------------------------
 
-rapidxml::xml_node<>* parseScene( const char* filename )
+void printUsageAndExit( const char* argv0 )
 {
-   std::cerr << "Parsing '" << filename << "'" << std::endl;
-
-   try
-   {
-       char* text;
-       if( ! ::readFile( filename, &text ) )
-           throw std::runtime_error( "Failed to read xml file." );
-
-       rapidxml::xml_document<> doc;    // character type defaults to char
-       doc.parse<0>(text);              // 0 means default parse flags
-       return doc.first_node( "legion_scene" );
-
-
-   }
-   catch( rapidxml::parse_error& e )
-   {
-       std::cout << "XML parse error: " << e.what() 
-                 << ": <" << e.where<char>() << ">" << std::endl;
-       throw;
-   }
-}
-
-
-bool readFile( const char* filename, char** contents )
-{
-    std::ifstream in( filename );
-    if( !in )
-    {
-        std::cout << "Failed to open file '" << filename << "'"
-                  << std::endl;
-        return false;
-    }
-
-    // get length of file:
-    in.seekg( 0, std::ios::end );
-    size_t length = in.tellg();
-    in.seekg (0, std::ios::beg );
-
-    // read data 
-    *contents = new char[ length ];
-    in.read( *contents, length );
-    
-    return true;
+    std::cout << "\nUsage  : " << argv0 << " [options] <scene_file.xml>\n\n"
+              << "Options:\n"
+              << "\t--nogui    Turn off gui mode\n"
+              << std::endl;
+    exit(0);
 }
 
 
@@ -97,15 +58,35 @@ bool readFile( const char* filename, char** contents )
 
 int main( int argc , char** argv )
 {
-    if( argc != 2 )
+    if( argc < 2 )
+        printUsageAndExit( argv[0] );
+
+    bool use_gui = true;
+    for( int i = 1; i < argc-1; ++i )
     {
-        std::cout << "Usage: " << argv[0] << " <scene_file.xml>" << std::endl;
-        return 0;
+        std::string arg( argv[i] );
+        if( arg == "--nogui" )
+        {
+            use_gui = false;
+        }
+        else
+        {
+            printUsageAndExit( argv[0] );
+        }
     }
 
     try
     {
-        XMLToLegion( parseScene( argv[1] ) );
+        lr::XMLToLegion translate( lr::parseScene(argv[argc-1]), use_gui );
+        if( !use_gui )
+        {
+            translate.getContext()->render();
+        }
+        else
+        {
+            lr::GUI( translate.getContext() );
+        }
+
     }
     catch( std::exception& e )
     {
