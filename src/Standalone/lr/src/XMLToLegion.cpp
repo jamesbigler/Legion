@@ -127,18 +127,31 @@ legion::Color lexical_cast<legion::Color, std::string>(
 //
 //------------------------------------------------------------------------------
 
-XMLToLegion::XMLToLegion( const XMLNode* node, bool use_gui )
+XMLToLegion::XMLToLegion( char* text, bool use_gui )
     : m_ctx( new legion::Context ),
       m_gui( use_gui )
 {
-    if( !node )
-        throw std::runtime_error( "No 'legion_scene' node found in XML" );
+    if( !text )
+        throw std::runtime_error( "XMLToLegion::XMLToLegion: Null input text XML" );
 
-    legion::IDisplay* display = createDisplay( node->first_node("display") );
-    display->beginScene( node->name() );
-    createRenderer( display, node->first_node( "renderer" ) );
-    createCamera  ( node->first_node( "camera" ) );
-    createScene   ( node->first_node( "scene" ) );
+    try
+    {
+        m_doc.parse<rapidxml::parse_full>(text);              // 0 means default parse flags
+    }
+    catch( rapidxml::parse_error& e )
+    {
+        std::cout << "XML parse error: " << e.what() 
+            << ": <" << e.where<char>() << ">" << std::endl;
+        throw;
+    }
+    
+    XMLNode* scene_node = m_doc.first_node( "legion_scene" );
+
+    legion::IDisplay* display = createDisplay( scene_node->first_node("display") );
+    display->beginScene( scene_node->name() );
+    createRenderer( display, scene_node->first_node( "renderer" ) );
+    createCamera  ( scene_node->first_node( "camera" ) );
+    createScene   ( scene_node->first_node( "scene" ) );
 }
 
 
@@ -226,7 +239,7 @@ legion::IDisplay* XMLToLegion::createDisplay( const XMLNode* display_node )
     if( !display_node )
         throw std::runtime_error( "XMLToLegion: XML file missing display node");
 
-    XMLAttribute* attr =  display_node->first_attribute( "type" );
+    const XMLAttribute* attr =  display_node->first_attribute( "type" );
     if( !attr )
         throw std::runtime_error(
                 "XMLToLegion: Display node missing 'type' attribute"
@@ -249,7 +262,7 @@ void XMLToLegion::createRenderer( legion::IDisplay* display,
                 "XMLToLegion: XML file missing renderer node"
                 );
 
-    XMLAttribute* attr =  renderer_node->first_attribute( "type" );
+    const XMLAttribute* attr =  renderer_node->first_attribute( "type" );
     if( !attr )
         throw std::runtime_error(
                 "XMLToLegion: Renderer node missing 'type' attribute"
@@ -277,7 +290,7 @@ void XMLToLegion::createCamera( const XMLNode* camera_node )
                 "XMLToLegion: XML file missing camera node"
                 );
     
-    XMLAttribute* attr =  camera_node->first_attribute( "type" );
+    const XMLAttribute* attr =  camera_node->first_attribute( "type" );
     if( !attr )
         throw std::runtime_error(
                 "XMLToLegion: Camera node missing 'type' attribute"
@@ -306,8 +319,8 @@ void XMLToLegion::createScene( const XMLNode* scene_node )
          tex_node;
          tex_node = tex_node->next_sibling( "texture" ) )
     {
-        XMLAttribute* name_attr = tex_node->first_attribute( "name" );
-        XMLAttribute* type_attr = tex_node->first_attribute( "type" );
+        const XMLAttribute* name_attr = tex_node->first_attribute( "name" );
+        const XMLAttribute* type_attr = tex_node->first_attribute( "type" );
         if( !name_attr )
             throw std::runtime_error( 
                     "XMLToLegion: Texture node missing 'name' attribute"
@@ -336,8 +349,8 @@ void XMLToLegion::createScene( const XMLNode* scene_node )
          surface_node;
          surface_node = surface_node->next_sibling( "surface" ) )
     {
-        XMLAttribute* name_attr = surface_node->first_attribute( "name" );
-        XMLAttribute* type_attr = surface_node->first_attribute( "type" );
+        const XMLAttribute* name_attr = surface_node->first_attribute( "name" );
+        const XMLAttribute* type_attr = surface_node->first_attribute( "type" );
         if( !name_attr )
             throw std::runtime_error( 
                     "XMLToLegion: Surface node missing 'name' attribute"
@@ -366,8 +379,8 @@ void XMLToLegion::createScene( const XMLNode* scene_node )
          geometry_node;
          geometry_node = geometry_node->next_sibling( "geometry" ) )
     {
-        XMLAttribute* type_attr = geometry_node->first_attribute( "type" );
-        XMLAttribute* surf_attr = geometry_node->first_attribute( "surface" );
+        const XMLAttribute* type_attr = geometry_node->first_attribute( "type" );
+        const XMLAttribute* surf_attr = geometry_node->first_attribute( "surface" );
         if( !surf_attr )
             throw std::runtime_error( 
                     "XMLToLegion: Geometry node missing 'surface' attribute"
@@ -395,7 +408,7 @@ void XMLToLegion::createScene( const XMLNode* scene_node )
         const XMLNode* env_node = scene_node->first_node( "environment" );
         LEGION_ASSERT( env_node );
 
-        XMLAttribute* type_attr = env_node->first_attribute( "type" );
+        const XMLAttribute* type_attr = env_node->first_attribute( "type" );
         if( !type_attr )
             throw std::runtime_error( 
                     "XMLToLegion: Environment  node missing 'type' attribute"

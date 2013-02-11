@@ -13,7 +13,7 @@ if( "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" )
     #set(CMAKE_CXX_FLAGS "-Wall -Wextra -pedantic -Werror -funroll-loops -floop-optimize -ffast-math -Qunused-arguments" ) # -stdlib=libc++" )
     set(CMAKE_CXX_FLAGS "-Wall -Wextra -Werror -funroll-loops -floop-optimize -ffast-math -Qunused-arguments" ) # -stdlib=libc++" )
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
-    set(CMAKE_CXX_FLAGS "-Wall -Wextra -pedantic -Werror -funroll-loops -floop-optimize -ffast-math -std=c++0x" )
+    set(CMAKE_CXX_FLAGS "-Wall -Wextra -Werror -funroll-loops -floop-optimize -ffast-math" )
 endif()
 
 

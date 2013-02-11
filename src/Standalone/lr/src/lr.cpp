@@ -58,7 +58,6 @@ void printUsageAndExit( const char* argv0 )
 
 int main( int argc , char** argv )
 {
-  std::cout << "HELLO" << std::endl;
     if( argc < 2 )
         printUsageAndExit( argv[0] );
 
@@ -67,28 +66,37 @@ int main( int argc , char** argv )
     {
         std::string arg( argv[i] );
         if( arg == "--nogui" )
-        {
             use_gui = false;
-        }
         else
-        {
             printUsageAndExit( argv[0] );
-        }
     }
 
     try
     {
-        lr::XMLToLegion translate( lr::parseScene(argv[argc-1]), use_gui );
+        //
+        // Read in xml text
+        //
+        char* text;
+        if( ! lr::readFile( argv[ argc-1 ], &text ) )
+            throw std::runtime_error( "Failed to read xml file." );
+
+        //
+        // Translate XML to legion data structure 
+        //
+        lr::XMLToLegion translate( text, use_gui );
+
+        //
+        // Run
+        //
         if( !use_gui )
-        {
-          std::cout << "*******************************BBBBBBBBBBBBBBBB" << std::endl;
             translate.getContext()->render();
-        }
         else
-        {
-          std::cout << "*******************************AAAAAAAAAAAAAAA" << std::endl;
             lr::GUI( translate.getContext(), argc, argv );
-        }
+
+        //
+        // Clean up
+        //
+        delete [] text;
 
     }
     catch( std::exception& e )

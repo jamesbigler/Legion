@@ -60,6 +60,7 @@ const char* TriMesh::intersectionFunctionName()const
         case PN:   return "triMeshIntersectPN";
         case PUV:  return "triMeshIntersectPUV";
         case PNUV: return "triMeshIntersectPNUV";
+        default  : return "triMeshIntersectNUV";
     };
 }
 
@@ -68,10 +69,11 @@ const char* TriMesh::boundingBoxFunctionName()const
 {
     switch( m_vertex_type )
     {
-        case P:    return "triMeshBoundingBoxP";
-        case PN:   return "triMeshBoundingBoxPN";
-        case PUV:  return "triMeshBoundingBoxPUV";
+        case P   : return "triMeshBoundingBoxP";
+        case PN  : return "triMeshBoundingBoxPN";
+        case PUV : return "triMeshBoundingBoxPUV";
         case PNUV: return "triMeshBoundingBoxPNUV";
+        default  : return "triMeshBoundingBoxPNUV";
     };
 }
 

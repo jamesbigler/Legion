@@ -37,8 +37,9 @@ class XMLToLegion
 public:
     typedef rapidxml::xml_node<>       XMLNode; 
     typedef rapidxml::xml_attribute<>  XMLAttribute; 
+    typedef rapidxml::xml_document<>   XMLDocument; 
 
-    explicit XMLToLegion( const XMLNode* root, bool use_gui );
+    explicit XMLToLegion( char* text, bool use_gui );
     ~XMLToLegion();
 
     legion::Context* getContext() { return m_ctx.get(); }
@@ -60,6 +61,7 @@ private:
     Textures                         m_textures;
     Surfaces                         m_surfaces;
     legion::Parameters               m_params;
+    XMLDocument                      m_doc;
 };
 
 }

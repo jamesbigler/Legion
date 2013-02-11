@@ -29,31 +29,6 @@
 using namespace lr;
 
 
-rapidxml::xml_node<>* lr::parseScene( const char* filename )
-{
-   std::cerr << "Parsing '" << filename << "'" << std::endl;
-
-   try
-   {
-       char* text;
-       if( ! lr::readFile( filename, &text ) )
-           throw std::runtime_error( "Failed to read xml file." );
-
-       rapidxml::xml_document<> doc;    // character type defaults to char
-       doc.parse<0>(text);              // 0 means default parse flags
-       return doc.first_node( "legion_scene" );
-
-
-   }
-   catch( rapidxml::parse_error& e )
-   {
-       std::cout << "XML parse error: " << e.what() 
-                 << ": <" << e.where<char>() << ">" << std::endl;
-       throw;
-   }
-}
-
-
 bool lr::readFile( const char* filename, char** contents )
 {
     std::ifstream in( filename );

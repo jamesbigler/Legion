@@ -34,8 +34,7 @@
 namespace lr
 {
 
-rapidxml::xml_node<>*    parseScene( const char* filename );
-bool                     readFile  ( const char* filename, char** contents );
+bool  readFile( const char* filename, char** contents );
 
 }
 
