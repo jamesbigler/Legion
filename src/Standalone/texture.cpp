@@ -46,11 +46,13 @@ int main( int , char** )
         //
         legion::Sphere sphere0( &ctx );
         sphere0.setCenter( legion::Vector3( 1.0f, 0.0f, 0.0f ) );
+        sphere0.setRadius( 1.0f );
         sphere0.setSurface( &brick );
         ctx.addGeometry( &sphere0 );
         
         legion::Sphere sphere1( &ctx );
         sphere1.setCenter( legion::Vector3( -1.0f, 0.0f, 0.0f ) );
+        sphere1.setRadius( 1.0f );
         sphere1.setSurface( &perlin );
         ctx.addGeometry( &sphere1 );
         
@@ -83,7 +85,7 @@ int main( int , char** )
         ctx.setCamera( &cam );
 
         legion::ProgressiveRenderer renderer( &ctx );
-        renderer.setSamplesPerPixel( 32 );
+        renderer.setSamplesPerPixel( 64 );
         renderer.setDisplay( &display );
         ctx.setRenderer( &renderer );
 

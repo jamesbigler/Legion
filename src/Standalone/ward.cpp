@@ -47,16 +47,19 @@ int main( int , char** )
 
         legion::Sphere chrome_sphere( &ctx );
         chrome_sphere.setCenter( legion::Vector3( -0.25f, 0.0f, 0.0f ) );
+        chrome_sphere.setRadius( 1.0f ); 
         chrome_sphere.setSurface( &chrome );
         ctx.addGeometry( &chrome_sphere );
         
         legion::Sphere yellow_sphere( &ctx );
         yellow_sphere.setCenter( legion::Vector3( -0.5f, 0.0f, 2.5f ) );
+        yellow_sphere.setRadius( 1.0f ); 
         yellow_sphere.setSurface( &yellow_yogurt );
         ctx.addGeometry( &yellow_sphere );
         
         legion::Sphere blue_sphere( &ctx );
         blue_sphere.setCenter( legion::Vector3( 2.0f, 0.0f, 1.5f ) );
+        blue_sphere.setRadius( 1.0f ); 
         blue_sphere.setSurface( &blue_yogurt );
         ctx.addGeometry( &blue_sphere );
         
