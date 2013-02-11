@@ -23,11 +23,6 @@
 
 #include <gui/QtDisplay.hpp>
 
-/////////////////////////////////////////////////////////////////////////
-#include <QApplication>
-#include <QWidget>
-/////////////////////////////////////////////////////////////////////////
-
 
 using namespace lr;
 
@@ -35,21 +30,13 @@ using namespace lr;
 QtDisplay::QtDisplay( legion::Context* context )
     : legion::IDisplay( context ),
       m_update_count( 0u ),
-      m_cur_update( 0u ),
-      m_qt_argc( 1 )
+      m_cur_update( 0u )
 {
-    m_qt_argv    = new char*[1];
-    m_qt_argv[0] = new char [3];
-    m_qt_argv[0][0] = 'l';
-    m_qt_argv[0][1] = 'r';
-    m_qt_argv[0][2] = '\0';
 }
 
 
 QtDisplay::~QtDisplay()
 {
-    delete [] m_qt_argv[0];
-    delete [] m_qt_argv;
 }
 
 
@@ -67,15 +54,6 @@ void QtDisplay::setUpdateCount( unsigned update_count )
 
 void QtDisplay::beginFrame()
 {
-    QApplication app( m_qt_argc, m_qt_argv );
-
-    QWidget window;
-
-    window.resize(250, 150);
-    window.setWindowTitle("Simple example");
-    window.show();
-
-    app.exec();
 }
 
 void QtDisplay::updateFrame( const legion::Index2&, const float* )

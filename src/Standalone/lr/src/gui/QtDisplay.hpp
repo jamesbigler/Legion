@@ -46,9 +46,6 @@ private:
     std::string       m_scene_name;
     unsigned          m_update_count;
     unsigned          m_cur_update;
-
-    int    m_qt_argc;
-    char** m_qt_argv;
 };
 
 } // end namespace lr

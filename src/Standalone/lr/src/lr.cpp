@@ -32,7 +32,7 @@
 //
 //------------------------------------------------------------------------------
 
-void                     printUsageAndExit( const char* argv0 );
+void printUsageAndExit( const char* argv0 );
 
 //------------------------------------------------------------------------------
 //
@@ -58,6 +58,7 @@ void printUsageAndExit( const char* argv0 )
 
 int main( int argc , char** argv )
 {
+  std::cout << "HELLO" << std::endl;
     if( argc < 2 )
         printUsageAndExit( argv[0] );
 
@@ -80,11 +81,13 @@ int main( int argc , char** argv )
         lr::XMLToLegion translate( lr::parseScene(argv[argc-1]), use_gui );
         if( !use_gui )
         {
+          std::cout << "*******************************BBBBBBBBBBBBBBBB" << std::endl;
             translate.getContext()->render();
         }
         else
         {
-            lr::GUI( translate.getContext() );
+          std::cout << "*******************************AAAAAAAAAAAAAAA" << std::endl;
+            lr::GUI( translate.getContext(), argc, argv );
         }
 
     }

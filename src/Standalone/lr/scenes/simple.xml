@@ -24,12 +24,12 @@
 
         <geometry type="Sphere" surface="lambertian">
             <vector3 name="center" value="1.0 0.0 -5.0" />
-            <float   name="radius" value="1.0" />
+            <float name="radius" value="1.0" />
         </geometry>
 
         <geometry type="Sphere" surface="emitter">
             <vector3 name="center" value="-1.0 0.0 -5.0" />
-            <float   name="radius" value="1.0" />
+            <float name="radius" value="1.0" />
         </geometry>
 
         <geometry type="Parallelogram" surface="lambertian">

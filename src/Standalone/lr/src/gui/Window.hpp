@@ -20,28 +20,20 @@
 // IN THE SOFTWARE.
 // (MIT/X11 License)
 
-#include <QApplication>
-#include <gui/GUI.hpp>
-#include <gui/Window.hpp>
 
-using namespace lr;
-    
-/////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////
+#ifndef LR_GUI_WINDOW_HPP_
+#define LR_GUI_WINDOW_HPP_
 
+#include <QMainWindow>
 
-GUI::GUI( legion::Context* ctx, int argc, char** argv )
-    : m_ctx( ctx )
+namespace lr
 {
-    QApplication app( argc, argv );
 
-    Window* main = new Window();
-    main->show();
+class Window : public QMainWindow
+{
 
-    app.exec();
+};
+
 }
 
-
-GUI::~GUI()
-{
-}
+#endif // LR_GUI_WINDOW_HPP_
