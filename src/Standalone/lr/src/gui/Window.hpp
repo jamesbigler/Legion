@@ -31,6 +31,12 @@ namespace lr
 
 class Window : public QMainWindow
 {
+    Q_OBJECT;
+public:
+
+signals:
+    void image_rendered( QImage* img );
+
 
 };
 
