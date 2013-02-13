@@ -21,46 +21,59 @@
 // (MIT/X11 License)
 
 
-#include <gui/QtDisplay.hpp>
+#include <gui/DisplayWidget.hpp>
+#include <gui/ImageWidget.hpp>
 
 
 using namespace lr;
 
 
-QtDisplay::QtDisplay( legion::Context* context )
+DisplayWidget::DisplayWidget( legion::Context* context )
     : legion::IDisplay( context ),
       m_update_count( 0u ),
-      m_cur_update( 0u )
+      m_cur_update( 0u ),
+      m_image_widget( new ImageWidget( this ) ),
+      m_width( 512 ),
+      m_height( 512 )
 {
+    m_image_widget->resize( m_width, m_height );
 }
 
 
-QtDisplay::~QtDisplay()
+DisplayWidget::~DisplayWidget()
 {
 }
 
+    
+void DisplayWidget::setResolution( unsigned width, unsigned height )
+{
+    m_width  = width;
+    m_height = height;
+    m_image_widget->resize( m_width, m_height );
+}
 
-void QtDisplay::beginScene( const std::string& scene_name )
+
+void DisplayWidget::beginScene( const std::string& scene_name )
 {
     m_scene_name = scene_name;
 }
 
 
-void QtDisplay::setUpdateCount( unsigned update_count )
+void DisplayWidget::setUpdateCount( unsigned update_count )
 {
     m_update_count = update_count;
 }
 
 
-void QtDisplay::beginFrame()
+void DisplayWidget::beginFrame()
 {
 }
 
-void QtDisplay::updateFrame( const legion::Index2&, const float* )
+void DisplayWidget::updateFrame( const legion::Index2&, const float* )
 {
 }
 
-void QtDisplay::completeFrame( const legion::Index2& ,
+void DisplayWidget::completeFrame( const legion::Index2& ,
                                const float* )
 {
 }

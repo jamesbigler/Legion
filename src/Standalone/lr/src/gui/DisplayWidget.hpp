@@ -20,34 +20,45 @@
 // IN THE SOFTWARE.
 // (MIT/X11 License)
 
-#ifndef LR_GUI_QT_DISPLAY_HPP_
-#define LR_GUI_QT_DISPLAY_HPP_
+#ifndef LR_GUI_DISPLAY_WIDGET_HPP_
+#define LR_GUI_DISPLAY_WIDGET_HPP_
 
 #include <Legion/Objects/Display/IDisplay.hpp>
 #include <string>
+#include <QWidget>
 
 namespace lr
 {
 
-class QtDisplay : public legion::IDisplay
+class ImageWidget;
+
+class DisplayWidget : public legion::IDisplay, public QWidget
 {
 public:
-    QtDisplay( legion::Context* context );
-    ~QtDisplay();
+    DisplayWidget( legion::Context* context );
+    ~DisplayWidget();
+
+    void setResolution( unsigned width, unsigned height );
 
     void beginScene    ( const std::string& scene_name );
     void setUpdateCount( unsigned m_update_count );
     void beginFrame    ();
     void updateFrame   ( const legion::Index2& res, const float* pixels );
     void completeFrame ( const legion::Index2& res, const float* pixels );
+
 private:
     static const int  s_field_width = 28;
 
     std::string       m_scene_name;
     unsigned          m_update_count;
     unsigned          m_cur_update;
+
+    ImageWidget*      m_image_widget;
+
+    unsigned          m_width;
+    unsigned          m_height;
 };
 
 } // end namespace lr
 
-#endif // LR_GUI_QT_DISPLAY_HPP_
+#endif // LR_GUI_DISPLAY_WIDGET_HPP_

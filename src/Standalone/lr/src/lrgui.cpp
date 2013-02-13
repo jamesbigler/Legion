@@ -22,8 +22,10 @@
 
 
 #include <iostream>
-#include <Util.hpp>
-#include <XMLToLegion.hpp>
+#include <QApplication>
+#include <gui/Window.hpp>
+
+//#include <QPushButton>
 
 //------------------------------------------------------------------------------
 //
@@ -58,24 +60,21 @@ int main( int argc , char** argv )
     if( argc < 2 )
         printUsageAndExit( argv[0] );
 
-    // Render scene using IDisplay specified in xml file
-    try
-    {
-        char* text;
-        if( ! lr::readFile( argv[ argc-1 ], &text ) )
-            throw std::runtime_error( "Failed to read xml file." );
+    /*
+    QApplication app(argc, argv);
+    QPushButton helloButton("Hello World");
+    helloButton.resize(80, 20);
+    helloButton.show();
+    app.exec();
+    */
 
-        lr::XMLToLegion translate( text, 0, false );
-        translate.getContext()->render();
+    QApplication app( argc, argv );
 
-        delete [] text;
+    lr::Window* window = new lr::Window( argv[ argc-1 ] );
+    window->show();
 
-    }
-    catch( std::exception& e )
-    {
-        std::cout << "lr failure: " << e.what() << std::endl;
-        return 0;
-    }
+    app.exec();
+
 }
 
 

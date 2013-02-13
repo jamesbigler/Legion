@@ -20,22 +20,29 @@
 // IN THE SOFTWARE.
 // (MIT/X11 License)
 
-#ifndef LR_GUI_GUI_HPP_
-#define LR_GUI_GUI_HPP_
 
+#ifndef LR_GUI_IMAGE_WIDGET_HPP_
+#define LR_GUI_IMAGE_WIDGET_HPP_
+
+#include <QLabel>
 
 namespace lr
 {
 
-class GUI
+class ImageWidget : public QLabel
 {
 public:
-    explicit GUI( int arg, char** argv );
-    ~GUI();
+    ImageWidget( QWidget* parent );
+    ~ImageWidget();
+
+public slots:
+
+protected:
 
 private:
+
 };
 
-} // end namespace lr
+}
 
-#endif // LR_GUI_GUI_HPP_
+#endif // LR_GUI_IMAGE_WIDGET_HPP_

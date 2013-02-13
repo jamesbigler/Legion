@@ -24,7 +24,6 @@
 #include <Legion/Legion.hpp>
 #include <rapidxml/rapidxml.hpp>
 #include <XMLToLegion.hpp>
-#include <gui/QtDisplay.hpp>
 #include <iostream>
 #include <stdexcept>
 #include <sstream>
@@ -127,28 +126,42 @@ legion::Color lexical_cast<legion::Color, std::string>(
 //
 //------------------------------------------------------------------------------
 
-XMLToLegion::XMLToLegion( char* text, bool use_gui )
-    : m_ctx( new legion::Context ),
-      m_gui( use_gui )
+XMLToLegion::XMLToLegion( char* text,
+                          legion::Context* ctx,
+                          bool create_display )
+    : m_ctx( ctx ),
+      m_own_context( ctx == 0 ),
+      m_create_display( create_display )
 {
     if( !text )
-        throw std::runtime_error( "XMLToLegion::XMLToLegion: Null input text XML" );
+        throw std::runtime_error( "XMLToLegion: Null input text XML" );
+
+    if( m_own_context )
+        m_ctx = new legion::Context();
 
     try
     {
-        m_doc.parse<rapidxml::parse_full>(text);              // 0 means default parse flags
+        m_doc.parse<rapidxml::parse_full>(text);
     }
     catch( rapidxml::parse_error& e )
     {
         std::cout << "XML parse error: " << e.what() 
-            << ": <" << e.where<char>() << ">" << std::endl;
+                  << ": <" << e.where<char>() << ">" << std::endl;
         throw;
     }
     
     XMLNode* scene_node = m_doc.first_node( "legion_scene" );
+    if( !scene_node )
+        throw std::runtime_error( 
+                "XMLToLegion: XML does not contian legion_scene"
+                );
 
-    legion::IDisplay* display = createDisplay( scene_node->first_node("display") );
-    display->beginScene( scene_node->name() );
+    legion::IDisplay* display = 
+        createDisplay( scene_node->first_node("display") );
+
+    if( display )
+        display->beginScene( scene_node->name() );
+
     createRenderer( display, scene_node->first_node( "renderer" ) );
     createCamera  ( scene_node->first_node( "camera" ) );
     createScene   ( scene_node->first_node( "scene" ) );
@@ -157,6 +170,8 @@ XMLToLegion::XMLToLegion( char* text, bool use_gui )
 
 XMLToLegion::~XMLToLegion()
 {
+    if( m_own_context )
+        delete m_ctx;
 }
 
 
@@ -233,8 +248,8 @@ void XMLToLegion::loadParams( const XMLNode* node )
 
 legion::IDisplay* XMLToLegion::createDisplay( const XMLNode* display_node )
 {
-    if( m_gui )
-        return new QtDisplay( m_ctx.get() );
+    if( m_create_display )
+        return 0;
         
     if( !display_node )
         throw std::runtime_error( "XMLToLegion: XML file missing display node");
@@ -256,7 +271,6 @@ legion::IDisplay* XMLToLegion::createDisplay( const XMLNode* display_node )
 void XMLToLegion::createRenderer( legion::IDisplay* display,
                                   const XMLNode* renderer_node )
 {
-    LEGION_ASSERT( display );
     if( !renderer_node )
         throw std::runtime_error(
                 "XMLToLegion: XML file missing renderer node"
@@ -274,7 +288,8 @@ void XMLToLegion::createRenderer( legion::IDisplay* display,
     legion::IRenderer* renderer =
         m_ctx->createRenderer( renderer_type, m_params );
     
-    renderer->setDisplay( display );
+    if( display )
+        renderer->setDisplay( display );
     attr = renderer_node->first_attribute( "samples_per_pixel" );
     if( attr )
         renderer->setSamplesPerPixel( lexical_cast<float>( attr->value() ) );

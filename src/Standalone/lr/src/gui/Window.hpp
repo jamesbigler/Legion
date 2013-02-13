@@ -25,19 +25,48 @@
 #define LR_GUI_WINDOW_HPP_
 
 #include <QMainWindow>
+#include <string>
+
+
+
+class QProgressBar;
+class QPushButton;
+class QToolBar;
+
+namespace legion
+{
+    class Context;
+}
 
 namespace lr
 {
 
+class DisplayWidget;
+
 class Window : public QMainWindow
 {
-    Q_OBJECT;
+    Q_OBJECT
+
 public:
+    Window( const char* filename );
+    ~Window();
+
+private slots:
+    void render();
 
 signals:
-    void image_rendered( QImage* img );
+    void appStarting();
 
+private:
+    std::string       m_filename;
+    legion::Context*  m_ctx;
 
+    DisplayWidget*    m_display_widget;
+    
+    QPushButton*      m_render_button;
+    QPushButton*      m_stop_button;
+    QProgressBar*     m_progress_bar;
+    QToolBar*         m_tool_bar;
 };
 
 }

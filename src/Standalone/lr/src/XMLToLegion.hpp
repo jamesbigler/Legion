@@ -35,16 +35,18 @@ namespace lr
 class XMLToLegion
 {
 public:
+    explicit XMLToLegion( char*            text,
+                          legion::Context* ctx,
+                          bool             create_display );
+    ~XMLToLegion();
+
+    legion::Context* getContext() { return m_ctx; }
+
+private:
     typedef rapidxml::xml_node<>       XMLNode; 
     typedef rapidxml::xml_attribute<>  XMLAttribute; 
     typedef rapidxml::xml_document<>   XMLDocument; 
 
-    explicit XMLToLegion( char* text, bool use_gui );
-    ~XMLToLegion();
-
-    legion::Context* getContext() { return m_ctx.get(); }
-
-private:
     typedef std::map<std::string, legion::ITexture*>  Textures;
     typedef std::map<std::string, legion::ISurface*>  Surfaces;
 
@@ -56,8 +58,10 @@ private:
     void              createCamera  ( const XMLNode* camera_node );
     void              createScene   ( const XMLNode* scene_node );
 
-    std::auto_ptr<legion::Context>   m_ctx;
-    bool                             m_gui;
+
+    legion::Context*                 m_ctx;
+    bool                             m_own_context;
+    bool                             m_create_display;
     Textures                         m_textures;
     Surfaces                         m_surfaces;
     legion::Parameters               m_params;

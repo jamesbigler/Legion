@@ -9,12 +9,13 @@ endif( NOT CMAKE_BUILD_TYPE )
 
 add_definitions( -DLLOG_MAX_LEVEL=legion::Log::DEBUG )
 
-if( "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" )
-    #set(CMAKE_CXX_FLAGS "-Wall -Wextra -pedantic -Werror -funroll-loops -floop-optimize -ffast-math -Qunused-arguments" ) # -stdlib=libc++" )
-    set(CMAKE_CXX_FLAGS "-Wall -Wextra -Werror -funroll-loops -floop-optimize -ffast-math -Qunused-arguments" ) # -stdlib=libc++" )
-elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
-    set(CMAKE_CXX_FLAGS "-Wall -Wextra -Werror -funroll-loops -floop-optimize -ffast-math" )
-endif()
+
+#if( "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" )
+#    #set(CMAKE_CXX_FLAGS "-Wall -Wextra -pedantic -Werror -funroll-loops -floop-optimize -ffast-math -Qunused-arguments" ) # -stdlib=libc++" )
+#    set(CMAKE_CXX_FLAGS "-Wall -Wextra -Werror -funroll-loops -floop-optimize -ffast-math -Qunused-arguments" ) # -stdlib=libc++" )
+#elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+#    set(CMAKE_CXX_FLAGS "-Wall -Wextra -Werror -funroll-loops -floop-optimize -ffast-math" )
+#endif()
 
 
 set(CMAKE_CXX_FLAGS_DEBUG          "-g")
@@ -22,16 +23,12 @@ set(CMAKE_CXX_FLAGS_MINSIZEREL     "-Os -DNDEBUG")
 set(CMAKE_CXX_FLAGS_RELEASE        "-O4 -DNDEBUG")
 set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O2 -g")
 
-find_package( OptiX REQUIRED )
+find_package( OptiX    REQUIRED )
 find_package( CUDA 4.0 REQUIRED )
-find_package( CUDA 4.0 REQUIRED )
-find_package( OpenEXR REQUIRED )
-find_package( Boost COMPONENTS thread REQUIRED )
-
+find_package( OpenEXR  REQUIRED )
 
 # Add the path to the OptiX headers to our include paths.
 include_directories(
-    "${Boost_INCLUDE_DIRS}"
     "${CMAKE_CURRENT_SOURCE_DIR}"
     "${CUDA_INCLUDE_DIRS}" 
     "${OPENEXR_INCLUDE_PATHS}"

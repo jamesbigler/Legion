@@ -83,6 +83,8 @@ public:
     void addGeometry   ( IGeometry* geometry );
     void addLight      ( ILight* light );
 
+    IRenderer* getRenderer()  { return m_renderer;  }
+
     void addAssetPath( const std::string& path );
 
     void render();
@@ -288,6 +290,12 @@ void Context::addLight( ILight* light )
 void Context::addAssetPath( const std::string& path )
 {
     m_impl->addAssetPath( path );
+}
+
+
+IRenderer* Context::getRenderer()
+{
+    return m_impl->getRenderer();
 }
 
 

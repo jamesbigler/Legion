@@ -68,6 +68,8 @@ public:
     void addGeometry   ( IGeometry*    geometry    );
     void addLight      ( ILight*       light       );
 
+    IRenderer*  getRenderer();
+
     void addAssetPath( const std::string& path );
 
     void render();

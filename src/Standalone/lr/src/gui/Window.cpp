@@ -20,29 +20,56 @@
 // IN THE SOFTWARE.
 // (MIT/X11 License)
 
-#include <QApplication>
-//#include <QPushButton>
-#include <gui/GUI.hpp>
+
 #include <gui/Window.hpp>
+#include <gui/ImageWidget.hpp>
+#include <gui/DisplayWidget.hpp>
+
+#include <iostream>
+
+#include <QPushButton>
+#include <QProgressBar>
+#include <QToolBar>
+#include <QTimer>
 
 using namespace lr;
-    
-/////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////
 
-
-GUI::GUI( int argc, char** argv )
+Window::Window( const char* filename )
+    : QMainWindow(),
+      m_filename( filename ),
+      m_ctx( new legion::Context ),
+      m_display_widget( new DisplayWidget( m_ctx ) )
 {
+    setCentralWidget( m_display_widget );
+    setWindowTitle( tr( "lr v0.1") );
+
     /*
-    QApplication app(argc, argv);
-    QPushButton helloButton("Hello World");
-    helloButton.resize(80, 20);
-    helloButton.show();
-    app.exec();
+    m_render_button = new QPushButton( tr("Render") );
+    m_stop_button   = new QPushButton( tr("Stop"  ) );
+    m_progress_bar  = new QProgressBar( this );
+    m_progress_bar->setRange( 0, 100 );
+
+    m_tool_bar = new QToolBar( tr("Toolbar"), this );
+    m_tool_bar->addWidget( m_progress_bar  );
+    m_tool_bar->addWidget( m_render_button );
+    m_tool_bar->addWidget( m_stop_button   );
+    addToolBar( Qt::TopToolBarArea, m_tool_bar );
+
+    QTimer::singleShot( 0, this, SIGNAL( appStarting() ) );
+
+    QObject::connect( this, SIGNAL( appStarting() ), this, SLOT( render() ) );
     */
 }
 
 
-GUI::~GUI()
+Window::~Window()
 {
 }
+
+
+void Window::render()
+{
+    std::cout << "RRRRRRRRRRRRRRRRRRRREEEEEEEEEEENNNNNNNNNNDDDDDDDEEEEEEEEEER"
+              << std::endl;
+}
+
