@@ -32,19 +32,24 @@ namespace lr
 
 class ImageWidget;
 
-class DisplayWidget : public legion::IDisplay, public QWidget
+class DisplayWidget : public QWidget
 {
+    Q_OBJECT
+
 public:
-    DisplayWidget( legion::Context* context );
+    DisplayWidget();
     ~DisplayWidget();
 
     void setResolution( unsigned width, unsigned height );
 
     void beginScene    ( const std::string& scene_name );
-    void setUpdateCount( unsigned m_update_count );
+    void setUpdateCount( unsigned update_count );
     void beginFrame    ();
     void updateFrame   ( const legion::Index2& res, const float* pixels );
     void completeFrame ( const legion::Index2& res, const float* pixels );
+
+signals:
+    void progressChanged( int );
 
 private:
     static const int  s_field_width = 28;
@@ -58,6 +63,33 @@ private:
     unsigned          m_width;
     unsigned          m_height;
 };
+
+class LRDisplay : public legion::IDisplay
+{
+public:
+    LRDisplay( legion::Context* ctx, DisplayWidget* dw )
+        : legion::IDisplay( ctx ), m_dw( dw ) {}
+
+    void beginScene( const std::string& scene_name )
+    { m_dw->beginScene( scene_name ); }
+
+    void setUpdateCount( unsigned update_count )
+    { m_dw->setUpdateCount( update_count ); }
+
+    void beginFrame()
+    { m_dw->beginFrame(); }
+
+    void updateFrame( const legion::Index2& res, const float* pixels )
+    { m_dw->updateFrame( res, pixels ); }
+
+    void completeFrame ( const legion::Index2& res, const float* pixels )
+    { m_dw->completeFrame( res, pixels ); }
+
+private:
+    DisplayWidget* m_dw;
+
+};
+
 
 } // end namespace lr
 

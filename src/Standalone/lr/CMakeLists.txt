@@ -13,15 +13,15 @@ include_directories(
 
 set( lrgui_sources
     src/gui/DisplayWidget.cpp
-    src/gui/GUI.cpp
     src/gui/ImageWidget.cpp
+    src/gui/RenderThread.cpp
     src/gui/Window.cpp
     )
 
 set( lrgui_headers
     src/gui/DisplayWidget.hpp
-    src/gui/GUI.hpp
     src/gui/ImageWidget.hpp
+    src/gui/RenderThread.hpp
     src/gui/Window.hpp
     )
 

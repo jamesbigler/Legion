@@ -20,29 +20,33 @@
 // IN THE SOFTWARE.
 // (MIT/X11 License)
 
-#include <QApplication>
-//#include <QPushButton>
-#include <gui/GUI.hpp>
-#include <gui/Window.hpp>
 
-using namespace lr;
-    
-/////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////
+#ifndef LR_GUI_RENDER_THREAD_HPP_
+#define LR_GUI_RENDER_THREAD_HPP_
+
+#include <QThread>
 
 
-GUI::GUI( int argc, char** argv )
+namespace legion
 {
-    /*
-    QApplication app(argc, argv);
-    QPushButton helloButton("Hello World");
-    helloButton.resize(80, 20);
-    helloButton.show();
-    app.exec();
-    */
+    class Context;
+}
+namespace lr
+{
+
+class RenderThread: public QThread
+{
+public:
+    RenderThread( legion::Context* ctx );
+    ~RenderThread();
+
+    void run();
+
+private:
+    legion::Context* m_ctx;
+
+};
+
 }
 
-
-GUI::~GUI()
-{
-}
+#endif // LR_GUI_RENDER_THREAD_HPP_

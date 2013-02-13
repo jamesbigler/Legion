@@ -32,6 +32,7 @@
 class QProgressBar;
 class QPushButton;
 class QToolBar;
+class QStatusBar;
 
 namespace legion
 {
@@ -42,6 +43,7 @@ namespace lr
 {
 
 class DisplayWidget;
+class LRDisplay;
 
 class Window : public QMainWindow
 {
@@ -52,21 +54,26 @@ public:
     ~Window();
 
 private slots:
+    void loadScene();
     void render();
+    void updateProgress( int );
 
 signals:
     void appStarting();
+    void sceneLoaded();
 
 private:
     std::string       m_filename;
     legion::Context*  m_ctx;
 
     DisplayWidget*    m_display_widget;
+    LRDisplay*        m_lrdisplay;
     
     QPushButton*      m_render_button;
     QPushButton*      m_stop_button;
     QProgressBar*     m_progress_bar;
     QToolBar*         m_tool_bar;
+    QStatusBar*       m_status_bar;
 };
 
 }

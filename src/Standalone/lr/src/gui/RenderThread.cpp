@@ -20,22 +20,25 @@
 // IN THE SOFTWARE.
 // (MIT/X11 License)
 
-#ifndef LR_GUI_GUI_HPP_
-#define LR_GUI_GUI_HPP_
 
+#include <gui/RenderThread.hpp>
+#include <Legion/Core/Context.hpp>
 
-namespace lr
+using namespace lr;
+
+RenderThread::RenderThread( legion::Context* ctx )
+    : QThread(),
+      m_ctx( ctx )
 {
+}
 
-class GUI
+
+RenderThread::~RenderThread()
 {
-public:
-    explicit GUI( int arg, char** argv );
-    ~GUI();
+}
 
-private:
-};
 
-} // end namespace lr
-
-#endif // LR_GUI_GUI_HPP_
+void RenderThread::run()
+{
+    m_ctx->render();
+}

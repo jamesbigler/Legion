@@ -248,7 +248,7 @@ void XMLToLegion::loadParams( const XMLNode* node )
 
 legion::IDisplay* XMLToLegion::createDisplay( const XMLNode* display_node )
 {
-    if( m_create_display )
+    if( !m_create_display )
         return 0;
         
     if( !display_node )

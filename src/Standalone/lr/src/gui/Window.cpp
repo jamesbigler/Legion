@@ -21,13 +21,17 @@
 // (MIT/X11 License)
 
 
-#include <gui/Window.hpp>
-#include <gui/ImageWidget.hpp>
+#include <Util.hpp>
+#include <XMLToLegion.hpp>
 #include <gui/DisplayWidget.hpp>
+#include <gui/ImageWidget.hpp>
+#include <gui/RenderThread.hpp>
+#include <gui/Window.hpp>
 
 #include <iostream>
 
 #include <QPushButton>
+#include <QStatusBar>
 #include <QProgressBar>
 #include <QToolBar>
 #include <QTimer>
@@ -37,13 +41,25 @@ using namespace lr;
 Window::Window( const char* filename )
     : QMainWindow(),
       m_filename( filename ),
-      m_ctx( new legion::Context ),
-      m_display_widget( new DisplayWidget( m_ctx ) )
+      m_ctx( new legion::Context )
 {
+    m_display_widget = new DisplayWidget();
+    m_lrdisplay = new LRDisplay( m_ctx, m_display_widget );
+
     setCentralWidget( m_display_widget );
     setWindowTitle( tr( "lr v0.1") );
+    resize( 800, 600 );
 
     /*
+    QPalette pal = this->palette();
+    pal.setColor( this->backgroundRole(), Qt::blue);
+    this->setPalette(pal);
+    */
+    //setBackgroundRole( QPalette::Dark );
+      
+    m_status_bar = new QStatusBar( this );
+    setStatusBar( m_status_bar );
+
     m_render_button = new QPushButton( tr("Render") );
     m_stop_button   = new QPushButton( tr("Stop"  ) );
     m_progress_bar  = new QProgressBar( this );
@@ -57,8 +73,13 @@ Window::Window( const char* filename )
 
     QTimer::singleShot( 0, this, SIGNAL( appStarting() ) );
 
-    QObject::connect( this, SIGNAL( appStarting() ), this, SLOT( render() ) );
-    */
+    QObject::connect( this, SIGNAL(appStarting()), this, SLOT(loadScene()) );
+    QObject::connect( this, SIGNAL(sceneLoaded()), this, SLOT(render()) );
+    QObject::connect( m_display_widget, SIGNAL( progressChanged( int ) ), 
+                      this, SLOT( updateProgress( int )) );
+    statusBar()->showMessage( tr("Loading scene...") );
+
+
 }
 
 
@@ -67,9 +88,35 @@ Window::~Window()
 }
 
 
+void Window::loadScene()
+{
+    statusBar()->showMessage( tr("Loading scene...") );
+    char* text;
+    if( ! lr::readFile( m_filename.c_str(), &text ) )
+        throw std::runtime_error( "Failed to read xml file." );
+
+    XMLToLegion translate( text, m_ctx, false );
+    m_ctx->getRenderer()->setDisplay( m_lrdisplay );
+    delete [] text;
+    emit sceneLoaded();
+}
+
+
+void Window::updateProgress( int percent_done )
+{
+    m_progress_bar->setValue( percent_done );
+}
+
+
 void Window::render()
 {
-    std::cout << "RRRRRRRRRRRRRRRRRRRREEEEEEEEEEENNNNNNNNNNDDDDDDDEEEEEEEEEER"
-              << std::endl;
+    statusBar()->showMessage( tr("Rendering...") );
+    m_progress_bar->setValue( 0 );
+    legion::IRenderer* renderer = m_ctx->getRenderer();
+    legion::Index2 resolution = renderer->getResolution();
+    m_display_widget->setResolution( resolution.x(), resolution.y() );
+
+    RenderThread* render_thread = new RenderThread( m_ctx );
+    render_thread->start();
 }
 

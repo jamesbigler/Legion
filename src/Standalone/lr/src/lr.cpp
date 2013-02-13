@@ -65,7 +65,7 @@ int main( int argc , char** argv )
         if( ! lr::readFile( argv[ argc-1 ], &text ) )
             throw std::runtime_error( "Failed to read xml file." );
 
-        lr::XMLToLegion translate( text, 0, false );
+        lr::XMLToLegion translate( text, 0, true );
         translate.getContext()->render();
 
         delete [] text;

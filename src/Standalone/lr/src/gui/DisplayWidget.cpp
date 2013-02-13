@@ -28,8 +28,8 @@
 using namespace lr;
 
 
-DisplayWidget::DisplayWidget( legion::Context* context )
-    : legion::IDisplay( context ),
+DisplayWidget::DisplayWidget()
+    : QWidget(),
       m_update_count( 0u ),
       m_cur_update( 0u ),
       m_image_widget( new ImageWidget( this ) ),
@@ -49,6 +49,7 @@ void DisplayWidget::setResolution( unsigned width, unsigned height )
 {
     m_width  = width;
     m_height = height;
+    parentWidget()->resize( m_width, m_height );
     m_image_widget->resize( m_width, m_height );
 }
 
@@ -71,6 +72,13 @@ void DisplayWidget::beginFrame()
 
 void DisplayWidget::updateFrame( const legion::Index2&, const float* )
 {
+    ++m_cur_update;
+    const int percent_done = 
+        static_cast<float>( m_cur_update )   /
+        static_cast<float>( m_update_count ) *
+        100.0f;
+
+    emit progressChanged( percent_done );
 }
 
 void DisplayWidget::completeFrame( const legion::Index2& ,
