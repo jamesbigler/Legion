@@ -22,6 +22,7 @@
 
 
 #include <Legion/Common/Util/Parameters.hpp>
+#include <algorithm>
 
 using namespace legion;
 

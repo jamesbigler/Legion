@@ -12,7 +12,6 @@ add_executable( texture texture.cpp)
 target_link_libraries( texture legion )
 
 add_subdirectory( lr )
-add_subdirectory( lr2 )
 
 #add_executable( sphere sphere.cpp )
 #target_link_libraries( sphere legion)

@@ -45,8 +45,9 @@ bool lr::readFile( const char* filename, char** contents )
     in.seekg (0, std::ios::beg );
 
     // read data 
-    *contents = new char[ length ];
+    *contents = new char[ length+1 ];
     in.read( *contents, length );
+    (*contents)[length] = '\0';
     
     return true;
 }

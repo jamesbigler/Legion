@@ -3,6 +3,7 @@
 #include <Legion/Common/Util/Stream.hpp>
 
 #include <iostream>
+#include <cstdlib>
 
 using namespace legion;
 

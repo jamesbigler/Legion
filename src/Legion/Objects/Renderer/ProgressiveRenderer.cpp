@@ -27,6 +27,8 @@
 #include <Legion/Common/Util/AutoTimerHelpers.hpp>
 #include <Legion/Common/Util/Logger.hpp>
 
+#include <cstdlib>
+
 using namespace legion;
     
 
