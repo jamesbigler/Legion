@@ -1,6 +1,6 @@
 <legion_scene name="simple">
 
-    <renderer type="ProgressiveRenderer" samples_per_pixel="64" />
+    <renderer type="ProgressiveRenderer" samples_per_pixel="16" />
 
     <display type="ImageFileDisplay">
         <string name="filename" value="simple.exr" />

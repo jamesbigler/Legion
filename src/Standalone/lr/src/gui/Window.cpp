@@ -44,8 +44,6 @@ Window::Window( const char* filename )
       m_ctx( new legion::Context )
 {
     m_display_widget = new DisplayWidget();
-    m_lrdisplay = new LRDisplay( m_ctx, m_display_widget );
-
     setCentralWidget( m_display_widget );
     setWindowTitle( tr( "lr v0.1") );
     resize( 800, 600 );
@@ -75,15 +73,8 @@ Window::Window( const char* filename )
 
     QObject::connect( this, SIGNAL(appStarting()), this, SLOT(loadScene()) );
     QObject::connect( this, SIGNAL(sceneLoaded()), this, SLOT(render()) );
-    QObject::connect( m_display_widget, SIGNAL( progressChanged(int, QImage*) ),
-                      this, SLOT( updateProgress(int, QImage* ) ) 
-                      );
-    QObject::connect( this, SIGNAL( imageUpdated(QImage*) ),
-                      m_display_widget, SLOT( displayImage(QImage*) ) 
-                      );
+
     statusBar()->showMessage( tr("Loading scene...") );
-
-
 }
 
 
@@ -100,15 +91,21 @@ void Window::loadScene()
         throw std::runtime_error( "Failed to read xml file." );
 
     XMLToLegion translate( text, m_ctx, false );
-    m_ctx->getRenderer()->setDisplay( m_lrdisplay );
     delete [] text;
     emit sceneLoaded();
 }
 
 
-void Window::updateProgress( int percent_done, QImage* image )
+void Window::imageUpdated( QImage* image, int percent_done)
 {
     m_progress_bar->setValue( percent_done );
+    emit imageUpdated( image );
+}
+
+void Window::imageFinished( QImage* image )
+{
+    m_progress_bar->setValue( 100 );
+    // delete m_render_thread ?????
     emit imageUpdated( image );
 }
 
@@ -121,7 +118,14 @@ void Window::render()
     legion::Index2 resolution = renderer->getResolution();
     m_display_widget->setResolution( resolution.x(), resolution.y() );
 
-    RenderThread* render_thread = new RenderThread( m_ctx );
-    render_thread->start();
+    m_render_thread = new RenderThread( m_ctx );
+
+    QObject::connect( m_render_thread, SIGNAL( imageUpdated(QImage*, int) ),
+                      this,            SLOT  ( imageUpdated(QImage*, int) ) );
+    
+    QObject::connect( m_render_thread, SIGNAL( imageFinished(QImage*) ),
+                      this,            SLOT  ( imageFinished(QImage*) ) );
+
+    m_render_thread->start();
 }
 

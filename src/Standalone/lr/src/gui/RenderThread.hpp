@@ -26,25 +26,40 @@
 
 #include <QThread>
 
+class QImage;
 
 namespace legion
 {
     class Context;
 }
+
 namespace lr
 {
 
+class LegionDisplay;
+
 class RenderThread: public QThread
 {
+    Q_OBJECT
+
 public:
+
     RenderThread( legion::Context* ctx );
     ~RenderThread();
 
+    void emitImageUpdated ( QImage* image, int percent_done );
+    void emitImageFinished( QImage* image );
+
+signals:
+    void imageUpdated ( QImage*, int percent_done );
+    void imageFinished( QImage* );
+
+protected:
     void run();
 
 private:
-    legion::Context* m_ctx;
-
+    legion::Context*    m_ctx;
+    lr::LegionDisplay*  m_display;
 };
 
 }

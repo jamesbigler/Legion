@@ -14,6 +14,7 @@ include_directories(
 set( lrgui_sources
     src/gui/DisplayWidget.cpp
     src/gui/ImageWidget.cpp
+    src/gui/LegionDisplay.cpp
     src/gui/RenderThread.cpp
     src/gui/Window.cpp
     )
@@ -21,6 +22,7 @@ set( lrgui_sources
 set( lrgui_headers
     src/gui/DisplayWidget.hpp
     src/gui/ImageWidget.hpp
+    src/gui/LegionDisplay.hpp
     src/gui/RenderThread.hpp
     src/gui/Window.hpp
     )

@@ -22,7 +22,9 @@
 
 
 #include <gui/RenderThread.hpp>
+#include <gui/LegionDisplay.hpp>
 #include <Legion/Core/Context.hpp>
+#include <Legion/Objects/Renderer/IRenderer.hpp>
 
 using namespace lr;
 
@@ -30,11 +32,31 @@ RenderThread::RenderThread( legion::Context* ctx )
     : QThread(),
       m_ctx( ctx )
 {
+    
+    if( !m_ctx->getRenderer()->getDisplay() )
+    {
+        m_display = new LegionDisplay( m_ctx, this, "lrgui.exr" );
+        m_ctx->getRenderer()->setDisplay( m_display );
+    }
+
+    m_ctx->getRenderer()->getDisplay()->beginScene( "lrgui");
 }
 
 
 RenderThread::~RenderThread()
 {
+}
+
+
+void RenderThread::emitImageUpdated( QImage* image, int percent_done )
+{
+    emit imageUpdated( image, percent_done );
+}
+
+
+void RenderThread::emitImageFinished( QImage* image )
+{
+    emit imageFinished( image );
 }
 
 

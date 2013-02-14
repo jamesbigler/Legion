@@ -80,11 +80,13 @@ void DisplayWidget::updateFrame( const legion::Index2&, const float* )
         static_cast<float>( m_update_count ) *
         100.0f;
 
+    /*
     unsigned color = percent_done * 2.55f;
     //m_image->fill( color );
     for( int i = 0; i < m_width; ++i )
         for( int j = 0; j < m_height; ++j )
             m_image->setPixel( i,j, color );
+            */
 
     emit progressChanged( percent_done, m_image );
 }
@@ -98,9 +100,11 @@ void DisplayWidget::completeFrame( const legion::Index2& ,
 
 void DisplayWidget::displayImage( QImage* image )
 {
+    /*
     if( image )
     {
         m_image_widget->setPixmap(QPixmap::fromImage(*image));
         m_image_widget->adjustSize();
     }
+    */
 }

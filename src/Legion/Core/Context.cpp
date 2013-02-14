@@ -108,7 +108,9 @@ Context::Impl::Impl( Context* context )
     : m_factory( context ),
       m_optix_scene(),
       m_plugin_context( m_optix_scene.getOptiXContext() ),
-      m_log_file( "legion.log" )
+      m_log_file( "legion.log" ),
+      m_renderer( 0 ),
+      m_camera( 0 )
 {
     Log::setStream( m_log_file );
     Factory& f = m_factory;

@@ -44,7 +44,7 @@ namespace lr
 {
 
 class DisplayWidget;
-class LRDisplay;
+class RenderThread; 
 
 class Window : public QMainWindow
 {
@@ -57,7 +57,8 @@ public:
 private slots:
     void loadScene();
     void render();
-    void updateProgress( int, QImage* );
+    void imageUpdated ( QImage*, int );
+    void imageFinished( QImage* );
 
 signals:
     void appStarting();
@@ -69,7 +70,7 @@ private:
     legion::Context*  m_ctx;
 
     DisplayWidget*    m_display_widget;
-    LRDisplay*        m_lrdisplay;
+    RenderThread*     m_render_thread;
     
     QPushButton*      m_render_button;
     QPushButton*      m_stop_button;
