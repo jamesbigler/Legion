@@ -27,6 +27,9 @@
 #include <string>
 #include <QWidget>
 
+
+class QImage;
+
 namespace lr
 {
 
@@ -49,7 +52,10 @@ public:
     void completeFrame ( const legion::Index2& res, const float* pixels );
 
 signals:
-    void progressChanged( int );
+    void progressChanged( int, QImage* qimage );
+
+private slots:
+    void displayImage( QImage* );
 
 private:
     static const int  s_field_width = 28;
@@ -59,6 +65,7 @@ private:
     unsigned          m_cur_update;
 
     ImageWidget*      m_image_widget;
+    QImage*           m_image;
 
     unsigned          m_width;
     unsigned          m_height;

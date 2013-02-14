@@ -29,10 +29,11 @@
 
 
 
+class QImage;
 class QProgressBar;
 class QPushButton;
-class QToolBar;
 class QStatusBar;
+class QToolBar;
 
 namespace legion
 {
@@ -56,11 +57,12 @@ public:
 private slots:
     void loadScene();
     void render();
-    void updateProgress( int );
+    void updateProgress( int, QImage* );
 
 signals:
     void appStarting();
     void sceneLoaded();
+    void imageUpdated( QImage* );
 
 private:
     std::string       m_filename;

@@ -33,6 +33,7 @@ DisplayWidget::DisplayWidget()
       m_update_count( 0u ),
       m_cur_update( 0u ),
       m_image_widget( new ImageWidget( this ) ),
+      m_image( 0 ),
       m_width( 512 ),
       m_height( 512 )
 {
@@ -49,6 +50,7 @@ void DisplayWidget::setResolution( unsigned width, unsigned height )
 {
     m_width  = width;
     m_height = height;
+    m_image  = new QImage( m_width, m_height, QImage::Format_RGB32 );
     parentWidget()->resize( m_width, m_height );
     m_image_widget->resize( m_width, m_height );
 }
@@ -78,11 +80,27 @@ void DisplayWidget::updateFrame( const legion::Index2&, const float* )
         static_cast<float>( m_update_count ) *
         100.0f;
 
-    emit progressChanged( percent_done );
+    unsigned color = percent_done * 2.55f;
+    //m_image->fill( color );
+    for( int i = 0; i < m_width; ++i )
+        for( int j = 0; j < m_height; ++j )
+            m_image->setPixel( i,j, color );
+
+    emit progressChanged( percent_done, m_image );
 }
 
 void DisplayWidget::completeFrame( const legion::Index2& ,
                                const float* )
 {
+    exit(0);
 }
 
+
+void DisplayWidget::displayImage( QImage* image )
+{
+    if( image )
+    {
+        m_image_widget->setPixmap(QPixmap::fromImage(*image));
+        m_image_widget->adjustSize();
+    }
+}

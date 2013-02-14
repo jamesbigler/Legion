@@ -75,8 +75,12 @@ Window::Window( const char* filename )
 
     QObject::connect( this, SIGNAL(appStarting()), this, SLOT(loadScene()) );
     QObject::connect( this, SIGNAL(sceneLoaded()), this, SLOT(render()) );
-    QObject::connect( m_display_widget, SIGNAL( progressChanged( int ) ), 
-                      this, SLOT( updateProgress( int )) );
+    QObject::connect( m_display_widget, SIGNAL( progressChanged(int, QImage*) ),
+                      this, SLOT( updateProgress(int, QImage* ) ) 
+                      );
+    QObject::connect( this, SIGNAL( imageUpdated(QImage*) ),
+                      m_display_widget, SLOT( displayImage(QImage*) ) 
+                      );
     statusBar()->showMessage( tr("Loading scene...") );
 
 
@@ -102,9 +106,10 @@ void Window::loadScene()
 }
 
 
-void Window::updateProgress( int percent_done )
+void Window::updateProgress( int percent_done, QImage* image )
 {
     m_progress_bar->setValue( percent_done );
+    emit imageUpdated( image );
 }
 
 
