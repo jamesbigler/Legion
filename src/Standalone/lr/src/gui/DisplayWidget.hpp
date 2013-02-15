@@ -45,58 +45,16 @@ public:
 
     void setResolution( unsigned width, unsigned height );
 
-    void beginScene    ( const std::string& scene_name );
-    void setUpdateCount( unsigned update_count );
-    void beginFrame    ();
-    void updateFrame   ( const legion::Index2& res, const float* pixels );
-    void completeFrame ( const legion::Index2& res, const float* pixels );
-
-signals:
-    void progressChanged( int, QImage* qimage );
-
 private slots:
-    void displayImage( QImage* );
+    void displayImage( const float* );
 
 private:
-    static const int  s_field_width = 28;
-
-    std::string       m_scene_name;
-    unsigned          m_update_count;
-    unsigned          m_cur_update;
-
     ImageWidget*      m_image_widget;
     QImage*           m_image;
 
     unsigned          m_width;
     unsigned          m_height;
 };
-
-class LRDisplay : public legion::IDisplay
-{
-public:
-    LRDisplay( legion::Context* ctx, DisplayWidget* dw )
-        : legion::IDisplay( ctx ), m_dw( dw ) {}
-
-    void beginScene( const std::string& scene_name )
-    { m_dw->beginScene( scene_name ); }
-
-    void setUpdateCount( unsigned update_count )
-    { m_dw->setUpdateCount( update_count ); }
-
-    void beginFrame()
-    { m_dw->beginFrame(); }
-
-    void updateFrame( const legion::Index2& res, const float* pixels )
-    { m_dw->updateFrame( res, pixels ); }
-
-    void completeFrame ( const legion::Index2& res, const float* pixels )
-    { m_dw->completeFrame( res, pixels ); }
-
-private:
-    DisplayWidget* m_dw;
-
-};
-
 
 } // end namespace lr
 

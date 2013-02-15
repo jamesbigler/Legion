@@ -47,6 +47,7 @@ Window::Window( const char* filename )
     setCentralWidget( m_display_widget );
     setWindowTitle( tr( "lr v0.1") );
     resize( 800, 600 );
+    move( 0, 0 );
 
     /*
     QPalette pal = this->palette();
@@ -71,8 +72,8 @@ Window::Window( const char* filename )
 
     QTimer::singleShot( 0, this, SIGNAL( appStarting() ) );
 
-    QObject::connect( this, SIGNAL(appStarting()), this, SLOT(loadScene()) );
-    QObject::connect( this, SIGNAL(sceneLoaded()), this, SLOT(render()) );
+    connect( this, SIGNAL( appStarting() ), this, SLOT( loadScene() ) );
+    connect( this, SIGNAL( sceneLoaded() ), this, SLOT( render() ) );
 
     statusBar()->showMessage( tr("Loading scene...") );
 }
@@ -86,26 +87,41 @@ Window::~Window()
 void Window::loadScene()
 {
     statusBar()->showMessage( tr("Loading scene...") );
+
+    // Read in and translate XML text
     char* text;
     if( ! lr::readFile( m_filename.c_str(), &text ) )
         throw std::runtime_error( "Failed to read xml file." );
-
     XMLToLegion translate( text, m_ctx, false );
     delete [] text;
+
     emit sceneLoaded();
 }
 
 
-void Window::imageUpdated( QImage* image, int percent_done)
+void Window::imageUpdated( const float* image, int percent_done)
 {
     m_progress_bar->setValue( percent_done );
     emit imageUpdated( image );
 }
 
-void Window::imageFinished( QImage* image )
+void Window::imageFinished( const float* image )
 {
     m_progress_bar->setValue( 100 );
-    // delete m_render_thread ?????
+
+
+    //
+    // clean up render thread 
+    //
+    disconnect( m_render_thread, SIGNAL( imageUpdated(const float*, int)),
+                this, SLOT( imageUpdated(const float*, int) ) );
+    disconnect( m_render_thread, SIGNAL( imageFinished(const float*) ),
+                this, SLOT( imageFinished(const float*) ) );
+    m_render_thread->wait();
+    m_render_thread->quit();
+    delete m_render_thread;
+    m_render_thread = 0;
+    
     emit imageUpdated( image );
 }
 
@@ -120,11 +136,14 @@ void Window::render()
 
     m_render_thread = new RenderThread( m_ctx );
 
-    QObject::connect( m_render_thread, SIGNAL( imageUpdated(QImage*, int) ),
-                      this,            SLOT  ( imageUpdated(QImage*, int) ) );
+    connect( m_render_thread, SIGNAL( imageUpdated(const float*, int) ),
+             this,            SLOT  ( imageUpdated(const float*, int) ) );
     
-    QObject::connect( m_render_thread, SIGNAL( imageFinished(QImage*) ),
-                      this,            SLOT  ( imageFinished(QImage*) ) );
+    connect( m_render_thread, SIGNAL( imageFinished(const float*) ),
+             this,            SLOT  ( imageFinished(const float*) ) );
+
+    connect( this,             SIGNAL( imageUpdated(const float* ) ),
+             m_display_widget, SLOT  ( displayImage(const float* ) ) );
 
     m_render_thread->start();
 }

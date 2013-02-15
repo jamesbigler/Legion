@@ -30,8 +30,6 @@ using namespace lr;
 
 DisplayWidget::DisplayWidget()
     : QWidget(),
-      m_update_count( 0u ),
-      m_cur_update( 0u ),
       m_image_widget( new ImageWidget( this ) ),
       m_image( 0 ),
       m_width( 512 ),
@@ -56,55 +54,31 @@ void DisplayWidget::setResolution( unsigned width, unsigned height )
 }
 
 
-void DisplayWidget::beginScene( const std::string& scene_name )
+void DisplayWidget::displayImage( const float* image )
 {
-    m_scene_name = scene_name;
-}
-
-
-void DisplayWidget::setUpdateCount( unsigned update_count )
-{
-    m_update_count = update_count;
-}
-
-
-void DisplayWidget::beginFrame()
-{
-}
-
-void DisplayWidget::updateFrame( const legion::Index2&, const float* )
-{
-    ++m_cur_update;
-    const int percent_done = 
-        static_cast<float>( m_cur_update )   /
-        static_cast<float>( m_update_count ) *
-        100.0f;
-
-    /*
-    unsigned color = percent_done * 2.55f;
-    //m_image->fill( color );
     for( int i = 0; i < m_width; ++i )
-        for( int j = 0; j < m_height; ++j )
-            m_image->setPixel( i,j, color );
-            */
-
-    emit progressChanged( percent_done, m_image );
-}
-
-void DisplayWidget::completeFrame( const legion::Index2& ,
-                               const float* )
-{
-    exit(0);
-}
-
-
-void DisplayWidget::displayImage( QImage* image )
-{
-    /*
-    if( image )
     {
-        m_image_widget->setPixmap(QPixmap::fromImage(*image));
-        m_image_widget->adjustSize();
+        for( int j = 0; j < m_height; ++j )
+        {
+            unsigned idx = (j*m_width+i)*4;
+            const float r = image[idx+0];
+            const float g = image[idx+1];
+            const float b = image[idx+2];
+            const unsigned rr = r > 1.0f ? 255 :
+                                r < 0.0f ? 0   :
+                                r * 255;
+            const unsigned gg = g > 1.0f ? 255 :
+                                g < 0.0f ? 0   :
+                                g * 255;
+            const unsigned bb = b > 1.0f ? 255 :
+                                b < 0.0f ? 0   :
+                                b * 255;
+                            
+            QRgb color = qRgb( rr, gg, bb );
+            m_image->setPixel( i, j, color );
+        }
     }
-    */
+
+    m_image_widget->setPixmap( QPixmap::fromImage( *m_image ) );
+    //image_widget->adjustSize();
 }

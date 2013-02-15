@@ -57,13 +57,13 @@ public:
 private slots:
     void loadScene();
     void render();
-    void imageUpdated ( QImage*, int );
-    void imageFinished( QImage* );
+    void imageUpdated ( const float*, int );
+    void imageFinished( const float* );
 
 signals:
     void appStarting();
     void sceneLoaded();
-    void imageUpdated( QImage* );
+    void imageUpdated( const float* );
 
 private:
     std::string       m_filename;

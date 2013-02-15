@@ -26,6 +26,8 @@
 #include <Legion/Core/Context.hpp>
 #include <Legion/Objects/Renderer/IRenderer.hpp>
 
+#include <QImage>
+
 using namespace lr;
 
 RenderThread::RenderThread( legion::Context* ctx )
@@ -40,6 +42,8 @@ RenderThread::RenderThread( legion::Context* ctx )
     }
 
     m_ctx->getRenderer()->getDisplay()->beginScene( "lrgui");
+    legion::Index2 res = m_ctx->getRenderer()->getResolution();
+    m_image = new QImage( res.x(), res.y(), QImage::Format_RGB32 );
 }
 
 
@@ -48,13 +52,13 @@ RenderThread::~RenderThread()
 }
 
 
-void RenderThread::emitImageUpdated( QImage* image, int percent_done )
+void RenderThread::emitImageUpdated( const float* image, int percent_done )
 {
     emit imageUpdated( image, percent_done );
 }
 
 
-void RenderThread::emitImageFinished( QImage* image )
+void RenderThread::emitImageFinished( const float* image )
 {
     emit imageFinished( image );
 }
