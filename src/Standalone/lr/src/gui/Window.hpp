@@ -57,13 +57,13 @@ public:
 private slots:
     void loadScene();
     void render();
-    void imageUpdated ( const float*, int );
-    void imageFinished( const float* );
+    void imageUpdated ( const unsigned char*, int );
+    void imageFinished();
 
 signals:
     void appStarting();
     void sceneLoaded();
-    void imageUpdated( const float* );
+    void imageUpdated( const unsigned char* );
 
 private:
     std::string       m_filename;

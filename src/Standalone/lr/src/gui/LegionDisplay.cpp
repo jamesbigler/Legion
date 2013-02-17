@@ -22,12 +22,13 @@
 
 
 #include <gui/LegionDisplay.hpp>
-#include <gui/RenderThread.hpp>
 #include <Legion/Common/Util/Image.hpp>
 #include <iostream>
 #include <iomanip>
 
 using namespace lr;
+
+
 
 LegionDisplay::LegionDisplay( legion::Context* context,
                               RenderThread* render_thread,
@@ -41,6 +42,13 @@ LegionDisplay::LegionDisplay( legion::Context* context,
 }
 
 
+
+void LegionDisplay::setUpdateCount( unsigned update_count )
+{
+    m_update_count = update_count;
+}
+
+
 void LegionDisplay::beginScene( const std::string& scene_name )
 {
     m_scene_name = scene_name;
@@ -49,36 +57,27 @@ void LegionDisplay::beginScene( const std::string& scene_name )
               << " -------------------------------------------------\n"
               << std::endl;
 
-    std::cout << "     Rendering Scene: '" << m_scene_name << "' ...\n"
+    std::cout << std::setw( s_field_width+2 ) 
+              << "Rendering Scene: '" << m_scene_name << "' ...\n"
               << std::endl;
 
     m_preprocess_timer.start();
 }
 
 
-void LegionDisplay::setUpdateCount( unsigned update_count )
+void LegionDisplay::beginFrame( const legion::Index2& resolution )
 {
-    m_update_count = update_count;
-}
+    m_resolution = resolution;
 
-
-void LegionDisplay::beginFrame()
-{
-    m_preprocess_timer.stop();
+    printTime( "Scene Creation", m_preprocess_timer.stop() ); 
     m_render_timer.start();
-
-    std::cout << " Scene Creation Time:" 
-                  << std::setiosflags(std::ios::right) 
-                  << std::setw( s_field_width - 1 ) 
-                  << std::setiosflags( std::ios::fixed)
-                  << std::setprecision( 2 )
-                  << m_preprocess_timer.getTimeElapsed() << "s\n";
 
     if( m_update_count > 0 )
     {
-        std::cout << "     Render Progress:" 
+        std::cout << std::setw( s_field_width ) 
+                  << "Render Progress:" 
                   << std::setiosflags(std::ios::right) 
-                  << std::setw( s_field_width ) 
+                  << std::setw( s_result_width ) 
                   << "0%";
         std::cout.flush();
     }
@@ -90,16 +89,17 @@ void LegionDisplay::beginFrame()
                   << "0";
         std::cout.flush();
     }
-    
 }
 
-void LegionDisplay::updateFrame( const legion::Index2&, const float* pixels )
-{
 
+bool LegionDisplay::updateFrame( const float*, const Byte* bpix )
+{
     ++m_cur_update;
+    unsigned percent_done = 0u;
+
     if( m_update_count > 0 )
     {
-        const unsigned percent_done = 
+        percent_done = 
             static_cast<float>( m_cur_update )   /
             static_cast<float>( m_update_count ) *
             100.0f;
@@ -108,7 +108,6 @@ void LegionDisplay::updateFrame( const legion::Index2&, const float* pixels )
                   << std::setiosflags(std::ios::right ) 
                   << percent_done << "%";
         std::cout.flush();
-        m_render_thread->emitImageUpdated( pixels, percent_done );
     }
     else
     {
@@ -117,18 +116,23 @@ void LegionDisplay::updateFrame( const legion::Index2&, const float* pixels )
                   << std::setiosflags(std::ios::right) 
                   << m_cur_update;
         std::cout.flush();
-        m_render_thread->emitImageUpdated( pixels, 0 );
     }
     
+    if( m_cur_update == 1u || m_display_timer.getTimeElapsed() > 0.5f )
+    {
+        m_render_thread->emitImageUpdated( bpix, percent_done );
+        m_display_timer.reset();
+        m_display_timer.start();
+    }
+
+    // TODO: allow user to stop render
+    return true;
 }
 
-void LegionDisplay::completeFrame( const legion::Index2& resolution,
-                                   const float* pixels )
-{
-    m_render_timer.stop();
-    m_postprocess_timer.start();
 
-    m_render_thread->emitImageFinished( pixels );
+void LegionDisplay::completeFrame( const float* fpix, const Byte* )
+{
+    m_render_thread->emitImageFinished();
 
     if( m_update_count > 0 )
     {
@@ -139,43 +143,41 @@ void LegionDisplay::completeFrame( const legion::Index2& resolution,
         std::cout << std::endl; 
     }
 
-    // TODO: Wrap this common time IO stuff into helper
-    std::cout << "         Render Time:" 
-                  << std::setiosflags(std::ios::right) 
-                  << std::setw( s_field_width - 1 ) 
-                  << std::setiosflags( std::ios::fixed)
-                  << std::setprecision( 2 )
-                  << m_render_timer.getTimeElapsed() << "s"
-                  << std::endl;
+    printTime( "Render", m_render_timer.stop() );
+    m_postprocess_timer.start();
 
-    legion::writeOpenEXR( m_filename, 
-                          resolution.x(), 
-                          resolution.y(), 
-                          4,
-                          pixels );
+    legion::writeOpenEXR(
+            m_filename, m_resolution.x(), m_resolution.y(), 4, fpix
+            );
 
-    m_postprocess_timer.stop();
-    std::cout << "     Cleanup/IO Time:" 
-                  << std::setiosflags(std::ios::right) 
-                  << std::setw( s_field_width - 1 ) 
-                  << std::setiosflags( std::ios::fixed)
-                  << std::setprecision( 2 )
-                  << m_postprocess_timer.getTimeElapsed() << "s"
-                  << std::endl;
-    std::cout << "          Total Time:" 
-                  << std::setiosflags(std::ios::right) 
-                  << std::setw( s_field_width - 1 ) 
-                  << std::setiosflags( std::ios::fixed)
-                  << std::setprecision( 2 )
-                  << m_preprocess_timer.getTimeElapsed()   +
-                      m_render_timer.getTimeElapsed()      +
-                      m_postprocess_timer.getTimeElapsed()
-                  << "s\n"
-                  << std::endl;
+    printTime( "Cleanup/IO", m_postprocess_timer.stop() );
+    printTime( "Total Time",
+            m_preprocess_timer.getTimeElapsed() +
+            m_render_timer.getTimeElapsed()     +
+            m_postprocess_timer.getTimeElapsed()
+            );
+    std::cout << "\n";
 
-    std::cout << "        Output Image:" 
-                  << std::setw( s_field_width ) 
-                  << m_filename
-                  << std::endl << std::endl;;
+    std::cout << std::setw( s_field_width )
+              << "Output Image:" 
+              << std::setw( s_result_width ) 
+              << m_filename
+              << std::endl << std::endl;;
 }
 
+    
+void LegionDisplay::printTime(
+        const std::string& phase,
+        double duration
+        )
+{
+
+    std::cout << std::setw( s_field_width - 6 ) 
+              << phase << " Time:"
+              << std::setiosflags(std::ios::right) 
+              << std::setw( s_result_width - 1 ) 
+              << std::setiosflags( std::ios::fixed)
+              << std::setprecision( 2 )
+              << duration << "s"
+              << std::endl;
+}

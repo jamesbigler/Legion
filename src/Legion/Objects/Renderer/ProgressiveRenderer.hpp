@@ -44,12 +44,12 @@ public:
 
     const char*    name()const;
     const char*    rayGenProgramName()const;
-    optix::Buffer  getOutputBuffer()const;
     void           render( VariableContainer& container );
     
     void setVariables( VariableContainer& container ) const;
 private:
-    optix::Buffer m_output_buffer;
+    optix::Buffer m_float_output_buffer;
+    optix::Buffer m_byte_output_buffer;
 };
 
 }

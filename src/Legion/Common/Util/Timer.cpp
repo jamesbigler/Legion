@@ -85,11 +85,12 @@ void Timer::start()
 }
 
 
-void Timer::stop()
+double Timer::stop()
 {
     assert( m_is_running );
     m_time_elapsed = getTimeElapsed();
     m_is_running   = false;
+    return m_time_elapsed;
 }
 
 

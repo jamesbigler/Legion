@@ -29,8 +29,11 @@
 rtDeclareVariable( float,    light_seed,        , );
 rtDeclareVariable( unsigned, sample_index,      , );
 rtDeclareVariable( unsigned, samples_per_pixel, , );
+rtDeclareVariable( unsigned, do_byte_updates,   , );
+rtDeclareVariable( unsigned, do_byte_complete,  , );
 
-rtBuffer<float4, 2> output_buffer;
+rtBuffer<float4, 2> float_output_buffer;
+rtBuffer<uchar4, 2> byte_output_buffer;
 
 RT_PROGRAM void progressiveRendererRayGen()
 {
@@ -51,17 +54,30 @@ RT_PROGRAM void progressiveRendererRayGen()
             screen_sample,
             time_sample );
 
-    const float3 result = legion::radiance( sobol_index, rg.origin, rg.direction, light_index );
+    const float3 result =
+        legion::radiance( sobol_index, rg.origin, rg.direction, light_index );
 
-    const float4 cur = make_float4( result, 1.0f );
-    if( sample_index == 0 )
+    float3 pix_val = result;
+    if( sample_index > 0 )
     {
-        output_buffer[ launch_index ] = cur;
+        const float3 prev = make_float3( float_output_buffer[ launch_index ] );
+        pix_val = optix::lerp( prev, result, 1.0f/sample_index );
     }
-    else
+
+    float_output_buffer[ launch_index ] = make_float4( pix_val, 1.0f );
+
+    //
+    // Performa gamma correction and reinhard tonemapping for displayable buffer
+    // TODO: allow user to control gamma, exposure and tonemapping algorithm
+    //
+    if( do_byte_updates  || 
+      ( do_byte_complete && sample_index+1 == samples_per_pixel ) )
     {
-        const float4 prev   = output_buffer[ launch_index ];
-        const float4 final  = optix::lerp( prev, cur, 1.0f / sample_index );
-        output_buffer[ launch_index ] = final;
+        const float3 mapped =
+            legion::gammaCorrect( 
+                    legion::reinhardToneOperator( pix_val ), 2.2f
+                    );
+        byte_output_buffer[ launch_index ] = 
+            make_uchar4( 255, mapped.x * 255, mapped.y*255, mapped.z*255 ); 
     }
 }

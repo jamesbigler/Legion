@@ -46,7 +46,7 @@ public:
     void setResolution( unsigned width, unsigned height );
 
 private slots:
-    void displayImage( const float* );
+    void displayImage( const unsigned char* );
 
 private:
     ImageWidget*      m_image_widget;

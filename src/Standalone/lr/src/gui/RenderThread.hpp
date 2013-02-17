@@ -47,12 +47,12 @@ public:
     RenderThread( legion::Context* ctx );
     ~RenderThread();
 
-    void emitImageUpdated ( const float* image, int percent_done );
-    void emitImageFinished( const float* image );
+    void emitImageUpdated ( const unsigned char* image, int percent_done );
+    void emitImageFinished();
 
 signals:
-    void imageUpdated ( const float*, int percent_done );
-    void imageFinished( const float* );
+    void imageUpdated ( const unsigned char*, int percent_done );
+    void imageFinished( );
 
 protected:
     void run();

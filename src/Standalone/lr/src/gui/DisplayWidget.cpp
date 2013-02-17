@@ -23,6 +23,9 @@
 
 #include <gui/DisplayWidget.hpp>
 #include <gui/ImageWidget.hpp>
+#include <Legion/Common/Math/Math.hpp>
+#include <Legion/Common/Util/Timer.hpp>
+#include <iostream>
 
 
 using namespace lr;
@@ -54,31 +57,25 @@ void DisplayWidget::setResolution( unsigned width, unsigned height )
 }
 
 
-void DisplayWidget::displayImage( const float* image )
+void DisplayWidget::displayImage( const unsigned char* image )
 {
+    struct ARGB { unsigned char a,r,g,b; };
+
+    legion::Timer timer;
+    timer.start();
+    const ARGB* pixels = reinterpret_cast<const ARGB*>( image );
+
     for( int i = 0; i < m_width; ++i )
     {
         for( int j = 0; j < m_height; ++j )
         {
-            unsigned idx = (j*m_width+i)*4;
-            const float r = image[idx+0];
-            const float g = image[idx+1];
-            const float b = image[idx+2];
-            const unsigned rr = r > 1.0f ? 255 :
-                                r < 0.0f ? 0   :
-                                r * 255;
-            const unsigned gg = g > 1.0f ? 255 :
-                                g < 0.0f ? 0   :
-                                g * 255;
-            const unsigned bb = b > 1.0f ? 255 :
-                                b < 0.0f ? 0   :
-                                b * 255;
-                            
-            QRgb color = qRgb( rr, gg, bb );
+            unsigned idx = (j*m_width+i);
+            const ARGB c = pixels[ idx ];
+            QRgb color = qRgb( c.r, c.g, c.b );
+
             m_image->setPixel( i, j, color );
+
         }
     }
-
     m_image_widget->setPixmap( QPixmap::fromImage( *m_image ) );
-    //image_widget->adjustSize();
 }

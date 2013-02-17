@@ -38,18 +38,25 @@ public:
     static IDisplay* create( Context* context, const Parameters& params );
 
     ImageFileDisplay( Context* context, const char* filename );
-
-    void beginScene    ( const std::string& scene_name );
+    
+    FrameType getUpdateFrameType()       { return NONE;  }
+    FrameType getCompleteFrameType()     { return FLOAT; }
+    
     void setUpdateCount( unsigned m_update_count );
-    void beginFrame    ();
-    void updateFrame   ( const Index2& resolution, const float* pixels );
-    void completeFrame ( const Index2& resolution, const float* pixels );
+
+    void beginScene   ( const std::string& scene_name );
+    void beginFrame   ( const Index2& resolution );
+    bool updateFrame  ( const float* fpix, const Byte* cpix );
+    void completeFrame( const float* fpix, const Byte* cpix );
 private:
-    static const int  s_field_width = 28;
+    static const int s_result_width = 29;
+    static const int s_field_width  = 21;
+    static void printTime( const std::string& phase, double duration );
 
     std::string       m_scene_name;
     unsigned          m_update_count;
     unsigned          m_cur_update;
+    Index2            m_resolution;
     std::string       m_filename;
     Timer             m_preprocess_timer;
     Timer             m_render_timer;

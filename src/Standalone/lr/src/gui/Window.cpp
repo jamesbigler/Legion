@@ -99,30 +99,31 @@ void Window::loadScene()
 }
 
 
-void Window::imageUpdated( const float* image, int percent_done)
+void Window::imageUpdated( const unsigned char* image, int percent_done)
 {
     m_progress_bar->setValue( percent_done );
     emit imageUpdated( image );
 }
 
-void Window::imageFinished( const float* image )
+void Window::imageFinished()
 {
     m_progress_bar->setValue( 100 );
-
 
     //
     // clean up render thread 
     //
-    disconnect( m_render_thread, SIGNAL( imageUpdated(const float*, int)),
-                this, SLOT( imageUpdated(const float*, int) ) );
-    disconnect( m_render_thread, SIGNAL( imageFinished(const float*) ),
-                this, SLOT( imageFinished(const float*) ) );
+    disconnect(
+            m_render_thread, SIGNAL(imageUpdated(const unsigned char*, int)),
+            this,            SLOT  (imageUpdated(const unsigned char*, int))
+            );
+    
+    disconnect( m_render_thread, SIGNAL(imageFinished() ),
+                this,            SLOT  (imageFinished() ) );
+
     m_render_thread->wait();
     m_render_thread->quit();
     delete m_render_thread;
     m_render_thread = 0;
-    
-    emit imageUpdated( image );
 }
 
 
@@ -136,14 +137,14 @@ void Window::render()
 
     m_render_thread = new RenderThread( m_ctx );
 
-    connect( m_render_thread, SIGNAL( imageUpdated(const float*, int) ),
-             this,            SLOT  ( imageUpdated(const float*, int) ) );
+    connect( m_render_thread, SIGNAL(imageUpdated(const unsigned char*, int)),
+             this,            SLOT  (imageUpdated(const unsigned char*, int)) );
     
-    connect( m_render_thread, SIGNAL( imageFinished(const float*) ),
-             this,            SLOT  ( imageFinished(const float*) ) );
+    connect( m_render_thread, SIGNAL(imageFinished()),
+             this,            SLOT  (imageFinished()) );
 
-    connect( this,             SIGNAL( imageUpdated(const float* ) ),
-             m_display_widget, SLOT  ( displayImage(const float* ) ) );
+    connect( this,             SIGNAL( imageUpdated(const unsigned char* ) ),
+             m_display_widget, SLOT  ( displayImage(const unsigned char* ) ) );
 
     m_render_thread->start();
 }

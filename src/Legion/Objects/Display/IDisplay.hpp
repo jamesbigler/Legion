@@ -35,17 +35,39 @@ class VariableContainer;
 class IDisplay: public IObject
 {
 public:
+    typedef unsigned char Byte;
+    enum FrameType
+    {
+        NONE  = 0,    //< Report neither
+        BYTE  = 1,    //< Report four byte  pixels: 0xffRRGGBB 
+        FLOAT = 2,    //< Report four float pixels: R,G,B,1.0f
+        BOTH  = 3     //< Report both ( BYTE | FLOAT )
+    };
+
     IDisplay( Context* context ) : IObject( context ) {}
 
-    virtual ~IDisplay() {}
+    /// Report desired update frame format 
+    virtual FrameType getUpdateFrameType()=0;
 
-    virtual void beginScene    ( const std::string& scene_name )=0;
-    virtual void setUpdateCount( unsigned m_update_count       )=0;
-    virtual void beginFrame    (                               )=0;
-    virtual void updateFrame   ( const Index2&  resolution,
-                                 const float*   pixels         )=0;
-    virtual void completeFrame ( const Index2& resolution,
-                                 const float* pixels           )=0;
+    /// Report desired complete frame format 
+    virtual FrameType getCompleteFrameType()=0;
+
+    virtual ~IDisplay() {}
+    
+    /// Set the number of expected frame updates until complete
+    virtual void setUpdateCount( unsigned m_update_count             )=0;
+
+    /// Scene processing has begun
+    virtual void beginScene    ( const std::string& scene_name       )=0;
+    
+    /// Scene processing has begun
+    virtual void beginFrame    ( const Index2& resolution            )=0;
+
+    /// Update frame buffer with current partially finished results
+    virtual bool updateFrame   ( const float* fpix, const Byte* cpix )=0;
+
+    /// Complete frame buffer 
+    virtual void completeFrame ( const float* fpix, const Byte* cpix )=0;
 };
 
 }

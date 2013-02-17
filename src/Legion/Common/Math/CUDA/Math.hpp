@@ -116,6 +116,55 @@ namespace legion
                            cos_theta );
         pdf = ONE_DIV_PI * 0.25f;
     }
+
+
+    LDEVICE inline float3 Yxy2rgb( float3 Yxy )
+    {
+    
+        using optix::dot;
+        // First convert to xyz
+        float3 xyz = make_float3( Yxy.y * ( Yxy.x / Yxy.z ),
+                                  Yxy.x,
+                                  ( 1.0f - Yxy.y - Yxy.z ) * ( Yxy.x/Yxy.z ) );
+
+        const float R = dot( xyz, make_float3(  3.2410f, -1.5374f, -0.4986f ) );
+        const float G = dot( xyz, make_float3( -0.9692f,  1.8760f,  0.0416f ) );
+        const float B = dot( xyz, make_float3(  0.0556f, -0.2040,   1.0570f ) );
+        return make_float3( R, G, B );
+    }
+
+
+    LDEVICE inline float3 rgb2Yxy( float3 rgb)
+    {
+        using optix::dot;
+        // convert to xyz
+        const float X = dot( rgb, make_float3( 0.4124, 0.3576, 0.1805 ) );
+        const float Y = dot( rgb, make_float3( 0.2126, 0.7152, 0.0722 ) );
+        const float Z = dot( rgb, make_float3( 0.0193, 0.1192, 0.9505 ) );
+
+        // convert xyz to Yxy
+        return make_float3( Y,
+                            X / ( X + Y + Z ),
+                            Y / ( X + Y + Z ) );
+    }
+
+    LDEVICE inline float3 reinhardToneOperator( float3 c )
+    {
+        const float3 Yxy         = rgb2Yxy( c );
+        const float   Y          = Yxy.x;
+        const float   mapped_Y   = Y / ( Y + 1.0f );
+        const float3 mapped_Yxy  = make_float3( mapped_Y, Yxy.y, Yxy.z );
+
+        return Yxy2rgb( mapped_Yxy );
+    }
+    
+    LDEVICE inline float3 gammaCorrect( float3 c, float gamma )
+    {
+        const float gamma_inv = 1.0f / gamma;
+        return make_float3( powf( c.x, gamma_inv ),
+                            powf( c.y, gamma_inv ),
+                            powf( c.z, gamma_inv ) );
+    }
 }
 
 #endif //LEGION_COMMON_MATH_MATH_HPP_

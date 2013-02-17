@@ -52,15 +52,18 @@ RenderThread::~RenderThread()
 }
 
 
-void RenderThread::emitImageUpdated( const float* image, int percent_done )
+void RenderThread::emitImageUpdated(
+        const unsigned char* image,
+        int percent_done
+        )
 {
     emit imageUpdated( image, percent_done );
 }
 
 
-void RenderThread::emitImageFinished( const float* image )
+void RenderThread::emitImageFinished()
 {
-    emit imageFinished( image );
+    emit imageFinished();
 }
 
 

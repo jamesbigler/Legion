@@ -58,7 +58,6 @@ public:
 
     virtual const char*    name()const=0;
     virtual const char*    rayGenProgramName()const=0;
-    virtual optix::Buffer  getOutputBuffer()const=0;
     virtual void           render( VariableContainer& container )=0;
 
 protected:

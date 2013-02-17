@@ -20,38 +20,47 @@
 // IN THE SOFTWARE.
 // (MIT/X11 License)
 
-#ifndef LR_GUI_LEGION_DISPLAY_HPP_ 
-#define LR_GUI_LEGION_DISPLAY_HPP_ 
+#ifndef LR_GUI_LEGION_DISPLAY_HPP_
+#define LR_GUI_LEGION_DISPLAY_HPP_
 
 #include <Legion/Objects/Display/IDisplay.hpp>
 #include <Legion/Common/Util/Timer.hpp>
+#include <gui/RenderThread.hpp>
 #include <string>
 
 namespace lr
 {
-
-class RenderThread;
 
 class LegionDisplay : public legion::IDisplay
 {
 public:
     LegionDisplay( legion::Context*  context,
                    lr::RenderThread* render_thread,
-                   const char* filename );
-
-    void beginScene    ( const std::string& scene_name );
+                   const char*       filename );
+    
+    FrameType getUpdateFrameType()       { return BYTE;  }
+    FrameType getCompleteFrameType()     { return FLOAT; }
+    
     void setUpdateCount( unsigned m_update_count );
-    void beginFrame    ();
-    void updateFrame   ( const legion::Index2& res, const float* pixels );
-    void completeFrame ( const legion::Index2& res, const float* pixels );
+
+    void beginScene   ( const std::string& scene_name );
+    void beginFrame   ( const legion::Index2& resolution );
+    bool updateFrame  ( const float* fpix, const Byte* cpix );
+    void completeFrame( const float* fpix, const Byte* cpix );
 private:
-    static const int  s_field_width = 28;
+    static const int s_result_width = 29;
+    static const int s_field_width  = 21;
+    static void printTime( const std::string& phase, double duration );
 
     RenderThread*     m_render_thread;
+
     std::string       m_scene_name;
     unsigned          m_update_count;
     unsigned          m_cur_update;
+    legion::Index2    m_resolution;
     std::string       m_filename;
+
+    legion::Timer     m_display_timer;
     legion::Timer     m_preprocess_timer;
     legion::Timer     m_render_timer;
     legion::Timer     m_postprocess_timer;
@@ -59,4 +68,4 @@ private:
 
 }
 
-#endif // LR_GUI_LEGION_DISPLAY_HPP_ 
+#endif // LR_GUI_LEGION_DISPLAY_HPP_

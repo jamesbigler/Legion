@@ -44,8 +44,8 @@ public:
     /// Start the timer running
     void start();
 
-    /// Stop the timer 
-    void stop();
+    /// Stop the timer and report time elapsed
+    double stop();
 
     /// Resets timer, clearing previous time elapsed 
     void reset();

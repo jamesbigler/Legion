@@ -29,6 +29,8 @@
 
 using namespace legion;
 
+
+
 IDisplay* ImageFileDisplay::create( Context* context, const Parameters& params )
 {
     return new ImageFileDisplay(
@@ -42,8 +44,15 @@ ImageFileDisplay::ImageFileDisplay( Context* context, const char* filename )
     : IDisplay( context ),
       m_update_count( 0u ),
       m_cur_update( 0u ),
+      m_resolution( 0u, 0u ),
       m_filename( filename )
 {
+}
+
+
+void ImageFileDisplay::setUpdateCount( unsigned update_count )
+{
+    m_update_count = update_count;
 }
 
 
@@ -55,36 +64,27 @@ void ImageFileDisplay::beginScene( const std::string& scene_name )
               << " -------------------------------------------------\n"
               << std::endl;
 
-    std::cout << "     Rendering Scene: '" << m_scene_name << "' ...\n"
+    std::cout << std::setw( s_field_width+2 ) 
+              << "Rendering Scene: '" << m_scene_name << "' ...\n"
               << std::endl;
 
     m_preprocess_timer.start();
 }
 
 
-void ImageFileDisplay::setUpdateCount( unsigned update_count )
+void ImageFileDisplay::beginFrame( const Index2& resolution )
 {
-    m_update_count = update_count;
-}
+    m_resolution = resolution;
 
-
-void ImageFileDisplay::beginFrame()
-{
-    m_preprocess_timer.stop();
+    printTime( "Scene Creation", m_preprocess_timer.stop() ); 
     m_render_timer.start();
-
-    std::cout << " Scene Creation Time:" 
-                  << std::setiosflags(std::ios::right) 
-                  << std::setw( s_field_width - 1 ) 
-                  << std::setiosflags( std::ios::fixed)
-                  << std::setprecision( 2 )
-                  << m_preprocess_timer.getTimeElapsed() << "s\n";
 
     if( m_update_count > 0 )
     {
-        std::cout << "     Render Progress:" 
+        std::cout << std::setw( s_field_width ) 
+                  << "Render Progress:" 
                   << std::setiosflags(std::ios::right) 
-                  << std::setw( s_field_width ) 
+                  << std::setw( s_result_width ) 
                   << "0%";
         std::cout.flush();
     }
@@ -96,10 +96,10 @@ void ImageFileDisplay::beginFrame()
                   << "0";
         std::cout.flush();
     }
-    
 }
 
-void ImageFileDisplay::updateFrame( const Index2&, const float* )
+
+bool ImageFileDisplay::updateFrame( const float*, const Byte* )
 {
     ++m_cur_update;
     if( m_update_count > 0 )
@@ -122,13 +122,11 @@ void ImageFileDisplay::updateFrame( const Index2&, const float* )
                   << m_cur_update;
         std::cout.flush();
     }
+    return true;
 }
 
-void ImageFileDisplay::completeFrame( const Index2& resolution,
-                                      const float* pixels )
+void ImageFileDisplay::completeFrame( const float* fpix, const Byte* bpix )
 {
-    m_render_timer.stop();
-    m_postprocess_timer.start();
 
     if( m_update_count > 0 )
     {
@@ -139,43 +137,39 @@ void ImageFileDisplay::completeFrame( const Index2& resolution,
         std::cout << std::endl; 
     }
 
-    // TODO: Wrap this common time IO stuff into helper
-    std::cout << "         Render Time:" 
-                  << std::setiosflags(std::ios::right) 
-                  << std::setw( s_field_width - 1 ) 
-                  << std::setiosflags( std::ios::fixed)
-                  << std::setprecision( 2 )
-                  << m_render_timer.getTimeElapsed() << "s"
-                  << std::endl;
+    printTime( "Render", m_render_timer.stop() );
+    m_postprocess_timer.start();
 
-    writeOpenEXR( m_filename, 
-                  resolution.x(), 
-                  resolution.y(), 
-                  4,
-                  pixels );
+    writeOpenEXR( m_filename, m_resolution.x(), m_resolution.y(), 4, fpix );
 
-    m_postprocess_timer.stop();
-    std::cout << "     Cleanup/IO Time:" 
-                  << std::setiosflags(std::ios::right) 
-                  << std::setw( s_field_width - 1 ) 
-                  << std::setiosflags( std::ios::fixed)
-                  << std::setprecision( 2 )
-                  << m_postprocess_timer.getTimeElapsed() << "s"
-                  << std::endl;
-    std::cout << "          Total Time:" 
-                  << std::setiosflags(std::ios::right) 
-                  << std::setw( s_field_width - 1 ) 
-                  << std::setiosflags( std::ios::fixed)
-                  << std::setprecision( 2 )
-                  << m_preprocess_timer.getTimeElapsed()   +
-                      m_render_timer.getTimeElapsed()      +
-                      m_postprocess_timer.getTimeElapsed()
-                  << "s\n"
-                  << std::endl;
+    printTime( "Cleanup/IO", m_postprocess_timer.stop() );
+    printTime( "Total Time",
+            m_preprocess_timer.getTimeElapsed() +
+            m_render_timer.getTimeElapsed()     +
+            m_postprocess_timer.getTimeElapsed()
+            );
+    std::cout << "\n";
 
-    std::cout << "        Output Image:" 
-                  << std::setw( s_field_width ) 
-                  << m_filename
-                  << std::endl << std::endl;;
+    std::cout << std::setw( s_field_width )
+              << "Output Image:" 
+              << std::setw( s_result_width ) 
+              << m_filename
+              << std::endl << std::endl;;
 }
 
+    
+void ImageFileDisplay::printTime(
+        const std::string& phase,
+        double duration
+        )
+{
+
+    std::cout << std::setw( s_field_width - 6 ) 
+              << phase << " Time:"
+              << std::setiosflags(std::ios::right) 
+              << std::setw( s_result_width - 1 ) 
+              << std::setiosflags( std::ios::fixed)
+              << std::setprecision( 2 )
+              << duration << "s"
+              << std::endl;
+}

@@ -41,8 +41,10 @@ IRenderer* ProgressiveRenderer::create( Context* context, const Parameters& )
 ProgressiveRenderer::ProgressiveRenderer( Context* context ) 
    : IRenderer( context )
 {
-    m_output_buffer = createOptiXBuffer( RT_BUFFER_OUTPUT,
-                                         RT_FORMAT_FLOAT4 );
+    m_float_output_buffer = createOptiXBuffer( RT_BUFFER_OUTPUT,
+                                               RT_FORMAT_FLOAT4 );
+    m_byte_output_buffer  = createOptiXBuffer( RT_BUFFER_OUTPUT,
+                                               RT_FORMAT_UNSIGNED_BYTE4);
 }
 
 
@@ -63,16 +65,11 @@ const char* ProgressiveRenderer::rayGenProgramName()const
 }
 
 
-optix::Buffer ProgressiveRenderer::getOutputBuffer()const
-{
-    return m_output_buffer;
-}
-
-
 void ProgressiveRenderer::render( VariableContainer& container )
 {
     LLOG_INFO << "\tProgressiveRenderer : rendering ...";
-    m_output_buffer->setSize( getResolution().x(), getResolution().y() );
+    m_float_output_buffer->setSize( getResolution().x(), getResolution().y() );
+    m_byte_output_buffer->setSize ( getResolution().x(), getResolution().y() );
 
     //
     // Force pre-compilation and accel structure builds
@@ -90,8 +87,10 @@ void ProgressiveRenderer::render( VariableContainer& container )
     srand48( 12345678 );
 
     LoopTimerInfo progressive_updates( "\tProgressive loop    :" );
+
     m_display->setUpdateCount( getSamplesPerPixel() );
-    m_display->beginFrame();
+    m_display->beginFrame( getResolution() );
+
     for( unsigned i = 0; i < getSamplesPerPixel(); ++i )
     {
         LoopTimer timer( progressive_updates );
@@ -99,10 +98,25 @@ void ProgressiveRenderer::render( VariableContainer& container )
         container.setUnsigned( "sample_index", i         );
         container.setFloat   ( "light_seed"  , drand48() );
         launchOptiX( getResolution() );
-        m_display->updateFrame( 
-            getResolution(), 
-            reinterpret_cast<float*>( m_output_buffer->map() ) );
-        m_output_buffer->unmap();
+
+        const IDisplay::FrameType frame_type = m_display->getUpdateFrameType();
+        float* fpix = 0;
+        unsigned char* bpix = 0;
+        if( frame_type & IDisplay::FLOAT )
+            fpix = reinterpret_cast<float*>( m_float_output_buffer->map() );
+        if( frame_type & IDisplay::BYTE )
+            bpix =
+                reinterpret_cast<unsigned char*>( m_byte_output_buffer->map() );
+
+        bool keep_going = m_display->updateFrame( fpix, bpix );
+        
+        if( frame_type & IDisplay::FLOAT )
+            m_float_output_buffer->unmap();
+        if( frame_type & IDisplay::BYTE )
+            m_byte_output_buffer->unmap();
+
+        if( !keep_going )
+            break;
     }
 
     //
@@ -120,16 +134,33 @@ void ProgressiveRenderer::render( VariableContainer& container )
     // Display
     //
     AutoPrintTimer apt( PrintTimeElapsed( "\tDisplay" ) );
-    m_display->completeFrame( 
-        getResolution(), 
-        reinterpret_cast<float*>( m_output_buffer->map() ) );
-    m_output_buffer->unmap();
+    const IDisplay::FrameType frame_type = m_display->getCompleteFrameType();
+    float* fpix = 0;
+    unsigned char* bpix = 0;
+    if( frame_type & IDisplay::FLOAT )
+        fpix = reinterpret_cast<float*>( m_float_output_buffer->map() );
+    if( frame_type & IDisplay::BYTE )
+        bpix = reinterpret_cast<unsigned char*>( m_byte_output_buffer->map() );
+
+    m_display->completeFrame( fpix, bpix ); 
+    
+    if( frame_type & IDisplay::FLOAT )
+        m_float_output_buffer->unmap();
+    if( frame_type & IDisplay::BYTE )
+        m_byte_output_buffer->unmap();
 }
     
 
 void ProgressiveRenderer::setVariables( VariableContainer& container ) const
 {
-    container.setBuffer  ( "output_buffer",     m_output_buffer      );
-    container.setUnsigned( "samples_per_pixel", getSamplesPerPixel() );
+    const unsigned do_byte_updates  = m_display->getUpdateFrameType() &
+                                      IDisplay::BYTE;
+    const unsigned do_byte_complete = m_display->getCompleteFrameType() &
+                                      IDisplay::BYTE;
+    container.setBuffer  ( "float_output_buffer", m_float_output_buffer );
+    container.setBuffer  ( "byte_output_buffer",  m_byte_output_buffer  );
+    container.setUnsigned( "samples_per_pixel",   getSamplesPerPixel()  );
+    container.setUnsigned( "do_byte_updates",     do_byte_updates       );
+    container.setUnsigned( "do_byte_complete",    do_byte_complete      );
 }
 
