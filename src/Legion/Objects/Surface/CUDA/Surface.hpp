@@ -33,7 +33,7 @@ struct BSDFSample
     float3 w_in;
     float3 f_over_pdf;
     float pdf;
-    unsigned is_specular;
+    unsigned is_singular;
 };
 
 }
@@ -77,10 +77,10 @@ RT_CALLABLE_PROGRAM
 legion::BSDFSample nullSurfaceSampleBSDF( float2 seed, float3 w_out, legion::LocalGeometry p )
 {
     legion::BSDFSample sample;
-    sample.w_in       = make_float3( 0.0f );
-    sample.f_over_pdf = make_float3( 0.0f );
-    sample.pdf        = 0.0f;
-    sample.is_specular = 0;
+    sample.w_in        = make_float3( 0.0f );
+    sample.f_over_pdf  = make_float3( 0.0f );
+    sample.pdf         = 0.0f;
+    sample.is_singular = 1;
     return sample;
 }
 

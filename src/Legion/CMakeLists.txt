@@ -17,6 +17,7 @@ CUDA_COMPILE_PTX( ptx_files
     Objects/Geometry/CUDA/TriMesh.cu
     Objects/Light/CUDA/Light.cu
     Objects/Renderer/CUDA/ProgressiveRenderer.cu
+    Objects/Surface/CUDA/Dielectric.cu
     Objects/Surface/CUDA/DiffuseEmitter.cu
     Objects/Surface/CUDA/Lambertian.cu
     Objects/Surface/CUDA/Surface.cu
@@ -96,6 +97,8 @@ add_library( legion SHARED
     Objects/Renderer/IRenderer.hpp
     Objects/Renderer/ProgressiveRenderer.cpp
     Objects/Renderer/ProgressiveRenderer.hpp
+    Objects/Surface/Dielectric.cpp
+    Objects/Surface/Dielectric.hpp
     Objects/Surface/DiffuseEmitter.cpp
     Objects/Surface/DiffuseEmitter.hpp
     Objects/Surface/ISurface.hpp

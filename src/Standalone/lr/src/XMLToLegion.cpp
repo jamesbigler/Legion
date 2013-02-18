@@ -419,10 +419,9 @@ void XMLToLegion::createScene( const XMLNode* scene_node )
     //
     // Create environment 
     //
+    const XMLNode* env_node = scene_node->first_node( "environment" );
+    if( env_node )
     {
-        const XMLNode* env_node = scene_node->first_node( "environment" );
-        LEGION_ASSERT( env_node );
-
         const XMLAttribute* type_attr = env_node->first_attribute( "type" );
         if( !type_attr )
             throw std::runtime_error( 

@@ -1,8 +1,11 @@
 
-#ifndef LEGION_OBJECTS_SURFACE_LAMBERTIAN_HPP_
-#define LEGION_OBJECTS_SURFACE_LAMBERTIAN_HPP_
+#ifndef LEGION_OBJECTS_SURFACE_DIELECTRIC_HPP_
+#define LEGION_OBJECTS_SURFACE_DIELECTRIC_HPP_
+
 
 #include <Legion/Objects/Surface/ISurface.hpp>
+#include <Legion/Core/Color.hpp>
+
 
 namespace legion
 {
@@ -10,15 +13,18 @@ namespace legion
 class VariableContainer;
 class ITexture;
 
-class Lambertian : public ISurface
+class Dielectric : public ISurface
 {
 public:
     static ISurface* create( Context* context, const Parameters& params );
 
-    Lambertian( Context* context );
-    ~Lambertian();
+    Dielectric( Context* context );
+    ~Dielectric();
     
-    void setReflectance( const ITexture* reflectance );
+    void setIOROut( float ior_out );
+    void setIORIn( float ior_in );
+    void setAbsorption( const Color& absorption );
+
     
     const char* name()const;
     const char* sampleBSDFFunctionName()const;
@@ -29,9 +35,11 @@ public:
     void setVariables( VariableContainer& container ) const ;
 
 private:
-    const ITexture* m_reflectance;
+    float m_ior_out;
+    float m_ior_in;
+    Color m_absorption;
 };
 
 }
 
-#endif // LEGION_OBJECTS_SURFACE_LAMBERTIAN_HPP_
+#endif // LEGION_OBJECTS_SURFACE_DIELECTRIC_HPP_

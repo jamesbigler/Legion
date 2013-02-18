@@ -43,10 +43,10 @@ void legionAnyHit()
 
 
 RT_PROGRAM
-void legionClosestHit() // MIS
+void legionClosestHit()
 {
     float3 radiance = make_float3( 0.0f );
-    const float  choose_light_p = 1.0f / static_cast<float>( legionLightCount );
+    const float choose_light_p = 1.0f / static_cast<float>( legionLightCount );
 
     //
     // Emitted contribution
@@ -61,13 +61,14 @@ void legionClosestHit() // MIS
             const float3 P          = ray.origin;
             const float  light_pdf  = legionLightPDF( w_in, P )*choose_light_p;
             const float  bsdf_pdf   = radiance_prd.pdf;
-            const float  mis_weight = legion::powerHeuristic( bsdf_pdf, light_pdf );
+            const float  mis_weight = legion::powerHeuristic(
+                                          bsdf_pdf, light_pdf );
             radiance *= mis_weight;
         }
     }
 
     // 
-    // Indirect lighting
+    // Indirect lighting (BSDF sampling)
     //
     {
         const unsigned sobol_index = radiance_prd.sobol_index;
@@ -94,7 +95,7 @@ void legionClosestHit() // MIS
     }
     
     //
-    // direct lighting
+    // Direct lighting (next event estimation)
     //
     {
         const unsigned sobol_index = radiance_prd.sobol_index;
@@ -128,8 +129,9 @@ void legionClosestHit() // MIS
 
             if( bsdf_pdf > 0.0f )
             {
-                const float  mis_weight = legion::powerHeuristic( light_pdf, bsdf_pdf );
-                const float3 atten  = bsdf_val*( mis_weight / light_pdf );
+                const float  mis_weight = legion::powerHeuristic(
+                                              light_pdf, bsdf_pdf );
+                const float3 atten      = bsdf_val*( mis_weight / light_pdf );
 
 
                 const float3 light_radiance = 

@@ -43,6 +43,7 @@
 #include <Legion/Objects/Geometry/Sphere.hpp>
 #include <Legion/Objects/Geometry/TriMesh.hpp>
 #include <Legion/Objects/Renderer/ProgressiveRenderer.hpp>
+#include <Legion/Objects/Surface/Dielectric.hpp>
 #include <Legion/Objects/Surface/DiffuseEmitter.hpp>
 #include <Legion/Objects/Surface/Lambertian.hpp>
 #include <Legion/Objects/Surface/Ward.hpp>
@@ -121,6 +122,7 @@ Context::Impl::Impl( Context* context )
     f.registerObject( "TriMesh",             &TriMesh::create             );
     f.registerObject( "Parallelogram"      , &Parallelogram::create       );
     f.registerObject( "ProgressiveRenderer", &ProgressiveRenderer::create );
+    f.registerObject( "Dielectric",          &Dielectric::create      );
     f.registerObject( "DiffuseEmitter",      &DiffuseEmitter::create      );
     f.registerObject( "Lambertian",          &Lambertian::create          );
     f.registerObject( "Ward",                &Ward::create                );

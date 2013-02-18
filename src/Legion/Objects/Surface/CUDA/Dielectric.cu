@@ -22,61 +22,43 @@
 
 #include <Legion/Objects/cuda_common.hpp>
 #include <Legion/Objects/Surface/CUDA/Surface.hpp>
-#include <Legion/Objects/Texture/CUDA/Texture.hpp>
-#include <Legion/Common/Math/CUDA/ONB.hpp>
 #include <Legion/Common/Math/CUDA/Math.hpp>
 
-//rtDeclareVariable( float3, reflectance, , );
 
-legionDeclareTexture( float4, reflectance );
+rtDeclareVariable( float, ior_in    , , );
+rtDeclareVariable( float, ior_out   , , );
+rtDeclareVariable( float, absorption, , );
 
 
 RT_CALLABLE_PROGRAM
-legion::BSDFSample lambertianSampleBSDF( 
+legion::BSDFSample dielectricSampleBSDF( 
         float3 seed,
         float3 w_out,
         legion::LocalGeometry p )
 {
     legion::BSDFSample sample;
 
-    // sample hemisphere with cosine density by uniformly sampling
-    // unit disk and projecting up to hemisphere
-    float2 on_disk( legion::squareToDisk( make_float2( seed ) ) );
-    const float x = on_disk.x;
-    const float y = on_disk.y;
-          float z = 1.0f - x*x -y*y;
-
-    z = z > 0.0f ? sqrtf( z ) : 0.0f;
-
-    // Transform into world space
-    legion::ONB onb( p.shading_normal );
-    sample.w_in = onb.inverseTransform( make_float3( x, y, z ) );
-
-    const float4 R     =  legionTex( reflectance, p.texcoord, p.position );
-    sample.pdf         = z * legion::ONE_DIV_PI;
-    sample.f_over_pdf  = make_float3( R );
-    sample.is_singular = false;
+    sample.w_in        = optix::reflect( -w_out, p.shading_normal ); 
+    sample.pdf         = 1.0f; 
+    sample.f_over_pdf  = make_float3( 1.0f );
+    sample.is_singular = true;
 
     return sample;
 }
 
 
 RT_CALLABLE_PROGRAM
-float4 lambertianEvaluateBSDF(
+float4 dielectricEvaluateBSDF(
         float3 w_out,
         legion::LocalGeometry p,
         float3 w_in )
 {
-    const float4 R      =  legionTex( reflectance, p.texcoord, p.position );
-    const float  cosine = fmaxf( 0.0f, optix::dot( w_in, p.shading_normal ) );
-    const float  pdf    = cosine * legion::ONE_DIV_PI;
-    return make_float4( pdf * make_float3( R ), pdf );
+    return make_float4( 0.0f ); 
 }
 
 
 RT_CALLABLE_PROGRAM
-float lambertianPDF( float3 w_out, legion::LocalGeometry p, float3 w_in )
+float dielectricPDF( float3 w_out, legion::LocalGeometry p, float3 w_in )
 {
-    float cosine = fmaxf( 0.0f, optix::dot( w_in, p.shading_normal ) );
-    return cosine * legion::ONE_DIV_PI;
+    return 0.0f;
 }

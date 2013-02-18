@@ -189,7 +189,7 @@ legion::BSDFSample wardSampleBSDF(
         sample.f_over_pdf = sample.pdf > 0.00001f            ? 
                             make_float3( ward )/ sample.pdf  :
                             make_float3( 0.0f );
-        sample.is_specular = 0u; 
+        sample.is_singular = 0u; 
     }
     else
     {
@@ -253,7 +253,7 @@ legion::BSDFSample wardSampleBSDF(
         sample.f_over_pdf = sample.pdf > 0.00001f            ? 
                             make_float3( ward )/ sample.pdf  :
                             make_float3( 0.0f );
-        sample.is_specular  = 1u; 
+        sample.is_singular = 0u; 
     }
         
     return sample;
