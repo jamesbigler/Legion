@@ -29,7 +29,7 @@ rtDeclareVariable( optix::Ray, ray, rtCurrentRay, );
 RT_PROGRAM void legionEnvironment()
 {
     float w = 1.0f;
-    if( !radiance_prd.count_emitted_light )
+    if( radiance_prd.use_mis_weight )
     {
         const float light_pick_p = 1.0f / legionLightCount;
         const float pdf          = legion::ONE_DIV_PI * 0.25f;

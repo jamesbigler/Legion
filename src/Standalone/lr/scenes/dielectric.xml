@@ -1,10 +1,9 @@
-<legion_scene name="simple">
+<legion_scene name="dielectric">
 
-    <renderer type="ProgressiveRenderer" samples_per_pixel="16" />
+    <renderer type="ProgressiveRenderer" samples_per_pixel="256" />
 
     <display type="ImageFileDisplay">
-        <string name="filename" value="simple.exr" />
-        <string name="unused" value="poo" />
+        <string name="filename" value="dielectric.exr" />
     </display>
 
     <camera type="ThinLens" />
@@ -19,7 +18,7 @@
         </surface>
 
         <surface type="DiffuseEmitter" name="emitter">
-            <color name="radiance" value="0.9 0.7 0.2" />
+            <color name="radiance" value="8 8 5" />
         </surface>
 
         <surface type="Dielectric" name="glass">
@@ -30,9 +29,10 @@
             <float name="radius" value="1.0" />
         </geometry>
 
-        <geometry type="Sphere" surface="emitter">
-            <vector3 name="center" value="-1.0 0.0 -5.0" />
-            <float name="radius" value="1.0" />
+        <geometry type="Parallelogram" surface="emitter">
+            <vector3 name="anchor" value="4.0 4.0 -5.5" /> 
+            <vector3 name="U" value="0.0  0.0 -2.0" />
+            <vector3 name="V" value="2.0 0.0 0.0" /> 
         </geometry>
 
         <geometry type="Parallelogram" surface="lambertian">

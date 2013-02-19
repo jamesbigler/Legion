@@ -77,7 +77,7 @@ struct RadiancePRD
     unsigned long long sobol_index;
     unsigned sobol_dim;
     unsigned light_index;             ///////////////////////////////
-    short count_emitted_light;
+    short use_mis_weight;
     short done;
 };
 

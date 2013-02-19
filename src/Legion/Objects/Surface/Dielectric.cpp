@@ -14,6 +14,8 @@ ISurface* Dielectric::create( Context* context, const Parameters& params )
     dielectric->setIOROut( params.get( "ior_out", 1.0f ) );
     dielectric->setIORIn(  params.get( "ior_in",  1.5f ) );
     dielectric->setAbsorption( params.get( "absorption",  Color( 1.0f ) ) );
+    dielectric->setAbsorption( params.get( "reflectance", Color( 1.0f ) ) );
+    dielectric->setAbsorption( params.get( "transmitance",Color( 1.0f ) ) );
     return dielectric;
 }
 
@@ -23,7 +25,9 @@ Dielectric::Dielectric( Context* context )
     : ISurface( context ),
       m_ior_out( 1.0f ),
       m_ior_in( 1.5f ),
-      m_absorption( 1.0f, 1.0f, 1.0f )
+      m_absorption   ( 1.0f, 1.0f, 1.0f ),
+      m_reflectance  ( 1.0f, 1.0f, 1.0f ),
+      m_transmittance( 1.0f, 1.0f, 1.0f )
 {
 }
 
@@ -86,4 +90,6 @@ void Dielectric::setVariables( VariableContainer& container ) const
     container.setFloat( "ior_out",    m_ior_out );
     container.setFloat( "ior_in",     m_ior_in  );
     container.setFloat( "absorption", m_absorption);
+    container.setFloat( "reflectance", m_reflectance );
+    container.setFloat( "transmittance", m_transmittance );
 }

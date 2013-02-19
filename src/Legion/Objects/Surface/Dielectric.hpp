@@ -38,6 +38,8 @@ private:
     float m_ior_out;
     float m_ior_in;
     Color m_absorption;
+    Color m_reflectance;
+    Color m_transmittance;
 };
 
 }

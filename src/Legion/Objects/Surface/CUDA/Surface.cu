@@ -56,7 +56,7 @@ void legionClosestHit()
 
         radiance = legionSurfaceEmission( w_in, local_geom );
 
-        if( !radiance_prd.count_emitted_light && !legion::isBlack( radiance  ))
+        if( radiance_prd.use_mis_weight && !legion::isBlack( radiance  ))
         {
             const float3 P          = ray.origin;
             const float  light_pdf  = legionLightPDF( w_in, P )*choose_light_p;
@@ -90,8 +90,13 @@ void legionClosestHit()
         radiance_prd.attenuation         = bsdf_sample.f_over_pdf;
         radiance_prd.pdf                 = bsdf_sample.pdf; 
         radiance_prd.done                = false;
-        radiance_prd.count_emitted_light = false; 
+        radiance_prd.use_mis_weight      = !bsdf_sample.is_singular; 
 
+        /*
+        radiance_prd.radiance            = bsdf_sample.w_in;
+        radiance_prd.done                = true;
+        return;
+        */
     }
     
     //

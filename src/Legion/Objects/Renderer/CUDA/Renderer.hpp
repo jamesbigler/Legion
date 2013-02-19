@@ -34,22 +34,21 @@ float3 radiance( uint64 sobol_index, float3 origin, float3 direction, unsigned l
     prd.pdf                 = 1.0f;
     prd.sobol_index         = sobol_index; 
     prd.sobol_dim           = 5u; 
-    prd.count_emitted_light = 1;
+    prd.use_mis_weight      = false;
     prd.done                = true;
-    prd.light_index          = light_idx;
+    prd.light_index         = light_idx;
 
     float3 radiance    = make_float3( 0.0f );
     float3 attenuation = make_float3( 1.0f );
     optix::Ray ray = legion::makePrimaryRay( origin, direction );
     
-    for( unsigned i = 0u; i < 2; ++i ) 
+    for( unsigned i = 0u; i < 4; ++i ) 
     {
         prd.done     = true;
         prd.radiance = make_float3( 0.0f );
         rtTrace( legion_top_group, ray, prd );
         
         radiance += prd.radiance * attenuation;
-
 
         if( prd.done || attenuation.x + attenuation.y + attenuation.z < 0.001f )
             break;

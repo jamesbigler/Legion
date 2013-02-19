@@ -25,9 +25,21 @@
 #include <Legion/Common/Math/CUDA/Math.hpp>
 
 
-rtDeclareVariable( float, ior_in    , , );
-rtDeclareVariable( float, ior_out   , , );
-rtDeclareVariable( float, absorption, , );
+rtDeclareVariable( float,  ior_in    , , );
+rtDeclareVariable( float,  ior_out   , , );
+rtDeclareVariable( float,  absorption, , );
+rtDeclareVariable( float3, transmittance, , );
+rtDeclareVariable( float3, reflectance, , );
+
+LDEVICE inline float fresnel( float cos_theta_i, float cos_theta_t, float eta )
+{
+    const float rs = ( cos_theta_i - cos_theta_t*eta ) / 
+                     ( cos_theta_i + eta*cos_theta_t );
+    const float rp = ( cos_theta_i*eta - cos_theta_t ) /
+                     ( cos_theta_i*eta + cos_theta_t );
+
+    return 0.5f * ( rs*rs + rp*rp );
+}
 
 
 RT_CALLABLE_PROGRAM
@@ -38,9 +50,44 @@ legion::BSDFSample dielectricSampleBSDF(
 {
     legion::BSDFSample sample;
 
-    sample.w_in        = optix::reflect( -w_out, p.shading_normal ); 
-    sample.pdf         = 1.0f; 
-    sample.f_over_pdf  = make_float3( 1.0f );
+    float3 normal      = p.shading_normal;
+    float cos_theta_i = optix::dot( w_out, p.shading_normal );
+    float eta;
+    if( cos_theta_i > 0.0f )
+    {  
+        // Ray is entering 
+        eta         = ior_in / ior_out;
+    }
+    else
+    {
+        // Ray is exiting 
+        eta         = ior_out / ior_in;
+        cos_theta_i = -cos_theta_i;
+        normal      = -normal;
+    }
+
+    float3 w_t;
+    const bool tir           = !optix::refract( w_t, -w_out, normal, eta );
+    const float cos_theta_t  = -optix::dot( normal, w_t );
+    const float R            = tir  ?
+                               1.0f :
+                               fresnel( cos_theta_i, cos_theta_t, eta );
+
+    if( tir || seed.z < R )
+    {
+        // Reflect
+        sample.w_in = optix::reflect( -w_out, normal ); 
+        sample.pdf         = R; 
+        sample.f_over_pdf  = reflectance;
+
+    }
+    else
+    {
+        // Refract
+        sample.w_in = w_t; 
+        sample.pdf         = 1.0 - R; 
+        sample.f_over_pdf  = transmittance;
+    }
     sample.is_singular = true;
 
     return sample;
