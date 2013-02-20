@@ -1,6 +1,6 @@
 <legion_scene name="dielectric">
 
-    <renderer type="ProgressiveRenderer" samples_per_pixel="128" />
+    <renderer type="ProgressiveRenderer" samples_per_pixel="256" />
 
     <display type="ImageFileDisplay">
         <string name="filename" value="dielectric.exr" />
@@ -22,6 +22,7 @@
         </surface>
 
         <surface type="Dielectric" name="glass">
+            <color name="absorption" value = "0.85 0.95 0.90" />
         </surface>
 
         <geometry type="Sphere" surface="glass">

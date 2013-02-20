@@ -22,8 +22,11 @@ public:
     ~Dielectric();
     
     void setIOROut( float ior_out );
-    void setIORIn( float ior_in );
-    void setAbsorption( const Color& absorption );
+    void setIORIn ( float ior_in  );
+
+    void setAbsorption   ( const Color& absorption    );
+    void setReflectance  ( const Color& reflectance   );
+    void setTransmittance( const Color& transmittance );
 
     
     const char* name()const;
