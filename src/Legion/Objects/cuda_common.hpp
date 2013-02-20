@@ -76,6 +76,7 @@ struct RadiancePRD
     float    pdf;
     unsigned long long sobol_index;
     unsigned sobol_dim;
+    unsigned rand_seed;
     unsigned light_index;             ///////////////////////////////
     short use_mis_weight;
     short done;

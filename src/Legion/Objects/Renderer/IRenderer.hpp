@@ -41,7 +41,7 @@ public:
     IRenderer( Context* context ) 
         : IObject( context ),
           m_display( 0u),
-          m_resolution( 1280u, 960u ),
+          m_resolution( 1024, 768u ),
           m_samples_per_pixel( 64u )
     {}
 

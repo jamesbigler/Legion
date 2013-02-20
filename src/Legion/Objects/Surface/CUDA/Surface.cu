@@ -23,6 +23,7 @@
 
 #include <Legion/Common/Math/CUDA/Math.hpp>
 #include <Legion/Common/Math/CUDA/Sobol.hpp>
+#include <Legion/Common/Math/CUDA/Rand.hpp>
 #include <Legion/Objects/Light/CUDA/Light.hpp>
 #include <Legion/Objects/Surface/CUDA/Surface.hpp>
 #include <Legion/Objects/cuda_common.hpp>
@@ -71,13 +72,16 @@ void legionClosestHit()
     // Indirect lighting (BSDF sampling)
     //
     {
+        legion::LCGRand rand( radiance_prd.rand_seed );
         const unsigned sobol_index = radiance_prd.sobol_index;
         const float3 bsdf_seed = 
+            //make_float3( rand(), rand(), rand() );
             make_float3( 
                     legion::Sobol::gen( sobol_index, radiance_prd.sobol_dim++ ),
                     legion::Sobol::gen( sobol_index, radiance_prd.sobol_dim++ ),
                     legion::Sobol::gen( sobol_index, radiance_prd.sobol_dim++ )
                     );
+        radiance_prd.rand_seed = rand.getSeed();
 
         const float3 w_out = -ray.direction;
         legion::BSDFSample bsdf_sample = 
@@ -102,6 +106,7 @@ void legionClosestHit()
     //
     // Direct lighting (next event estimation)
     //
+    if( radiance_prd.use_mis_weight )
     {
         const unsigned sobol_index = radiance_prd.sobol_index;
         const unsigned light_index = radiance_prd.light_index;
