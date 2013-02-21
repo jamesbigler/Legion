@@ -27,9 +27,11 @@
 
 rtDeclareVariable( float,  ior_in    , , );
 rtDeclareVariable( float,  ior_out   , , );
-rtDeclareVariable( float,  absorption, , );
+rtDeclareVariable( float3, absorption, , );
 rtDeclareVariable( float3, transmittance, , );
 rtDeclareVariable( float3, reflectance, , );
+
+rtDeclareVariable( float,  t_hit, rtIntersectionDistance, );
 
 LDEVICE inline float fresnel( float cos_theta_i, float cos_theta_t, float eta )
 {
@@ -53,6 +55,7 @@ legion::BSDFSample dielectricSampleBSDF(
     float3 normal      = p.shading_normal;
     float cos_theta_i = optix::dot( w_out, p.shading_normal );
     float eta;
+    float3 attenuation = make_float3( 1.0f );
     if( cos_theta_i > 0.0f )
     {  
         // Ray is entering 
@@ -61,6 +64,9 @@ legion::BSDFSample dielectricSampleBSDF(
     else
     {
         // Ray is exiting 
+        attenuation.x = powf( absorption.x, t_hit );
+        attenuation.y = powf( absorption.y, t_hit );
+        attenuation.z = powf( absorption.z, t_hit );
         eta         = ior_out / ior_in;
         cos_theta_i = -cos_theta_i;
         normal      = -normal;
@@ -78,7 +84,7 @@ legion::BSDFSample dielectricSampleBSDF(
         // Reflect
         sample.w_in = optix::reflect( -w_out, normal ); 
         sample.pdf         = R; 
-        sample.f_over_pdf  = reflectance;
+        sample.f_over_pdf  = reflectance*attenuation;
 
     }
     else
@@ -86,7 +92,7 @@ legion::BSDFSample dielectricSampleBSDF(
         // Refract
         sample.w_in = w_t; 
         sample.pdf         = 1.0 - R; 
-        sample.f_over_pdf  = transmittance;
+        sample.f_over_pdf  = transmittance*attenuation;
     }
     sample.is_singular = true;
 

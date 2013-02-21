@@ -3,6 +3,7 @@
 #include <Legion/Objects/Surface/Dielectric.hpp>
 #include <Legion/Core/VariableContainer.hpp>
 #include <Legion/Common/Util/Parameters.hpp>
+#include <Legion/Common/Util/Logger.hpp>
 
 
 using namespace legion;
@@ -12,10 +13,11 @@ ISurface* Dielectric::create( Context* context, const Parameters& params )
 {
     Dielectric* dielectric = new Dielectric( context );
     dielectric->setIOROut( params.get( "ior_out", 1.0f ) );
-    dielectric->setIORIn(  params.get( "ior_in",  1.5f ) );
-    dielectric->setAbsorption( params.get( "absorption",  Color( 1.0f ) ) );
-    dielectric->setAbsorption( params.get( "reflectance", Color( 1.0f ) ) );
-    dielectric->setAbsorption( params.get( "transmitance",Color( 1.0f ) ) );
+    dielectric->setIORIn ( params.get( "ior_in",  1.5f ) );
+    dielectric->setAbsorption   ( params.get( "absorption",  Color( 1.0f ) ) );
+    dielectric->setReflectance  ( params.get( "reflectance", Color( 1.0f ) ) );
+    dielectric->setTransmittance( params.get( "transmitance",Color( 1.0f ) ) );
+    params.reportUnused( std::cerr ); // TODO: need to fix logger to handle this
     return dielectric;
 }
 
@@ -52,6 +54,18 @@ void Dielectric::setIORIn( float ior_in )
 void Dielectric::setAbsorption( const Color& absorption )
 {
     m_absorption = absorption;
+}
+
+
+void Dielectric::setReflectance( const Color& reflectance)
+{
+    m_reflectance = reflectance;
+}
+
+
+void Dielectric::setTransmittance( const Color& transmittance)
+{
+    m_transmittance = transmittance;
 }
 
 

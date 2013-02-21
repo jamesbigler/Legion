@@ -39,7 +39,8 @@ public:
 
     ImageFileDisplay( Context* context, const char* filename );
     
-    FrameType getUpdateFrameType()       { return NONE;  }
+    //FrameType getUpdateFrameType()       { return NONE;  }
+    FrameType getUpdateFrameType()       { return BYTE;  }
     FrameType getCompleteFrameType()     { return FLOAT; }
     
     void setUpdateCount( unsigned m_update_count );

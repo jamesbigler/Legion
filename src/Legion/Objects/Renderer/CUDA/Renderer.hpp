@@ -21,12 +21,13 @@
 // IN THE SOFTWARE.
 
 #include <Legion/Objects/cuda_common.hpp>
+#include <Legion/Common/Math/CUDA/Rand.hpp>
 
 namespace legion
 {
 
 __device__
-float3 radiance( uint64 sobol_index, float3 origin, float3 direction, unsigned light_idx )
+float3 radiance( uint64 sobol_index, float3 origin, float3 direction, unsigned light_idx, unsigned sample_index )
 {
     legion::RadiancePRD prd;
     prd.radiance            = make_float3( 0.0f );
@@ -34,6 +35,7 @@ float3 radiance( uint64 sobol_index, float3 origin, float3 direction, unsigned l
     prd.pdf                 = 1.0f;
     prd.sobol_index         = sobol_index; 
     prd.sobol_dim           = 5u; 
+    prd.rand_seed           = legion::tea<16>( launch_dim.x*launch_index.y+launch_index.x, sample_index );
     prd.use_mis_weight      = false;
     prd.done                = true;
     prd.light_index         = light_idx;

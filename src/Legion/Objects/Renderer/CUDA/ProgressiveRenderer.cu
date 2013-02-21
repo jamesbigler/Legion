@@ -55,7 +55,7 @@ RT_PROGRAM void progressiveRendererRayGen()
             time_sample );
 
     const float3 result =
-        legion::radiance( sobol_index, rg.origin, rg.direction, light_index );
+        legion::radiance( sobol_index, rg.origin, rg.direction, light_index, sample_index );
 
     float3 pix_val = result;
     if( sample_index > 0 )
