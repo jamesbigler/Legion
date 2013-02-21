@@ -10,6 +10,12 @@ bl_info = {
 }
 
 
+if "bpy" in locals():
+    import imp
+    if "export_legion" in locals():
+        imp.reload(export_legion)
+
+
 import bpy
 from bpy_extras.io_utils import ExportHelper
 
@@ -24,7 +30,7 @@ class ExportLegion(bpy.types.Operator, ExportHelper):
         filepath = self.filepath
         filepath = bpy.path.ensure_ext(filepath, self.filename_ext)
         from . import export_legion
-        return export_legion.export( context, filepath )
+        return export_legion.Exporter( context, filepath ).export()
 
 
 # Register addon
