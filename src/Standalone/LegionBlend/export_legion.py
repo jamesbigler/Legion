@@ -32,6 +32,7 @@ class Exporter:
 
 
     def translateMesh( self, blender_node, xml_node ):
+
         xml_node.attrib[ "type" ] = "TriMesh" 
         xml_node.attrib[ "name" ] = blender_node.name
         filename_param = ET.SubElement( xml_node, "string" )
@@ -39,7 +40,10 @@ class Exporter:
         filename_param.attrib[ "name"  ] = "datafile" 
         filename_param.attrib[ "value" ] = datafile 
 
-        mesh = blender_node.data
+        mesh = blender_node.to_mesh( self.context.scene, True, 'RENDER' )
+        mesh.calc_normals()
+        mesh.transform( blender_node.matrix_world )
+
         self.xml_file.write( "Creating {}\n".format( datafile ) )
         with open( os.path.join( self.dirpath, datafile ), "w" ) as df:
             verts = mesh.vertices
@@ -92,12 +96,10 @@ class Exporter:
     ############################################################################
     def export( self ):
 
-
         scene   = self.context.scene
         camera  = scene.camera
-        objects = scene.objects
-        objects = scene.objects
-        
+        objects = [ obj for obj in scene.objects if obj.is_visible( scene ) ]
+
         cam = camera.data
         self.xml_file.write( "{}\n".format( cam ) )
         self.xml_file.write( "\t{}\n".format( camera.matrix_world ) )
