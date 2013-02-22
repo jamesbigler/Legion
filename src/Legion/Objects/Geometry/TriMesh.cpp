@@ -22,17 +22,53 @@
 
 /// \file TriMesh.cpp
 
-#include <Legion/Objects/Geometry/TriMesh.hpp>
-#include <Legion/Core/VariableContainer.hpp>
+#include <Legion/Common/Util/Parameters.hpp>
 #include <Legion/Common/Util/Stream.hpp>
+#include <Legion/Common/Util/Logger.hpp>
+#include <Legion/Core/VariableContainer.hpp>
+#include <Legion/Objects/Geometry/TriMesh.hpp>
+#include <iostream>
+#include <fstream>
 #include <algorithm>
 
 
 using namespace legion;
 
-IGeometry* TriMesh::create( Context* /*context*/, const Parameters& /*params*/ )
+namespace legion
 {
-    LEGION_TODO();
+    std::istream& operator>>( std::istream& in, Vector3& v )
+    {
+        in >> (v[0]);
+        in >> (v[1]) >> (v[2]);
+        return in;
+    }
+
+    std::istream& operator>>( std::istream& in, Index3& i )
+    {
+        in >> i[0] >> i[1] >> i[2];
+        return in;
+    }
+    
+    std::istream& operator>>( std::istream& in, TriMesh::VertexN& v )
+    {
+        in >> v.p >> v.n;
+        return in;
+    }
+    
+    std::ostream& operator<<( std::ostream& out, TriMesh::VertexN& v )
+    {
+        out << v.p << " " << v.n;
+        return out;
+    }
+}
+
+IGeometry* TriMesh::create( Context* context, const Parameters& params )
+{
+    TriMesh* trimesh = new TriMesh( context );
+    const std::string datafile = params.get( "datafile",
+                                             std::string( "NO_DATAFILE" ) );
+    loadMeshData( datafile, trimesh );
+    return trimesh;
 }
 
 
@@ -164,11 +200,33 @@ void TriMesh::setTriangles( const std::vector<VertexUV>& /*vertices*/,
 }
 
 
-void TriMesh::setTriangles( const std::vector<VertexN>& /*vertices*/,
-                            const std::vector<Index3>& /*triangles*/ )
+void TriMesh::setTriangles( const std::vector<VertexN>& vertices,
+                            const std::vector<Index3>&  triangles )
 {
     m_vertex_type = PN;
-    LEGION_TODO();
+
+    // Free old data
+    if( m_vertices  ) m_vertices->destroy();
+    if( m_triangles ) m_triangles->destroy();
+
+    m_triangles = createOptiXBuffer( RT_BUFFER_INPUT,
+                                     RT_FORMAT_UNSIGNED_INT3,
+                                     triangles.size() );
+
+    m_vertices  = createOptiXBuffer( RT_BUFFER_INPUT,
+                                     RT_FORMAT_USER,
+                                     vertices.size() );
+    m_vertices->setElementSize( sizeof( VertexN ) );
+
+    std::copy( triangles.begin(),
+               triangles.end(),
+               reinterpret_cast<Index3*>( m_triangles->map() ) );
+    m_triangles->unmap();
+
+    std::copy( vertices.begin(),
+               vertices.end(),
+               reinterpret_cast<VertexN*>( m_vertices->map() ) );
+    m_vertices->unmap();
 }
 
 
@@ -196,3 +254,50 @@ void TriMesh::setVariables( VariableContainer& container ) const
     };
     container.setBuffer( "triangles", m_triangles );
 }
+    
+
+void TriMesh::loadMeshData( const std::string& filename, TriMesh* mesh )
+{
+    LLOG_INFO << "Reading mesh '" << filename << "'";
+    const std::string path = 
+        "/Users/keith/Code/Legion/src/Standalone/lr/scenes/quadbot/" + filename;
+    std::ifstream in( path.c_str() );
+    if( !in )
+        throw Exception( "Failed to open file '" + path + "' for reading" );
+
+    std::string token;
+    unsigned vertcount;
+
+    in >> token >> vertcount;
+    LLOG_INFO << "\t'" << token << "': " << vertcount;
+    std::vector<VertexN> vertices( vertcount );
+
+    for( int i = 0; i < vertcount; ++i )
+        in >> vertices[i];
+    LLOG_INFO << "\tvertices[n-1]: " << vertices[vertcount-1];
+
+    unsigned polycount;
+    in >> token >> polycount;
+    LLOG_INFO << "\tpolycount: " << polycount;
+    std::vector<Index3> triangles;
+
+    for( unsigned i = 0u; i < polycount; ++i )
+    {
+        unsigned poly_vertcount, v0, v1, v2;
+        in >> poly_vertcount >> v0 >> v1 >> v2;
+        triangles.push_back( Index3( v0, v1, v2 ) );
+        for( unsigned j = 3u; j < poly_vertcount; ++j ) 
+        {
+            v1 =  v2;
+            in >> v2;
+            triangles.push_back( Index3( v0, v1, v2 ) );
+        }
+
+    }
+
+    LLOG_INFO << "\ttriangles[n-1]: " << triangles.back();
+    
+    
+    mesh->setTriangles( vertices, triangles );
+}
+

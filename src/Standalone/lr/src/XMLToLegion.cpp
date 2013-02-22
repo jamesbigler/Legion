@@ -311,10 +311,18 @@ void XMLToLegion::createCamera( const XMLNode* camera_node )
                 "XMLToLegion: Camera node missing 'type' attribute"
                 );
     std::cout << "Creating camera  : '" << attr->value() << "'" << std::endl;
+    
 
     const char* camera_type = attr->value();
     loadParams( camera_node );
     legion::ICamera* camera = m_ctx->createCamera( camera_type, m_params );
+    attr = camera_node->first_attribute( "camera_to_world" );
+    if( attr )
+    {
+        legion::Matrix m = lexical_cast<legion::Matrix>( std::string( attr->value() ) );
+        camera->setCameraToWorld( m ); 
+        std::cerr << "setting camera matrix to " << m << std::endl;
+    }
 
     m_ctx->setCamera( camera );
 }

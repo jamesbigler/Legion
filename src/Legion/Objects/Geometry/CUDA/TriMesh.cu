@@ -100,6 +100,73 @@ RT_PROGRAM void triMeshBoundingBoxP( int prim_idx, float result[6] )
 //
 //
 //-----------------------------------------------------------------------------
+struct VertexN
+{
+    float3 p;
+    float3 n;
+};
+
+rtBuffer<VertexN>  vertices_pn;
+
+RT_PROGRAM void triMeshIntersectPN( int prim_idx )
+{
+    uint3 triangle = triangles[ prim_idx ];
+
+    const float3 p0 = vertices_pn[ triangle.x ].p;
+    const float3 p1 = vertices_pn[ triangle.y ].p;
+    const float3 p2 = vertices_pn[ triangle.z ].p;
+
+    // Intersect ray with triangle
+    float3 n;
+    float  t, beta, gamma;
+    if( optix::intersect_triangle( ray, p0, p1, p2, n, t, beta, gamma ) )
+    {
+        if(  rtPotentialIntersection( t ) ) 
+        {
+            const float3 normal = optix::normalize( n );
+
+            // Fill in a localgeometry
+            legion::LocalGeometry lg;
+            lg.position         = ray.origin + t*ray.direction;
+            lg.geometric_normal = normal;
+            lg.shading_normal   = normal;
+            lg.texcoord         = make_float2( 0.0f );
+            local_geom = lg;
+
+            rtReportIntersection( 0u );
+        }
+    }
+}
+
+
+RT_PROGRAM void triMeshBoundingBoxPN( int prim_idx, float result[6] )
+{
+    uint3 triangle = triangles[ prim_idx ];
+
+    const float3 p0 = vertices_pn[ triangle.x ].p;
+    const float3 p1 = vertices_pn[ triangle.y ].p;
+    const float3 p2 = vertices_pn[ triangle.z ].p;
+
+    const float  area = optix::length( optix::cross( p1-p0, p2-p0 ) );
+
+    optix::Aabb* aabb = reinterpret_cast<optix::Aabb*>( result );
+
+    if( area > 0.0f && !isinf(area) )
+    {
+        aabb->m_min = fminf( fminf( p0, p1), p2 );
+        aabb->m_max = fmaxf( fmaxf( p0, p1), p2 );
+    } else {
+        aabb->invalidate();
+    }
+}
+
+
+
+//-----------------------------------------------------------------------------
+//
+//
+//
+//-----------------------------------------------------------------------------
 
 RT_CALLABLE_PROGRAM
 legion::LightSample triMeshSample( 

@@ -97,6 +97,8 @@ private:
         PNUV
     };
     
+    static void loadMeshData( const std::string& filename, TriMesh* mesh );
+    
     optix::Buffer    m_triangles;    // uint3
     optix::Buffer    m_vertices;     // float3, Vertex, VertexN, or VertexUV
     VertexType       m_vertex_type;

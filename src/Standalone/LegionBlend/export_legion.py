@@ -98,6 +98,10 @@ class Exporter:
         objects = scene.objects
         objects = scene.objects
         
+        cam = camera.data
+        self.xml_file.write( "{}\n".format( cam ) )
+        self.xml_file.write( "\t{}\n".format( camera.matrix_world ) )
+
         for obj in objects:
             self.xml_file.write( "{} {}\n".format( obj.type, obj ) )
 
