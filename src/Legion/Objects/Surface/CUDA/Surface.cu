@@ -49,9 +49,6 @@ void legionClosestHit()
     float3 radiance = make_float3( 0.0f );
     const float choose_light_p = 1.0f / static_cast<float>( legionLightCount );
 
-    radiance_prd.radiance            = local_geom.shading_normal;
-    radiance_prd.done                = true;
-    return;
     //
     // Emitted contribution
     //
@@ -120,10 +117,16 @@ void legionClosestHit()
                     legion::Sobol::gen( sobol_index, radiance_prd.sobol_dim++ )
                     );
 
+        const float3 w_out = -ray.direction;
         const float3 P = ray.origin + t_hit * ray.direction;
-        const float3 N = local_geom.shading_normal;
+        const float3 N = 
+            optix::faceforward( 
+                local_geom.shading_normal, w_out, local_geom.shading_normal
+                );
         const legion::LightSample light_sample = 
-            legion::lightSample( light_index, light_seed, P, N ); 
+            legion::lightSample( 
+                    light_index, light_seed, P, N
+                    ); 
 
         const float3 w_in      = light_sample.w_in;
         const float  light_pdf = light_sample.pdf*choose_light_p;
@@ -133,9 +136,8 @@ void legionClosestHit()
             cos_theta > 0.0f && 
             !legion::pointOccluded( P, w_in, light_sample.distance ) )
         {
-            const float3 w_out = -ray.direction;
-            const float4 bsdf  = legionSurfaceEvaluateBSDF( 
-                    w_out, local_geom, w_in );
+            const float4 bsdf = legionSurfaceEvaluateBSDF( 
+                w_out, local_geom, w_in );
 
             const float  bsdf_pdf = bsdf.w;
             const float3 bsdf_val = make_float3( bsdf );

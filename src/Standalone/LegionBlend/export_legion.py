@@ -2,6 +2,7 @@
 import bpy
 import os
 import os.path
+import math 
 
 import xml.etree.ElementTree as ET
 import xml.dom.minidom as minidom
@@ -20,6 +21,13 @@ class Exporter:
     #
     ############################################################################
     def createRenderer( self, xml_node ):
+        scene   = self.context.scene
+        render  = scene.render
+
+        xml_node.attrib[ "type"              ] = "ProgressiveRenderer"
+        xml_node.attrib[ "samples_per_pixel" ] = "32"
+        xml_node.attrib[ "resolution"        ] = "{} {}".format( render.resolution_x, render.resolution_y )
+
         pass
 
 
@@ -28,7 +36,38 @@ class Exporter:
 
 
     def translateCamera( self, blender_node, xml_node ):
-        pass
+        camera = blender_node.data
+        matrix = blender_node.matrix_world
+        
+        xml_node.attrib[ "type" ] = "ThinLens"
+
+        matrix_string = \
+                "{} {} {} {}  {} {} {} {}  {} {} {} {}  {} {} {} {}".format( 
+                        matrix[0][0], matrix[0][1], matrix[0][2], matrix[0][3],
+                        matrix[1][0], matrix[1][1], matrix[1][2], matrix[1][3],
+                        matrix[2][0], matrix[2][1], matrix[2][2], matrix[2][3],
+                        matrix[3][0], matrix[3][1], matrix[3][2], matrix[3][3] )
+        xml_node.attrib[ "camera_to_world" ] = matrix_string 
+
+        focal_dist = camera.dof_distance
+        filename_param = ET.SubElement( xml_node, "float" )
+        filename_param.attrib[ "name"  ] = "focal_distance" 
+        filename_param.attrib[ "value" ] = "{}".format( focal_dist ) 
+
+        h_offset   = math.tan( camera.angle_x ) * focal_dist;
+        v_offset   = math.tan( camera.angle_y ) * focal_dist;
+        lrbt_string = "{} {} {} {}".format( 
+                -h_offset, h_offset, -v_offset, v_offset
+                )
+        filename_param = ET.SubElement( xml_node, "vector4" )
+        filename_param.attrib[ "name"  ] = "view_plane" 
+        filename_param.attrib[ "value" ] = lrbt_string 
+
+        filename_param = ET.SubElement( xml_node, "float" )
+        filename_param.attrib[ "name"  ] = "aperture_radius" 
+        filename_param.attrib[ "value" ] = "{}".format( 
+                camera.cycles.aperture_size )
+
 
 
     def translateMesh( self, blender_node, xml_node ):
@@ -44,7 +83,6 @@ class Exporter:
         mesh.calc_normals()
         mesh.transform( blender_node.matrix_world )
 
-        self.xml_file.write( "Creating {}\n".format( datafile ) )
         with open( os.path.join( self.dirpath, datafile ), "w" ) as df:
             verts = mesh.vertices
             mats  = mesh.materials
@@ -99,13 +137,6 @@ class Exporter:
         scene   = self.context.scene
         camera  = scene.camera
         objects = [ obj for obj in scene.objects if obj.is_visible( scene ) ]
-
-        cam = camera.data
-        self.xml_file.write( "{}\n".format( cam ) )
-        self.xml_file.write( "\t{}\n".format( camera.matrix_world ) )
-
-        for obj in objects:
-            self.xml_file.write( "{} {}\n".format( obj.type, obj ) )
 
         xml_root = ET.Element("legion_scene")
         xml_root.attrib[ "name" ] = "blender"

@@ -52,6 +52,19 @@ Target lexical_cast( const Source& arg )
 
 
 template<>
+legion::Index2 lexical_cast<legion::Index2, std::string>( 
+        const std::string& arg )
+{
+    std::stringstream oss( arg );
+    legion::Index2 result;
+    if( !( oss >> result[0] >> result[1] ) ||
+        !( oss >> std::ws ).eof()        )
+        throw std::runtime_error( "lexical_cast failure." );
+    return result;
+}
+
+
+template<>
 legion::Vector2 lexical_cast<legion::Vector2, std::string>( 
         const std::string& arg )
 {
@@ -288,11 +301,18 @@ void XMLToLegion::createRenderer( legion::IDisplay* display,
     legion::IRenderer* renderer =
         m_ctx->createRenderer( renderer_type, m_params );
     
+
     if( display )
         renderer->setDisplay( display );
+
     attr = renderer_node->first_attribute( "samples_per_pixel" );
     if( attr )
         renderer->setSamplesPerPixel( lexical_cast<float>( attr->value() ) );
+
+    attr = renderer_node->first_attribute( "resolution" );
+    if( attr )
+        renderer->setResolution( 
+                lexical_cast<legion::Index2>( std::string( attr->value() ) ) );
 
     m_ctx->setRenderer( renderer );
 }
@@ -319,7 +339,9 @@ void XMLToLegion::createCamera( const XMLNode* camera_node )
     attr = camera_node->first_attribute( "camera_to_world" );
     if( attr )
     {
-        legion::Matrix m = lexical_cast<legion::Matrix>( std::string( attr->value() ) );
+        legion::Matrix m = lexical_cast<legion::Matrix>(
+                std::string( attr->value() )
+                );
         camera->setCameraToWorld( m ); 
         std::cerr << "setting camera matrix to " << m << std::endl;
     }
@@ -413,8 +435,10 @@ void XMLToLegion::createScene( const XMLNode* scene_node )
                     "XMLToLegion: Geometry node missing 'type' attribute"
                     );
 
-        std::cout << "Creating geometry: '" << type_attr->value() << "'"
-                  << std::endl;
+        const XMLAttribute* name_attr = geometry_node->first_attribute("name");
+        const std::string name = name_attr ? name_attr->value() : "";
+        std::cout << "Creating geometry: " << type_attr->value() << ": '"
+                  << name << "'" << std::endl;
 
         loadParams( geometry_node );
         legion::IGeometry* geometry = 

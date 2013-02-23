@@ -123,13 +123,20 @@ RT_PROGRAM void triMeshIntersectPN( int prim_idx )
     {
         if(  rtPotentialIntersection( t ) ) 
         {
-            const float3 normal = optix::normalize( n );
+            const float3 n0 = vertices_pn[ triangle.x ].n;
+            const float3 n1 = vertices_pn[ triangle.y ].n;
+            const float3 n2 = vertices_pn[ triangle.z ].n;
+            const float3 geometric_normal = optix::normalize( n );
+            const float3 shading_normal   =
+                optix::normalize( n1*beta + n2*gamma + n0*(1.0f-beta-gamma)
+                        );
+
 
             // Fill in a localgeometry
             legion::LocalGeometry lg;
             lg.position         = ray.origin + t*ray.direction;
-            lg.geometric_normal = normal;
-            lg.shading_normal   = normal;
+            lg.geometric_normal = geometric_normal;
+            lg.shading_normal   = shading_normal;
             lg.texcoord         = make_float2( 0.0f );
             local_geom = lg;
 

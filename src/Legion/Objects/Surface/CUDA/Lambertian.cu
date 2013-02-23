@@ -49,7 +49,10 @@ legion::BSDFSample lambertianSampleBSDF(
     z = z > 0.0f ? sqrtf( z ) : 0.0f;
 
     // Transform into world space
-    legion::ONB onb( p.shading_normal );
+    const float3 normal = optix::faceforward( 
+            p.shading_normal, w_out, p.shading_normal
+            );
+    legion::ONB onb( normal );
     sample.w_in = onb.inverseTransform( make_float3( x, y, z ) );
 
     const float4 R     =  legionTex( reflectance, p.texcoord, p.position );
@@ -67,8 +70,11 @@ float4 lambertianEvaluateBSDF(
         legion::LocalGeometry p,
         float3 w_in )
 {
+    const float3 normal = optix::faceforward( 
+            p.shading_normal, w_out, p.shading_normal
+            );
     const float4 R      =  legionTex( reflectance, p.texcoord, p.position );
-    const float  cosine = fmaxf( 0.0f, optix::dot( w_in, p.shading_normal ) );
+    const float  cosine = fmaxf( 0.0f, optix::dot( w_in, normal ) );
     const float  pdf    = cosine * legion::ONE_DIV_PI;
     return make_float4( pdf * make_float3( R ), pdf );
 }
@@ -77,6 +83,9 @@ float4 lambertianEvaluateBSDF(
 RT_CALLABLE_PROGRAM
 float lambertianPDF( float3 w_out, legion::LocalGeometry p, float3 w_in )
 {
-    float cosine = fmaxf( 0.0f, optix::dot( w_in, p.shading_normal ) );
+    const float3 normal = optix::faceforward( 
+            p.shading_normal, w_out, p.shading_normal
+            );
+    float cosine = fmaxf( 0.0f, optix::dot( w_in, normal ) );
     return cosine * legion::ONE_DIV_PI;
 }

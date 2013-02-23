@@ -230,7 +230,11 @@ void OptiXScene::addGeometry( IGeometry* geometry )
         
         const std::string emission_func_name = surface->emissionFunctionName();
         optix::Program emission = 
-            m_program_mgr.get( surface_ptx, emission_func_name );
+            m_program_mgr.get( 
+                    surface_ptx, 
+                    emission_func_name,
+                    false
+                    );
         material[ "legionSurfaceEmission" ]->set( emission );
 
         optix::Program light_pdf = 
@@ -247,7 +251,8 @@ void OptiXScene::addGeometry( IGeometry* geometry )
         {
             optix::Program sample = 
                 m_program_mgr.get( std::string( geometry->name() ) + ".ptx",
-                                   geometry->sampleFunctionName() );
+                                   geometry->sampleFunctionName(),
+                                   false );
 
             std::stringstream ss;
             ss << "legionLightSample_" << m_num_lights;
