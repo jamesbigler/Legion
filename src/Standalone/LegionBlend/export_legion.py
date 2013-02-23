@@ -54,8 +54,9 @@ class Exporter:
         filename_param.attrib[ "name"  ] = "focal_distance" 
         filename_param.attrib[ "value" ] = "{}".format( focal_dist ) 
 
-        h_offset   = math.tan( camera.angle_x ) * focal_dist;
-        v_offset   = math.tan( camera.angle_y ) * focal_dist;
+        #h_offset   = math.tan( camera.angle_x ) * focal_dist * 0.5
+        h_offset   = math.tan( camera.angle_x*0.5 ) * focal_dist
+        v_offset   = math.tan( camera.angle_y*0.5 ) * focal_dist
         lrbt_string = "{} {} {} {}".format( 
                 -h_offset, h_offset, -v_offset, v_offset
                 )

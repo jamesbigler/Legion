@@ -43,9 +43,9 @@ legion::RayGeometry thinLensCreateRay(
     r.direction.x = optix::lerp( view_plane.x, view_plane.y, screen_sample.x );
     r.direction.y = optix::lerp( view_plane.w, view_plane.z, screen_sample.y );
     r.direction.z = -focal_distance; 
-    r.direction = optix::normalize( r.direction );
 
     r.origin = make_float3( camera_to_world*make_float4( r.origin, 1.0f ) );
     r.direction = make_float3( camera_to_world*make_float4(r.direction, 0.0f) );
+    r.direction = optix::normalize( r.direction );
     return r;
 }

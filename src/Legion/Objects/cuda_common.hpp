@@ -128,7 +128,11 @@ __device__ uint64 generateSobolSamples( const uint2&   launch_dim,
                                  screen_sample,
                                  sobol_index );
 
+
     screen_sample = screen_sample * inv_dim;
+    if( screen_sample.x < 0.0f || screen_sample.x > 1.0f ||
+        screen_sample.y < 0.0f || screen_sample.y > 1.0f )
+        screen_sample = make_float2( 0.0f );
     lens_sample   = make_float2( legion::Sobol::gen( sobol_index, 2 ),
                                  legion::Sobol::gen( sobol_index, 3 ) );
     time_sample   = 0.0f;
