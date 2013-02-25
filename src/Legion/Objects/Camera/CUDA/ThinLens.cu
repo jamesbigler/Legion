@@ -40,9 +40,12 @@ legion::RayGeometry thinLensCreateRay(
     const float2 disk_sample = optix::square_to_disk( aperture_sample );
     legion::RayGeometry r;
     r.origin      = make_float3( aperture_radius * disk_sample, 0.0f );
-    r.direction.x = optix::lerp( view_plane.x, view_plane.y, screen_sample.x );
-    r.direction.y = optix::lerp( view_plane.w, view_plane.z, screen_sample.y );
-    r.direction.z = -focal_distance; 
+    const float3 on_plane = make_float3(
+            optix::lerp( view_plane.x, view_plane.y, screen_sample.x ),
+            optix::lerp( view_plane.w, view_plane.z, screen_sample.y ),
+            -focal_distance
+            );
+    r.direction = on_plane - r.origin;
 
     r.origin = make_float3( camera_to_world*make_float4( r.origin, 1.0f ) );
     r.direction = make_float3( camera_to_world*make_float4(r.direction, 0.0f) );

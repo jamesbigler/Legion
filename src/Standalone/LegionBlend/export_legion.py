@@ -26,9 +26,9 @@ class Exporter:
 
         xml_node.attrib[ "type"              ] = "ProgressiveRenderer"
         xml_node.attrib[ "samples_per_pixel" ] = "32"
-        xml_node.attrib[ "resolution"        ] = "{} {}".format( render.resolution_x, render.resolution_y )
-
-        pass
+        xml_node.attrib[ "resolution"        ] = "{} {}".format( 
+                render.resolution_x, render.resolution_y
+                )
 
 
     def createDisplay( self, xml_node ):
@@ -72,7 +72,6 @@ class Exporter:
 
 
     def translateMesh( self, blender_node, xml_node ):
-
         xml_node.attrib[ "type" ] = "TriMesh" 
         xml_node.attrib[ "name" ] = blender_node.name
         filename_param = ET.SubElement( xml_node, "string" )
@@ -83,6 +82,7 @@ class Exporter:
         mesh = blender_node.to_mesh( self.context.scene, True, 'RENDER' )
         mesh.calc_normals()
         mesh.transform( blender_node.matrix_world )
+        xml_node.attrib[ "surface" ] = mesh.materials[0].name
 
         with open( os.path.join( self.dirpath, datafile ), "w" ) as df:
             verts = mesh.vertices
@@ -104,6 +104,38 @@ class Exporter:
                         mesh.loops[loop_index].vertex_index )
                         )
                 df.write( "\n" )
+    
+
+    def translateSurface( self, blender_node, xml_node ):
+        material = blender_node
+        self.xml_file.write( "{}: diff {}, spec {}\n".format( 
+            material, material.diffuse_shader, material.specular_shader ) )
+        xml_node.attrib[ "type" ] = "Ward" 
+        xml_node.attrib[ "name" ] = blender_node.name
+
+        diff_param = ET.SubElement( xml_node, "color" )
+        diff_param.attrib[ "name"  ] = "diffuse_reflectance" 
+        diff_param.attrib[ "value" ] = "{} {} {}".format( 
+                material.diffuse_color[0] * material.diffuse_intensity,
+                material.diffuse_color[1] * material.diffuse_intensity,
+                material.diffuse_color[2] * material.diffuse_intensity )
+
+        spec_param = ET.SubElement( xml_node, "color" )
+        spec_param.attrib[ "name"  ] = "specular_reflectance" 
+        spec_param.attrib[ "value" ] = "{} {} {}".format( 
+                material.specular_color[0] * material.specular_intensity,
+                material.specular_color[1] * material.specular_intensity,
+                material.specular_color[2] * material.specular_intensity )
+
+        alphau_param = ET.SubElement( xml_node, "float" )
+        alphau_param.attrib[ "name" ] = "alpha_u"
+        alphau_param.attrib[ "value" ] = "{}".format( 
+                material.specular_slope )
+
+        alphav_param = ET.SubElement( xml_node, "float" )
+        alphav_param.attrib[ "name" ] = "alpha_v"
+        alphav_param.attrib[ "value" ] = "{}".format( 
+                material.specular_slope )
 
 
     def translateLight( self, blender_node, xml_node ):
@@ -116,28 +148,43 @@ class Exporter:
             mesh = me.data
             for mat in mesh.materials:
                 mats.add( mat )
+
         return list( mats )
 
 
-    def gatherTextures( self, material_objs ):
+    def gatherTextures( self, material_objs, mesh_objs ):
         textures = set() 
         for mat in material_objs:
+            self.xml_file.write( "Checking mat '{}' for tex... {}\n".format( 
+                mat.name, len( mat.texture_slots ) ) )
             for tex_slot in mat.texture_slots:
                 if tex_slot:
+                    self.xml_file.write( "\tFound '{}'...\n".format( tex_slot.name ) )
                     textures.add( tex_slot )
+        for mesh_obj in mesh_objs:
+            mesh = mesh_obj.data
+            self.xml_file.write( "Checking mesh '{}' for tex...\n".format( 
+                mesh_obj.name ) )
+            for uv_texture in mesh.tessface_uv_textures:
+                self.xml_file.write( "HHHHHHHHHEEEEEEEERRRRE" )
+                mesh_texture_face = uv_texture.data
+                self.xml_file.write( "Mesh texture face filepath: {}".format(
+                    mesh_texture_face.filepath 
+                    ) )
         return list( textures )
 
 
     ############################################################################
     #
-    # Entry point for export
+    # public interface 
     #
     ############################################################################
     def export( self ):
 
         scene   = self.context.scene
         camera  = scene.camera
-        objects = [ obj for obj in scene.objects if obj.is_visible( scene ) ]
+        objects     = scene.objects 
+        vis_objects = [ obj for obj in scene.objects if obj.is_visible( scene ) ]
 
         xml_root = ET.Element("legion_scene")
         xml_root.attrib[ "name" ] = "blender"
@@ -152,13 +199,18 @@ class Exporter:
         self.createDisplay( xml_display )
 
         xml_scene = ET.SubElement( xml_root, "scene" )
-        meshes = [ o for o in objects if o.type == 'MESH' ]
+        meshes = [ 
+                o for o in objects if o.type == 'MESH' and o.is_visible( scene )
+                ]
         
         materials = self.gatherMaterials( meshes )
-        textures  = self.gatherTextures( materials )
+        textures  = self.gatherTextures( materials, meshes )
 
         for mat in materials:
             self.xml_file.write( "Material: {}\n".format( mat ) )
+            xml_mat = ET.SubElement( xml_scene, "surface" )
+            self.translateSurface( mat, xml_mat )
+
         for tex in textures:
             self.xml_file.write( "Texture: {}\n".format( tex) )
 
