@@ -4,7 +4,7 @@
 		<vector4 name="view_plane" value="-3.657142809573653 3.657142809573653 -2.057142846354806 2.057142846354806"/>
 		<float name="aperture_radius" value="0.019999999552965164"/>
 	</camera>
-	<renderer resolution="1920 1080" samples_per_pixel="16" type="ProgressiveRenderer"/>
+	<renderer resolution="1920 1080" samples_per_pixel="128" type="ProgressiveRenderer"/>
 
     <display type="ImageFileDisplay">
         <string name="filename" value="quadbot.exr" />
@@ -33,12 +33,10 @@
             <vector3 name="V" value="16.0 0.0 0.0" /> 
         </geometry>
 
-        <!-- 
         <geometry type="Sphere" surface="blue_emitter">
             <vector3 name="center" value="8 4 6" />
             <float   name="radius" value="1.0" />
         </geometry>
-        -->
 
         <geometry type="Sphere" surface="yellow_emitter">
             <vector3 name="center" value="-6 -2 5" />

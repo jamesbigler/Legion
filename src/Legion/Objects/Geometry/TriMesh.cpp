@@ -256,33 +256,52 @@ void TriMesh::setVariables( VariableContainer& container ) const
 }
     
 
+namespace
+{
+    template <typename VERTEX>
+    void loadDataHelper(
+        std::istream& in,
+        unsigned vertcount,
+        unsigned tricount,
+        TriMesh* mesh
+        )
+    {
+        std::vector<VERTEX> vertices( vertcount );
+        std::vector<Index3> triangles( tricount );
+        in.read( reinterpret_cast<char*>( &vertices[0] ),
+                 sizeof( VERTEX )*vertcount );
+        in.read( reinterpret_cast<char*>( &triangles[0] ),
+                 sizeof( Index3 )*tricount );
+
+        mesh->setTriangles( vertices, triangles );
+    }
+}
+
 void TriMesh::loadMeshData( const std::string& filename, TriMesh* mesh )
 {
     LLOG_INFO << "Reading mesh '" << filename << "'";
     const std::string path = 
-        "/Users/keith/Code/Legion/src/Standalone/lr/scenes/quadbot/" + filename;
-        //"/Users/kmorley/Code/Legion/src/Standalone/lr/scenes/quadbot/" + filename;
+        //"/Users/keith/Code/Legion/src/Standalone/lr/scenes/quadbot/" + filename;
+        "/Users/kmorley/Code/Legion/src/Standalone/lr/scenes/quadbot/" + filename;
     std::ifstream in( path.c_str(), std::ios::in | std::ios::binary );
     if( !in )
         throw Exception( "Failed to open file '" + path + "' for reading" );
 
-
-    std::string token;
     unsigned verttype, vertcount, tricount;
     in.read( reinterpret_cast<char*>( &verttype  ), sizeof( unsigned ) );
     in.read( reinterpret_cast<char*>( &vertcount ), sizeof( unsigned ) );
     in.read( reinterpret_cast<char*>( &tricount  ), sizeof( unsigned ) );
     LLOG_INFO << "\t" << verttype << " " << vertcount << " " << tricount;
 
-
-    // TODO: make helper templatized on vertex type for loading data
-    std::vector<VertexN> vertices( vertcount );
-    std::vector<Index3> triangles( tricount );
-    in.read( reinterpret_cast<char*>( &vertices[0] ),
-             sizeof( VertexN )*vertcount );
-    in.read( reinterpret_cast<char*>( &triangles[0] ),
-             sizeof( Index3 )*tricount );
-
-    mesh->setTriangles( vertices, triangles );
+    const bool have_normals = verttype & 0x01;
+    const bool have_uvs     = verttype & 0x02;
+    if( !have_normals && !have_uvs )
+      ::loadDataHelper<Vector3 >( in, vertcount, tricount, mesh );
+    else if( have_normals && !have_uvs )
+      ::loadDataHelper<VertexN >( in, vertcount, tricount, mesh );
+    else if( !have_normals && have_uvs )
+      ::loadDataHelper<VertexUV>( in, vertcount, tricount, mesh );
+    else // Have both
+      ::loadDataHelper<Vertex  >( in, vertcount, tricount, mesh );
 }
 
