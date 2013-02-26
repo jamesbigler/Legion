@@ -69,6 +69,8 @@ add_library( legion SHARED
     Core/Context.hpp
     Core/Exception.cpp
     Core/Exception.hpp
+    Core/PluginContext.cpp
+    Core/PluginContext.hpp
     Core/VariableContainer.cpp
     Core/VariableContainer.hpp
     Legion.hpp

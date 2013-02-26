@@ -61,12 +61,20 @@ int main( int argc , char** argv )
     // Render scene using IDisplay specified in xml file
     try
     {
+        const std::string scene_file = argv[ argc-1 ];
         char* text;
-        if( ! lr::readFile( argv[ argc-1 ], &text ) )
+        if( ! lr::readFile( scene_file.c_str(), &text ) )
             throw std::runtime_error( "Failed to read xml file." );
 
-        lr::XMLToLegion translate( text, 0, true );
-        translate.getContext()->render();
+        const size_t pos = scene_file.find_last_of( '/' );
+        const std::string scene_dir = pos == std::string::npos ?
+                                      "."                      :
+                                      scene_file.substr( 0, pos );
+        std::cout << "adding asset path '" << scene_dir << "'" <<std::endl;
+        legion::Context context;
+        context.addAssetPath( scene_dir );
+        lr::XMLToLegion translate( text, &context, true );
+        context.render();
 
         delete [] text;
 

@@ -280,12 +280,8 @@ namespace
 void TriMesh::loadMeshData( const std::string& filename, TriMesh* mesh )
 {
     LLOG_INFO << "Reading mesh '" << filename << "'";
-    const std::string path = 
-        //"/Users/keith/Code/Legion/src/Standalone/lr/scenes/quadbot/" + filename;
-        "/Users/kmorley/Code/Legion/src/Standalone/lr/scenes/quadbot/" + filename;
-    std::ifstream in( path.c_str(), std::ios::in | std::ios::binary );
-    if( !in )
-        throw Exception( "Failed to open file '" + path + "' for reading" );
+    std::ifstream in;
+    mesh->getPluginContext().openFile( filename, in );
 
     unsigned verttype, vertcount, tricount;
     in.read( reinterpret_cast<char*>( &verttype  ), sizeof( unsigned ) );

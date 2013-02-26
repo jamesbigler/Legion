@@ -24,6 +24,8 @@
 #define LEGION_CORE_PLUGIN_CONTEXT_H_
 
 #include <optixu/optixpp_namespace.h>
+#include <iosfwd>
+#include <vector>
 
 namespace legion
 {
@@ -31,13 +33,23 @@ namespace legion
 class PluginContext
 {
 public:
-    PluginContext( optix::Context optix_context ) 
-        : m_optix_context( optix_context ) {}
+    PluginContext( optix::Context optix_context ); 
 
-    optix::Context getOptiXContext() { return m_optix_context; }
+    void addAssetPath( const std::string& asset_path );
+
+    optix::Context getOptiXContext();
+
+    void openFile(
+        const std::string&       filename,
+        std::ifstream&           out,
+        std::ios_base::openmode  mode = std::ios::in | std::ios::binary
+        ) const;
 
 private:
-    optix::Context m_optix_context; 
+    typedef std::vector<std::string> Path;
+
+    optix::Context  m_optix_context; 
+    Path            m_asset_path;
 };
 
 }

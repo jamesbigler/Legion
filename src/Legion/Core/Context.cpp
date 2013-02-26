@@ -220,6 +220,7 @@ void Context::Impl::addLight( ILight* light )
 void Context::Impl::addAssetPath( const std::string& path )
 {
     m_optix_scene.addAssetPath( path );
+    m_plugin_context.addAssetPath( path );
 }
 
 

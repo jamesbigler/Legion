@@ -53,11 +53,11 @@ float diffusePDF( float3 w_out, float3 normal, float3 w_in )
 }
 
 
-static __device__ __inline__
-float3 diffuseEval( float3 w_out, float3 normal, float3 w_in )
-{
-    return legion::ONE_DIV_PI*optix::dot( normal, w_in) * diff_reflectance;
-}
+// static __device__ __inline__
+// float3 diffuseEval( float3 w_out, float3 normal, float3 w_in )
+// {
+//     return legion::ONE_DIV_PI*optix::dot( normal, w_in) * diff_reflectance;
+// }
 
 
 static __device__ __inline__
@@ -92,25 +92,25 @@ float specularPDF( float3 w_out, float3 normal, float3 w_in )
 }
 
 
-static __device__ __inline__
-float3 specularEval( float3 w_out, float3 normal, float3 w_in )
-{
-    legion::ONB  onb( normal );
-    const float  cos_in     = optix::dot( w_in,  normal );
-    const float  cos_out    = optix::dot( w_out, normal );
-
-    if( cos_in <= 0.0f || cos_out <= 0.0f )
-        return make_float3( 0.0f );
-    const float3 H           = optix::normalize( w_out + w_in );
-    const float  inv_alpha_u = 1.0f / alpha_u;
-    const float  inv_alpha_v = 1.0f / alpha_v;
-    const float  spec_coeff = 
-        cos_in * legion::ONE_DIV_PI *
-        0.25f * inv_alpha_u * inv_alpha_v / sqrtf( cos_in*cos_out ) *
-        wardExpTerm( inv_alpha_u, inv_alpha_v, H, onb );
-
-    return spec_coeff * spec_reflectance;
-}
+// static __device__ __inline__
+// float3 specularEval( float3 w_out, float3 normal, float3 w_in )
+// {
+//     legion::ONB  onb( normal );
+//     const float  cos_in     = optix::dot( w_in,  normal );
+//     const float  cos_out    = optix::dot( w_out, normal );
+// 
+//     if( cos_in <= 0.0f || cos_out <= 0.0f )
+//         return make_float3( 0.0f );
+//     const float3 H           = optix::normalize( w_out + w_in );
+//     const float  inv_alpha_u = 1.0f / alpha_u;
+//     const float  inv_alpha_v = 1.0f / alpha_v;
+//     const float  spec_coeff = 
+//         cos_in * legion::ONE_DIV_PI *
+//         0.25f * inv_alpha_u * inv_alpha_v / sqrtf( cos_in*cos_out ) *
+//         wardExpTerm( inv_alpha_u, inv_alpha_v, H, onb );
+// 
+//     return spec_coeff * spec_reflectance;
+// }
 
 static __device__ __inline__
 float4 specularEvalPDF( float3 w_out, float3 normal, float3 w_in )
