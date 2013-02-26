@@ -46,27 +46,8 @@ void legionAnyHit()
 RT_PROGRAM
 void legionClosestHit()
 {
-    float3 radiance = make_float3( 0.0f );
-    const float choose_light_p = 1.0f / static_cast<float>( legionLightCount );
-
-    //
-    // Emitted contribution
-    //
-    {
-        const float3 w_in = ray.direction;
-
-        radiance = legionSurfaceEmission( w_in, local_geom );
-
-        if( radiance_prd.use_mis_weight && !legion::isBlack( radiance  ))
-        {
-            const float3 P          = ray.origin;
-            const float  light_pdf  = legionLightPDF( w_in, P )*choose_light_p;
-            const float  bsdf_pdf   = radiance_prd.pdf;
-            const float  mis_weight = legion::powerHeuristic(
-                                          bsdf_pdf, light_pdf );
-            radiance *= mis_weight;
-        }
-    }
+    const float last_pdf     = radiance_prd.pdf;
+    const bool  last_use_mis = radiance_prd.use_mis_weight;
 
     // 
     // Indirect lighting (BSDF sampling)
@@ -89,20 +70,38 @@ void legionClosestHit()
 
         const float3 P = ray.origin + t_hit * ray.direction;
 
+
         radiance_prd.origin              = P;
         radiance_prd.direction           = bsdf_sample.w_in;
         radiance_prd.attenuation         = bsdf_sample.f_over_pdf;
         radiance_prd.pdf                 = bsdf_sample.pdf; 
         radiance_prd.done                = false;
         radiance_prd.use_mis_weight      = !bsdf_sample.is_singular; 
+    }
 
-        /*
-        radiance_prd.radiance            = bsdf_sample.w_in;
-        radiance_prd.done                = true;
-        return;
-        */
+    float3 radiance = make_float3( 0.0f );
+    const float choose_light_p = 1.0f / static_cast<float>( legionLightCount );
+
+    //
+    // Emitted contribution
+    //
+    {
+        const float3 w_in = ray.direction;
+
+        radiance = legionSurfaceEmission( w_in, local_geom );
+
+        if( last_use_mis && !legion::isBlack( radiance  ))
+        {
+            const float3 P          = ray.origin;
+            const float  light_pdf  = legionLightPDF( w_in, P )*choose_light_p;
+            const float  bsdf_pdf   = last_pdf; 
+            const float  mis_weight = legion::powerHeuristic(
+                                          bsdf_pdf, light_pdf );
+            radiance *= mis_weight;
+        }
     }
     
+
     //
     // Direct lighting (next event estimation)
     //
