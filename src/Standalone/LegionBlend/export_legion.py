@@ -6,6 +6,8 @@ import math
 
 import xml.etree.ElementTree as ET
 import xml.dom.minidom as minidom
+import struct 
+import array 
 
 class Exporter:
 
@@ -84,26 +86,37 @@ class Exporter:
         mesh.transform( blender_node.matrix_world )
         xml_node.attrib[ "surface" ] = mesh.materials[0].name
 
-        with open( os.path.join( self.dirpath, datafile ), "w" ) as df:
-            verts = mesh.vertices
-            mats  = mesh.materials
-            df.write( "vertcount {}\n".format( len(verts) ) )
-            for vert in verts:
-                df.write( "{} {} {} {} {} {}\n".format( 
-                    vert.co[0],     vert.co[1],     vert.co[2],
-                    vert.normal[0], vert.normal[1], vert.normal[2] ) 
-                    )
-
+        with open( os.path.join( self.dirpath, datafile ), "wb" ) as df:
+            verts    = mesh.vertices
             polygons = mesh.polygons
-            df.write( "polycount {}\n".format( len( polygons ) ) )
+            mats     = mesh.materials
+            
+            num_tris = 0
+            triangles = []
             for poly in mesh.polygons:
-                df.write( "{}".format( poly.loop_total ) )
-                for loop_index in range( poly.loop_start,
-                                         poly.loop_start + poly.loop_total ):
-                    df.write(" {}".format( 
-                        mesh.loops[loop_index].vertex_index )
-                        )
-                df.write( "\n" )
+                v0 = mesh.loops[poly.loop_start+0].vertex_index
+                v1 = mesh.loops[poly.loop_start+1].vertex_index
+                v2 = mesh.loops[poly.loop_start+2].vertex_index
+                triangles.extend( [ v0, v1, v2 ] )
+                num_tris += 1
+                for loop_index in range( poly.loop_start+3,
+                                         poly.loop_start+poly.loop_total ):
+                    v1 = v2
+                    v2 = mesh.loops[loop_index].vertex_index
+                    triangles.extend( [ v0, v1, v2 ] )
+                    num_tris += 1
+
+            num_verts = len(verts)
+            vertices = []
+            for vert in verts:
+                vertices.extend( [ 
+                    vert.co[0],     vert.co[1],     vert.co[2],
+                    vert.normal[0], vert.normal[1], vert.normal[2] 
+                    ] ) 
+            
+            df.write( struct.pack( 'III', 0x01, num_verts, num_tris ) )
+            array.array( 'f', vertices  ).tofile( df )
+            array.array( 'I', triangles ).tofile( df )
     
 
     def translateSurface( self, blender_node, xml_node ):

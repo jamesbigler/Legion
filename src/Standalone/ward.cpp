@@ -108,7 +108,7 @@ int main( int , char** )
 
         legion::ProgressiveRenderer renderer( &ctx );
         renderer.setResolution( legion::Index2( 800u, 600u ) );
-        renderer.setSamplesPerPixel( 64*4 );
+        renderer.setSamplesPerPixel( 32 );
         renderer.setDisplay( &display );
         ctx.setRenderer( &renderer );
 

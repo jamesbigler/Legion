@@ -260,45 +260,29 @@ void TriMesh::loadMeshData( const std::string& filename, TriMesh* mesh )
 {
     LLOG_INFO << "Reading mesh '" << filename << "'";
     const std::string path = 
-        //"/Users/keith/Code/Legion/src/Standalone/lr/scenes/quadbot/" + filename;
-        "/Users/kmorley/Code/Legion/src/Standalone/lr/scenes/quadbot/" + filename;
-    std::ifstream in( path.c_str() );
+        "/Users/keith/Code/Legion/src/Standalone/lr/scenes/quadbot/" + filename;
+        //"/Users/kmorley/Code/Legion/src/Standalone/lr/scenes/quadbot/" + filename;
+    std::ifstream in( path.c_str(), std::ios::in | std::ios::binary );
     if( !in )
         throw Exception( "Failed to open file '" + path + "' for reading" );
 
+
     std::string token;
-    unsigned vertcount;
+    unsigned verttype, vertcount, tricount;
+    in.read( reinterpret_cast<char*>( &verttype  ), sizeof( unsigned ) );
+    in.read( reinterpret_cast<char*>( &vertcount ), sizeof( unsigned ) );
+    in.read( reinterpret_cast<char*>( &tricount  ), sizeof( unsigned ) );
+    LLOG_INFO << "\t" << verttype << " " << vertcount << " " << tricount;
 
-    in >> token >> vertcount;
-    LLOG_INFO << "\t'" << token << "': " << vertcount;
+
+    // TODO: make helper templatized on vertex type for loading data
     std::vector<VertexN> vertices( vertcount );
+    std::vector<Index3> triangles( tricount );
+    in.read( reinterpret_cast<char*>( &vertices[0] ),
+             sizeof( VertexN )*vertcount );
+    in.read( reinterpret_cast<char*>( &triangles[0] ),
+             sizeof( Index3 )*tricount );
 
-    for( int i = 0; i < vertcount; ++i )
-        in >> vertices[i];
-    LLOG_INFO << "\tvertices[n-1]: " << vertices[vertcount-1];
-
-    unsigned polycount;
-    in >> token >> polycount;
-    LLOG_INFO << "\tpolycount: " << polycount;
-    std::vector<Index3> triangles;
-
-    for( unsigned i = 0u; i < polycount; ++i )
-    {
-        unsigned poly_vertcount, v0, v1, v2;
-        in >> poly_vertcount >> v0 >> v1 >> v2;
-        triangles.push_back( Index3( v0, v1, v2 ) );
-        for( unsigned j = 3u; j < poly_vertcount; ++j ) 
-        {
-            v1 =  v2;
-            in >> v2;
-            triangles.push_back( Index3( v0, v1, v2 ) );
-        }
-
-    }
-
-    LLOG_INFO << "\ttriangles[n-1]: " << triangles.back();
-    
-    
     mesh->setTriangles( vertices, triangles );
 }
 
