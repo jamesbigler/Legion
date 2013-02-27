@@ -49,6 +49,13 @@ void legionClosestHit()
     const float last_pdf     = radiance_prd.pdf;
     const bool  last_use_mis = radiance_prd.use_mis_weight;
 
+    /*
+    radiance_prd.radiance = local_geom.geometric_normal;
+    radiance_prd.radiance = local_geom.shading_normal;
+    radiance_prd.done = true;
+    return;
+    */
+
     // 
     // Indirect lighting (BSDF sampling)
     //
@@ -100,7 +107,6 @@ void legionClosestHit()
             radiance *= mis_weight;
         }
     }
-    
 
     //
     // Direct lighting (next event estimation)
@@ -120,7 +126,7 @@ void legionClosestHit()
         const float3 P = ray.origin + t_hit * ray.direction;
         const float3 N = 
             optix::faceforward( 
-                local_geom.shading_normal, w_out, local_geom.shading_normal
+                local_geom.shading_normal, w_out, local_geom.geometric_normal
                 );
         const legion::LightSample light_sample = 
             legion::lightSample( 

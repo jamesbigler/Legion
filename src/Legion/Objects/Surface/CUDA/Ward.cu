@@ -165,6 +165,11 @@ legion::BSDFSample wardSampleBSDF(
         float3 w_out,
         legion::LocalGeometry p )
 {
+    const float3 N = optix::faceforward( 
+            p.shading_normal, w_out, p.geometric_normal
+            );
+
+    legion::ONB onb( N );
     legion::BSDFSample sample;
     if( seed.z < diffuse_weight )
     {
@@ -179,11 +184,9 @@ legion::BSDFSample wardSampleBSDF(
         z = z > 0.0f ? sqrtf( z ) : 0.0f;
 
         // Transform into world space
-        legion::ONB onb( p.shading_normal );
         sample.w_in = onb.inverseTransform( make_float3( x, y, z ) );
 
         // calculate pdf
-        const float3 N = p.shading_normal;
         const float4 ward = wardEvalPDF( w_out, N, sample.w_in, diffuse_weight);
         sample.pdf        = ward.w;
         sample.f_over_pdf = sample.pdf > 0.00001f            ? 
@@ -243,11 +246,9 @@ legion::BSDFSample wardSampleBSDF(
         float z = cos_theta_h; 
 
 
-        legion::ONB onb( p.shading_normal );
         const float3 H    = onb.inverseTransform( make_float3( x, y, z ) );
         sample.w_in       = optix::reflect( -w_out, H );
         
-        const float3 N    = p.shading_normal;
         const float4 ward = wardEvalPDF( w_out, N, sample.w_in, diffuse_weight);
         sample.pdf        = ward.w;
         sample.f_over_pdf = sample.pdf > 0.00001f            ? 
@@ -266,12 +267,14 @@ float4 wardEvaluateBSDF(
         legion::LocalGeometry p,
         float3 w_in )
 {
-    const float  cos_in   = optix::dot( w_in,  p.shading_normal );
-    const float  cos_out  = optix::dot( w_out, p.shading_normal );
+    const float3 N = optix::faceforward( 
+            p.shading_normal, w_out, p.geometric_normal
+            );
+    const float  cos_in   = optix::dot( w_in,  N );
+    const float  cos_out  = optix::dot( w_out, N );
     if( cos_in <= 0.0f || cos_out <= 0.0f )
         return make_float4( 0.0f );
 
-    const float3 N = p.shading_normal;
     return wardEvalPDF( w_out, N, w_in, diffuse_weight);
 }
 
@@ -279,7 +282,9 @@ float4 wardEvaluateBSDF(
 RT_CALLABLE_PROGRAM
 float wardPDF( float3 w_out, legion::LocalGeometry p, float3 w_in )
 {
-        const float3 N = p.shading_normal;
+        const float3 N = optix::faceforward( 
+                p.shading_normal, w_out, p.geometric_normal
+                );
         const float  diffuse_pdf  = diffusePDF( w_out, N, w_in );
         const float  specular_pdf = specularPDF( w_out, N, w_in );
         return optix::lerp( specular_pdf, diffuse_pdf, diffuse_weight );

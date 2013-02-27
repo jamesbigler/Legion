@@ -34,7 +34,10 @@ class Exporter:
 
 
     def createDisplay( self, xml_node ):
-        pass
+        xml_node.attrib[ "type" ] = "ImageFileDisplay" 
+        filename_param = ET.SubElement( xml_node, "string" )
+        filename_param.attrib[ "name"  ] = "filename" 
+        filename_param.attrib[ "value" ] = "blender.exr" 
 
 
     def translateCamera( self, blender_node, xml_node ):
@@ -52,6 +55,8 @@ class Exporter:
         xml_node.attrib[ "camera_to_world" ] = matrix_string 
 
         focal_dist = camera.dof_distance
+        if focal_dist < 1e-6:
+            focal_dist = 1.0
         filename_param = ET.SubElement( xml_node, "float" )
         filename_param.attrib[ "name"  ] = "focal_distance" 
         filename_param.attrib[ "value" ] = "{}".format( focal_dist ) 
@@ -62,13 +67,13 @@ class Exporter:
         lrbt_string = "{} {} {} {}".format( 
                 -h_offset, h_offset, -v_offset, v_offset
                 )
-        filename_param = ET.SubElement( xml_node, "vector4" )
-        filename_param.attrib[ "name"  ] = "view_plane" 
-        filename_param.attrib[ "value" ] = lrbt_string 
+        view_plane_param = ET.SubElement( xml_node, "vector4" )
+        view_plane_param.attrib[ "name"  ] = "view_plane" 
+        view_plane_param.attrib[ "value" ] = lrbt_string 
 
-        filename_param = ET.SubElement( xml_node, "float" )
-        filename_param.attrib[ "name"  ] = "aperture_radius" 
-        filename_param.attrib[ "value" ] = "{}".format( 
+        aperture_param = ET.SubElement( xml_node, "float" )
+        aperture_param.attrib[ "name"  ] = "aperture_radius" 
+        aperture_param.attrib[ "value" ] = "{}".format( 
                 camera.cycles.aperture_size )
 
 
@@ -82,8 +87,8 @@ class Exporter:
         filename_param.attrib[ "value" ] = datafile 
 
         mesh = blender_node.to_mesh( self.context.scene, True, 'RENDER' )
-        mesh.calc_normals()
         mesh.transform( blender_node.matrix_world )
+        mesh.calc_normals()
         xml_node.attrib[ "surface" ] = mesh.materials[0].name
 
         with open( os.path.join( self.dirpath, datafile ), "wb" ) as df:
@@ -121,33 +126,31 @@ class Exporter:
 
     def translateSurface( self, blender_node, xml_node ):
         material = blender_node
-        self.xml_file.write( "{}: diff {}, spec {}\n".format( 
-            material, material.diffuse_shader, material.specular_shader ) )
         xml_node.attrib[ "type" ] = "Ward" 
         xml_node.attrib[ "name" ] = blender_node.name
 
         diff_param = ET.SubElement( xml_node, "color" )
         diff_param.attrib[ "name"  ] = "diffuse_reflectance" 
-        diff_param.attrib[ "value" ] = "{} {} {}".format( 
+        diff_param.attrib[ "value" ] = "{:.4} {:.4} {:.4}".format( 
                 material.diffuse_color[0] * material.diffuse_intensity,
                 material.diffuse_color[1] * material.diffuse_intensity,
                 material.diffuse_color[2] * material.diffuse_intensity )
 
         spec_param = ET.SubElement( xml_node, "color" )
         spec_param.attrib[ "name"  ] = "specular_reflectance" 
-        spec_param.attrib[ "value" ] = "{} {} {}".format( 
+        spec_param.attrib[ "value" ] = "{:.4} {:.4} {:.4}".format( 
                 material.specular_color[0] * material.specular_intensity,
                 material.specular_color[1] * material.specular_intensity,
                 material.specular_color[2] * material.specular_intensity )
 
         alphau_param = ET.SubElement( xml_node, "float" )
         alphau_param.attrib[ "name" ] = "alpha_u"
-        alphau_param.attrib[ "value" ] = "{}".format( 
+        alphau_param.attrib[ "value" ] = "{:.4}".format( 
                 material.specular_slope )
 
         alphav_param = ET.SubElement( xml_node, "float" )
         alphav_param.attrib[ "name" ] = "alpha_v"
-        alphav_param.attrib[ "value" ] = "{}".format( 
+        alphav_param.attrib[ "value" ] = "{:.4}".format( 
                 material.specular_slope )
 
 
@@ -168,22 +171,13 @@ class Exporter:
     def gatherTextures( self, material_objs, mesh_objs ):
         textures = set() 
         for mat in material_objs:
-            self.xml_file.write( "Checking mat '{}' for tex... {}\n".format( 
-                mat.name, len( mat.texture_slots ) ) )
             for tex_slot in mat.texture_slots:
                 if tex_slot:
-                    self.xml_file.write( "\tFound '{}'...\n".format( tex_slot.name ) )
                     textures.add( tex_slot )
         for mesh_obj in mesh_objs:
             mesh = mesh_obj.data
-            self.xml_file.write( "Checking mesh '{}' for tex...\n".format( 
-                mesh_obj.name ) )
             for uv_texture in mesh.tessface_uv_textures:
-                self.xml_file.write( "HHHHHHHHHEEEEEEEERRRRE" )
                 mesh_texture_face = uv_texture.data
-                self.xml_file.write( "Mesh texture face filepath: {}".format(
-                    mesh_texture_face.filepath 
-                    ) )
         return list( textures )
 
 
@@ -220,12 +214,11 @@ class Exporter:
         textures  = self.gatherTextures( materials, meshes )
 
         for mat in materials:
-            self.xml_file.write( "Material: {}\n".format( mat ) )
             xml_mat = ET.SubElement( xml_scene, "surface" )
             self.translateSurface( mat, xml_mat )
 
         for tex in textures:
-            self.xml_file.write( "Texture: {}\n".format( tex) )
+            pass
 
         for mesh in meshes:
             xml_mesh = ET.SubElement( xml_scene, "geometry" )

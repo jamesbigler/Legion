@@ -443,7 +443,15 @@ void XMLToLegion::createScene( const XMLNode* scene_node )
         loadParams( geometry_node );
         legion::IGeometry* geometry = 
             m_ctx->createGeometry( type_attr->value(), m_params );
-        geometry->setSurface( m_surfaces[ surf_attr->value() ] );
+
+        legion::ISurface* surface = m_surfaces[ surf_attr->value() ];
+        if( !surface )
+            throw std::runtime_error( 
+                    "XMLToLegion: Geometry node refers to unknown surface '" +
+                    std::string( surf_attr->value() ) + "'"
+                    );
+
+        geometry->setSurface( surface );
 
         m_ctx->addGeometry( geometry );
     }
