@@ -8,6 +8,7 @@ import xml.etree.ElementTree as ET
 import xml.dom.minidom as minidom
 import struct 
 import array 
+import mathutils
 
 class Exporter:
 
@@ -61,7 +62,6 @@ class Exporter:
         filename_param.attrib[ "name"  ] = "focal_distance" 
         filename_param.attrib[ "value" ] = "{}".format( focal_dist ) 
 
-        #h_offset   = math.tan( camera.angle_x ) * focal_dist * 0.5
         h_offset   = math.tan( camera.angle_x*0.5 ) * focal_dist
         v_offset   = math.tan( camera.angle_y*0.5 ) * focal_dist
         lrbt_string = "{} {} {} {}".format( 
@@ -154,7 +154,47 @@ class Exporter:
                 material.specular_slope )
 
 
-    def translateLight( self, blender_node, xml_node ):
+    def translateLight( self, blender_node, xml_scene ):
+        lamp = blender_node.data
+        if lamp.type == 'AREA':
+            xml_geom_node = ET.SubElement( xml_scene, "geometry" )
+            xml_geom_node.attrib[ "type"    ] = "Parallelogram"
+            xml_geom_node.attrib[ "surface" ] = "emitter_" + lamp.name
+            xml_geom_node.attrib[ "name"    ] = lamp.name
+
+            transform = blender_node.matrix_world
+            anchor = mathutils.Vector( ( -lamp.size*0.5, -lamp.size*0.5, 0.0 ) )
+            U      = mathutils.Vector( (  lamp.size, 0.0, 0.0 ) )
+            V      = mathutils.Vector( (  0.0, lamp.size, 0.0 ) )
+            anchor = transform*anchor
+            U      = transform.to_3x3()*U
+            V      = transform.to_3x3()*V
+            color  = lamp.color
+        
+            anchor_param = ET.SubElement( xml_geom_node, "vector3" )
+            anchor_param.attrib[ "name" ] = "anchor"
+            anchor_param.attrib[ "value" ] = "{:.4} {:.4} {:.4}".format( 
+                    anchor[0], anchor[1], anchor[2] )
+            
+            U_param = ET.SubElement( xml_geom_node, "vector3" )
+            U_param.attrib[ "name" ] = "U"
+            U_param.attrib[ "value" ] = "{:.4} {:.4} {:.4}".format( 
+                    U[0], U[1], U[2] )
+            
+            V_param = ET.SubElement( xml_geom_node, "vector3" )
+            V_param.attrib[ "name" ] = "V"
+            V_param.attrib[ "value" ] = "{:.4} {:.4} {:.4}".format( 
+                    V[0], V[1], V[2] )
+            
+            xml_surf_node = ET.SubElement( xml_scene, "surface" )
+            xml_surf_node.attrib[ "type" ] = "DiffuseEmitter"
+            xml_surf_node.attrib[ "name" ] = "emitter_" + lamp.name
+
+            radiance_param = ET.SubElement( xml_surf_node, "color" )
+            radiance_param.attrib[ "name"  ] = "radiance"
+            radiance_param.attrib[ "value" ] = "{:.4} {:.4} {:.4}".format( 
+                    color[0], color[1], color[2] )
+
         pass
 
 
@@ -226,8 +266,7 @@ class Exporter:
 
         lights = [ o for o in objects if o.type == 'LAMP' ]
         for light in lights:
-            xml_light = ET.SubElement( xml_scene, "light" )
-            self.translateLight( light, xml_light )
+            self.translateLight( light, xml_scene )
 
         text  = minidom.parseString( ET.tostring( xml_root ) ).toprettyxml()
 
