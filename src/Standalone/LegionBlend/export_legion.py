@@ -10,6 +10,30 @@ import struct
 import array 
 import mathutils
 
+
+class NodeTree:
+    class Node:
+        def __init__( self, blender_node ):
+            self.blender_node = node
+            self.inputs  = []
+            self.outputs = []
+    def __init__( self, outfile, blender_node_tree ):
+        outfile.write( "Node tree '{}':\n".format( blender_node_tree.name ) )
+        for node in blender_node_tree.nodes:
+            outfile.write( "\tnode: {}\n".format( node ) )
+            if node.type == 'OUTPUT_MATERIAL':
+                self.root_node = node
+            for link in blender_node_tree.links:
+                if link.from_node == node:
+                    outfile.write( "\t\t{}->{}: {}\n".format( link.from_socket.name, link.to_socket.name, link.to_node ) )
+                if link.to_node == node:
+                    outfile.write( "\t\t{}<-{}: {}\n".format( link.to_socket.name, link.from_socket.name, link.from_node ) )
+                    
+            
+
+        outfile.write( "**** root node: {}\n".format( self.root_node ) )
+            
+
 class Exporter:
 
     def __init__( self, context, filepath ):
@@ -152,6 +176,8 @@ class Exporter:
         alphav_param.attrib[ "name" ] = "alpha_v"
         alphav_param.attrib[ "value" ] = "{:.4}".format( 
                 material.specular_slope )
+        
+        NodeTree( self.xml_file, blender_node.node_tree )
 
 
     def translateLight( self, blender_node, xml_scene ):
