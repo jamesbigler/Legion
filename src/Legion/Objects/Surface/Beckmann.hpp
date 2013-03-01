@@ -20,8 +20,8 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-#ifndef LEGION_OBJECTS_SURFACE_LAMBERTIAN_HPP_
-#define LEGION_OBJECTS_SURFACE_LAMBERTIAN_HPP_
+#ifndef LEGION_OBJECTS_SURFACE_BECKMANN_HPP_
+#define LEGION_OBJECTS_SURFACE_BECKMANN_HPP_
 
 #include <Legion/Objects/Surface/ISurface.hpp>
 
@@ -31,13 +31,13 @@ namespace legion
 class VariableContainer;
 class ITexture;
 
-class Lambertian : public ISurface
+class Beckmann : public ISurface
 {
 public:
     static ISurface* create( Context* context, const Parameters& params );
 
-    Lambertian( Context* context );
-    ~Lambertian();
+    Beckmann( Context* context );
+    ~Beckmann();
     
     void setReflectance( const ITexture* reflectance );
     
@@ -55,4 +55,4 @@ private:
 
 }
 
-#endif // LEGION_OBJECTS_SURFACE_LAMBERTIAN_HPP_
+#endif // LEGION_OBJECTS_SURFACE_BECKMANN_HPP_

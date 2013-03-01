@@ -17,13 +17,14 @@ CUDA_COMPILE_PTX( ptx_files
     Objects/Geometry/CUDA/TriMesh.cu
     Objects/Light/CUDA/Light.cu
     Objects/Renderer/CUDA/ProgressiveRenderer.cu
+    Objects/Surface/CUDA/Beckmann.cu
     Objects/Surface/CUDA/Dielectric.cu
     Objects/Surface/CUDA/DiffuseEmitter.cu
     Objects/Surface/CUDA/Lambertian.cu
     Objects/Surface/CUDA/Surface.cu
     Objects/Surface/CUDA/Ward.cu
-    Objects/Texture/CUDA/Texture.cu
     Objects/Texture/CUDA/PerlinTexture.cu
+    Objects/Texture/CUDA/Texture.cu
     )
 
 configure_file( "${CMAKE_CURRENT_SOURCE_DIR}/Core/config.hpp.in"
@@ -99,6 +100,8 @@ add_library( legion SHARED
     Objects/Renderer/IRenderer.hpp
     Objects/Renderer/ProgressiveRenderer.cpp
     Objects/Renderer/ProgressiveRenderer.hpp
+    Objects/Surface/Beckmann.cpp
+    Objects/Surface/Beckmann.hpp
     Objects/Surface/Dielectric.cpp
     Objects/Surface/Dielectric.hpp
     Objects/Surface/DiffuseEmitter.cpp

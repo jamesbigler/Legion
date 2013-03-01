@@ -1,0 +1,47 @@
+<legion_scene name="beckmann">
+
+    <renderer type="ProgressiveRenderer" samples_per_pixel="32" />
+
+    <display type="ImageFileDisplay">
+        <string name="filename" value="beckmann.exr" />
+    </display>
+
+	<camera  type="ThinLens"> </camera>
+
+    <scene>
+        <texture type="ConstantTexture" name="white_tex">
+            <color name="value" value="1.0 1.0 1.0" />
+        </texture>
+
+        <surface type="Lambertian" name="lambertian">
+            <texture name="reflectance" value="white_tex"/>
+        </surface>
+
+        <surface type="DiffuseEmitter" name="emitter">
+            <color name="radiance" value="8 8 5" />
+        </surface>
+
+        <surface type="Beckmann" name="beckmann">
+            <color name="absorption" value = "0.85 0.95 0.90" />
+        </surface>
+
+        <geometry type="Sphere" surface="beckmann">
+            <vector3 name="center" value="0.0 0.0 -4.0" />
+            <float name="radius" value="1.0" />
+        </geometry>
+
+        <geometry type="Parallelogram" surface="emitter">
+            <vector3 name="anchor" value="4.0 4.0 -5.5" /> 
+            <vector3 name="U" value="0.0  0.0 -2.0" />
+            <vector3 name="V" value="2.0 0.0 0.0" /> 
+        </geometry>
+
+        <geometry type="Parallelogram" surface="lambertian">
+            <vector3 name="anchor" value="-10.0 -1.0 6.0" /> 
+            <vector3 name="U" value="20.0 0.0 0.0" /> 
+            <vector3 name="V" value="0.0  0.0 -20.0" />
+        </geometry>
+    </scene>
+
+</legion_scene>
+            <!--<color name="radiance" value="0.265 0.404 0.461" /> -->
