@@ -1,43 +1,58 @@
 <?xml version="1.0" ?>
 <legion_scene name="monkey">
-	<camera camera_to_world="0.6858805418014526 -0.31737011671066284 0.6548618674278259 7.481131553649902  0.7276337742805481 0.31246861815452576 -0.6106656193733215 -6.437470436096191  -0.010816780850291252 0.8953432440757751 0.4452453553676605 5.705502510070801  0.0 0.0 0.0 1.0" type="ThinLens">
-		<float name="focal_distance" value="1.0"/>
-		<vector4 name="view_plane" value="-0.4571428511967066 0.4571428511967066 -0.25714285579435076 0.25714285579435076"/>
-		<float name="aperture_radius" value="0.0"/>
-	</camera>
-	<renderer resolution="960 540" samples_per_pixel="1024" type="ProgressiveRenderer"/>
-	<display type="ImageFileDisplay">
-		<string name="filename" value="blender.exr"/>
-	</display>
-	<scene>
-        <texture type="ConstantTexture" name="white_tex">
-            <color name="value" value="1.0 1.0 1.0" />
+    <camera camera_to_world="0.6858805418014526 -0.31737011671066284 0.6548618674278259 7.481131553649902  0.7276337742805481 0.31246861815452576 -0.6106656193733215 -6.437470436096191  -0.010816780850291252 0.8953432440757751 0.4452453553676605 5.705502510070801  0.0 0.0 0.0 1.0" type="ThinLens">
+        <float name="focal_distance" value="1.0"/>
+        <vector4 name="view_plane" value="-0.4571428511967066 0.4571428511967066 -0.25714285579435076 0.25714285579435076"/>
+        <float name="aperture_radius" value="0.0"/>
+    </camera>
+    <renderer resolution="960 540" samples_per_pixel="256" type="ProgressiveRenderer"/>
+    <display type="ImageFileDisplay">
+        <string name="filename" value="monkey.exr"/>
+    </display>
+    <scene>
+        <texture type="ImageTexture" name="grid_tex">
+            <string name="filename" value="../src/Standalone/data/grid1.exr" />
         </texture>
 
         <surface type="Lambertian" name="lambertian">
-            <texture name="reflectance" value="white_tex"/>
+            <texture name="reflectance" value="grid_tex"/>
         </surface>
 
-		<surface name="monkey_material" type="Ward">
-			<color name="diffuse_reflectance" value="0.64 0.64 0.64"/>
-			<color name="specular_reflectance" value="0.5 0.5 0.5"/>
-			<float name="alpha_u" value="0.1"/>
-			<float name="alpha_v" value="0.1"/>
-		</surface>
+        <surface name="monkey_material" type="Ward">
+            <color name="diffuse_reflectance" value="0.64 0.64 0.64"/>
+            <color name="specular_reflectance" value="0.5 0.5 0.5"/>
+            <float name="alpha_u" value="0.1"/>
+            <float name="alpha_v" value="0.1"/>
+        </surface>
 
-		<geometry name="Suzanne" surface="monkey_material" type="TriMesh">
-			<string name="datafile" value="Suzanne.lmesh"/>
-		</geometry>
-		<geometry name="Plane" surface="lambertian" type="TriMesh">
-			<string name="datafile" value="Plane.lmesh"/>
-		</geometry>
-		<geometry name="Lamp" surface="emitter_Lamp" type="Parallelogram">
-			<vector3 name="anchor" value="5.138 0.2502 5.355"/>
-			<vector3 name="U" value="-0.5817 1.91 -0.1104"/>
-			<vector3 name="V" value="-1.542 -0.3998 1.209"/>
-		</geometry>
-		<surface name="emitter_Lamp" type="DiffuseEmitter">
-			<color name="radiance" value="10.0 9.82 8.148"/>
-		</surface>
-	</scene>
+        <geometry name="Suzanne" surface="monkey_material" type="TriMesh">
+            <string name="datafile" value="Suzanne.lmesh"/>
+        </geometry>
+
+        <geometry type="Parallelogram" surface="lambertian">
+            <vector3 name="anchor" value="-10.0 16.0 0.0" /> 
+            <vector3 name="U" value="20.0 0.0 0.0" /> 
+            <vector3 name="V" value="0.0  -20.0 0" />
+        </geometry>
+
+        <!--
+        <geometry name="Plane" surface="lambertian" type="TriMesh">
+            <string name="datafile" value="Plane.lmesh"/>
+        </geometry>
+        -->
+
+        <geometry name="Lamp" surface="emitter_Lamp" type="Parallelogram">
+            <vector3 name="anchor" value="5.138 0.2502 5.355"/>
+            <vector3 name="U" value="-0.5817 1.91 -0.1104"/>
+            <vector3 name="V" value="-1.542 -0.3998 1.209"/>
+        </geometry>
+
+        <surface name="emitter_Lamp" type="DiffuseEmitter">
+            <color name="radiance" value="10.0 9.82 8.148"/>
+        </surface>
+        
+        <environment type="ConstantEnvironment">
+            <color name="radiance" value="0.53 0.81 0.92" />
+        </environment>
+    </scene>
 </legion_scene>
