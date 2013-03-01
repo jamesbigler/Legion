@@ -226,11 +226,12 @@ public:
         const float  D = m_distribution.D( N, H );
         const float  G = m_distribution.G( N, H, sample.w_in, w_out );
         const float  F = m_fresnel.F( cos_theta );
-        const float3 f = m_reflectance*( D*G*F/( 4.0f*cos_theta ) );
+        const float3 f = m_reflectance*( D*G*F / ( 4.0f*cos_theta ) );
+        const float  pdf = m_distribution.pdf( N, H ) / ( 4.0f *cos_theta );
 
         sample.is_singular = false;
-        sample.pdf         = m_distribution.pdf( N, H );
-        sample.f_over_pdf  = f / sample.pdf; 
+        sample.pdf         = pdf; 
+        sample.f_over_pdf  = f / pdf; 
 
         return sample;
     }
@@ -257,7 +258,7 @@ public:
         const float  G = m_distribution.G( N, H, w_in, w_out );
         const float  F = m_fresnel.F( cos_theta );
         const float3 f = m_reflectance*( D*G*F/( 4.0f*cos_theta ) );
-        const float  pdf = m_distribution.pdf( N, H );
+        const float  pdf = m_distribution.pdf( N, H )/( 4.0*cos_theta );
 
         return make_float4( f, pdf ); 
     }

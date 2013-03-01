@@ -18,19 +18,22 @@
             <texture name="reflectance" value="grid_tex"/>
         </surface>
 
-        <surface name="monkey_material" type="Ward">
+        <surface name="monkey_material1" type="Ward">
             <color name="diffuse_reflectance" value="0.64 0.64 0.64"/>
             <color name="specular_reflectance" value="0.5 0.5 0.5"/>
             <float name="alpha_u" value="0.1"/>
             <float name="alpha_v" value="0.1"/>
         </surface>
+        
+        <surface name="monkey_material2" type="Beckmann">
+        </surface>
 
-        <geometry name="Suzanne" surface="monkey_material" type="TriMesh">
+        <geometry name="Suzanne" surface="monkey_material2" type="TriMesh">
             <string name="datafile" value="Suzanne.lmesh"/>
         </geometry>
 
         <geometry type="Parallelogram" surface="lambertian">
-            <vector3 name="anchor" value="-10.0 16.0 0.0" /> 
+            <vector3 name="anchor" value="-10.0 10.0 0.0" /> 
             <vector3 name="U" value="20.0 0.0 0.0" /> 
             <vector3 name="V" value="0.0  -20.0 0" />
         </geometry>

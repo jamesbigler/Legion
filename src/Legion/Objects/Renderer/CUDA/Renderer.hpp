@@ -46,7 +46,7 @@ float3 radiance( uint64 sobol_index, float3 origin, float3 direction, unsigned l
     float3 attenuation = make_float3( 1.0f );
     optix::Ray ray = legion::makePrimaryRay( origin, direction );
     
-    for( unsigned i = 0u; i < 2; ++i ) 
+    for( unsigned i = 0u; i < 3; ++i ) 
     {
         prd.done     = true;
         prd.radiance = make_float3( 0.0f );
