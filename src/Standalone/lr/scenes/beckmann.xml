@@ -1,6 +1,6 @@
 <legion_scene name="beckmann">
 
-    <renderer type="ProgressiveRenderer" samples_per_pixel="32" />
+    <renderer type="ProgressiveRenderer" samples_per_pixel="256" />
 
     <display type="ImageFileDisplay">
         <string name="filename" value="beckmann.exr" />

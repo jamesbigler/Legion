@@ -35,7 +35,9 @@ float3 radiance( uint64 sobol_index, float3 origin, float3 direction, unsigned l
     prd.pdf                 = 1.0f;
     prd.sobol_index         = sobol_index; 
     prd.sobol_dim           = 5u; 
-    prd.rand_seed           = legion::tea<16>( launch_dim.x*launch_index.y+launch_index.x, sample_index );
+    prd.rand_seed           = legion::tea<16>( launch_dim.x*launch_index.y +
+                                               launch_index.x, sample_index );
+    prd.depth               = 0u;
     prd.use_mis_weight      = false;
     prd.done                = true;
     prd.light_index         = light_idx;
@@ -44,7 +46,7 @@ float3 radiance( uint64 sobol_index, float3 origin, float3 direction, unsigned l
     float3 attenuation = make_float3( 1.0f );
     optix::Ray ray = legion::makePrimaryRay( origin, direction );
     
-    for( unsigned i = 0u; i < 3; ++i ) 
+    for( unsigned i = 0u; i < 2; ++i ) 
     {
         prd.done     = true;
         prd.radiance = make_float3( 0.0f );
@@ -65,6 +67,7 @@ float3 radiance( uint64 sobol_index, float3 origin, float3 direction, unsigned l
         */
         ray.direction  = prd.direction;
         ray.origin     = prd.origin;
+        ++prd.depth;
     }
 
     return radiance;

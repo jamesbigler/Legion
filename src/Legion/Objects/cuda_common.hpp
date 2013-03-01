@@ -78,6 +78,7 @@ struct RadiancePRD
     unsigned sobol_dim;
     unsigned rand_seed;
     unsigned light_index;             ///////////////////////////////
+    unsigned depth;
     short use_mis_weight;
     short done;
 };

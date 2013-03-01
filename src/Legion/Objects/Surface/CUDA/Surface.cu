@@ -62,12 +62,12 @@ void legionClosestHit()
     {
         legion::LCGRand rand( radiance_prd.rand_seed );
         const unsigned sobol_index = radiance_prd.sobol_index;
-        const float3 bsdf_seed = 
-            //make_float3( rand(), rand(), rand() );
+        const float3 bsdf_seed = radiance_prd.depth > 0 ?
+            make_float3( rand(), rand(), rand() )       :
             make_float3( 
                     legion::Sobol::gen( sobol_index, radiance_prd.sobol_dim++ ),
                     legion::Sobol::gen( sobol_index, radiance_prd.sobol_dim++ ),
-                    legion::Sobol::gen( sobol_index, radiance_prd.sobol_dim++ )
+                    rand()
                     );
         radiance_prd.rand_seed = rand.getSeed();
 

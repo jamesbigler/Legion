@@ -5,7 +5,7 @@
 		<vector4 name="view_plane" value="-0.4571428511967066 0.4571428511967066 -0.25714285579435076 0.25714285579435076"/>
 		<float name="aperture_radius" value="0.0"/>
 	</camera>
-	<renderer resolution="960 540" samples_per_pixel="32" type="ProgressiveRenderer"/>
+	<renderer resolution="960 540" samples_per_pixel="1024" type="ProgressiveRenderer"/>
 	<display type="ImageFileDisplay">
 		<string name="filename" value="blender.exr"/>
 	</display>
@@ -37,7 +37,7 @@
 			<vector3 name="V" value="-1.542 -0.3998 1.209"/>
 		</geometry>
 		<surface name="emitter_Lamp" type="DiffuseEmitter">
-			<color name="radiance" value="1.0 0.9082 0.8148"/>
+			<color name="radiance" value="10.0 9.82 8.148"/>
 		</surface>
 	</scene>
 </legion_scene>
