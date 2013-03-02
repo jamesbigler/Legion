@@ -27,8 +27,14 @@
 #include <Legion/Common/Math/CUDA/ONB.hpp>
 #include <Legion/Common/Math/CUDA/Math.hpp>
 
-rtDeclareVariable( float3, reflectance, , );
 
+/*
+rtDeclareVariable( float3, reflectance, , );
+rtDeclareVariable( float,  alpha, , );
+*/
+
+legionDeclareTexture( float4, reflectance );
+legionDeclareTexture( float,  alpha       );
 
 using namespace legion;
 
@@ -38,13 +44,13 @@ legion::BSDFSample beckmannSampleBSDF(
         float3 w_out,
         legion::LocalGeometry p )
 {
-    //float  absorption = ...
-    // float eta = ....
-    BeckmannDistribution distribution( 0.02 );
-    NopFresnel           fresnel;
+    const float4 R = legionTex( reflectance, p.texcoord, p.position );
+    const float  a = legionTex( alpha, p.texcoord, p.position );
 
+    BeckmannDistribution distribution( a );
+    NopFresnel           fresnel;
     MicrofacetSurface<BeckmannDistribution, NopFresnel> 
-        surface( reflectance, distribution, fresnel );
+        surface( make_float3( R ), distribution, fresnel );
     return surface.sample( make_float2( seed ), w_out, p );
 }
 
@@ -55,11 +61,13 @@ float4 beckmannEvaluateBSDF(
         legion::LocalGeometry p,
         float3 w_in )
 {
-    BeckmannDistribution distribution( 0.02 );
-    NopFresnel           fresnel;
+    const float4 R = legionTex( reflectance, p.texcoord, p.position );
+    const float  a = legionTex( alpha, p.texcoord, p.position );
 
+    BeckmannDistribution distribution( a );
+    NopFresnel           fresnel;
     MicrofacetSurface<BeckmannDistribution, NopFresnel> 
-        surface( reflectance, distribution, fresnel );
+        surface( make_float3( R ), distribution, fresnel );
     return surface.evaluate( w_out, p, w_in );
 }
 
@@ -67,10 +75,12 @@ float4 beckmannEvaluateBSDF(
 RT_CALLABLE_PROGRAM
 float beckmannPDF( float3 w_out, legion::LocalGeometry p, float3 w_in )
 {
-    BeckmannDistribution distribution( 0.02 );
-    NopFresnel           fresnel;
+    const float3 R = make_float3( 0.0f ); // Not used in pdf
+    const float  a = legionTex( alpha, p.texcoord, p.position );
 
+    BeckmannDistribution distribution( a );
+    NopFresnel           fresnel;
     MicrofacetSurface<BeckmannDistribution, NopFresnel> 
-        surface( reflectance, distribution, fresnel );
+        surface( R , distribution, fresnel );
     return surface.pdf( w_out, p, w_in );
 }

@@ -45,6 +45,9 @@ public:
     LDEVICE float3  sample( float2 seed         ) const;
     LDEVICE float   pdf   ( float3 N, float3 H  ) const;
     LDEVICE float   D     ( float3 N, float3 H  ) const;
+
+    /// returns [ D(), pdf() ].  Avoids recomputation
+    LDEVICE float2  DPDF  ( float3 N, float3 H  ) const;
     LDEVICE float   G     ( float3 N,
                             float3 H, 
                             float3 w_in,
@@ -97,6 +100,13 @@ LDEVICE float BeckmannDistribution::D( float3 N, float3 H ) const
     const float D = expf( -exponent ) /
                     ( legion::PI*alpha_sqr*cos_theta_sqr*cos_theta_sqr );
     return D;
+}
+
+LDEVICE float2 BeckmannDistribution::DPDF( float3 N, float3 H ) const
+{
+    const float cos_theta = optix::dot( N, H );
+    const float dee       = D( N, H );
+    return make_float2( dee, dee/cos_theta);
 }
 
 
@@ -223,11 +233,13 @@ public:
         const float3 H         = optix::normalize( sample.w_in + w_out );
         const float  cos_theta = optix::dot( sample.w_in, H );
 
-        const float  D = m_distribution.D( N, H );
+        const float2 dpdf = m_distribution.DPDF( N, H );
+
+        const float  D = dpdf.x; 
         const float  G = m_distribution.G( N, H, sample.w_in, w_out );
         const float  F = m_fresnel.F( cos_theta );
         const float3 f = m_reflectance*( D*G*F / ( 4.0f*cos_theta ) );
-        const float  pdf = m_distribution.pdf( N, H ) / ( 4.0f *cos_theta );
+        const float  pdf = dpdf.y / ( 4.0f *cos_theta );
 
         sample.is_singular = false;
         sample.pdf         = pdf; 
@@ -254,11 +266,13 @@ public:
         const float3 H         = optix::normalize( w_in + w_out );
         const float  cos_theta = optix::dot( w_in, H );
 
-        const float  D = m_distribution.D( N, H );
+        const float2 dpdf = m_distribution.DPDF( N, H );
+
+        const float  D = dpdf.x; 
         const float  G = m_distribution.G( N, H, w_in, w_out );
         const float  F = m_fresnel.F( cos_theta );
         const float3 f = m_reflectance*( D*G*F/( 4.0f*cos_theta ) );
-        const float  pdf = m_distribution.pdf( N, H )/( 4.0*cos_theta );
+        const float  pdf = dpdf.y/( 4.0*cos_theta );
 
         return make_float4( f, pdf ); 
     }

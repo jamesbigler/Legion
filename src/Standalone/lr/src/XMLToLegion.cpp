@@ -424,8 +424,12 @@ void XMLToLegion::createScene( const XMLNode* scene_node )
          geometry_node;
          geometry_node = geometry_node->next_sibling( "geometry" ) )
     {
-        const XMLAttribute* type_attr = geometry_node->first_attribute( "type" );
-        const XMLAttribute* surf_attr = geometry_node->first_attribute( "surface" );
+        const XMLAttribute* type_attr =
+            geometry_node->first_attribute( "type" );
+
+        const XMLAttribute* surf_attr =
+            geometry_node->first_attribute( "surface" );
+
         if( !surf_attr )
             throw std::runtime_error( 
                     "XMLToLegion: Geometry node missing 'surface' attribute"

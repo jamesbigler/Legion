@@ -84,7 +84,7 @@ void ConstantTexture::set( const Color&   c )
     m_val[0] = c.r();
     m_val[1] = c.g();
     m_val[2] = c.b();
-    m_val[2] = 1.0f;
+    m_val[3] = 1.0f;
 }
 
 

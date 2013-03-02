@@ -40,6 +40,7 @@ public:
     ~Beckmann();
     
     void setReflectance( const ITexture* reflectance );
+    void setAlpha      ( const ITexture* alpha);
     
     const char* name()const;
     const char* sampleBSDFFunctionName()const;
@@ -51,6 +52,7 @@ public:
 
 private:
     const ITexture* m_reflectance;
+    const ITexture* m_alpha;
 };
 
 }
