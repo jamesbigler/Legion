@@ -5,17 +5,26 @@
         <vector4 name="view_plane" value="-0.4571428511967066 0.4571428511967066 -0.25714285579435076 0.25714285579435076"/>
         <float name="aperture_radius" value="0.0"/>
     </camera>
-    <renderer resolution="960 540" samples_per_pixel="64" type="ProgressiveRenderer"/>
+    <renderer resolution="960 540" samples_per_pixel="128" type="ProgressiveRenderer"/>
     <display type="ImageFileDisplay">
         <string name="filename" value="monkey.exr"/>
     </display>
+
     <scene>
         <texture type="ConstantTexture" name="reflectance">
-            <color name="value" value="0.5 0.5 0.5" />
+            <color name="value" value="1 1 1" />
         </texture>
 
         <texture type="ConstantTexture" name="alpha">
-            <float name="value" value="0.1" />
+            <float name="value" value="0.02" />
+        </texture>
+        
+        <texture type="ConstantTexture" name="copper_eta">
+            <color name="value" value="0.2129 0.9196 1.1029" />
+        </texture>
+        
+        <texture type="ConstantTexture" name="copper_k">
+            <color name="value" value="3.9175 2.4598 2.1372" />
         </texture>
 
         <texture type="ImageTexture" name="grid_tex">
@@ -38,7 +47,14 @@
             <texture name="alpha" value="alpha"/>
         </surface>
 
-        <geometry name="Suzanne" surface="monkey_material2" type="TriMesh">
+        <surface name="monkey_material3" type="Metal">
+            <texture name="reflectance" value="reflectance"/>
+            <texture name="alpha" value="alpha"/>
+            <texture name="eta" value="copper_eta"/>
+            <texture name="k" value="copper_k"/>
+        </surface>
+
+        <geometry name="Suzanne" surface="monkey_material3" type="TriMesh">
             <string name="datafile" value="Suzanne.lmesh"/>
         </geometry>
 
@@ -65,7 +81,7 @@
         </surface>
         
         <environment type="ConstantEnvironment">
-            <color name="radiance" value="0.53 0.81 0.92" />
+            <color name="radiance" value="0.7 0.7 0.7" />
         </environment>
     </scene>
 </legion_scene>

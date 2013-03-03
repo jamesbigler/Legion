@@ -21,6 +21,7 @@ CUDA_COMPILE_PTX( ptx_files
     Objects/Surface/CUDA/Dielectric.cu
     Objects/Surface/CUDA/DiffuseEmitter.cu
     Objects/Surface/CUDA/Lambertian.cu
+    Objects/Surface/CUDA/Metal.cu
     Objects/Surface/CUDA/Surface.cu
     Objects/Surface/CUDA/Ward.cu
     Objects/Texture/CUDA/PerlinTexture.cu
@@ -109,6 +110,8 @@ add_library( legion SHARED
     Objects/Surface/ISurface.hpp
     Objects/Surface/Lambertian.cpp
     Objects/Surface/Lambertian.hpp
+    Objects/Surface/Metal.cpp
+    Objects/Surface/Metal.hpp
     Objects/Surface/Ward.cpp
     Objects/Surface/Ward.hpp
     Objects/Texture/ConstantTexture.cpp

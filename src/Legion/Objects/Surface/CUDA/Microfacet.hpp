@@ -158,31 +158,26 @@ LDEVICE inline float BeckmannDistribution::smithG1(
 class ConductorFresnel
 {
 public:
-    LDEVICE ConductorFresnel( float eta, float k )
+    LDEVICE ConductorFresnel( float3 eta, float3 k )
         : m_eta( eta ),
           m_k( k )
     {}
 
-    LDEVICE float F( float cos_theta )
+    LDEVICE float3 F( float cos_theta )
     {
-        float t  = ( m_eta*m_eta + m_k*m_k ) * cos_theta*cos_theta;
-        float rs = ( t - 2.0f*m_eta*cos_theta + 1.0f ) /
-                   ( t + 2.0f*m_eta*cos_theta + 1.0f );
-        float rp = ( t - 2.0f*m_eta*cos_theta + cos_theta*cos_theta ) /
-                   ( t + 2.0f*m_eta*cos_theta + cos_theta*cos_theta );
-        return  0.5f*( rs + rp );
+        return FresnelConductor( cos_theta, m_eta, m_k );
     }
 
 private:
-    float m_eta;
-    float m_k;
+    float3 m_eta;
+    float3 m_k;
 };
 
 
 class NopFresnel
 {
 public:
-    LDEVICE float F( float cos_theta ) { return 1.0f; }
+    LDEVICE float3 F( float cos_theta ) { return make_float3( 1.0f ); }
 };
 
 
@@ -237,14 +232,13 @@ public:
 
         const float  D = dpdf.x; 
         const float  G = m_distribution.G( N, H, sample.w_in, w_out );
-        const float  F = m_fresnel.F( cos_theta );
-        const float3 f = m_reflectance*( D*G*F / ( 4.0f*cos_theta ) );
+        const float3 F = m_fresnel.F( cos_theta );
+        const float3 f = m_reflectance*F*( D*G / ( 4.0f*cos_theta ) );
         const float  pdf = dpdf.y / ( 4.0f *cos_theta );
 
         sample.is_singular = false;
         sample.pdf         = pdf; 
         sample.f_over_pdf  = f / pdf; 
-
         return sample;
     }
 
@@ -270,8 +264,8 @@ public:
 
         const float  D = dpdf.x; 
         const float  G = m_distribution.G( N, H, w_in, w_out );
-        const float  F = m_fresnel.F( cos_theta );
-        const float3 f = m_reflectance*( D*G*F/( 4.0f*cos_theta ) );
+        const float3 F = m_fresnel.F( cos_theta );
+        const float3 f = m_reflectance*F*( D*G/( 4.0f*cos_theta ) );
         const float  pdf = dpdf.y/( 4.0*cos_theta );
 
         return make_float4( f, pdf ); 

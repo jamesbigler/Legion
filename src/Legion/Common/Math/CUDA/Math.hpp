@@ -148,6 +148,7 @@ namespace legion
                             Y / ( X + Y + Z ) );
     }
 
+
     LDEVICE inline float3 reinhardToneOperator( float3 c )
     {
         const float3 Yxy         = rgb2Yxy( c );
@@ -157,6 +158,7 @@ namespace legion
 
         return Yxy2rgb( mapped_Yxy );
     }
+
     
     LDEVICE inline float3 gammaCorrect( float3 c, float gamma )
     {
@@ -164,6 +166,49 @@ namespace legion
         return make_float3( powf( c.x, gamma_inv ),
                             powf( c.y, gamma_inv ),
                             powf( c.z, gamma_inv ) );
+    }
+
+
+    LDEVICE float3 FresnelConductor( float cos_theta, float3 eta, float3 k )
+    {
+        float3 cos_theta_sqr = make_float3( cos_theta*cos_theta );
+        float3 t  = ( eta*eta + k*k ) * cos_theta_sqr;
+        float3 rp = ( t - 2.0f*eta*cos_theta + make_float3( 1.0f ) ) /
+                    ( t + 2.0f*eta*cos_theta + make_float3( 1.0f ) );
+
+        t = eta*eta + k*k;
+        float3 rs = ( t - 2.0f*eta*cos_theta + cos_theta_sqr ) /
+                    ( t + 2.0f*eta*cos_theta + cos_theta_sqr );
+        return  0.5f*( rs + rp );
+    }
+    
+
+    LDEVICE float FresnelConductor( float cos_theta, float eta, float k )
+    {
+        float cos_theta_sqr = cos_theta*cos_theta;
+        float t = ( eta*eta + k*k ) * cos_theta_sqr;
+        float rp = ( t - 2.0f*eta*cos_theta + 1.0f ) /
+                   ( t + 2.0f*eta*cos_theta + 1.0f );
+
+        t = ( eta*eta + k*k );
+        float rs = ( t - 2.0f*eta*cos_theta + cos_theta_sqr ) /
+                   ( t + 2.0f*eta*cos_theta + cos_theta_sqr );
+        return  0.5f*( rs + rp );
+    }
+
+
+    LDEVICE float FresnelDielectric(
+            float cos_i,
+            float cos_t,
+            float eta_i,
+            float eta_t 
+            ) 
+    {
+        float rs = ( eta_t*cos_i - eta_i*cos_t ) /
+                   ( eta_t*cos_i + eta_i*cos_t );
+        float rp = ( eta_i*cos_i - eta_t*cos_t ) /
+                   ( eta_i*cos_i + eta_t*cos_t );
+        return ( rs*rs + rp*rp )*0.5f;
     }
 }
 

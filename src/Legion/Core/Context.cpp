@@ -47,6 +47,7 @@
 #include <Legion/Objects/Surface/Dielectric.hpp>
 #include <Legion/Objects/Surface/DiffuseEmitter.hpp>
 #include <Legion/Objects/Surface/Lambertian.hpp>
+#include <Legion/Objects/Surface/Metal.hpp>
 #include <Legion/Objects/Surface/Ward.hpp>
 #include <Legion/Objects/Texture/ConstantTexture.hpp>
 #include <Legion/Objects/Texture/ImageTexture.hpp>
@@ -127,6 +128,7 @@ Context::Impl::Impl( Context* context )
     f.registerObject( "Dielectric",          &Dielectric::create          );
     f.registerObject( "DiffuseEmitter",      &DiffuseEmitter::create      );
     f.registerObject( "Lambertian",          &Lambertian::create          );
+    f.registerObject( "Metal",               &Metal::create               );
     f.registerObject( "Ward",                &Ward::create                );
     f.registerObject( "ConstantTexture",     &ConstantTexture::create     );
     f.registerObject( "ImageTexture",        &ImageTexture::create        );

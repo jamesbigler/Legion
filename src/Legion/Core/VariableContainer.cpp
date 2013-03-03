@@ -104,5 +104,8 @@ void VariableContainer::setBuffer( const std::string& name,
 void VariableContainer::setTexture( const std::string& name, 
                                     const ITexture* val )
 {
+    if( !val )
+        throw Exception( "VariableContainer::setTexture passed NULL: " +
+                name );
     m_textures.push_back( std::make_pair( name, val ) );
 }

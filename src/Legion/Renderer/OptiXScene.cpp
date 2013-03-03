@@ -348,13 +348,13 @@ void OptiXScene::sync()
     }
 
 
-    for( GeometryMap::iterator it = m_geometry.begin();
-         it != m_geometry.end();
-         ++it )
+    for( GeometryMap::iterator geom_it = m_geometry.begin();
+         geom_it != m_geometry.end();
+         ++geom_it )
     {
-        IGeometry*              geometry          = it->first; 
+        IGeometry*              geometry          = geom_it->first; 
         ISurface*               surface           = geometry->getSurface();
-        optix::GeometryInstance geometry_instance = it->second; 
+        optix::GeometryInstance geometry_instance = geom_it->second; 
 
         //optix::Geometry optix_geometry = geometry_instance->getGeometry();
         VariableContainer geom_vc( geometry_instance.get() );

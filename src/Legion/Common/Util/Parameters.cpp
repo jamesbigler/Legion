@@ -85,9 +85,19 @@ PARAMETERS_GET_IMPL( TextureParams, m_texture_params, ITexture*   );
         return already_present;                                                \
     }
 
+#define PARAMETERS_SET_PTR_IMPL( map_name, val_type )                          \
+    bool Parameters::set( const std::string& name, val_type* val )             \
+    {                                                                          \
+        if( !val )                                                             \
+            throw Exception( "NULL passed to Parameters::set: " + name );      \
+        bool already_present = map_name.count( name );                         \
+        map_name.insert( std::make_pair( name, Param<val_type*>( val ) ) );    \
+        return already_present;                                                \
+    }
+
 PARAMETERS_SET_IMPL    ( m_float_params,   float       );
 PARAMETERS_SET_IMPL    ( m_int_params,     int         );
-PARAMETERS_SET_IMPL    ( m_texture_params, ITexture*   );
+PARAMETERS_SET_PTR_IMPL( m_texture_params, ITexture    );
 PARAMETERS_SET_REF_IMPL( m_vector2_params, Vector2     );
 PARAMETERS_SET_REF_IMPL( m_vector3_params, Vector3     );
 PARAMETERS_SET_REF_IMPL( m_vector4_params, Vector4     );
