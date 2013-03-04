@@ -190,8 +190,8 @@ class Exporter:
 
             transform = blender_node.matrix_world
             anchor = mathutils.Vector( ( -lamp.size*0.5, -lamp.size*0.5, 0.0 ) )
-            U      = mathutils.Vector( (  lamp.size, 0.0, 0.0 ) )
-            V      = mathutils.Vector( (  0.0, lamp.size, 0.0 ) )
+            U      = mathutils.Vector( (  0.0, lamp.size, 0.0 ) )
+            V      = mathutils.Vector( (  lamp.size, 0.0, 0.0 ) )
             anchor = transform*anchor
             U      = transform.to_3x3()*U
             V      = transform.to_3x3()*V

@@ -138,11 +138,8 @@ float parallelogramPDF( float3 w_in, float3 shading_point )
             if( a2 >= 0.0f && a2 <= 1.0f )
             {
                 double dist   = t; 
-                double cosine = -optix::dot( n, w_in );
-                if ( cosine > 0.0f )
-                {
-                    pdf = inv_area*dist*dist / cosine;
-                }
+                double cosine = fabs( -optix::dot( n, w_in ) );
+                pdf = inv_area*dist*dist / cosine;
             }
         }
     }

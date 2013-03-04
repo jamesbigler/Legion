@@ -82,7 +82,7 @@ void legionClosestHit()
         radiance_prd.direction           = bsdf_sample.w_in;
         radiance_prd.attenuation         = bsdf_sample.f_over_pdf;
         radiance_prd.pdf                 = bsdf_sample.pdf; 
-        radiance_prd.done                = false;
+        radiance_prd.done                = bsdf_sample.pdf <= 0.0;
         radiance_prd.use_mis_weight      = !bsdf_sample.is_singular; 
     }
 

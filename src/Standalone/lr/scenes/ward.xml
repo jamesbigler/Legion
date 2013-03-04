@@ -1,10 +1,9 @@
 <legion_scene name="ward">
 
-    <renderer type="ProgressiveRenderer" samples_per_pixel="16" />
+    <renderer type="ProgressiveRenderer" samples_per_pixel="256" />
 
     <display type="ImageFileDisplay">
         <string name="filename" value="ward.exr" />
-        <string name="unused" value="poo" />
     </display>
 
     <camera type="ThinLens" camera_to_world="0.624695 -0.533930 0.569803 5.000000 0.000000 0.729704 0.683763 5.000000 -0.780869 -0.427144 0.455842 5.000000 0.000000 0.000000 -0.000000 1.000000">

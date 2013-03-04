@@ -90,14 +90,16 @@ LDEVICE float BeckmannDistribution::pdf( float3 N, float3 H ) const
 LDEVICE float BeckmannDistribution::D( float3 N, float3 H ) const
 {
     const float cos_theta     = optix::dot( N, H );
+    if( cos_theta <= 0.0 )
+      return 0.0f;
     const float cos_theta_sqr = cos_theta*cos_theta;
 
     const float t = 1.0f - cos_theta_sqr; 
     const float tan_theta_sqr = t <= 0.0f ? 0.0f : t / cos_theta_sqr;
 
     const float alpha_sqr = m_alpha*m_alpha;
-    const float exponent  = tan_theta_sqr / alpha_sqr;
-    const float D = expf( -exponent ) /
+    const float exponent  = -tan_theta_sqr / alpha_sqr;
+    const float D = expf( exponent ) /
                     ( legion::PI*alpha_sqr*cos_theta_sqr*cos_theta_sqr );
     return D;
 }
@@ -268,7 +270,7 @@ public:
         const float  D = dpdf.x; 
         const float  G = m_distribution.G( N, H, w_in, w_out );
         const float3 F = m_fresnel.F( cos_theta );
-        const float3 f = m_reflectance*F*( D*G/( 4.0f*cos_theta ) );
+        const float3 f = m_reflectance*F*( D*G/( 4.0f*optix::dot(w_in,N) ) );
         const float  pdf = dpdf.y/( 4.0*cos_theta );
 
         return make_float4( f, pdf ); 
@@ -287,7 +289,7 @@ public:
         
         const float3 H = optix::normalize( w_in + w_out );
         const float  cos_theta = optix::dot( w_in, H );
-        const float  term = 1.0f/( 4.0f*cos_theta );
+        const float  term = 1.0f/( 4.0f*fabs( cos_theta ) );
         return m_distribution.pdf( N, H )*term;
     }
 
