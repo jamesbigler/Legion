@@ -1,0 +1,78 @@
+<legion_scene name="ward">
+
+    <renderer type="ProgressiveRenderer" samples_per_pixel="16" />
+
+    <display type="ImageFileDisplay">
+        <string name="filename" value="ward.exr" />
+        <string name="unused" value="poo" />
+    </display>
+
+    <camera type="ThinLens" camera_to_world="0.624695 -0.533930 0.569803 5.000000 0.000000 0.729704 0.683763 5.000000 -0.780869 -0.427144 0.455842 5.000000 0.000000 0.000000 -0.000000 1.000000">
+        <float name="focal_distance" value="2.75"/>
+        <vector4 name="view_plane" value="-1.0 1.0 -0.75 0.75"/>
+        <float name="aperture_radius" value="0.0"/>
+    </camera>
+
+    <scene>
+        <texture type="ConstantTexture" name="white_tex">
+            <color name="value" value="1.0 1.0 1.0" />
+        </texture>
+
+        <surface type="Lambertian" name="lambertian">
+            <texture name="reflectance" value="white_tex"/>
+        </surface>
+        
+        <surface name="yellow_yogurt" type="Ward">
+            <color name="diffuse_reflectance" value="0.9 0.83 0.46"/>
+            <color name="specular_reflectance" value="1 1 1"/>
+            <float name="alpha_u" value="0.05"/>
+            <float name="alpha_v" value="0.05"/>
+        </surface>
+
+        <surface name="blue_yogurt" type="Ward">
+            <color name="diffuse_reflectance" value="0.53 0.64 0.81"/>
+            <color name="specular_reflectance" value="1 1 1"/>
+            <float name="alpha_u" value="0.05"/>
+            <float name="alpha_v" value="0.05"/>
+        </surface>
+
+        <surface name="chrome" type="Ward">
+            <color name="diffuse_reflectance" value="0 0 0"/>
+            <color name="specular_reflectance" value="1 1 1"/>
+            <float name="alpha_u" value="0.01"/>
+            <float name="alpha_v" value="0.01"/>
+        </surface>
+
+        <surface type="DiffuseEmitter" name="emitter">
+            <color name="radiance" value="4.0 4.0 4.0" />
+        </surface>
+
+        <geometry type="Sphere" surface="chrome">
+            <vector3 name="center" value="-0.25 0.0 0.0" />
+            <float name="radius" value="1.0" />
+        </geometry>
+
+        <geometry type="Sphere" surface="yellow_yogurt">
+            <vector3 name="center" value="-0.5 0.0 2.5" />
+            <float name="radius" value="1.0" />
+        </geometry>
+
+        <geometry type="Sphere" surface="blue_yogurt">
+            <vector3 name="center" value="2.0 0.0 1.5" />
+            <float name="radius" value="1.0" />
+        </geometry>
+
+        <geometry type="Parallelogram" surface="emitter">
+            <vector3 name="anchor" value="2.0 5.0 2.0" /> 
+            <vector3 name="U" value="0.0 0.0 3.0" /> 
+            <vector3 name="V" value="-3.0  0.0 0.0" />
+        </geometry>
+
+        <geometry type="Parallelogram" surface="lambertian">
+            <vector3 name="anchor" value="50.0 -1.0 50.0" /> 
+            <vector3 name="U" value="0.0 0.0 -100.0" /> 
+            <vector3 name="V" value="-100.0  0.0 0.0" />
+        </geometry>
+    </scene>
+
+</legion_scene>

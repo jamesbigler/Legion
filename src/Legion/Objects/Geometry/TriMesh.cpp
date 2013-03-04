@@ -281,7 +281,7 @@ void TriMesh::loadMeshData( const std::string& filename, TriMesh* mesh )
 {
     LLOG_INFO << "Reading mesh '" << filename << "'";
     std::ifstream in;
-    mesh->getPluginContext().openFile( filename, in );
+    mesh->getPluginContext()->openFile( filename, in );
 
     unsigned verttype, vertcount, tricount;
     in.read( reinterpret_cast<char*>( &verttype  ), sizeof( unsigned ) );

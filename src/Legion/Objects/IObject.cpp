@@ -28,7 +28,8 @@ using namespace legion;
 
 
 IObject::IObject( Context* context ) 
-    : m_plugin_context( context->getPluginContext() )
+    : m_context( context ),
+      m_plugin_context( context->getPluginContext() )
 {
 }
 
@@ -39,10 +40,15 @@ IObject::~IObject()
 }
 
 
-    
-PluginContext& IObject::getPluginContext()
+Context* IObject::getContext()
 { 
-    return m_plugin_context;
+    return m_context;
+}
+
+
+PluginContext* IObject::getPluginContext()
+{ 
+    return &m_plugin_context;
 }
 
 

@@ -24,12 +24,16 @@
 #define LEGION_OBJECTS_SURFACE_METAL_HPP_
 
 #include <Legion/Objects/Surface/ISurface.hpp>
+#include <string>
+#include <map>
 
 namespace legion
 {
 
 class VariableContainer;
 class ITexture;
+class ConstantTexture;
+class Color;
 
 class Metal : public ISurface
 {
@@ -39,6 +43,7 @@ public:
     Metal( Context* context );
     ~Metal();
     
+    void setMetalType  ( const std::string& type     );
     void setReflectance( const ITexture* reflectance );
     void setAlpha      ( const ITexture* alpha       );
     void setEta        ( const ITexture* eta         );
@@ -52,11 +57,26 @@ public:
 
     void setVariables( VariableContainer& container ) const ;
 
+
 private:
+    // TODO: Get rid of static var
+    typedef std::map<std::string, std::pair<Color, Color> > MetalLookup;
+    static MetalLookup s_metal_lookup;
+    
+    static void initializeMetalLookup();
+    static void addMetalLookup(
+            const std::string& name,
+            const Color& eta,
+            const Color& k );
+
+
     const ITexture* m_reflectance;
     const ITexture* m_alpha;
     const ITexture* m_eta;
     const ITexture* m_k;
+    
+    std::auto_ptr<ConstantTexture> m_metal_type_eta;
+    std::auto_ptr<ConstantTexture> m_metal_type_k;
 };
 
 }

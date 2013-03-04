@@ -40,7 +40,8 @@ public:
 
     virtual ~IObject();
 
-    PluginContext& getPluginContext();
+    Context*       getContext();
+    PluginContext* getPluginContext();
 
     void launchOptiX( const Index2& dimensions );
 
@@ -63,6 +64,7 @@ public:
     virtual void setVariables( VariableContainer& ) const {}
 
 private:
+    Context*       m_context;
     PluginContext& m_plugin_context;
 };
 
