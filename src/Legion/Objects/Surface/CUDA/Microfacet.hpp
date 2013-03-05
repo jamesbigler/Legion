@@ -132,7 +132,7 @@ LDEVICE inline float BeckmannDistribution::smithG1(
 
     const float v_dot_m = optix::dot( v, m );
     const float v_dot_n = optix::dot( v, N );
-    if( v_dot_m*v_dot_n <= 0.0 )
+    if( v_dot_m <= 0.0 || v_dot_n <= 0.0 )
         return 0.0;
 
     const float cos_theta     = v_dot_n; 
@@ -221,6 +221,12 @@ public:
 
         legion::BSDFSample sample;
         const float3 m = onb.inverseTransform( m_distribution.sample( seed ) );
+        if( optix::dot( w_out, m ) <= 0.0 )
+        {
+            sample.pdf = 0.0f;
+            sample.f_over_pdf = make_float3( 0.0f );
+            return sample;
+        }
 
         sample.w_in = optix::reflect( -w_out, m );
 
@@ -232,18 +238,22 @@ public:
             return sample;
         }
 
-        const float m_dot_i = optix::dot( m, sample.w_in );
-        const float n_dot_i = optix::dot( N, sample.w_in );
-        const float n_dot_m = optix::dot( N, N );
+        const float m_dot_i = fabs( optix::dot( m, sample.w_in ) );
+        const float n_dot_i = fabs( optix::dot( N, sample.w_in ) );
+        const float n_dot_m = fabs( optix::dot( N, N ) );
 
-        const float  pdf  = m_distribution.pdf( N, m );
+
+        const float4 val  = evaluate( w_out, p, sample.w_in );
+        const float  pdf  = val.w; 
+        const float3 fr   = make_float3( val );
         const float  G    = m_distribution.G( N, m, sample.w_in, w_out );
         const float3 F    = m_fresnel.F( m_dot_i );
         const float3 w    = m_reflectance*F*( G*m_dot_i / ( n_dot_i*n_dot_m ) );
 
         sample.is_singular = false;
         sample.pdf         = pdf; 
-        sample.f_over_pdf  = w; 
+        sample.f_over_pdf  = fr/pdf*optix::dot( N, w_out ); 
+        //sample.f_over_pdf  = make_float3( G ); 
         return sample;
     }
 
@@ -270,7 +280,7 @@ public:
         const float  D = dpdf.x; 
         const float  G = m_distribution.G( N, H, w_in, w_out );
         const float3 F = m_fresnel.F( cos_theta );
-        const float3 f = m_reflectance*F*( D*G/( 4.0f*optix::dot(w_in,N) ) );
+        const float3 f = m_reflectance*F*( D*G/( 4.0f*cos_in*cos_out ) );
         const float  pdf = dpdf.y/( 4.0*cos_theta );
 
         return make_float4( f, pdf ); 

@@ -1,6 +1,6 @@
 <legion_scene name="metal">
 
-    <renderer type="ProgressiveRenderer" samples_per_pixel="2048" />
+    <renderer type="ProgressiveRenderer" samples_per_pixel="128" />
 
     <display type="ImageFileDisplay">
         <string name="filename" value="metal.exr" />
