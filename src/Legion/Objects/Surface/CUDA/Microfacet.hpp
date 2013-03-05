@@ -71,7 +71,8 @@ LDEVICE float3 BeckmannDistribution::sample( float2 seed ) const
     const float tan_theta_sqr = -alpha_sqr*logf( 1.0f - seed.x );
     const float tan_theta     = sqrtf( tan_theta_sqr );
     const float cos_theta     = 1.0f / sqrtf( 1.0f + tan_theta_sqr );
-    const float sin_theta     = cos_theta * tan_theta;
+    //const float sin_theta     = maxf( cos_theta * tan_theta;
+    const float sin_theta     = sqrtf( fmax( 0.0f, 1-cos_theta*cos_theta ) );//cos_theta * tan_theta;
 
     const float phi = 2.0f * legion::PI * seed.y;
     return make_float3( cosf( phi ) * sin_theta,
@@ -138,7 +139,7 @@ LDEVICE inline float BeckmannDistribution::smithG1(
     const float cos_theta     = v_dot_n; 
     const float cos_theta_sqr = cos_theta*cos_theta;
     const float t             = 1.0f - cos_theta_sqr; 
-    const float tan_theta     = t <= 0.0f ? 0.0f : sqrtf( t / cos_theta_sqr );
+    const float tan_theta     = t <= 0.0f ? 0.0f : sqrtf( t ) / cos_theta;
 
     if( tan_theta == 0.0f )
         return 1.0f;
@@ -170,7 +171,7 @@ public:
 
     LDEVICE float3 F( float cos_theta )
     {
-        return FresnelConductor( cos_theta, m_eta, m_k );
+        return fresnelConductor( cos_theta, m_eta, m_k );
     }
 
 private:
@@ -242,18 +243,14 @@ public:
         const float n_dot_i = fabs( optix::dot( N, sample.w_in ) );
         const float n_dot_m = fabs( optix::dot( N, N ) );
 
-
-        const float4 val  = evaluate( w_out, p, sample.w_in );
-        const float  pdf  = val.w; 
-        const float3 fr   = make_float3( val );
+        const float  pdf  = m_distribution.pdf( N, m )/( 4.0f*m_dot_i );
         const float  G    = m_distribution.G( N, m, sample.w_in, w_out );
-        const float3 F    = m_fresnel.F( m_dot_i );
+        const float3 F    = make_float3( 1.0f ); //m_fresnel.F( m_dot_i );
         const float3 w    = m_reflectance*F*( G*m_dot_i / ( n_dot_i*n_dot_m ) );
 
         sample.is_singular = false;
         sample.pdf         = pdf; 
-        sample.f_over_pdf  = fr/pdf*optix::dot( N, w_out ); 
-        //sample.f_over_pdf  = make_float3( G ); 
+        sample.f_over_pdf =  w; 
         return sample;
     }
 

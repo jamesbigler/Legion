@@ -169,7 +169,7 @@ namespace legion
     }
 
 
-    LDEVICE float3 FresnelConductor( float cos_theta, float3 eta, float3 k )
+    LDEVICE float3 fresnelConductor( float cos_theta, float3 eta, float3 k )
     {
         float3 cos_theta_sqr = make_float3( cos_theta*cos_theta );
         float3 t  = ( eta*eta + k*k ) * cos_theta_sqr;
@@ -183,7 +183,7 @@ namespace legion
     }
     
 
-    LDEVICE float FresnelConductor( float cos_theta, float eta, float k )
+    LDEVICE float fresnelConductor( float cos_theta, float eta, float k )
     {
         float cos_theta_sqr = cos_theta*cos_theta;
         float t = ( eta*eta + k*k ) * cos_theta_sqr;
@@ -197,7 +197,7 @@ namespace legion
     }
 
 
-    LDEVICE float FresnelDielectric(
+    LDEVICE float fresnelDielectric(
             float cos_i,
             float cos_t,
             float eta_i,
