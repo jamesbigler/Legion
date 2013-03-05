@@ -69,10 +69,8 @@ LDEVICE float3 BeckmannDistribution::sample( float2 seed ) const
 {
     const float alpha_sqr     = m_alpha*m_alpha;
     const float tan_theta_sqr = -alpha_sqr*logf( 1.0f - seed.x );
-    const float tan_theta     = sqrtf( tan_theta_sqr );
     const float cos_theta     = 1.0f / sqrtf( 1.0f + tan_theta_sqr );
-    //const float sin_theta     = maxf( cos_theta * tan_theta;
-    const float sin_theta     = sqrtf( fmax( 0.0f, 1-cos_theta*cos_theta ) );//cos_theta * tan_theta;
+    const float sin_theta     = cos_theta*sqrtf( tan_theta_sqr );
 
     const float phi = 2.0f * legion::PI * seed.y;
     return make_float3( cosf( phi ) * sin_theta,
@@ -84,22 +82,29 @@ LDEVICE float3 BeckmannDistribution::sample( float2 seed ) const
 LDEVICE float BeckmannDistribution::pdf( float3 N, float3 H ) const
 {
     const float cos_theta = optix::dot( N, H );
-    return D( N, H )*cos_theta;
+    if( cos_theta <= 0.0 )
+      return 0.0f;
+
+    const float alpha_sqr     = m_alpha*m_alpha;
+    const float cos_theta_sqr = cos_theta*cos_theta;
+    const float tan_theta_sqr = (1.0f - cos_theta_sqr ) / cos_theta_sqr;
+    const float exponent      = -tan_theta_sqr / alpha_sqr;
+    const float D = expf( exponent ) /
+                    ( legion::PI*alpha_sqr*cos_theta_sqr*cos_theta );
+    return D;
 }
 
 
 LDEVICE float BeckmannDistribution::D( float3 N, float3 H ) const
 {
-    const float cos_theta     = optix::dot( N, H );
+    const float cos_theta = optix::dot( N, H );
     if( cos_theta <= 0.0 )
       return 0.0f;
+
+    const float alpha_sqr     = m_alpha*m_alpha;
     const float cos_theta_sqr = cos_theta*cos_theta;
-
-    const float t = 1.0f - cos_theta_sqr; 
-    const float tan_theta_sqr = t <= 0.0f ? 0.0f : t / cos_theta_sqr;
-
-    const float alpha_sqr = m_alpha*m_alpha;
-    const float exponent  = -tan_theta_sqr / alpha_sqr;
+    const float tan_theta_sqr = (1.0f - cos_theta_sqr ) / cos_theta_sqr;
+    const float exponent      = -tan_theta_sqr / alpha_sqr;
     const float D = expf( exponent ) /
                     ( legion::PI*alpha_sqr*cos_theta_sqr*cos_theta_sqr );
     return D;
@@ -133,8 +138,8 @@ LDEVICE inline float BeckmannDistribution::smithG1(
 
     const float v_dot_m = optix::dot( v, m );
     const float v_dot_n = optix::dot( v, N );
-    if( v_dot_m <= 0.0 || v_dot_n <= 0.0 )
-        return 0.0;
+    if( v_dot_m * v_dot_n <= 0.0f )
+        return 0.0f;
 
     const float cos_theta     = v_dot_n; 
     const float cos_theta_sqr = cos_theta*cos_theta;
@@ -214,38 +219,35 @@ public:
             float3 w_out,
             legion::LocalGeometry p )
     {
+        legion::BSDFSample sample;
+        sample.is_singular = true;
+        sample.pdf         = 0.0f;
+        sample.f_over_pdf  = make_float3( 0.0f );
+
+
         // Get the microfacet normal
         const float3 N = optix::faceforward( 
                 p.shading_normal, w_out, p.geometric_normal
                 );
-        const legion::ONB onb( N );
 
-        legion::BSDFSample sample;
-        const float3 m = onb.inverseTransform( m_distribution.sample( seed ) );
-        if( optix::dot( w_out, m ) <= 0.0 )
-        {
-            sample.pdf = 0.0f;
-            sample.f_over_pdf = make_float3( 0.0f );
+        if( optix::dot( w_out, N ) <= 0.0 )
             return sample;
-        }
+
+        const legion::ONB onb( N );
+        const float3 m = onb.inverseTransform( m_distribution.sample( seed ) );
 
         sample.w_in = optix::reflect( -w_out, m );
 
-        if( optix::dot( sample.w_in, p.geometric_normal ) <= 0.0f ||
-            optix::dot( sample.w_in, m                  ) <= 0.0f )
-        {
-            sample.pdf = 0.0f;
-            sample.f_over_pdf = make_float3( 0.0f );
+        const float n_dot_i = optix::dot( N, sample.w_in );
+        const float m_dot_i = optix::dot( m, sample.w_in );
+        const float pdf     = m_distribution.pdf( N, m )/( 4.0f*m_dot_i );
+        if( n_dot_i <= 0.0 || pdf <= 0.0f )
             return sample;
-        }
 
-        const float m_dot_i = fabs( optix::dot( m, sample.w_in ) );
-        const float n_dot_i = fabs( optix::dot( N, sample.w_in ) );
         const float n_dot_m = fabs( optix::dot( N, N ) );
 
-        const float  pdf  = m_distribution.pdf( N, m )/( 4.0f*m_dot_i );
         const float  G    = m_distribution.G( N, m, sample.w_in, w_out );
-        const float3 F    = make_float3( 1.0f ); //m_fresnel.F( m_dot_i );
+        const float3 F    = m_fresnel.F( m_dot_i );
         const float3 w    = m_reflectance*F*( G*m_dot_i / ( n_dot_i*n_dot_m ) );
 
         sample.is_singular = false;
