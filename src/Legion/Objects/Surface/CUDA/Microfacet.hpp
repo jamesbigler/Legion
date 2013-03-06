@@ -175,9 +175,7 @@ public:
     {}
 
     LDEVICE float3 F( float cos_theta )
-    {
-        return fresnelConductor( cos_theta, m_eta, m_k );
-    }
+    { return fresnelConductor( cos_theta, m_eta, m_k ); }
 
 private:
     float3 m_eta;
@@ -185,10 +183,26 @@ private:
 };
 
 
+class SchlickFresnel
+{
+public:
+    LDEVICE SchlickFresnel( float eta )
+        : m_eta( eta )
+    {}
+
+    LDEVICE float3 F( float cos_theta )
+    { return make_float3( fresnelSchlick( cos_theta, m_eta ) ); }
+
+private:
+    float m_eta;
+};
+
+
 class NopFresnel
 {
 public:
-    LDEVICE float3 F( float cos_theta ) { return make_float3( 1.0f ); }
+    LDEVICE float3 F( float cos_theta )
+    { return make_float3( 1.0f ); }
 };
 
 
@@ -244,7 +258,7 @@ public:
         if( n_dot_i <= 0.0 || pdf <= 0.0f )
             return sample;
 
-        const float n_dot_m = fabs( optix::dot( N, N ) );
+        const float n_dot_m = fabs( optix::dot( N, m ) );
 
         const float  G    = m_distribution.G( N, m, sample.w_in, w_out );
         const float3 F    = m_fresnel.F( m_dot_i );

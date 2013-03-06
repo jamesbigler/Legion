@@ -46,6 +46,7 @@
 #include <Legion/Objects/Surface/Beckmann.hpp>
 #include <Legion/Objects/Surface/Dielectric.hpp>
 #include <Legion/Objects/Surface/DiffuseEmitter.hpp>
+#include <Legion/Objects/Surface/Glossy.hpp>
 #include <Legion/Objects/Surface/Lambertian.hpp>
 #include <Legion/Objects/Surface/Metal.hpp>
 #include <Legion/Objects/Surface/Ward.hpp>
@@ -126,6 +127,7 @@ Context::Impl::Impl( Context* context )
     f.registerObject( "ProgressiveRenderer", &ProgressiveRenderer::create );
     f.registerObject( "Beckmann",            &Beckmann::create            );
     f.registerObject( "Dielectric",          &Dielectric::create          );
+    f.registerObject( "Glossy",              &Glossy::create              );
     f.registerObject( "DiffuseEmitter",      &DiffuseEmitter::create      );
     f.registerObject( "Lambertian",          &Lambertian::create          );
     f.registerObject( "Metal",               &Metal::create               );

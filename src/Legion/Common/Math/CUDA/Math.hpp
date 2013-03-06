@@ -210,6 +210,16 @@ namespace legion
                    ( eta_i*cos_i + eta_t*cos_t );
         return ( rs*rs + rp*rp )*0.5f;
     }
+    
+
+    LDEVICE float fresnelSchlick( float cos_i, float eta_i ) 
+    {
+        const float R   = ( 1.0f - eta_i ) / ( 1.0f + eta_i );
+        const float R0  = R*R; 
+        const float t   = (1.0 - cos_i );
+        const float t_2 = t*t;
+        return R0 + ( 1.0f - R0 )*( t_2*t_2*t ); 
+    }
 }
 
 #endif //LEGION_COMMON_MATH_MATH_HPP_

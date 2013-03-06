@@ -20,6 +20,7 @@ CUDA_COMPILE_PTX( ptx_files
     Objects/Surface/CUDA/Beckmann.cu
     Objects/Surface/CUDA/Dielectric.cu
     Objects/Surface/CUDA/DiffuseEmitter.cu
+    Objects/Surface/CUDA/Glossy.cu
     Objects/Surface/CUDA/Lambertian.cu
     Objects/Surface/CUDA/Metal.cu
     Objects/Surface/CUDA/Surface.cu
@@ -107,6 +108,8 @@ add_library( legion SHARED
     Objects/Surface/Dielectric.hpp
     Objects/Surface/DiffuseEmitter.cpp
     Objects/Surface/DiffuseEmitter.hpp
+    Objects/Surface/Glossy.cpp
+    Objects/Surface/Glossy.hpp
     Objects/Surface/ISurface.hpp
     Objects/Surface/Lambertian.cpp
     Objects/Surface/Lambertian.hpp
