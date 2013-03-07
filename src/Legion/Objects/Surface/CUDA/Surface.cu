@@ -85,11 +85,9 @@ void legionClosestHit()
         radiance_prd.done                = bsdf_sample.pdf <= 0.0;
         radiance_prd.use_mis_weight      = !bsdf_sample.is_singular; 
 
-        /*
         radiance_prd.radiance = bsdf_sample.f_over_pdf;
         radiance_prd.done = true; 
         return;
-        */
     }
 
     float3 radiance = make_float3( 0.0f );

@@ -60,9 +60,14 @@ private:
     static const unsigned SHADOW_TYPE   = 1u;
 
     void initializeOptixContext();
-    void setTextureVariables( optix::Material    mat,
+
+    template<typename OptixNode>
+    void setTextureVariables( OptixNode          node,
                               const std::string& name,
                               const ITexture*    tex );
+    void setSurfaceVariables( optix::Material    mat,
+                              const std::string& name,
+                              const ISurface*    surf );
 
     typedef std::map<IGeometry*, optix::GeometryInstance > GeometryMap;
 

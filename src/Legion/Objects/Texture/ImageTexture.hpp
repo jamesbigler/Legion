@@ -50,8 +50,9 @@ public:
     int      getTexID()const;
 
 private:
-    unsigned   m_val_dim;
-    int        m_tex_id;
+    unsigned    m_val_dim;
+    int         m_tex_id;
+    std::string m_filename;
 };
 
 

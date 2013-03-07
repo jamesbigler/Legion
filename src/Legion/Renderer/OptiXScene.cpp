@@ -434,22 +434,102 @@ void OptiXScene::initializeOptixContext()
 }
 
 
-void OptiXScene::setSurfaceVariables( optix::mat,
+void OptiXScene::setSurfaceVariables( optix::Material    mat,
                                       const std::string& name,
-                                      const ITexture*    tex )
+                                      const ISurface*    surf )
 {
-  LEGION_TODO();
+
+    {
+        optix::Program proc =  
+            m_program_mgr.get( std::string( surf->name() ) + ".ptx",
+                    surf->sampleBSDFFunctionName(),
+                    false
+                    );
+        VariableContainer vc( proc.get() );
+        surf->setVariables( vc );
+        const VariableContainer::Textures& textures = vc.getTextures();
+        for( VariableContainer::Textures::const_iterator it = textures.begin();
+             it != textures.end();
+             ++it )
+        {
+            setTextureVariables( proc, it->first, it->second );
+        }
+
+        const std::string sample_bsdf_name = name + "_sampleBSDF__";  
+        mat[ sample_bsdf_name ]->set( proc );
+    }
+
+    {
+        optix::Program proc =  
+            m_program_mgr.get( std::string( surf->name() ) + ".ptx",
+                    surf->evaluateBSDFFunctionName(),
+                    false
+                    );
+        VariableContainer vc( proc.get() );
+        surf->setVariables( vc );
+        const VariableContainer::Textures& textures = vc.getTextures();
+        for( VariableContainer::Textures::const_iterator it = textures.begin();
+             it != textures.end();
+             ++it )
+        {
+            setTextureVariables( proc, it->first, it->second );
+        }
+        
+        const std::string eval_bsdf_name = name + "_evaluateBSDF__";
+        mat[ eval_bsdf_name ]->set( proc );
+    }
+
+    {
+        optix::Program proc =  
+            m_program_mgr.get( std::string( surf->name() ) + ".ptx",
+                    surf->pdfFunctionName(),
+                    false
+                    );
+        VariableContainer vc( proc.get() );
+        surf->setVariables( vc );
+        const VariableContainer::Textures& textures = vc.getTextures();
+        for( VariableContainer::Textures::const_iterator it = textures.begin();
+             it != textures.end();
+             ++it )
+        {
+            setTextureVariables( proc, it->first, it->second );
+        }
+
+        const std::string pdf_name = name + "_PDF__";
+        mat[ pdf_name ]->set( proc );
+    }
+
+    {
+        optix::Program proc =  
+            m_program_mgr.get( std::string( surf->name() ) + ".ptx",
+                    surf->emissionFunctionName(),
+                    false
+                    );
+        VariableContainer vc( proc.get() );
+        surf->setVariables( vc );
+        const VariableContainer::Textures& textures = vc.getTextures();
+        for( VariableContainer::Textures::const_iterator it = textures.begin();
+             it != textures.end();
+             ++it )
+        {
+            setTextureVariables( proc, it->first, it->second );
+        }
+        
+        const std::string emission_name = name + "_emission__";
+        mat[ emission_name ]->set( proc );
+    }
 }
 
 
-void OptiXScene::setTextureVariables( optix::Material    mat,
+template <typename OptixNode>
+void OptiXScene::setTextureVariables( OptixNode          node,
                                       const std::string& name,
                                       const ITexture*    tex )
 {
     const ITexture::Type type = tex->getType();
     const unsigned val_dim = tex->getValueDim();
 
-    mat[ name + "_type__" ]->setUint( tex->getType() );
+    node[ name + "_type__" ]->setUint( tex->getType() );
 
     const std::string cname = name + "_const__";
     const std::string tname = name + "_texid__";
@@ -464,23 +544,23 @@ void OptiXScene::setTextureVariables( optix::Material    mat,
         {
             case 1: 
                 {
-                    mat[ cname ]->set1fv( v );
-                    mat[ pname ]->set( m_default_texture_proc1 );
-                    mat[ tname ]->setInt( -1 );
+                    node[ cname ]->set1fv( v );
+                    node[ pname ]->set( m_default_texture_proc1 );
+                    node[ tname ]->setInt( -1 );
                     break;
                 }
             case 2: 
                 {
-                    mat[ cname ]->set2fv( v );
-                    mat[ pname ]->set( m_default_texture_proc2 );
-                    mat[ tname ]->setInt( -1 );
+                    node[ cname ]->set2fv( v );
+                    node[ pname ]->set( m_default_texture_proc2 );
+                    node[ tname ]->setInt( -1 );
                     break;
                 }
             case 4:
                 {
-                    mat[ cname ]->set4fv( v );
-                    mat[ pname ]->set( m_default_texture_proc4 );
-                    mat[ tname ]->setInt( -1 );
+                    node[ cname ]->set4fv( v );
+                    node[ pname ]->set( m_default_texture_proc4 );
+                    node[ tname ]->setInt( -1 );
                     break;
                 }
             default: 
@@ -493,23 +573,23 @@ void OptiXScene::setTextureVariables( optix::Material    mat,
         {
             case 1: 
                 {
-                    mat[ cname ]->setFloat( 0.0f );
-                    mat[ pname ]->set( m_default_texture_proc1 );
-                    mat[ tname ]->setInt( tex->getTexID() );
+                    node[ cname ]->setFloat( 0.0f );
+                    node[ pname ]->set( m_default_texture_proc1 );
+                    node[ tname ]->setInt( tex->getTexID() );
                     break;
                 }
             case 2: 
                 {
-                    mat[ cname ]->setFloat( 0.0f, 0.0f );
-                    mat[ pname ]->set( m_default_texture_proc2 );
-                    mat[ tname ]->setInt( tex->getTexID() );
+                    node[ cname ]->setFloat( 0.0f, 0.0f );
+                    node[ pname ]->set( m_default_texture_proc2 );
+                    node[ tname ]->setInt( tex->getTexID() );
                     break;
                 }
             case 4:
                 {
-                    mat[ cname ]->setFloat( 0.0f, 0.0f, 0.0f, 0.0f );
-                    mat[ pname ]->set( m_default_texture_proc4 );
-                    mat[ tname ]->setInt( tex->getTexID() );
+                    node[ cname ]->setFloat( 0.0f, 0.0f, 0.0f, 0.0f );
+                    node[ pname ]->set( m_default_texture_proc4 );
+                    node[ tname ]->setInt( tex->getTexID() );
                     break;
                 }
             default: 
@@ -531,23 +611,23 @@ void OptiXScene::setTextureVariables( optix::Material    mat,
         {
             case 1: 
                 {
-                    mat[ cname ]->setFloat( 0.0f );
-                    mat[ pname ]->set( proc );
-                    mat[ tname ]->setInt( -1 );
+                    node[ cname ]->setFloat( 0.0f );
+                    node[ pname ]->set( proc );
+                    node[ tname ]->setInt( -1 );
                     break;
                 }
             case 2: 
                 {
-                    mat[ cname ]->setFloat( 0.0f, 0.0f );
-                    mat[ pname ]->set( proc );
-                    mat[ tname ]->setInt( -1 );
+                    node[ cname ]->setFloat( 0.0f, 0.0f );
+                    node[ pname ]->set( proc );
+                    node[ tname ]->setInt( -1 );
                     break;
                 }
             case 4:
                 {
-                    mat[ cname ]->setFloat( 0.0f, 0.0f, 0.0f, 0.0f );
-                    mat[ pname ]->set( proc );
-                    mat[ tname ]->setInt( -1 );
+                    node[ cname ]->setFloat( 0.0f, 0.0f, 0.0f, 0.0f );
+                    node[ pname ]->set( proc );
+                    node[ tname ]->setInt( -1 );
                     break;
                 }
             default: 
@@ -555,4 +635,3 @@ void OptiXScene::setTextureVariables( optix::Material    mat,
         };
     }
 }
-

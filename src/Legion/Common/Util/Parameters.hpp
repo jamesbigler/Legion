@@ -35,6 +35,7 @@ namespace legion
 
 
 class ITexture;
+class ISurface;
 
 
 class Parameters
@@ -61,6 +62,7 @@ public:
     
     bool get( const std::string& name, float&       val )const;
     bool get( const std::string& name, int&         val )const;
+    bool get( const std::string& name, ISurface*&   val )const;
     bool get( const std::string& name, ITexture*&   val )const;
     bool get( const std::string& name, Vector2&     val )const;
     bool get( const std::string& name, Vector3&     val )const;
@@ -71,6 +73,7 @@ public:
 
     bool set( const std::string& name, float              val );
     bool set( const std::string& name, int                val );
+    bool set( const std::string& name, ISurface*          val );
     bool set( const std::string& name, ITexture*          val );
     bool set( const std::string& name, const Vector2&     val );
     bool set( const std::string& name, const Vector3&     val );
@@ -100,6 +103,7 @@ private:
     typedef std::map<std::string, Param<Color> >       ColorParams;
     typedef std::map<std::string, Param<Matrix> >      MatrixParams;
     typedef std::map<std::string, Param<std::string> > StringParams;
+    typedef std::map<std::string, Param<ISurface*> >   SurfaceParams;
     typedef std::map<std::string, Param<ITexture*> >   TextureParams;
 
     FloatParams     m_float_params;
@@ -111,6 +115,7 @@ private:
     MatrixParams    m_matrix_params;
     StringParams    m_string_params;
     TextureParams   m_texture_params;
+    SurfaceParams   m_surface_params;
 };
 
 

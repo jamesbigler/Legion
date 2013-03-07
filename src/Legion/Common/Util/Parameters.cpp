@@ -66,6 +66,7 @@ PARAMETERS_GET_IMPL( Vector4Params, m_vector4_params, Vector4     );
 PARAMETERS_GET_IMPL( ColorParams,   m_color_params,   Color       );
 PARAMETERS_GET_IMPL( MatrixParams,  m_matrix_params,  Matrix      );
 PARAMETERS_GET_IMPL( StringParams,  m_string_params,  std::string );
+PARAMETERS_GET_IMPL( SurfaceParams, m_surface_params, ISurface*   );
 PARAMETERS_GET_IMPL( TextureParams, m_texture_params, ITexture*   );
 
 
@@ -97,6 +98,7 @@ PARAMETERS_GET_IMPL( TextureParams, m_texture_params, ITexture*   );
 
 PARAMETERS_SET_IMPL    ( m_float_params,   float       );
 PARAMETERS_SET_IMPL    ( m_int_params,     int         );
+PARAMETERS_SET_PTR_IMPL( m_surface_params, ISurface    );
 PARAMETERS_SET_PTR_IMPL( m_texture_params, ITexture    );
 PARAMETERS_SET_REF_IMPL( m_vector2_params, Vector2     );
 PARAMETERS_SET_REF_IMPL( m_vector3_params, Vector3     );
@@ -132,6 +134,9 @@ void Parameters::reportUnused( std::ostream& out )const
     std::for_each( m_string_params.begin(), m_string_params.end(), 
                    ReportUnused<StringParams::value_type>( out ) );
 
+    std::for_each( m_surface_params.begin(), m_surface_params.end(), 
+                   ReportUnused<SurfaceParams::value_type>( out ) );
+
     std::for_each( m_texture_params.begin(), m_texture_params.end(), 
                    ReportUnused<TextureParams::value_type>( out ) );
 }
@@ -147,5 +152,6 @@ void Parameters::clear()
     m_color_params.clear();
     m_matrix_params.clear();
     m_string_params.clear();
+    m_surface_params.clear();
     m_texture_params.clear();
 }

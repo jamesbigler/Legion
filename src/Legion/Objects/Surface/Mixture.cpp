@@ -22,6 +22,7 @@
 
 #include <Legion/Objects/Surface/Mixture.hpp>
 #include <Legion/Core/VariableContainer.hpp>
+#include <Legion/Common/Util/Parameters.hpp>
 
 using namespace legion;
   
@@ -29,6 +30,9 @@ using namespace legion;
 ISurface* Mixture::create( Context* context, const Parameters& params )
 {
     Mixture* mixture = new Mixture( context );
+    ISurface* s0 = params.get( "s0", static_cast<ISurface*>( 0 ) );
+    ISurface* s1 = params.get( "s1", static_cast<ISurface*>( 0 ) );
+    mixture->setSurfaces( s0, s1 );
     return mixture;
 }
 
@@ -48,6 +52,8 @@ Mixture::~Mixture()
 
 void Mixture::setSurfaces( const ISurface* s0, const ISurface* s1 )
 {
+    LEGION_ASSERT( s0 );
+    LEGION_ASSERT( s1 );
     m_s0 = s0;
     m_s1 = s1;
 }

@@ -251,6 +251,15 @@ void XMLToLegion::loadParams( const XMLNode* node )
 
             m_params.set( name, texture_value );
         }
+        else if( type == "surface" )
+        {
+            legion::ISurface* surface_value = m_surfaces[ value ];
+            if( !surface_value )
+                throw std::runtime_error( "XMLToLegion: Unknown surface"
+                                          "referenced '" + value + "'" );
+
+            m_params.set( name, surface_value );
+        }
         else
         {
             throw std::runtime_error( "Unrecognized param type: " + type );

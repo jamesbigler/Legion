@@ -49,6 +49,7 @@
 #include <Legion/Objects/Surface/Glossy.hpp>
 #include <Legion/Objects/Surface/Lambertian.hpp>
 #include <Legion/Objects/Surface/Metal.hpp>
+#include <Legion/Objects/Surface/Mixture.hpp>
 #include <Legion/Objects/Surface/Ward.hpp>
 #include <Legion/Objects/Texture/ConstantTexture.hpp>
 #include <Legion/Objects/Texture/ImageTexture.hpp>
@@ -131,6 +132,7 @@ Context::Impl::Impl( Context* context )
     f.registerObject( "DiffuseEmitter",      &DiffuseEmitter::create      );
     f.registerObject( "Lambertian",          &Lambertian::create          );
     f.registerObject( "Metal",               &Metal::create               );
+    f.registerObject( "Mixture",             &Mixture::create             );
     f.registerObject( "Ward",                &Ward::create                );
     f.registerObject( "ConstantTexture",     &ConstantTexture::create     );
     f.registerObject( "ImageTexture",        &ImageTexture::create        );

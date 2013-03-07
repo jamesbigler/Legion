@@ -56,6 +56,8 @@ ImageTexture::~ImageTexture()
     
 void ImageTexture::set( const std::string& filename )
 {
+    m_val_dim  = 4u; // TODO: support 1D textures
+    m_filename = filename;
     optix::Buffer buffer = createOptiXBuffer( 
             RT_BUFFER_INPUT,
             RT_FORMAT_FLOAT4

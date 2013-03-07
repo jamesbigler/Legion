@@ -26,6 +26,7 @@
 
 #include <Legion/Core/Context.hpp>
 #include <Legion/Core/PluginContext.hpp>
+#include <Legion/Common/Util/Noncopyable.hpp>
 #include <optixu/optixpp_namespace.h>
 
 namespace legion
@@ -33,7 +34,7 @@ namespace legion
 
 class VariableContainer;
 
-class IObject
+class IObject : public Noncopyable
 {
 public:
     IObject( Context* context );
