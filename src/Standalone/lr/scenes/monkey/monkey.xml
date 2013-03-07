@@ -14,6 +14,11 @@
         <texture type="ConstantTexture" name="reflectance">
             <color name="value" value="1 1 1" />
         </texture>
+        
+        <texture type="ConstantTexture" name="gray">
+            <color name="value" value="0.5 0.5 0.5" />
+        </texture>
+
 
         <texture type="ConstantTexture" name="alpha">
             <float name="value" value="0.02" />
@@ -36,7 +41,11 @@
         </texture>
 
         <surface type="Lambertian" name="lambertian">
-            <texture name="reflectance" value="grid_tex"/>
+            <texture name="reflectance" value="reflectance"/>
+        </surface>
+
+        <surface type="Lambertian" name="monkey_material0">
+            <texture name="reflectance" value="reflectance"/>
         </surface>
 
         <surface name="monkey_material1" type="Ward">
@@ -61,24 +70,28 @@
 
         <surface name="monkey_material4" type="Mixture">
             <surface name="s0" value="monkey_material2"/>
-            <surface name="s1" value="lambertian"/>
+            <surface name="s1" value="monkey_material0"/>
         </surface>
 
         <geometry name="Suzanne" surface="monkey_material4" type="TriMesh">
             <string name="datafile" value="Suzanne.lmesh"/>
         </geometry>
 
-        <geometry type="Parallelogram" surface="lambertian">
+        <geometry type="Parallelogram" surface="monkey_material2">
             <vector3 name="anchor" value="-10.0 10.0 0.0" /> 
             <vector3 name="U" value="20.0 0.0 0.0" /> 
             <vector3 name="V" value="0.0  -20.0 0" />
         </geometry>
 
-        <!--
+        <!-- 
         <geometry name="Plane" surface="lambertian" type="TriMesh">
             <string name="datafile" value="Plane.lmesh"/>
         </geometry>
         -->
+
+        <surface name="emitter_Lamp" type="DiffuseEmitter">
+            <color name="radiance" value="10.0 9.82 8.148"/>
+        </surface>
 
         <geometry name="Lamp" surface="emitter_Lamp" type="Parallelogram">
             <vector3 name="anchor" value="5.138 0.2502 5.355"/>
@@ -86,12 +99,9 @@
             <vector3 name="V" value="-1.542 -0.3998 1.209"/>
         </geometry>
 
-        <surface name="emitter_Lamp" type="DiffuseEmitter">
-            <color name="radiance" value="10.0 9.82 8.148"/>
-        </surface>
-        
         <environment type="ConstantEnvironment">
-            <color name="radiance" value="0.7 0.7 0.7" />
+            <color name="radiance" value="0.2 0.2 0.2" />
         </environment>
+
     </scene>
 </legion_scene>
