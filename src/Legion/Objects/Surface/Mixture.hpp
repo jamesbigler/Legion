@@ -20,39 +20,43 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-#ifndef LEGION_OBJECTS_SURFACE_LAMBERTIAN_HPP_
-#define LEGION_OBJECTS_SURFACE_LAMBERTIAN_HPP_
+/// \file ISurface.hpp
+/// Pure virtual interface for Surface Shaders
+#ifndef LEGION_OBJECTS_SURFACE_MIXTURE_HPP_
+#define LEGION_OBJECTS_SURFACE_MIXTURE_HPP_
 
 #include <Legion/Objects/Surface/ISurface.hpp>
 
 namespace legion
 {
-
+  
 class VariableContainer;
-class ITexture;
 
-class Lambertian : public ISurface
+/// Pure virtual interface for Surfaces
+class Mixture : public ISurface
 {
 public:
     static ISurface* create( Context* context, const Parameters& params );
 
-    Lambertian( Context* context );
-    ~Lambertian();
-    
-    void setReflectance( const ITexture* reflectance );
-    
+    Mixture( Context* context );
+    ~Mixture();
+
+    void setSurfaces( const ISurface* s0, const ISurface* s1 );
+
     const char* name()const;
     const char* sampleBSDFFunctionName()const;
     const char* evaluateBSDFFunctionName()const;
     const char* pdfFunctionName()const;
     const char* emissionFunctionName()const;
-
+    
     void setVariables( VariableContainer& container ) const;
 
 private:
-    const ITexture* m_reflectance;
+    const ISurface* m_s0;
+    const ISurface* m_s1;
 };
+
 
 }
 
-#endif // LEGION_OBJECTS_SURFACE_LAMBERTIAN_HPP_
+#endif // LEGION_OBJECTS_SURFACE_MIXTURE_HPP_

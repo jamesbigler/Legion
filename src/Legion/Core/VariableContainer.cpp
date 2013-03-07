@@ -105,7 +105,15 @@ void VariableContainer::setTexture( const std::string& name,
                                     const ITexture* val )
 {
     if( !val )
-        throw Exception( "VariableContainer::setTexture passed NULL: " +
-                name );
+        throw Exception( "VariableContainer::setTexture passed NULL: " + name );
     m_textures.push_back( std::make_pair( name, val ) );
+}
+
+
+void VariableContainer::setSurface( const std::string& name, 
+                                    const ISurface* val )
+{
+    if( !val )
+        throw Exception( "VariableContainer::setSurface passed NULL: " + name );
+    m_surfaces.push_back( std::make_pair( name, val ) );
 }

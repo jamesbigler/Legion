@@ -20,31 +20,71 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-/// \file ISurface.hpp
-/// Pure virtual interface for Surface Shaders
-#ifndef LEGION_OBJECTS_SURFACE_MIXTURE_SURFACE_HPP_
-#define LEGION_OBJECTS_SURFACE_MIXTURE_SURFACE_HPP_
+#include <Legion/Objects/Surface/Mixture.hpp>
+#include <Legion/Core/VariableContainer.hpp>
 
-#include <Legion/Objects/IObject.hpp>
+using namespace legion;
+  
 
-
-namespace legion
+ISurface* Mixture::create( Context* context, const Parameters& params )
 {
-
-/// Pure virtual interface for Surfaces
-class MixtureSurface: public IObject
-{
-public:
-    MixtureSurface( Context* context );
-
-    const char* name()const;
-    const char* sampleBSDFFunctionName()const;
-    const char* evaluateBSDFFunctionName()const;
-    const char* pdfFunctionName()const;
-    const char* emissionFunctionName()const;
-};
-
-
+    Mixture* mixture = new Mixture( context );
+    return mixture;
 }
 
-#endif // LEGION_OBJECTS_SURFACE_MIXTURE_SURFACE_HPP_
+
+Mixture::Mixture( Context* context )
+  : ISurface( context ),
+    m_s0( 0 ),
+    m_s1( 0 )
+{
+}
+
+
+Mixture::~Mixture()
+{
+}
+
+
+void Mixture::setSurfaces( const ISurface* s0, const ISurface* s1 )
+{
+    m_s0 = s0;
+    m_s1 = s1;
+}
+
+
+const char* Mixture::name()const
+{
+    return "Mixture";
+}
+
+
+const char* Mixture::sampleBSDFFunctionName()const
+{
+    return "mixtureSampleBSDF";
+}
+
+
+const char* Mixture::evaluateBSDFFunctionName()const
+{
+    return "mixtureEvaluateBSDF";
+}
+
+
+const char* Mixture::pdfFunctionName()const
+{
+    return "mixturePDF";
+}
+    
+
+const char* Mixture::emissionFunctionName()const
+{
+    return "nullSurfaceEmission";
+}
+
+
+void Mixture::setVariables( VariableContainer& container ) const
+{
+    container.setSurface( "surface0", m_s0 );
+    container.setSurface( "surface1", m_s1 );
+}

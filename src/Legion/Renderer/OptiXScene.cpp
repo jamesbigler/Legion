@@ -371,20 +371,15 @@ void OptiXScene::sync()
         {
             setTextureVariables( optix_material, it->first, it->second );
         }
+        
+        const VariableContainer::Surfaces& surfaces = mat_vc.getSurfaces();
+        for( VariableContainer::Surfaces::const_iterator it = surfaces.begin();
+             it != surfaces.end();
+             ++it )
+        {
+            setSurfaceVariables( optix_material, it->first, it->second );
+        }
     }
-
-    /*
-    try
-    {
-        m_output_buffer->setSize( m_resolution.x(), m_resolution.y() );
-        m_optix_context->launch( 0, m_resolution.x(), m_resolution.y() );
-        const std::string filename = "test.exr";
-        writeOpenEXR( filename, m_resolution.x(), m_resolution.y(), 4,
-                      static_cast<float*>( m_output_buffer->map() ) );
-        m_output_buffer->unmap();
-    }
-    OPTIX_CATCH_RETHROW;
-    */
 }
 
 
@@ -436,6 +431,14 @@ void OptiXScene::initializeOptixContext()
 
     }
     OPTIX_CATCH_RETHROW;
+}
+
+
+void OptiXScene::setSurfaceVariables( optix::mat,
+                                      const std::string& name,
+                                      const ITexture*    tex )
+{
+  LEGION_TODO();
 }
 
 

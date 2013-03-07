@@ -33,12 +33,15 @@ namespace legion
 
 class Matrix;
 class Color;
+class ISurface;
 class ITexture;
 
 class VariableContainer
 {
 public:
     typedef std::vector< std::pair<std::string, const ITexture*> > Textures;
+    typedef std::vector< std::pair<std::string, const ISurface*> > Surfaces;
+
     explicit VariableContainer( optix::ScopedObj* scoped );
 
     void setFloat   ( const std::string& name, const Vector2& val )const;
@@ -50,12 +53,15 @@ public:
     void setMatrix  ( const std::string& name, const Matrix& val  )const;
     void setBuffer  ( const std::string& name, optix::Buffer val  )const;
     void setTexture ( const std::string& name, const ITexture* val);
+    void setSurface ( const std::string& name, const ISurface* val);
 
     
     const Textures& getTextures()const   { return m_textures; }
+    const Surfaces& getSurfaces()const   { return m_surfaces; }
 private:
     optix::ScopedObj*  m_scoped;
     Textures           m_textures;
+    Surfaces           m_surfaces;
 };
 
 }

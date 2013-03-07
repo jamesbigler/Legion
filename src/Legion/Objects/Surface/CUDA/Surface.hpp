@@ -67,7 +67,7 @@ rtCallableProgram( float3,
 //------------------------------------------------------------------------------
 
 RT_CALLABLE_PROGRAM
-float3 nullSurfaceEmission( float3 w_in, float3 light_point, float3 light_emission )
+float3 nullSurfaceEmission( float3 w_in, float3 light_point )
 {
     return make_float3( 0.0f );
 }
@@ -86,9 +86,9 @@ legion::BSDFSample nullSurfaceSampleBSDF( float2 seed, float3 w_out, legion::Loc
 
 
 RT_CALLABLE_PROGRAM
-float3 nullSurfaceEvaluateBSDF( float3 w_out, legion::LocalGeometry p, float3 w_in )
+float4 nullSurfaceEvaluateBSDF( float3 w_out, legion::LocalGeometry p, float3 w_in )
 {
-    return make_float3( 0.0f ); 
+    return make_float4( 0.0f ); 
 }
 
 
@@ -97,5 +97,39 @@ float nullSurfacePDF( float3 w_out, legion::LocalGeometry p, float3 w_in )
 {
     return 0.0f;
 }
+
+//------------------------------------------------------------------------------
+//
+// Nested surfaces
+//
+//------------------------------------------------------------------------------
+
+#define legionDeclareSurface( name )                                           \
+    rtCallableProgram( float4,                                                 \
+                       name ## _evaluateBSDF__,                                \
+                       ( float3, legion::LocalGeometry, float3 ) );            \
+    rtCallableProgram( float,                                                  \
+                       name ## _PDF__,                                         \
+                       ( float3, legion::LocalGeometry, float3 ) );            \
+    rtCallableProgram( float3,                                                 \
+                       name ## _emission__,                                    \
+                       ( float3, legion::LocalGeometry ) );                    \
+    rtCallableProgram( legion::BSDFSample,                                     \
+                       name ## _sampleBSDF__,                                  \
+                       ( float3, float3 , legion::LocalGeometry ) );
+
+      
+#define legionEvaluateBSDF( name, w_out, p, w_in )                             \
+    name ## _evaluateBSDF__( w_out, p, w_in )
+
+#define legionPDF( name, w_out, p, w_in )                                      \
+    name ## _PDF__( w_out, p, w_in )
+
+#define legionSampleBSDF( name, seed, w_out, p )                               \
+    name ## _sampleBSDF__( seed, w_out, p )
+
+#define legionEmission( name, w_in, on_light )                                 \
+    name ## _emission__( w_in, on_light )
+
 
 #endif // LEGION_OBJECTS_SURFACE_CUDA_SURFACE_HPP_
