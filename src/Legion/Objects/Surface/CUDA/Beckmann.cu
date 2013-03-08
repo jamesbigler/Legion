@@ -44,8 +44,8 @@ legion::BSDFSample beckmannSampleBSDF(
         float3 w_out,
         legion::LocalGeometry p )
 {
-    const float4 R = legionTex( reflectance, p.texcoord, p.position );
-    const float  a = legionTex( alpha, p.texcoord, p.position );
+    const float4 R = legionTex( reflectance, p, w_out );
+    const float  a = legionTex( alpha, p, w_out );
 
     BeckmannDistribution distribution( a );
     NopFresnel           fresnel;
@@ -61,8 +61,8 @@ float4 beckmannEvaluateBSDF(
         legion::LocalGeometry p,
         float3 w_in )
 {
-    const float4 R = legionTex( reflectance, p.texcoord, p.position );
-    const float  a = legionTex( alpha, p.texcoord, p.position );
+    const float4 R = legionTex( reflectance, p, w_out );
+    const float  a = legionTex( alpha, p, w_out );
 
     BeckmannDistribution distribution( a );
     NopFresnel           fresnel;
@@ -76,7 +76,7 @@ RT_CALLABLE_PROGRAM
 float beckmannPDF( float3 w_out, legion::LocalGeometry p, float3 w_in )
 {
     const float3 R = make_float3( 0.0f ); // Not used in pdf
-    const float  a = legionTex( alpha, p.texcoord, p.position );
+    const float  a = legionTex( alpha, p, w_out );
 
     BeckmannDistribution distribution( a );
     NopFresnel           fresnel;

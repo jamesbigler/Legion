@@ -20,46 +20,45 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-/// \file ISurface.hpp
-/// Pure virtual interface for Surface Shaders
-#ifndef LEGION_OBJECTS_SURFACE_MIXTURE_HPP_
-#define LEGION_OBJECTS_SURFACE_MIXTURE_HPP_
 
-#include <Legion/Objects/Surface/ISurface.hpp>
+/// \file FresnelSchlickTexture.hpp
+/// Pure virtual interface for Texture Shaders
+
+#ifndef LEGION_OBJECTS_TEXTURE_FRESNEL_SCHLICK_TEXTURE_H_
+#define LEGION_OBJECTS_TEXTURE_FRESNEL_SCHLICK_TEXTURE_H_
+
+#include <Legion/Objects/Texture/ProceduralTexture.hpp>
+#include <Legion/Common/Math/Vector.hpp>
+#include <Legion/Core/Color.hpp>
+
 
 namespace legion
 {
-  
-class VariableContainer;
-class ITexture;
 
-/// Pure virtual interface for Surfaces
-class Mixture : public ISurface
+
+/// FresnelSchlick value textures.
+class FresnelSchlickTexture : public ProceduralTexture
 {
 public:
-    static ISurface* create( Context* context, const Parameters& params );
+    static ITexture* create( Context* context, const Parameters& params );
 
-    Mixture( Context* context );
-    ~Mixture();
+    FresnelSchlickTexture( Context* context );
+    ~FresnelSchlickTexture();
 
-    void setSurfaces( const ISurface* s0, const ISurface* s1 );
-    void setMixtureWeight( const ITexture* mixture_weight );
+    void        setEta( float eta );
+
+    Type        getType()const;
+    unsigned    getValueDim()const;
 
     const char* name()const;
-    const char* sampleBSDFFunctionName()const;
-    const char* evaluateBSDFFunctionName()const;
-    const char* pdfFunctionName()const;
-    const char* emissionFunctionName()const;
-    
-    void setVariables( VariableContainer& container ) const;
+    const char* proceduralFunctionName()const;
 
+    void setVariables( VariableContainer& ) const;
 private:
-    const ISurface* m_s0;
-    const ISurface* m_s1;
-    const ITexture* m_mixture_weight;
+    float m_eta;
 };
 
 
 }
 
-#endif // LEGION_OBJECTS_SURFACE_MIXTURE_HPP_
+#endif // LEGION_OBJECTS_TEXTURE_FRESNEL_SCHLICK_TEXTURE_H_

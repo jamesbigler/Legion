@@ -40,10 +40,10 @@ legion::BSDFSample metalSampleBSDF(
         float3 w_out,
         legion::LocalGeometry p )
 {
-    const float4 R      = legionTex( reflectance, p.texcoord, p.position );
-    const float  alpha_ = legionTex( alpha, p.texcoord, p.position );
-    const float4 eta_   = legionTex( eta  , p.texcoord, p.position );
-    const float4 k_     = legionTex( k    , p.texcoord, p.position );
+    const float4 R      = legionTex( reflectance, p, w_out );
+    const float  alpha_ = legionTex( alpha, p, w_out );
+    const float4 eta_   = legionTex( eta  , p, w_out );
+    const float4 k_     = legionTex( k    , p, w_out );
 
     BeckmannDistribution distribution( alpha_ );
     ConductorFresnel     fresnel( make_float3( eta_ ), make_float3( k_ ) );
@@ -59,10 +59,10 @@ float4 metalEvaluateBSDF(
         legion::LocalGeometry p,
         float3 w_in )
 {
-    const float4 R      = legionTex( reflectance, p.texcoord, p.position );
-    const float  alpha_ = legionTex( alpha, p.texcoord, p.position );
-    const float4 eta_   = legionTex( eta  , p.texcoord, p.position );
-    const float4 k_     = legionTex( k    , p.texcoord, p.position );
+    const float4 R      = legionTex( reflectance, p, w_out );
+    const float  alpha_ = legionTex( alpha, p, w_out );
+    const float4 eta_   = legionTex( eta  , p, w_out );
+    const float4 k_     = legionTex( k    , p, w_out );
 
     BeckmannDistribution distribution( alpha_ );
     ConductorFresnel     fresnel( make_float3( eta_ ), make_float3( k_ ) );
@@ -76,7 +76,7 @@ RT_CALLABLE_PROGRAM
 float metalPDF( float3 w_out, legion::LocalGeometry p, float3 w_in )
 {
     const float3 R = make_float3( 0.0f ); // Not used in pdf
-    const float  a = legionTex( alpha, p.texcoord, p.position );
+    const float  a = legionTex( alpha, p, w_out );
 
     BeckmannDistribution distribution( a );
     NopFresnel           fresnel;        // Not used in pdf

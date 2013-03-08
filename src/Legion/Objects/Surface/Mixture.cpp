@@ -30,9 +30,14 @@ using namespace legion;
 ISurface* Mixture::create( Context* context, const Parameters& params )
 {
     Mixture* mixture = new Mixture( context );
-    ISurface* s0 = params.get( "s0", static_cast<ISurface*>( 0 ) );
-    ISurface* s1 = params.get( "s1", static_cast<ISurface*>( 0 ) );
+    ISurface* s0  = params.get( "s0", static_cast<ISurface*>( 0 ) );
+    ISurface* s1  = params.get( "s1", static_cast<ISurface*>( 0 ) );
     mixture->setSurfaces( s0, s1 );
+
+    mixture->setMixtureWeight( 
+            params.get( "mixture_weight", static_cast<ITexture*>( 0 ) )
+            );
+
     return mixture;
 }
 
@@ -40,7 +45,8 @@ ISurface* Mixture::create( Context* context, const Parameters& params )
 Mixture::Mixture( Context* context )
   : ISurface( context ),
     m_s0( 0 ),
-    m_s1( 0 )
+    m_s1( 0 ),
+    m_mixture_weight( 0 )
 {
 }
 
@@ -56,6 +62,13 @@ void Mixture::setSurfaces( const ISurface* s0, const ISurface* s1 )
     LEGION_ASSERT( s1 );
     m_s0 = s0;
     m_s1 = s1;
+}
+
+
+void Mixture::setMixtureWeight( const ITexture* mixture_weight )
+{
+    LEGION_ASSERT( mixture_weight );
+    m_mixture_weight = mixture_weight;
 }
 
 
@@ -91,6 +104,11 @@ const char* Mixture::emissionFunctionName()const
 
 void Mixture::setVariables( VariableContainer& container ) const
 {
+    LEGION_ASSERT( m_s0             );
+    LEGION_ASSERT( m_s1             );
+    LEGION_ASSERT( m_mixture_weight );
+
     container.setSurface( "surface0", m_s0 );
     container.setSurface( "surface1", m_s1 );
+    container.setTexture( "mixture_weight", m_mixture_weight );
 }

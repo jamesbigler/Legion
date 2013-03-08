@@ -20,46 +20,17 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-/// \file ISurface.hpp
-/// Pure virtual interface for Surface Shaders
-#ifndef LEGION_OBJECTS_SURFACE_MIXTURE_HPP_
-#define LEGION_OBJECTS_SURFACE_MIXTURE_HPP_
+#include <Legion/Objects/cuda_common.hpp>
+#include <Legion/Common/Math/CUDA/Math.hpp>
 
-#include <Legion/Objects/Surface/ISurface.hpp>
+rtDeclareVariable( float, eta, , );
 
-namespace legion
-{
-  
-class VariableContainer;
-class ITexture;
-
-/// Pure virtual interface for Surfaces
-class Mixture : public ISurface
-{
-public:
-    static ISurface* create( Context* context, const Parameters& params );
-
-    Mixture( Context* context );
-    ~Mixture();
-
-    void setSurfaces( const ISurface* s0, const ISurface* s1 );
-    void setMixtureWeight( const ITexture* mixture_weight );
-
-    const char* name()const;
-    const char* sampleBSDFFunctionName()const;
-    const char* evaluateBSDFFunctionName()const;
-    const char* pdfFunctionName()const;
-    const char* emissionFunctionName()const;
-    
-    void setVariables( VariableContainer& container ) const;
-
-private:
-    const ISurface* m_s0;
-    const ISurface* m_s1;
-    const ITexture* m_mixture_weight;
-};
-
-
+RT_CALLABLE_PROGRAM
+float fresnelSchlickTextureProc( legion::LocalGeometry p, float3 w_out )
+{ 
+  /*
+    const float cos_theta = optix::dot( w_out, p.shading_normal );
+    return legion::fresnelSchlick( cos_theta, eta );
+    */
+    return 0.5f;
 }
-
-#endif // LEGION_OBJECTS_SURFACE_MIXTURE_HPP_

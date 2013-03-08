@@ -53,6 +53,7 @@
 #include <Legion/Objects/Surface/Ward.hpp>
 #include <Legion/Objects/Texture/ConstantTexture.hpp>
 #include <Legion/Objects/Texture/ImageTexture.hpp>
+#include <Legion/Objects/Texture/FresnelSchlickTexture.hpp>
 #include <Legion/Objects/Texture/PerlinTexture.hpp>
 
 using namespace legion;
@@ -119,24 +120,25 @@ Context::Impl::Impl( Context* context )
 {
     Log::setStream( m_log_file );
     Factory& f = m_factory;
-    f.registerObject( "ThinLens",            &ThinLens::create            );
-    f.registerObject( "ImageFileDisplay",    &ImageFileDisplay::create    );
-    f.registerObject( "ConstantEnvironment", &ConstantEnvironment::create );
-    f.registerObject( "Sphere",              &Sphere::create              );
-    f.registerObject( "TriMesh",             &TriMesh::create             );
-    f.registerObject( "Parallelogram"      , &Parallelogram::create       );
-    f.registerObject( "ProgressiveRenderer", &ProgressiveRenderer::create );
-    f.registerObject( "Beckmann",            &Beckmann::create            );
-    f.registerObject( "Dielectric",          &Dielectric::create          );
-    f.registerObject( "Glossy",              &Glossy::create              );
-    f.registerObject( "DiffuseEmitter",      &DiffuseEmitter::create      );
-    f.registerObject( "Lambertian",          &Lambertian::create          );
-    f.registerObject( "Metal",               &Metal::create               );
-    f.registerObject( "Mixture",             &Mixture::create             );
-    f.registerObject( "Ward",                &Ward::create                );
-    f.registerObject( "ConstantTexture",     &ConstantTexture::create     );
-    f.registerObject( "ImageTexture",        &ImageTexture::create        );
-    f.registerObject( "PerlinTexture",       &PerlinTexture::create       );
+    f.registerObject( "ThinLens",              &ThinLens::create              );
+    f.registerObject( "ImageFileDisplay",      &ImageFileDisplay::create      );
+    f.registerObject( "ConstantEnvironment",   &ConstantEnvironment::create   );
+    f.registerObject( "Sphere",                &Sphere::create                );
+    f.registerObject( "TriMesh",               &TriMesh::create               );
+    f.registerObject( "Parallelogram"      ,   &Parallelogram::create         );
+    f.registerObject( "ProgressiveRenderer",   &ProgressiveRenderer::create   );
+    f.registerObject( "Beckmann",              &Beckmann::create              );
+    f.registerObject( "Dielectric",            &Dielectric::create            );
+    f.registerObject( "Glossy",                &Glossy::create                );
+    f.registerObject( "DiffuseEmitter",        &DiffuseEmitter::create        );
+    f.registerObject( "Lambertian",            &Lambertian::create            );
+    f.registerObject( "Metal",                 &Metal::create                 );
+    f.registerObject( "Mixture",               &Mixture::create               );
+    f.registerObject( "Ward",                  &Ward::create                  );
+    f.registerObject( "ConstantTexture",       &ConstantTexture::create       );
+    f.registerObject( "FresnelSchlickTexture", &FresnelSchlickTexture::create );
+    f.registerObject( "ImageTexture",          &ImageTexture::create          );
+    f.registerObject( "PerlinTexture",         &PerlinTexture::create         );
 }
 
 

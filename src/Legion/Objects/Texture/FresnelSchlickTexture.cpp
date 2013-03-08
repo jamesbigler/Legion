@@ -20,46 +20,64 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-/// \file ISurface.hpp
-/// Pure virtual interface for Surface Shaders
-#ifndef LEGION_OBJECTS_SURFACE_MIXTURE_HPP_
-#define LEGION_OBJECTS_SURFACE_MIXTURE_HPP_
 
-#include <Legion/Objects/Surface/ISurface.hpp>
+#include <Legion/Objects/Texture/FresnelSchlickTexture.hpp>
+#include <Legion/Core/VariableContainer.hpp>
+#include <Legion/Common/Util/Parameters.hpp>
 
-namespace legion
+using namespace legion;
+
+ITexture* FresnelSchlickTexture::create( Context* context, const Parameters& params )
 {
-  
-class VariableContainer;
-class ITexture;
-
-/// Pure virtual interface for Surfaces
-class Mixture : public ISurface
-{
-public:
-    static ISurface* create( Context* context, const Parameters& params );
-
-    Mixture( Context* context );
-    ~Mixture();
-
-    void setSurfaces( const ISurface* s0, const ISurface* s1 );
-    void setMixtureWeight( const ITexture* mixture_weight );
-
-    const char* name()const;
-    const char* sampleBSDFFunctionName()const;
-    const char* evaluateBSDFFunctionName()const;
-    const char* pdfFunctionName()const;
-    const char* emissionFunctionName()const;
-    
-    void setVariables( VariableContainer& container ) const;
-
-private:
-    const ISurface* m_s0;
-    const ISurface* m_s1;
-    const ITexture* m_mixture_weight;
-};
-
-
+    FresnelSchlickTexture* fresnel = new FresnelSchlickTexture( context );
+    fresnel->setEta( params.get( "eta", 1.5f ) ); 
+    return fresnel;
 }
 
-#endif // LEGION_OBJECTS_SURFACE_MIXTURE_HPP_
+
+FresnelSchlickTexture::FresnelSchlickTexture( Context* context )
+    : ProceduralTexture( context ),
+      m_eta(1.5f )
+{
+}
+
+
+FresnelSchlickTexture::~FresnelSchlickTexture()
+{
+}
+
+
+void FresnelSchlickTexture::setEta( float eta )
+{
+    m_eta = eta;
+}
+
+
+ITexture::Type FresnelSchlickTexture::getType()const
+{
+    return TYPE_PROCEDURAL;
+}
+
+
+unsigned FresnelSchlickTexture::getValueDim()const
+{
+    return 1u;
+}
+
+
+const char* FresnelSchlickTexture::name()const
+{
+   return "FresnelSchlickTexture";
+}
+
+
+const char* FresnelSchlickTexture::proceduralFunctionName()const
+{
+    return "fresnelSchlickTextureProc";
+}
+
+
+void FresnelSchlickTexture::setVariables( VariableContainer& container )const 
+{
+    container.setFloat( "eta", m_eta );
+}

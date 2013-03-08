@@ -217,15 +217,20 @@ void OptiXScene::addGeometry( IGeometry* geometry )
        
         optix::Program evaluate_bsdf = 
             m_program_mgr.get( surface_ptx,
-                               surface->evaluateBSDFFunctionName() );
+                               surface->evaluateBSDFFunctionName(),
+                               false );
         material[ "legionSurfaceEvaluateBSDF" ]->set( evaluate_bsdf );
         
         optix::Program sample_bsdf = 
-            m_program_mgr.get( surface_ptx, surface->sampleBSDFFunctionName() );
+            m_program_mgr.get( surface_ptx,
+                               surface->sampleBSDFFunctionName(),
+                               false );
         material[ "legionSurfaceSampleBSDF" ]->set( sample_bsdf );
         
         optix::Program pdf = 
-            m_program_mgr.get( surface_ptx, surface->pdfFunctionName() );
+            m_program_mgr.get( surface_ptx,
+                               surface->pdfFunctionName(),
+                               false );
         material[ "legionSurfacePDF" ]->set( pdf );
         
         const std::string emission_func_name = surface->emissionFunctionName();
@@ -361,27 +366,18 @@ void OptiXScene::sync()
         geometry->setVariables( geom_vc );
 
         optix::Material optix_material = geometry_instance->getMaterial( 0u );
-        VariableContainer mat_vc( optix_material.get() );
-        surface->setVariables( mat_vc );
 
-        const VariableContainer::Textures& textures = mat_vc.getTextures();
-        for( VariableContainer::Textures::const_iterator it = textures.begin();
-             it != textures.end();
-             ++it )
-        {
-            setTextureVariables( optix_material, it->first, it->second );
-        }
-        
-        const VariableContainer::Surfaces& surfaces = mat_vc.getSurfaces();
-        for( VariableContainer::Surfaces::const_iterator it = surfaces.begin();
-             it != surfaces.end();
-             ++it )
-        {
-            setSurfaceVariables( optix_material, it->first, it->second );
-        }
+        optix::Program eval_bsdf =
+          optix_material[ "legionSurfaceEvaluateBSDF" ]->getProgram();
+        optix::Program sample_bsdf =
+          optix_material[ "legionSurfaceSampleBSDF"   ]->getProgram();
+        optix::Program pdf =
+          optix_material[ "legionSurfacePDF"          ]->getProgram();
+        setSurfaceVariables( eval_bsdf,   surface );
+        setSurfaceVariables( sample_bsdf, surface );
+        setSurfaceVariables( pdf,         surface );
     }
 }
-
 
 void OptiXScene::initializeOptixContext()
 {
@@ -434,10 +430,38 @@ void OptiXScene::initializeOptixContext()
 }
 
 
-void OptiXScene::setSurfaceVariables( optix::Material    mat,
-                                      const std::string& name,
-                                      const ISurface*    surf )
+void OptiXScene::setSurfaceVariables(
+    optix::Program program,
+    const ISurface* surface
+    )
 {
+    VariableContainer vc( program.get() );
+    surface->setVariables( vc );
+
+    const VariableContainer::Textures& textures = vc.getTextures();
+    for( VariableContainer::Textures::const_iterator it = textures.begin();
+            it != textures.end();
+            ++it )
+    {
+        setTextureVariables( program, it->first, it->second );
+    }
+
+    const VariableContainer::Surfaces& surfaces = vc.getSurfaces();
+    for( VariableContainer::Surfaces::const_iterator it = surfaces.begin();
+            it != surfaces.end();
+            ++it )
+    {
+        setNestedSurfaceVariables( program, it->first, it->second );
+    }
+}
+
+
+void OptiXScene::setNestedSurfaceVariables( optix::Program     program,
+                                            const std::string& name,
+                                            const ISurface*    surf )
+{
+    // TODO: be smarter about nested program assignments -- only assign PDF
+    //       callableFunction to parent PDF function
 
     {
         optix::Program proc =  
@@ -456,7 +480,7 @@ void OptiXScene::setSurfaceVariables( optix::Material    mat,
         }
 
         const std::string sample_bsdf_name = name + "_sampleBSDF__";  
-        mat[ sample_bsdf_name ]->set( proc );
+        program[ sample_bsdf_name ]->set( proc );
     }
 
     {
@@ -476,7 +500,7 @@ void OptiXScene::setSurfaceVariables( optix::Material    mat,
         }
         
         const std::string eval_bsdf_name = name + "_evaluateBSDF__";
-        mat[ eval_bsdf_name ]->set( proc );
+        program[ eval_bsdf_name ]->set( proc );
     }
 
     {
@@ -496,7 +520,7 @@ void OptiXScene::setSurfaceVariables( optix::Material    mat,
         }
 
         const std::string pdf_name = name + "_PDF__";
-        mat[ pdf_name ]->set( proc );
+        program[ pdf_name ]->set( proc );
     }
 
     {
@@ -516,13 +540,12 @@ void OptiXScene::setSurfaceVariables( optix::Material    mat,
         }
         
         const std::string emission_name = name + "_emission__";
-        mat[ emission_name ]->set( proc );
+        program[ emission_name ]->set( proc );
     }
 }
 
 
-template <typename OptixNode>
-void OptiXScene::setTextureVariables( OptixNode          node,
+void OptiXScene::setTextureVariables( optix::Program     node,
                                       const std::string& name,
                                       const ITexture*    tex )
 {

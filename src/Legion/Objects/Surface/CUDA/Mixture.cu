@@ -28,10 +28,8 @@
 
 //rtDeclareVariable( float3, reflectance, , );
 
-rtCallableProgram( float,
-                   mixtureWeight,
-                   ( float3, legion::LocalGeometry ) );
 
+legionDeclareTexture( float, mixture_weight);
 legionDeclareSurface( surface0 );
 legionDeclareSurface( surface1 );
 
@@ -43,8 +41,8 @@ legion::BSDFSample mixtureSampleBSDF(
         float3 w_out,
         legion::LocalGeometry p )
 {
-//    const float p = mixtureWeight( w_out, p );
-    const float pr = 0.5f; 
+    const float pr = legionTex( mixture_weight, p, w_out );
+    //const float pr = 0.5f; 
 
     if( seed.z < pr )
     {
@@ -75,8 +73,8 @@ float4 mixtureEvaluateBSDF(
         legion::LocalGeometry p,
         float3 w_in )
 {
-//    const float p = mixtureWeight( w_out, p );
-    const float pr = 0.5f; 
+    const float pr = legionTex( mixture_weight, p, w_out );
+    //const float pr = 0.5f; 
 
     const float4 bsdf0 = legionEvaluateBSDF( surface0, w_out, p, w_in );
     const float4 bsdf1 = legionEvaluateBSDF( surface1, w_out, p, w_in );
@@ -87,8 +85,8 @@ float4 mixtureEvaluateBSDF(
 RT_CALLABLE_PROGRAM
 float mixturePDF( float3 w_out, legion::LocalGeometry p, float3 w_in )
 {
-//    const float p = mixtureWeight( w_out, p );
-    const float pr = 0.5f; 
+    const float pr = legionTex( mixture_weight, p, w_out );
+    //const float pr = 0.5f; 
     const float pdf0 = legionPDF( surface0, w_out, p, w_in );
     const float pdf1 = legionPDF( surface1, w_out, p, w_in );
     return optix::lerp( pdf0, pdf1, pr ); 
