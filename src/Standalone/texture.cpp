@@ -85,7 +85,7 @@ int main( int , char** )
         ctx.setCamera( &cam );
 
         legion::ProgressiveRenderer renderer( &ctx );
-        renderer.setSamplesPerPixel( 64 );
+        renderer.setSamplesPerPixel( 8 );
         renderer.setDisplay( &display );
         ctx.setRenderer( &renderer );
 

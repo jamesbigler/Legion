@@ -61,15 +61,18 @@ private:
 
     void initializeOptixContext();
 
-    void setSurfaceVariables( optix::Program     program,
+    template <typename OptiXNode>
+    void setSurfaceVariables( OptiXNode          node,
                               const ISurface*    surf );
 
-    void setTextureVariables( optix::Program     program,
+    template <typename OptiXNode>
+    void setTextureVariables( OptiXNode          node,
                               const std::string& name,
                               const ITexture*    tex );
 
+    template <typename OptiXNode>
     void setNestedSurfaceVariables(
-                              optix::Program     program,
+                              OptiXNode          node,
                               const std::string& name,
                               const ISurface*    surf );
 

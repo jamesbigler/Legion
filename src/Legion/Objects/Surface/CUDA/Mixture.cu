@@ -41,8 +41,8 @@ legion::BSDFSample mixtureSampleBSDF(
         float3 w_out,
         legion::LocalGeometry p )
 {
-    const float pr = legionTex( mixture_weight, p, w_out );
-    //const float pr = 0.5f; 
+    //const float pr = legionTex( mixture_weight, p.texcoord, p.position );
+    const float pr = 0.5f; 
 
     if( seed.z < pr )
     {
@@ -56,7 +56,7 @@ legion::BSDFSample mixtureSampleBSDF(
     }
     else
     {
-        const float pr_inv = 1.0f / (1.0f - pr );
+        const float pr_inv = 1.0f / ( 1.0f - pr );
         seed.z            *= pr_inv;
         legion::BSDFSample sample = legionSampleBSDF( surface1, seed, w_out, p );
         sample.pdf        *= pr_inv;
@@ -73,8 +73,8 @@ float4 mixtureEvaluateBSDF(
         legion::LocalGeometry p,
         float3 w_in )
 {
-    const float pr = legionTex( mixture_weight, p, w_out );
-    //const float pr = 0.5f; 
+    //const float pr = legionTex( mixture_weight, p.texcoord, p.position );
+    const float pr = 0.5f; 
 
     const float4 bsdf0 = legionEvaluateBSDF( surface0, w_out, p, w_in );
     const float4 bsdf1 = legionEvaluateBSDF( surface1, w_out, p, w_in );
@@ -85,8 +85,8 @@ float4 mixtureEvaluateBSDF(
 RT_CALLABLE_PROGRAM
 float mixturePDF( float3 w_out, legion::LocalGeometry p, float3 w_in )
 {
-    const float pr = legionTex( mixture_weight, p, w_out );
-    //const float pr = 0.5f; 
+    //const float pr = legionTex( mixture_weight, p.texcoord, p.position );
+    const float pr = 0.5f; 
     const float pdf0 = legionPDF( surface0, w_out, p, w_in );
     const float pdf1 = legionPDF( surface1, w_out, p, w_in );
     return optix::lerp( pdf0, pdf1, pr ); 

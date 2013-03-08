@@ -28,10 +28,9 @@ rtDeclareVariable( float3, c1, , );
 rtDeclareVariable( float,  scale, , );
 
 RT_CALLABLE_PROGRAM
-float4 perlinTextureProc( legion::LocalGeometry p, float3 )
+float4 perlinTextureProc( float2 uv, float3 p )
 { 
-    return make_float4( p.texcoord, 0.0, 1.0 );
-        make_float4(
-            ( legion::PerlinNoise::noise( scale*p.position ) + 1.0f ) * 0.5f
+    return make_float4(
+            ( legion::PerlinNoise::noise( scale*p ) + 1.0f ) * 0.5f
             );
 }

@@ -30,16 +30,16 @@
     rtDeclareVariable( unsigned, name ## _type__  , , );                       \
     rtDeclareVariable( ret_type, name ## _const__ , , );                       \
     rtDeclareVariable( int     , name ## _texid__ , , );                       \
-    rtCallableProgram( ret_type, name ## _proc__  , ( legion::LocalGeometry, float3 ) );
+    rtCallableProgram( ret_type, name ## _proc__  , ( float2, float3 ) );
 
       
-#define legionTex( name, p, w_out )                                            \
+#define legionTex( name, uv, p )                                            \
     ( name ## _type__ == 0 ? name ## _const__                       :          \
       name ## _type__ == 1 ? optix::rtTex2D<name ## _ret_type__>(              \
                                  name ## _texid__,                             \
-                                 p.texcoord.x,                                 \
-                                 p.texcoord.y )                     :          \
-                             name ## _proc__( (p), (w_out) ) )
+                                 uv.x,                                 \
+                                 uv.y )                     :          \
+                             name ## _proc__( (uv), (p) ) )
 
 
 #endif // LEGION_OBJECTS_TEXTURE_CUDA_TEXTURE_HPP_
