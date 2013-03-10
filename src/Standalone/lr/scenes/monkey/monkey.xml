@@ -5,14 +5,14 @@
         <vector4 name="view_plane" value="-0.4571428511967066 0.4571428511967066 -0.25714285579435076 0.25714285579435076"/>
         <float name="aperture_radius" value="0.0"/>
     </camera>
-    <renderer resolution="960 540" samples_per_pixel="128" type="ProgressiveRenderer"/>
+    <renderer resolution="960 540" samples_per_pixel="512" type="ProgressiveRenderer"/>
     <display type="ImageFileDisplay">
         <string name="filename" value="monkey.exr"/>
     </display>
 
     <scene>
         <texture type="ConstantTexture" name="diffuse_reflectance">
-            <color name="value" value="0.7 0.7 0.7" />
+            <color name="value" value="0.5 0.5 0.5" />
         </texture>
         <texture type="ConstantTexture" name="glossy_reflectance">
             <color name="value" value="1 1 1" />

@@ -43,25 +43,14 @@ legion::BSDFSample mixtureSampleBSDF(
 {
     const float pr = legionTex( mixture_weight, p, w_out );
 
+    // Randomly choose which surface this adjoint photon interacts with.
+    // No need to weight by mixture function if we choose proportional to
+    // mixture function.
     if( seed.z < pr )
     {
         const float pr_inv = 1.0f / pr;
         seed.z *= pr_inv;
         legion::BSDFSample sample = legionSampleBSDF( surf1, seed, w_out, p);
-        const float4 fpdf0 = legionEvaluateBSDF( surf0, w_out, p, sample.w_in );
-        const float pdf0            = fpdf0.w; 
-        const float pdf1            = sample.pdf;
-        const float pdf_combined    = optix::lerp( pdf0, pdf1, pr ); 
-
-        const float3 f_pdf0         =  pdf0 <= 0.0f ? make_float3( 0.0f ) :
-            make_float3( fpdf0 ) * 
-            ( optix::dot( sample.w_in, p.shading_normal ) / pdf0 );
-        const float3 f_pdf1         = sample.f_over_pdf;
-        const float3 f_pdf_combined = optix::lerp( f_pdf0, f_pdf1, pr ); 
-
-        sample.pdf        = pdf_combined * pr_inv; 
-        sample.f_over_pdf = f_pdf_combined * pr_inv; 
-
         return sample;
     }
     else
@@ -69,21 +58,6 @@ legion::BSDFSample mixtureSampleBSDF(
         const float pr_inv = 1.0f / ( 1.0f - pr );
         seed.z  = (seed.z - pr) * pr_inv;
         legion::BSDFSample sample  = legionSampleBSDF( surf0, seed, w_out, p );
-        const float4 fpdf1 = legionEvaluateBSDF( surf0, w_out, p, sample.w_in );
-
-        const float pdf0            = sample.pdf;
-        const float pdf1            = fpdf1.w;
-        const float pdf_combined    = optix::lerp( pdf0, pdf1, pr ); 
-        
-        const float3 f_pdf0         = sample.f_over_pdf;
-        const float3 f_pdf1         =  pdf1 <= 0.0f ? make_float3( 0.0f ) :
-            make_float3( fpdf1 ) * 
-            ( optix::dot( sample.w_in, p.shading_normal ) / pdf1 );
-        const float3 f_pdf_combined = optix::lerp( f_pdf0, f_pdf1, pr ); 
-
-        sample.pdf        = pdf_combined * pr_inv; 
-        sample.f_over_pdf = f_pdf_combined * pr_inv; 
-
         return sample;
     }
 }
