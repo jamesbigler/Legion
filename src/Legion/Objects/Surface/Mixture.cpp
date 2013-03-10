@@ -108,7 +108,7 @@ void Mixture::setVariables( VariableContainer& container ) const
     LEGION_ASSERT( m_s1             );
     LEGION_ASSERT( m_mixture_weight );
 
-    container.setSurface( "surface0", m_s0 );
-    container.setSurface( "surface1", m_s1 );
+    container.setSurface( "surf0", m_s0 );
+    container.setSurface( "surf1", m_s1 );
     container.setTexture( "mixture_weight", m_mixture_weight );
 }

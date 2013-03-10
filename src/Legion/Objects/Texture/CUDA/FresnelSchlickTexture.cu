@@ -26,11 +26,9 @@
 rtDeclareVariable( float, eta, , );
 
 RT_CALLABLE_PROGRAM
-float fresnelSchlickTextureProc( float2 uv, float3  p )
+float fresnelSchlickTextureProc( legion::LocalGeometry p, float3 w_out )
 { 
-  /*
-    const float cos_theta = optix::dot( w_out, p.shading_normal );
+    const float cos_theta = fmaxf( 0.0, optix::dot( w_out, p.shading_normal ) );
     return legion::fresnelSchlick( cos_theta, eta );
-    */
-    return 0.5f;
+    //return 0.5f;
 }

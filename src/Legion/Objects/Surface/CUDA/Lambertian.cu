@@ -55,7 +55,7 @@ legion::BSDFSample lambertianSampleBSDF(
     legion::ONB onb( normal );
     sample.w_in = onb.inverseTransform( make_float3( x, y, z ) );
 
-    const float4 R     =  legionTex( reflectance, p.texcoord, p.position );
+    const float4 R     =  legionTex( reflectance, p, w_out );
     sample.pdf         = z * legion::ONE_DIV_PI;
     sample.f_over_pdf  = make_float3( R );
     sample.is_singular = false;
@@ -73,7 +73,7 @@ float4 lambertianEvaluateBSDF(
     const float3 normal = optix::faceforward( 
             p.shading_normal, w_out, p.geometric_normal
             );
-    const float4 R      =  legionTex( reflectance, p.texcoord, p.position );
+    const float4 R      =  legionTex( reflectance, p, w_out );
     const float  cosine = fmaxf( 0.0f, optix::dot( w_in, normal ) );
     const float  pdf    = cosine * legion::ONE_DIV_PI;
     return make_float4( pdf * make_float3( R ), pdf );

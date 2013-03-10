@@ -5,83 +5,65 @@
         <vector4 name="view_plane" value="-0.4571428511967066 0.4571428511967066 -0.25714285579435076 0.25714285579435076"/>
         <float name="aperture_radius" value="0.0"/>
     </camera>
-    <renderer resolution="960 540" samples_per_pixel="64" type="ProgressiveRenderer"/>
+    <renderer resolution="960 540" samples_per_pixel="128" type="ProgressiveRenderer"/>
     <display type="ImageFileDisplay">
         <string name="filename" value="monkey.exr"/>
     </display>
 
     <scene>
-        <texture type="ConstantTexture" name="reflectance">
+        <texture type="ConstantTexture" name="diffuse_reflectance">
+            <color name="value" value="0.7 0.7 0.7" />
+        </texture>
+        <texture type="ConstantTexture" name="glossy_reflectance">
             <color name="value" value="1 1 1" />
         </texture>
         
-        <texture type="ConstantTexture" name="gray">
-            <color name="value" value="0.5 0.5 0.5" />
-        </texture>
-
         <texture type="FresnelSchlickTexture" name="fresnel">
             <float name="eta" value="1.5" />
         </texture>
-
-        <texture type="ConstantTexture" name="alpha">
-            <float name="value" value="0.02" />
-        </texture>
         
         <texture type="ConstantTexture" name="eta">
+            <float name="value" value="1.5" />
+        </texture>
+
+        <texture type="ConstantTexture" name="alpha">
             <float name="value" value="0.01" />
         </texture>
         
-        <texture type="ConstantTexture" name="copper_eta">
-            <color name="value" value="0.2129 0.9196 1.1029" />
-        </texture>
-        
-        <texture type="ConstantTexture" name="copper_k">
-            <color name="value" value="3.9175 2.4598 2.1372" />
-        </texture>
-
         <texture type="ImageTexture" name="grid_tex">
             <string name="filename" value="../src/Standalone/data/grid1.exr" />
         </texture>
 
-        <surface type="Lambertian" name="lambertian">
+        <surface type="Lambertian" name="lambertian_grid">
             <texture name="reflectance" value="grid_tex"/>
         </surface>
 
-        <surface type="Lambertian" name="monkey_material0">
-            <texture name="reflectance" value="reflectance"/>
+        <surface type="Lambertian" name="diffuse">
+            <texture name="reflectance" value="diffuse_reflectance"/>
         </surface>
 
-        <surface name="monkey_material1" type="Ward">
-            <color name="diffuse_reflectance" value="0.64 0.64 0.64"/>
-            <color name="specular_reflectance" value="0.5 0.5 0.5"/>
-            <float name="alpha_u" value="0.1"/>
-            <float name="alpha_v" value="0.1"/>
+        <surface name="glossy" type="Beckmann">
+            <texture name="reflectance" value="glossy_reflectance"/>
+            <texture name="alpha" value="alpha"/>
         </surface>
-        
-        <surface name="monkey_material2" type="Glossy">
-            <texture name="reflectance" value="reflectance"/>
+
+        <surface name="non_mix_glossy" type="Glossy">
+            <texture name="reflectance" value="glossy_reflectance"/>
             <texture name="alpha" value="alpha"/>
             <texture name="eta" value="eta"/>
         </surface>
 
-        <surface name="monkey_material3" type="Metal">
-            <texture name="reflectance" value="reflectance"/>
-            <texture name="alpha" value="alpha"/>
-            <texture name="eta" value="copper_eta"/>
-            <texture name="k" value="copper_k"/>
-        </surface>
-
-        <surface name="monkey_material4" type="Mixture">
+        <surface name="ceramic" type="Mixture">
             <texture name="mixture_weight" value="fresnel"/>
-            <surface name="s0" value="monkey_material2"/>
-            <surface name="s1" value="monkey_material0"/>
+            <surface name="s0" value="diffuse"/>
+            <surface name="s1" value="glossy"/>
         </surface>
 
-        <geometry name="Suzanne" surface="monkey_material4" type="TriMesh">
+        <geometry name="Suzanne" surface="ceramic" type="TriMesh">
             <string name="datafile" value="Suzanne.lmesh"/>
         </geometry>
 
-        <geometry type="Parallelogram" surface="lambertian">
+        <geometry type="Parallelogram" surface="lambertian_grid">
             <vector3 name="anchor" value="-10.0 10.0 0.0" /> 
             <vector3 name="U" value="20.0 0.0 0.0" /> 
             <vector3 name="V" value="0.0  -20.0 0" />
@@ -104,7 +86,7 @@
         </geometry>
 
         <environment type="ConstantEnvironment">
-            <color name="radiance" value="0.2 0.2 0.2" />
+            <color name="radiance" value="0.6 0.6 0.6" />
         </environment>
 
     </scene>
