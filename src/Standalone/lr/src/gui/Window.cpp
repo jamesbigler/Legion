@@ -43,6 +43,15 @@ Window::Window( const char* filename )
       m_filename( filename ),
       m_ctx( new legion::Context )
 {
+    const std::string scene_file = m_filename;
+    const size_t pos = scene_file.find_last_of( '/' );
+    const std::string scene_dir = pos == std::string::npos ?
+        "."                      :
+        scene_file.substr( 0, pos );
+    std::cout << "adding asset path '" << scene_dir << "'" <<std::endl;
+    m_ctx->addAssetPath( scene_dir );
+
+
     m_display_widget = new DisplayWidget();
     setCentralWidget( m_display_widget );
     setWindowTitle( tr( "lr v0.1") );
