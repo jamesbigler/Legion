@@ -159,13 +159,19 @@ IDisplay* Context::Impl::createDisplay( const char* name, const Parameters& p )
 }
 
 
-IEnvironment* Context::Impl::createEnvironment( const char* name, const Parameters& p )
+IEnvironment* Context::Impl::createEnvironment(
+        const char* name,
+        const Parameters& p
+        )
 {
     return m_factory.createEnvironment( name, p );
 }
 
 
-IGeometry* Context::Impl::createGeometry( const char* name, const Parameters& p )
+IGeometry* Context::Impl::createGeometry(
+        const char* name,
+        const Parameters& p
+        )
 {
     return m_factory.createGeometry( name, p );
 }
@@ -274,30 +280,35 @@ Context::~Context()
 
 void Context::setRenderer( IRenderer* renderer )
 {
+    LEGION_ASSERT_POINTER_PARAM( renderer );
     m_impl->setRenderer( renderer );
 }
 
 
 void Context::setCamera( ICamera* camera )
 {
+    LEGION_ASSERT_POINTER_PARAM( camera );
     m_impl->setCamera( camera );
 }
 
 
 void Context::setEnvironment( IEnvironment* environment )
 {
+    LEGION_ASSERT_POINTER_PARAM( environment );
     m_impl->setEnvironment( environment );
 }
 
 
 void Context::addGeometry( IGeometry* geometry )
 {
+    LEGION_ASSERT_POINTER_PARAM( geometry );
     m_impl->addGeometry( geometry );
 }
 
 
 void Context::addLight( ILight* light )
 {
+    LEGION_ASSERT_POINTER_PARAM( light );
     m_impl->addLight( light );
 }
 

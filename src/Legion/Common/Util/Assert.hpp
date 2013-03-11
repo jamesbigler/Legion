@@ -61,4 +61,16 @@ template<size_t> struct StaticAssertionChecker       {};
 
 }
 
+#define LEGION_ASSERT_POINTER_PARAM( p )                                       \
+    do                                                                         \
+    {                                                                          \
+        if( !(p) )                                                             \
+        {                                                                      \
+            std::stringstream ss;                                              \
+            ss << __func__ <<  " passed NULL input pointer '" << #p << "'";    \
+            throw legion::AssertionFailure( ss.str() );                        \
+        }                                                                      \
+    } while( 0 )
+    
+
 #endif // LEGION_COMMON_UTIL_ASSERT_H_
