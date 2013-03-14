@@ -12,27 +12,114 @@ import mathutils
 
 
 class NodeTree:
+
+    surfaces_seen = set([]) 
+
     class Node:
         def __init__( self, blender_node ):
-            self.blender_node = node
-            self.inputs  = []
-            self.outputs = []
-    def __init__( self, outfile, blender_node_tree ):
-        outfile.write( "Node tree '{}':\n".format( blender_node_tree.name ) )
-        for node in blender_node_tree.nodes:
-            outfile.write( "\tnode: {}\n".format( node ) )
-            if node.type == 'OUTPUT_MATERIAL':
-                self.root_node = node
-            for link in blender_node_tree.links:
-                if link.from_node == node:
-                    outfile.write( "\t\t{}->{}: {}\n".format( link.from_socket.name, link.to_socket.name, link.to_node ) )
-                if link.to_node == node:
-                    outfile.write( "\t\t{}<-{}: {}\n".format( link.to_socket.name, link.from_socket.name, link.from_node ) )
-                    
-            
+            self.blender_node = blender_node
+            self.inputs       = [] # NodeLinks  
+    
 
-        outfile.write( "**** root node: {}\n".format( self.root_node ) )
-            
+        def printNode( self, out, depth=0, print_children=True ):
+            prefix = depth*"\t"
+            out.write( "{}{}\n".format( prefix, self.blender_node ) )
+            if print_children:
+                for input_ in self.inputs:
+                    input_.printNode( out, depth+1, True )
+            else:
+                for input_ in self.inputs:
+                    out.write( "\t{}<-{}\n".format(prefix, input_.blender_node))
+                for output in self.outputs:
+                    out.write( "\t{}->{}\n".format(prefix, output.blender_node))
+
+
+        def toXML( self, name, xml_scene ):
+            if self.blender_node.type[0:3] == 'TEX':
+                xml_node = ET.SubElement( xml_scene, "texture" )
+            else: 
+                xml_node = ET.SubElement( xml_scene, "surface" )
+            xml_node.attrib[ "name" ] = name 
+            for socket, input_link, input_node in self.inputs:
+                if input_link:
+                    if input_node.blender_node.type[0:3] == 'TEX':
+                        input_xml_node = ET.SubElement( xml_node, "texture" )
+                    else:
+                        input_xml_node = ET.SubElement( xml_node, "surface" )
+                    input_xml_node.attrib[ "name" ] = socket.name 
+                    input_xml_node.attrib[ "type" ] = "linked" 
+                else:
+                    input_xml_node = ET.SubElement( xml_node, "texture" )
+                    input_xml_node.attrib[ "name" ] = socket.name 
+                    input_xml_node.attrib[ "type" ] = "default" 
+
+
+
+
+
+    @staticmethod
+    def translate( name, blender_node_tree, xml_scene ):
+        if name in NodeTree.surfaces_seen:
+            return
+        else:
+            NodeTree.surfaces_seen.add( name )
+            node_tree = NodeTree( name, blender_node_tree )
+            node_tree.toXML( xml_scene )
+    
+
+    def toXML(  self, xml_scene ):
+        ET.Comment( "Creating surface for '{}'".format( self.name ) )
+        
+        for socket, input_link, input_node in self.root_node.inputs:
+            if not input_link:
+                continue
+            print( "Checking input node {}".format(input_link.to_socket.name) )
+            if input_link.to_socket.name == "Surface":
+                print( "Found surface root node{}".format( input_node ) )
+                surface_root_node = input_node
+
+        for node in [ n for n in self.nodes if n != self.root_node ]:
+            name = self.name
+            if node != surface_root_node:
+                name +=  "." + node.blender_node.name
+
+            node.toXML( name, xml_scene )
+        
+
+    def __init__( self, name, blender_node_tree):
+        self.node_lookup = {} 
+        self.name = name
+
+        # Create all nodes and place in lookup dict
+        for blender_node in blender_node_tree.nodes:
+            node = NodeTree.Node( blender_node )
+            self.node_lookup[ blender_node ] = node
+            if blender_node.type == 'OUTPUT_MATERIAL':
+                self.root_node = node 
+
+        #Gather all inputs for this node
+        for blender_node in blender_node_tree.nodes:
+            node = self.node_lookup[ blender_node ]
+            for socket in blender_node.inputs:
+                if socket.is_linked:
+                    for link in blender_node_tree.links:
+                        if link.to_socket == socket:
+                            from_node = self.node_lookup[ link.from_node ]
+                            node.inputs.append( ( socket, link, from_node ) )
+                else:
+                    print( "HHHHHHHHHEEEEEEEEEERRRRRRRRRRRR" )
+                    node.inputs.append( ( socket, None, None) )
+
+
+        self.nodes = self.node_lookup.values()
+
+
+
+#------------------------------------------------------------------------------
+#
+#
+#
+#------------------------------------------------------------------------------
 
 class Exporter:
 
@@ -40,13 +127,10 @@ class Exporter:
         self.context = context
         self.filepath = filepath
         self.dirpath  = os.path.dirname( filepath )
-        self.xml_file = open( self.filepath, "w" )
 
-    ############################################################################
     #
     # Helper functions 
     #
-    ############################################################################
     def createRenderer( self, xml_node ):
         scene   = self.context.scene
         render  = scene.render
@@ -101,7 +185,6 @@ class Exporter:
                 camera.cycles.aperture_size )
 
 
-
     def translateMesh( self, blender_node, xml_node ):
         xml_node.attrib[ "type" ] = "TriMesh" 
         xml_node.attrib[ "name" ] = blender_node.name
@@ -148,8 +231,9 @@ class Exporter:
             array.array( 'I', triangles ).tofile( df )
     
 
-    def translateSurface( self, blender_node, xml_node ):
+    def translateSurface( self, blender_node, xml_scene ):
         material = blender_node
+        '''
         xml_node.attrib[ "type" ] = "Ward" 
         xml_node.attrib[ "name" ] = blender_node.name
 
@@ -176,8 +260,9 @@ class Exporter:
         alphav_param.attrib[ "name" ] = "alpha_v"
         alphav_param.attrib[ "value" ] = "{:.4}".format( 
                 material.specular_slope )
+        '''
         
-        NodeTree( self.xml_file, blender_node.node_tree )
+        NodeTree.translate( material.name, material.node_tree, xml_scene )
 
 
     def translateLight( self, blender_node, xml_scene ):
@@ -247,11 +332,9 @@ class Exporter:
         return list( textures )
 
 
-    ############################################################################
     #
     # public interface 
     #
-    ############################################################################
     def export( self ):
 
         scene   = self.context.scene
@@ -280,8 +363,7 @@ class Exporter:
         textures  = self.gatherTextures( materials, meshes )
 
         for mat in materials:
-            xml_mat = ET.SubElement( xml_scene, "surface" )
-            self.translateSurface( mat, xml_mat )
+            self.translateSurface( mat, xml_scene )
 
         for tex in textures:
             pass
@@ -296,7 +378,9 @@ class Exporter:
 
         text  = minidom.parseString( ET.tostring( xml_root ) ).toprettyxml()
 
-        self.xml_file.write( text )
+        xml_file = open( self.filepath, "w" )
+        xml_file.write( text )
+        xml_file.flush()
         
         return {'FINISHED'}
 
