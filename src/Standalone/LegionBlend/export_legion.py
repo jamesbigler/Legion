@@ -10,6 +10,18 @@ import struct
 import array 
 import mathutils
 
+if "bpy" in locals():
+    import imp
+    if "NodeTree" in locals():
+        imp.reload( NodeTree )
+from . import NodeTree
+
+'''
+class Node:
+    def __init__( self ):
+    self.blender_node = blender_node
+    self.inputs       = [] # NodeLinks  
+
 
 class NodeTree:
 
@@ -21,40 +33,30 @@ class NodeTree:
             self.inputs       = [] # NodeLinks  
     
 
-        def printNode( self, out, depth=0, print_children=True ):
-            prefix = depth*"\t"
-            out.write( "{}{}\n".format( prefix, self.blender_node ) )
-            if print_children:
-                for input_ in self.inputs:
-                    input_.printNode( out, depth+1, True )
-            else:
-                for input_ in self.inputs:
-                    out.write( "\t{}<-{}\n".format(prefix, input_.blender_node))
-                for output in self.outputs:
-                    out.write( "\t{}->{}\n".format(prefix, output.blender_node))
+        def legionPluginCategory( self ):
+            if self.blender_node.type[0:3] == 'TEX':
+                return "texture"
+            return "surface"
+        
+
+        def legionPluginType( self ):
+            return self.blender_node.type
 
 
         def toXML( self, name, xml_scene ):
-            if self.blender_node.type[0:3] == 'TEX':
-                xml_node = ET.SubElement( xml_scene, "texture" )
-            else: 
-                xml_node = ET.SubElement( xml_scene, "surface" )
+            xml_node = ET.SubElement( xml_scene, self.legionPluginCategory() )
             xml_node.attrib[ "name" ] = name 
+            xml_node.attrib[ "type" ] = self.legionPluginType() 
             for socket, input_link, input_node in self.inputs:
                 if input_link:
-                    if input_node.blender_node.type[0:3] == 'TEX':
-                        input_xml_node = ET.SubElement( xml_node, "texture" )
-                    else:
-                        input_xml_node = ET.SubElement( xml_node, "surface" )
+                    input_xml_node = ET.SubElement( xml_node,
+                            input_node.legionPluginCategory() )
                     input_xml_node.attrib[ "name" ] = socket.name 
                     input_xml_node.attrib[ "type" ] = "linked" 
                 else:
                     input_xml_node = ET.SubElement( xml_node, "texture" )
                     input_xml_node.attrib[ "name" ] = socket.name 
                     input_xml_node.attrib[ "type" ] = "default" 
-
-
-
 
 
     @staticmethod
@@ -113,6 +115,7 @@ class NodeTree:
 
         self.nodes = self.node_lookup.values()
 
+'''
 
 
 #------------------------------------------------------------------------------
@@ -262,6 +265,7 @@ class Exporter:
                 material.specular_slope )
         '''
         
+        print( NodeTree.__dir__() )
         NodeTree.translate( material.name, material.node_tree, xml_scene )
 
 

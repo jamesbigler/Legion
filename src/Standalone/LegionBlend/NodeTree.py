@@ -1,0 +1,159 @@
+
+import bpy
+import xml.etree.ElementTree as ET
+
+'''
+class Node:
+    def __init__( self, blender_node ):
+    self.blender_node = blender_node
+    self.inputs       = [] # NodeLinks  
+'''
+
+
+
+class Node:
+
+    def __init__( self, material_name, blender_node ):
+        self.blender_node = blender_node
+        self.inputs       = [] # NodeLinks  
+        self.name         = material_name+"."+blender_node.name
+
+
+    def legionPluginCategory( self ):
+        raise NotImplementedError("legionPluginCategory abstract method")
+    
+
+    def legionPluginType( self ):
+        raise NotImplementedError("legionPluginType abstract method")
+        return self.blender_node.type
+
+
+    def mapInput( self, idx, name ):
+        raise NotImplementedError("mapInputs abstract method")
+
+
+    def toXML( self, xml_scene, already_visited ):
+        if self in already_visited:
+            return
+        already_visited.add( self )
+
+        xml_node = ET.SubElement( xml_scene, self.legionPluginCategory() )
+        xml_node.attrib[ "name" ] = self.name 
+        xml_node.attrib[ "type" ] = self.legionPluginType() 
+
+        for idx, (socket, input_link, input_node) in enumerate( self.inputs ):
+            mapped_input_name = self.mapInput( idx, socket.name )
+            if not mapped_input_name:
+                print( "<<<<<<<<Skipping '{}':'{}'".format( socket.name, mapped_input_name ) )
+                continue
+            if input_link:
+                input_xml_node = ET.SubElement( xml_node,
+                        input_node.legionPluginCategory() )
+                input_xml_node.attrib[ "name"  ] = mapped_input_name 
+                input_xml_node.attrib[ "value" ] = input_node.name 
+                input_node.toXML( xml_scene, already_visited )
+
+            else:
+                input_xml_node = ET.SubElement( xml_node, "texture" )
+                input_xml_node.attrib[ "name" ] = mapped_input_name 
+                input_xml_node.attrib[ "type" ] = "default" 
+
+
+class TextureNode( Node ):
+    def legionPluginCategory( self ):
+        return "texture"
+    
+
+class SurfaceNode( Node ):
+    def legionPluginCategory( self ):
+        return "surface"
+
+
+class MIX_SHADER( SurfaceNode ):
+    def legionPluginType( self ):
+        return "Mixture" 
+    
+    def mapInput( self, idx, name ):
+        return [ 'mixture_weight', 's0', 's1' ][ idx ]
+
+
+class BSDF_GLOSSY( SurfaceNode ):
+    def legionPluginType( self ):
+        return "Beckmann" 
+    
+    def mapInput( self, idx, name ):
+        return [ 'reflectance', 'alpha', '' ][ idx ]
+
+
+class BSDF_DIFFUSE( SurfaceNode ):
+    def legionPluginType( self ):
+        return "Lambertian" 
+    
+    def mapInput( self, idx, name ):
+        return [ 'reflectance', '', '' ][ idx ]
+
+
+class TEX_CHECKER( TextureNode ):
+    def legionPluginType( self ):
+        return "CheckerTexture" 
+    
+    def mapInput( self, idx, name ):
+        return [ '', 'c0', 'c1', 'scale' ][ idx ]
+
+
+class OUTPUT_MATERIAL( Node ):
+    pass
+
+
+class NodeTree:
+
+    surfaces_processed = set([]) 
+
+
+    @staticmethod
+    def alreadyProcessed( blender_node_tree ):
+        return blender_node_tree in NodeTree.surfaces_processed
+
+    
+    def __init__( self, name, blender_node_tree):
+        self.node_lookup = {} 
+        self.name = name
+        NodeTree.surfaces_processed.add( blender_node_tree )
+
+        # Create all nodes and place in lookup dict
+        for blender_node in blender_node_tree.nodes:
+            node = eval( blender_node.type + "( name, blender_node )" )
+            self.node_lookup[ blender_node ] = node
+            if blender_node.type == 'OUTPUT_MATERIAL':
+                self.root_node = node 
+
+        #Gather all inputs for this node
+        for blender_node in blender_node_tree.nodes:
+            node = self.node_lookup[ blender_node ]
+            for socket in blender_node.inputs:
+                if socket.is_linked:
+                    for link in blender_node_tree.links:
+                        if link.to_socket == socket:
+                            from_node = self.node_lookup[ link.from_node ]
+                            node.inputs.append( ( socket, link, from_node ) )
+                else:
+                    node.inputs.append( ( socket, None, None) )
+
+        self.nodes = self.node_lookup.values()
+
+
+    def toSurfaceXML(  self, xml_scene ):
+        # Find the Surface root node
+        for socket, input_link, input_node in self.root_node.inputs:
+            if input_link and input_link.to_socket.name == "Surface":
+                input_node.toXML( xml_scene, set( [] ) )
+
+
+
+def translate( material_name, material_node_tree, xml_scene ):
+
+    if NodeTree.alreadyProcessed( material_node_tree ):
+        return
+
+    node_tree = NodeTree( material_name, material_node_tree )
+    node_tree.toSurfaceXML( xml_scene )
