@@ -25,12 +25,25 @@ class Node:
 
     def legionPluginType( self ):
         raise NotImplementedError("legionPluginType abstract method")
-        return self.blender_node.type
 
 
     def mapInput( self, idx, name ):
         raise NotImplementedError("mapInputs abstract method")
 
+    
+    @staticmethod
+    def socketDefaultValue( socket ):
+        v = socket.default_value
+        if( socket.type == 'VECTOR' ):
+            return ('vector3', '{:.4} {:.4} {:.4}'.format( v[0], v[1], v[2] ) )
+        elif( socket.type == 'RGBA' ):
+            return ('color', '{:.4} {:.4} {:.4}'.format( v[0], v[1], v[2] ) )
+        elif( socket.type == 'VALUE' ):
+            return ('float', '{:.4}'.format( v ) )
+        else:
+            raise RuntimeError("Unhandled socket type {}:{}'".format(
+                socket.name, socket.type ) )
+        
 
     def toXML( self, xml_scene, already_visited ):
         if self in already_visited:
@@ -44,7 +57,6 @@ class Node:
         for idx, (socket, input_link, input_node) in enumerate( self.inputs ):
             mapped_input_name = self.mapInput( idx, socket.name )
             if not mapped_input_name:
-                print( "<<<<<<<<Skipping '{}':'{}'".format( socket.name, mapped_input_name ) )
                 continue
             if input_link:
                 input_xml_node = ET.SubElement( xml_node,
@@ -55,8 +67,10 @@ class Node:
 
             else:
                 input_xml_node = ET.SubElement( xml_node, "texture" )
-                input_xml_node.attrib[ "name" ] = mapped_input_name 
-                input_xml_node.attrib[ "type" ] = "default" 
+                type, value = Node.socketDefaultValue( socket )
+                input_xml_node.attrib[ "name"  ] = mapped_input_name 
+                input_xml_node.attrib[ "type"  ] = type
+                input_xml_node.attrib[ "value" ] = value 
 
 
 class TextureNode( Node ):
