@@ -141,7 +141,7 @@ class NodeTree:
             if blender_node.type == 'OUTPUT_MATERIAL':
                 self.root_node = node 
 
-        #Gather all inputs for this node
+        # Gather all inputs for this node
         for blender_node in blender_node_tree.nodes:
             node = self.node_lookup[ blender_node ]
             for socket in blender_node.inputs:

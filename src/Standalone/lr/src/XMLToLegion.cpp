@@ -244,7 +244,18 @@ void XMLToLegion::loadParams( const XMLNode* node )
         }
         else if( type == "texture" )
         {
-            legion::ITexture* texture_value = m_textures[ value ];
+            legion::ITexture* texture_value = 0; 
+            const std::string type = pnode->first_attribute( "type" );
+            if( type )
+            {
+                // We have an inline declared constant texture
+                if( type == 
+                texture_value = 
+            }
+            else
+            {
+                texture_value = m_textures[ value ];
+            }
             if( !texture_value )
                 throw std::runtime_error( "XMLToLegion: Unknown texture "
                                           "referenced '" + value + "'" );
