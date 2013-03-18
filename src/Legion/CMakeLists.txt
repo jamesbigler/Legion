@@ -26,6 +26,7 @@ CUDA_COMPILE_PTX( ptx_files
     Objects/Surface/CUDA/Mixture.cu
     Objects/Surface/CUDA/Surface.cu
     Objects/Surface/CUDA/Ward.cu
+    Objects/Texture/CUDA/CheckerTexture.cu
     Objects/Texture/CUDA/FresnelSchlickTexture.cu
     Objects/Texture/CUDA/PerlinTexture.cu
     Objects/Texture/CUDA/Texture.cu
@@ -121,6 +122,8 @@ add_library( legion SHARED
     Objects/Surface/Mixture.hpp
     Objects/Surface/Ward.cpp
     Objects/Surface/Ward.hpp
+    Objects/Texture/CheckerTexture.cpp
+    Objects/Texture/CheckerTexture.hpp
     Objects/Texture/ConstantTexture.cpp
     Objects/Texture/ConstantTexture.hpp
     Objects/Texture/FresnelSchlickTexture.cpp

@@ -13,10 +13,10 @@ class Node:
 
 class Node:
 
-    def __init__( self, material_name, blender_node ):
+    def __init__( self, material_name, blender_node, is_material_root=False ):
         self.blender_node = blender_node
         self.inputs       = [] # NodeLinks  
-        self.name         = material_name+"."+blender_node.name
+        self.name         = material_name if is_material_root else material_name+"."+blender_node.name
 
 
     def legionPluginCategory( self ):
@@ -45,13 +45,22 @@ class Node:
                 socket.name, socket.type ) )
         
 
-    def toXML( self, xml_scene, already_visited ):
+    def toXML( self, xml_scene, already_visited, override_name = "" ):
         if self in already_visited:
             return
         already_visited.add( self )
 
+        # Depth first so that child surfaces are created first in XML
+        for idx, (socket, input_link, input_node) in enumerate( self.inputs ):
+            mapped_input_name = self.mapInput( idx, socket.name )
+            if not mapped_input_name:
+                continue
+            if input_link:
+                input_node.toXML( xml_scene, already_visited )
+
+        # Now that we have created referenced surfaces ...
         xml_node = ET.SubElement( xml_scene, self.legionPluginCategory() )
-        xml_node.attrib[ "name" ] = self.name 
+        xml_node.attrib[ "name" ] = override_name if override_name else self.name 
         xml_node.attrib[ "type" ] = self.legionPluginType() 
 
         for idx, (socket, input_link, input_node) in enumerate( self.inputs ):
@@ -63,7 +72,6 @@ class Node:
                         input_node.legionPluginCategory() )
                 input_xml_node.attrib[ "name"  ] = mapped_input_name 
                 input_xml_node.attrib[ "value" ] = input_node.name 
-                input_node.toXML( xml_scene, already_visited )
 
             else:
                 input_xml_node = ET.SubElement( xml_node, "texture" )
@@ -160,7 +168,7 @@ class NodeTree:
         # Find the Surface root node
         for socket, input_link, input_node in self.root_node.inputs:
             if input_link and input_link.to_socket.name == "Surface":
-                input_node.toXML( xml_scene, set( [] ) )
+                input_node.toXML( xml_scene, set( [] ), self.name )
 
 
 

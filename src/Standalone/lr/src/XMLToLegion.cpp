@@ -245,12 +245,24 @@ void XMLToLegion::loadParams( const XMLNode* node )
         else if( type == "texture" )
         {
             legion::ITexture* texture_value = 0; 
-            const std::string type = pnode->first_attribute( "type" );
-            if( type )
+            const XMLAttribute* type_attr = pnode->first_attribute( "type" );
+            if( type_attr )
             {
                 // We have an inline declared constant texture
-                if( type == 
-                texture_value = 
+                const std::string type  = type_attr->value();
+                const std::string value = pnode->first_attribute( "value" )->value();
+                
+                legion::Parameters tparams;
+                if( type == "float" )
+                    tparams.set( "value", lexical_cast<float>( value ) );
+                else if( type == "vector2" )
+                    tparams.set( "value", lexical_cast<legion::Vector2>( value ) );
+                else if( type == "vector3" )
+                    tparams.set( "value", lexical_cast<legion::Vector2>( value ) );
+                else if( type == "color" )
+                    tparams.set( "value", lexical_cast<legion::Color>( value ) );
+
+                texture_value = m_ctx->createTexture( "ConstantTexture",  tparams );
             }
             else
             {
@@ -266,7 +278,7 @@ void XMLToLegion::loadParams( const XMLNode* node )
         {
             legion::ISurface* surface_value = m_surfaces[ value ];
             if( !surface_value )
-                throw std::runtime_error( "XMLToLegion: Unknown surface"
+                throw std::runtime_error( "XMLToLegion: Unknown surface "
                                           "referenced '" + value + "'" );
 
             m_params.set( name, surface_value );

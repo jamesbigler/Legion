@@ -51,6 +51,7 @@
 #include <Legion/Objects/Surface/Metal.hpp>
 #include <Legion/Objects/Surface/Mixture.hpp>
 #include <Legion/Objects/Surface/Ward.hpp>
+#include <Legion/Objects/Texture/CheckerTexture.hpp>
 #include <Legion/Objects/Texture/ConstantTexture.hpp>
 #include <Legion/Objects/Texture/ImageTexture.hpp>
 #include <Legion/Objects/Texture/FresnelSchlickTexture.hpp>
@@ -135,6 +136,7 @@ Context::Impl::Impl( Context* context )
     f.registerObject( "Metal",                 &Metal::create                 );
     f.registerObject( "Mixture",               &Mixture::create               );
     f.registerObject( "Ward",                  &Ward::create                  );
+    f.registerObject( "CheckerTexture",        &CheckerTexture::create        );
     f.registerObject( "ConstantTexture",       &ConstantTexture::create       );
     f.registerObject( "FresnelSchlickTexture", &FresnelSchlickTexture::create );
     f.registerObject( "ImageTexture",          &ImageTexture::create          );

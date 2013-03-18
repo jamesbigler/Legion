@@ -31,7 +31,9 @@ using namespace legion;
             plugin ## Creator creator )                                        \
     {                                                                          \
         LEGION_ASSERT( creator != 0 );                                         \
-        LEGION_ASSERT( plugin_map.count( name ) == 0 );                        \
+        if( plugin_map.count( name ) != 0 )                                    \
+            throw Exception( "Plugin creator '" + name + "' already "          \
+                             "registered" );                                   \
         plugin_map.insert( std::make_pair( name, creator ) );                  \
     }                                                                          \
                                                                                \
@@ -40,7 +42,8 @@ using namespace legion;
             const Parameters& p )                                              \
     {                                                                          \
         plugin ## Creators::iterator it = plugin_map.find( name );             \
-        LEGION_ASSERT( it != plugin_map.end() );                               \
+        if( it == plugin_map.end() )                                           \
+            throw Exception( "Unknown plugin creator '" + name + "'" );        \
         return it->second( m_context, p );                                     \
     }
 
