@@ -135,7 +135,11 @@ class Exporter:
 
     def translateSurface( self, blender_node, xml_scene ):
         material = blender_node
-        '''
+        if material.node_tree:
+            NodeTree.translate( material.name, material.node_tree, xml_scene )
+            return
+
+        xml_node = ET.SubElement( xml_scene, "surface" )
         xml_node.attrib[ "type" ] = "Ward" 
         xml_node.attrib[ "name" ] = blender_node.name
 
@@ -162,10 +166,6 @@ class Exporter:
         alphav_param.attrib[ "name" ] = "alpha_v"
         alphav_param.attrib[ "value" ] = "{:.4}".format( 
                 material.specular_slope )
-        '''
-        
-        print( NodeTree.__dir__() )
-        NodeTree.translate( material.name, material.node_tree, xml_scene )
 
 
     def translateLight( self, blender_node, xml_scene ):

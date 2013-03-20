@@ -115,12 +115,85 @@ class BSDF_DIFFUSE( SurfaceNode ):
         return [ 'reflectance', '', '' ][ idx ]
 
 
+class BSDF_GLASS( SurfaceNode ):
+    def legionPluginType( self ):
+        return "Dielectric" 
+    
+    def mapInput( self, idx, name ):
+        print( 'glass param {}'.format( name ) )
+        return [ '', '', '', '', '', '', '', ''][ idx ]
+
+
+class BSDF_TRANSLUCENT( SurfaceNode ):
+    def legionPluginType( self ):
+        return "Dielectric" 
+    
+    def mapInput( self, idx, name ):
+        print( 'translucent param {}'.format( name ) )
+        return [ '', '', '', '', '', '', '', ''][ idx ]
+
+
+class EMISSION( SurfaceNode ):
+    def legionPluginType( self ):
+        return "DiffuseEmitter" 
+    
+    def mapInput( self, idx, name ):
+        print( 'emission param {}'.format( name ) )
+        return [ '', '', '', '', '', '', '', ''][ idx ]
+
+
+class TEX_NOISE( TextureNode ):
+    def legionPluginType( self ):
+        return "PerlinTexture" 
+    
+    def mapInput( self, idx, name ):
+        print( 'texnoise param {}'.format( name ) )
+        return [ '', '', '', '', '', '', '', ''][ idx ]
+
+
+class TEX_IMAGE( TextureNode ):
+    def legionPluginType( self ):
+        return "ImageTexture" 
+    
+    def mapInput( self, idx, name ):
+        print( 'imagetex param {}'.format( name ) )
+        return [ '', '', '', '', '', '', '', ''][ idx ]
+
+
+class FRESNEL( TextureNode ):
+    def legionPluginType( self ):
+        return "FresnelTexture" 
+    
+    def mapInput( self, idx, name ):
+        print( 'fresneltex param {}'.format( name ) )
+        return [ '', '', '', '', '', '', '', ''][ idx ]
+
+
+class MATH( TextureNode ):
+    def legionPluginType( self ):
+        return "MathTexture" 
+    
+    def mapInput( self, idx, name ):
+        print( 'mathtex param {}'.format( name ) )
+        return [ '', '', '', '', '', '', '', ''][ idx ]
+
+
 class TEX_CHECKER( TextureNode ):
     def legionPluginType( self ):
         return "CheckerTexture" 
     
     def mapInput( self, idx, name ):
         return [ '', 'c0', 'c1', 'scale' ][ idx ]
+
+
+class RGB( TextureNode ):
+    def legionPluginType( self ):
+        return "ConstantTexture" 
+    
+    def mapInput( self, idx, name ):
+        print( 'mathtex param {}'.format( name ) )
+        return [ '', '', '', '', '', '', '', ''][ idx ]
+
 
 
 class OUTPUT_MATERIAL( Node ):
