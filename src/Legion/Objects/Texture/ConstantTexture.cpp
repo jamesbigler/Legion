@@ -25,7 +25,7 @@
 
 #include <Legion/Common/Util/Parameters.hpp>
 #include <Legion/Core/Color.hpp>
-#include <Legion/Core/VariableContainer.hpp>
+#include <Legion/Objects/VariableContainer.hpp>
 
 using namespace legion;
 

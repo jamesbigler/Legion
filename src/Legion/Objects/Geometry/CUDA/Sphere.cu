@@ -189,7 +189,8 @@ RT_PROGRAM void sphereIntersect( int )
         const float t = root1 + root11;
         if( rtPotentialIntersection( t ) ) {
 
-            const float3 normal = (O + t*D)/radius;
+            //const float3 normal = (O + t*D)/radius;
+            const float3 normal = optix::normalize( O + t*D );
 
             // Fill in a localgeometry
             legion::LocalGeometry lg;
@@ -216,7 +217,8 @@ RT_PROGRAM void sphereIntersect( int )
             const float t = (-b + sdisc) +  root1;
             if( rtPotentialIntersection( t ) ) {
 
-                const float3 normal = (O + t*D)/radius;
+                //const float3 normal = (O + t*D)/radius;
+                const float3 normal = optix::normalize( O + t*D );
 
 
                 // Fill in a localgeometry

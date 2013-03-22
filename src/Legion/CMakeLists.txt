@@ -77,8 +77,6 @@ add_library( legion SHARED
     Core/Exception.hpp
     Core/PluginContext.cpp
     Core/PluginContext.hpp
-    Core/VariableContainer.cpp
-    Core/VariableContainer.hpp
     Legion.hpp
     Objects/Camera/ICamera.hpp
     Objects/Camera/ThinLens.cpp
@@ -134,6 +132,8 @@ add_library( legion SHARED
     Objects/Texture/ImageTexture.hpp
     Objects/Texture/PerlinTexture.cpp
     Objects/Texture/PerlinTexture.hpp
+    Objects/VariableContainer.cpp
+    Objects/VariableContainer.hpp
     Renderer/OptiXProgramManager.cpp
     Renderer/OptiXProgramManager.hpp
     Renderer/OptiXScene.cpp

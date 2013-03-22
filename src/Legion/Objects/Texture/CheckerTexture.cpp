@@ -22,7 +22,7 @@
 
 
 #include <Legion/Objects/Texture/CheckerTexture.hpp>
-#include <Legion/Core/VariableContainer.hpp>
+#include <Legion/Objects/VariableContainer.hpp>
 #include <Legion/Common/Util/Parameters.hpp>
 
 using namespace legion;
@@ -33,7 +33,7 @@ ITexture* CheckerTexture::create( Context* context, const Parameters& params )
 
     checker->setColors( params.get( "c0", Color( 0.9f, 0.9f, 0.9f ) ), 
                         params.get( "c1", Color( 0.1f, 0.1f, 0.1f ) ) ); 
-    checker->setScale(  params.get( "scale", 10.0f ) );
+    checker->setScale(  params.get( "scale", 1.0f ) );
 
     return checker;
 }

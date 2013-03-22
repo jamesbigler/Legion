@@ -1,93 +1,48 @@
 <?xml version="1.0" ?>
 <legion_scene name="monkey">
-    <camera camera_to_world="0.6858805418014526 -0.31737011671066284 0.6548618674278259 7.481131553649902  0.7276337742805481 0.31246861815452576 -0.6106656193733215 -6.437470436096191  -0.010816780850291252 0.8953432440757751 0.4452453553676605 5.705502510070801  0.0 0.0 0.0 1.0" type="ThinLens">
-        <float name="focal_distance" value="1.0"/>
-        <vector4 name="view_plane" value="-0.4571428511967066 0.4571428511967066 -0.25714285579435076 0.25714285579435076"/>
-        <float name="aperture_radius" value="0.0"/>
-    </camera>
-    <renderer resolution="960 540" samples_per_pixel="4096" type="ProgressiveRenderer"/>
-    <display type="ImageFileDisplay">
-        <string name="filename" value="monkey.exr"/>
-    </display>
-
-    <scene>
-        <texture type="ConstantTexture" name="diffuse_reflectance">
-            <color name="value" value="0.5 0.5 0.5" />
-        </texture>
-        <texture type="ConstantTexture" name="glossy_reflectance">
-            <color name="value" value="1 1 1" />
-        </texture>
-        
-        <texture type="FresnelSchlickTexture" name="fresnel">
-            <float name="eta" value="1.5" />
-        </texture>
-        
-        <texture type="ConstantTexture" name="eta">
-            <float name="value" value="1.5" />
-        </texture>
-
-        <texture type="ConstantTexture" name="alpha">
-            <float name="value" value="0.01" />
-        </texture>
-        
-        <texture type="ImageTexture" name="grid_tex">
-            <string name="filename" value="../src/Standalone/data/grid1.exr" />
-        </texture>
-
-        <surface type="Lambertian" name="lambertian_grid">
-            <texture name="reflectance" value="grid_tex"/>
-        </surface>
-
-        <surface type="Lambertian" name="diffuse">
-            <texture name="reflectance" value="diffuse_reflectance"/>
-        </surface>
-
-        <surface name="glossy" type="Beckmann">
-            <texture name="reflectance" value="glossy_reflectance"/>
-            <texture name="alpha" value="alpha"/>
-        </surface>
-
-        <surface name="non_mix_glossy" type="Glossy">
-            <texture name="reflectance" value="glossy_reflectance"/>
-            <texture name="alpha" value="alpha"/>
-            <texture name="eta" value="eta"/>
-        </surface>
-
-        <surface name="ceramic" type="Mixture">
-            <texture name="mixture_weight" value="fresnel"/>
-            <surface name="s0" value="diffuse"/>
-            <surface name="s1" value="glossy"/>
-        </surface>
-
-        <geometry name="Suzanne" surface="ceramic" type="TriMesh">
-            <string name="datafile" value="Suzanne.lmesh"/>
-        </geometry>
-
-        <geometry type="Parallelogram" surface="lambertian_grid">
-            <vector3 name="anchor" value="-10.0 10.0 0.0" /> 
-            <vector3 name="U" value="20.0 0.0 0.0" /> 
-            <vector3 name="V" value="0.0  -20.0 0" />
-        </geometry>
-
-        <!-- 
-        <geometry name="Plane" surface="lambertian" type="TriMesh">
-            <string name="datafile" value="Plane.lmesh"/>
-        </geometry>
-        -->
-
-        <surface name="emitter_Lamp" type="DiffuseEmitter">
-            <color name="radiance" value="10.0 9.82 8.148"/>
-        </surface>
-
-        <geometry name="Lamp" surface="emitter_Lamp" type="Parallelogram">
-            <vector3 name="anchor" value="5.138 0.2502 5.355"/>
-            <vector3 name="U" value="-0.5817 1.91 -0.1104"/>
-            <vector3 name="V" value="-1.542 -0.3998 1.209"/>
-        </geometry>
-
-        <environment type="ConstantEnvironment">
-            <color name="radiance" value="0.6 0.6 0.6" />
-        </environment>
-
-    </scene>
+	<camera camera_to_world="0.6858805418014526 -0.31737011671066284 0.6548618674278259 7.481131553649902  0.7276337742805481 0.31246861815452576 -0.6106656193733215 -6.437470436096191  -0.010816780850291252 0.8953432440757751 0.4452453553676605 5.705502510070801  0.0 0.0 0.0 1.0" type="ThinLens">
+		<float name="focal_distance" value="1.0"/>
+		<vector4 name="view_plane" value="-0.4571428511967066 0.4571428511967066 -0.25714285579435076 0.25714285579435076"/>
+		<float name="aperture_radius" value="0.0"/>
+	</camera>
+	<renderer resolution="1920 1080" samples_per_pixel="16" type="ProgressiveRenderer"/>
+	<display type="ImageFileDisplay">
+		<string name="filename" value="monkey.exr"/>
+	</display>
+	<scene>
+		<surface name="Material.001.Glossy BSDF" type="Beckmann">
+			<texture name="reflectance" type="color" value="0.8 0.8 0.8"/>
+			<texture name="alpha" type="float" value="0.01"/>
+		</surface>
+		<surface name="Material.001.Diffuse BSDF" type="Lambertian">
+			<texture name="reflectance" type="color" value="0.8 0.8 0.8"/>
+		</surface>
+		<surface name="Material.001" type="Mixture">
+			<texture name="mixture_weight" type="float" value="0.5"/>
+			<surface name="s0" value="Material.001.Glossy BSDF"/>
+			<surface name="s1" value="Material.001.Diffuse BSDF"/>
+		</surface>
+		<texture name="Material.002.Checker Texture" type="CheckerTexture">
+			<texture name="c0" type="color" value="0.7 0.7 0.7"/>
+			<texture name="c1" type="color" value="0.2 0.2 0.2"/>
+			<texture name="scale" type="float" value="1.0"/>
+		</texture>
+		<surface name="Material.002" type="Lambertian">
+			<texture name="reflectance" value="Material.002.Checker Texture"/>
+		</surface>
+		<geometry name="Suzanne" surface="Material.001" type="TriMesh">
+			<string name="datafile" value="Suzanne.lmesh"/>
+		</geometry>
+		<geometry name="Plane" surface="Material.002" type="TriMesh">
+			<string name="datafile" value="Plane.lmesh"/>
+		</geometry>
+		<geometry name="Lamp" surface="emitter_Lamp" type="Parallelogram">
+			<vector3 name="anchor" value="5.138 0.2502 5.355"/>
+			<vector3 name="U" value="-1.542 -0.3998 1.209"/>
+			<vector3 name="V" value="-0.5817 1.91 -0.1104"/>
+		</geometry>
+		<surface name="emitter_Lamp" type="DiffuseEmitter">
+			<color name="radiance" value="30 30 30"/>
+		</surface>
+	</scene>
 </legion_scene>

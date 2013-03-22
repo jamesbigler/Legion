@@ -24,13 +24,13 @@
 #include <Legion/Common/Util/Logger.hpp>
 #include <Legion/Core/Context.hpp>
 #include <Legion/Core/Exception.hpp>
-#include <Legion/Core/VariableContainer.hpp>
 #include <Legion/Objects/Camera/ICamera.hpp>
 #include <Legion/Objects/Geometry/IGeometry.hpp>
 #include <Legion/Objects/Environment/IEnvironment.hpp>
 #include <Legion/Objects/Renderer/IRenderer.hpp>
 #include <Legion/Objects/Surface/ISurface.hpp>
 #include <Legion/Objects/Texture/ITexture.hpp>
+#include <Legion/Objects/VariableContainer.hpp>
 #include <Legion/Renderer/OptiXScene.hpp>
 #include <config.hpp>
 

@@ -28,8 +28,8 @@
 #include <Legion/Core/Context.hpp>
 #include <Legion/Core/Exception.hpp>
 #include <Legion/Core/PluginContext.hpp>
-#include <Legion/Core/VariableContainer.hpp>
 #include <Legion/Objects/Renderer/IRenderer.hpp>
+#include <Legion/Objects/VariableContainer.hpp>
 #include <Legion/Renderer/OptiXScene.hpp>
 #include <fstream>
 
@@ -250,9 +250,8 @@ void Context::Impl::render()
     Timer timer;
     timer.start();
     optix::Program ray_gen_program = 
-      m_optix_scene.getOptiXContext()->getRayGenerationProgram( 0 );
+        m_optix_scene.getOptiXContext()->getRayGenerationProgram( 0 );
     VariableContainer vc( ray_gen_program.get() );
-    //VariableContainer vc( m_optix_scene.getOptiXContext().get() );
     m_renderer->render( vc );
     timer.stop();
     LLOG_INFO << "Frame complete ... (" << timer.getTimeElapsed() << "s)";

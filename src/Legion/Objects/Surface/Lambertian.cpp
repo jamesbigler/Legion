@@ -1,7 +1,7 @@
 
 
 #include <Legion/Objects/Surface/Lambertian.hpp>
-#include <Legion/Core/VariableContainer.hpp>
+#include <Legion/Objects/VariableContainer.hpp>
 #include <Legion/Common/Util/Parameters.hpp>
 
 

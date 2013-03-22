@@ -23,7 +23,7 @@
 /// \file Parallelogram.cpp
 
 #include <Legion/Objects/Geometry/Parallelogram.hpp>
-#include <Legion/Core/VariableContainer.hpp>
+#include <Legion/Objects/VariableContainer.hpp>
 #include <Legion/Common/Util/Parameters.hpp>
 
 

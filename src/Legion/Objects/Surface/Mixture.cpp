@@ -21,7 +21,7 @@
 // IN THE SOFTWARE.
 
 #include <Legion/Objects/Surface/Mixture.hpp>
-#include <Legion/Core/VariableContainer.hpp>
+#include <Legion/Objects/VariableContainer.hpp>
 #include <Legion/Common/Util/Parameters.hpp>
 
 using namespace legion;

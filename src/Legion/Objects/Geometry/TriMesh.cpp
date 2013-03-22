@@ -25,7 +25,7 @@
 #include <Legion/Common/Util/Parameters.hpp>
 #include <Legion/Common/Util/Stream.hpp>
 #include <Legion/Common/Util/Logger.hpp>
-#include <Legion/Core/VariableContainer.hpp>
+#include <Legion/Objects/VariableContainer.hpp>
 #include <Legion/Objects/Geometry/TriMesh.hpp>
 #include <iostream>
 #include <fstream>

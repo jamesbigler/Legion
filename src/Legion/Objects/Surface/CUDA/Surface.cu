@@ -105,7 +105,7 @@ void legionClosestHit()
     {
         const float3 w_in = ray.direction;
 
-        float3 radiance = legionSurfaceEmission( w_in, local_geom );
+        radiance = legionSurfaceEmission( w_in, local_geom );
         CHECK_FINITE( radiance );
 
         if( last_use_mis && !legion::isBlack( radiance  ))
@@ -120,9 +120,7 @@ void legionClosestHit()
             CHECK_FINITE( mis_weight );
 
             radiance *= mis_weight;
-
         }
-        radiance = radiance;
     }
 
     //

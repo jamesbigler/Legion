@@ -2,7 +2,7 @@
 
 #include <Legion/Objects/Surface/Metal.hpp>
 #include <Legion/Objects/Texture/ConstantTexture.hpp>
-#include <Legion/Core/VariableContainer.hpp>
+#include <Legion/Objects/VariableContainer.hpp>
 #include <Legion/Core/Color.hpp>
 #include <Legion/Common/Util/Parameters.hpp>
 

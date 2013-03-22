@@ -92,9 +92,11 @@ LDEVICE float BeckmannDistribution::pdf( float3 N, float3 H ) const
     const float cos_theta_sqr = cos_theta*cos_theta;
     const float tan_theta_sqr = (1.0f - cos_theta_sqr ) / cos_theta_sqr;
     const float exponent      = -tan_theta_sqr / alpha_sqr;
-    const float D = expf( exponent ) /
+    const float p = expf( exponent ) /
                     ( legion::PI*alpha_sqr*cos_theta_sqr*cos_theta );
-    return D;
+
+    CHECK_FINITE( p ); 
+    return p;
 }
 
 
@@ -110,6 +112,7 @@ LDEVICE float BeckmannDistribution::D( float3 N, float3 H ) const
     const float exponent      = -tan_theta_sqr / alpha_sqr;
     const float D = expf( exponent ) /
                     ( legion::PI*alpha_sqr*cos_theta_sqr*cos_theta_sqr );
+    CHECK_FINITE( D ); 
     return D;
 }
 
@@ -117,6 +120,8 @@ LDEVICE float2 BeckmannDistribution::DPDF( float3 N, float3 H ) const
 {
     const float cos_theta = optix::dot( N, H );
     const float dee       = D( N, H );
+    CHECK_FINITE( dee       ); 
+    CHECK_FINITE( cos_theta ); 
     return make_float2( dee, dee/cos_theta);
 }
 
@@ -264,10 +269,6 @@ public:
             microfacet_pdf <= 0.0f )
             return sample;
         const float pdf = microfacet_pdf / ( 4.0f*m_dot_i );
-        if( !legion::finite( pdf ) )
-        {
-            printf( "\tmpdf %f m_dot_i %f\n", microfacet_pdf, m_dot_i );
-        }
 
         const float n_dot_m = fabs( optix::dot( N, m ) );
 

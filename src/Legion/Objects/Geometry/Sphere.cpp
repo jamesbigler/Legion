@@ -26,7 +26,7 @@
 #include <Legion/Common/Util/Logger.hpp>
 #include <Legion/Common/Util/Parameters.hpp>
 #include <Legion/Common/Math/Math.hpp>
-#include <Legion/Core/VariableContainer.hpp>
+#include <Legion/Objects/VariableContainer.hpp>
 
 
 using namespace legion;

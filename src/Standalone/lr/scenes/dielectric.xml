@@ -1,6 +1,6 @@
 <legion_scene name="dielectric">
 
-    <renderer type="ProgressiveRenderer" samples_per_pixel="256" />
+    <renderer type="ProgressiveRenderer" samples_per_pixel="2048" />
 
     <display type="ImageFileDisplay">
         <string name="filename" value="dielectric.exr" />

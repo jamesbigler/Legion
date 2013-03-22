@@ -23,7 +23,7 @@
 
 #include <Legion/Objects/Renderer/ProgressiveRenderer.hpp>
 #include <Legion/Objects/Display/IDisplay.hpp>
-#include <Legion/Core/VariableContainer.hpp>
+#include <Legion/Objects/VariableContainer.hpp>
 #include <Legion/Common/Util/AutoTimerHelpers.hpp>
 #include <Legion/Common/Util/Logger.hpp>
 
