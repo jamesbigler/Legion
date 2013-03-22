@@ -46,17 +46,19 @@ float3 radiance( uint64 sobol_index, float3 origin, float3 direction, unsigned l
     float3 attenuation = make_float3( 1.0f );
     optix::Ray ray = legion::makePrimaryRay( origin, direction );
     
-    for( unsigned i = 0u; i < 3; ++i ) 
+    for( unsigned i = 0u; i < 10; ++i ) 
     {
         prd.done     = true;
         prd.radiance = make_float3( 0.0f );
         rtTrace( legion_top_group, ray, prd );
+        CHECK_FINITE( prd.radiance );
         
         radiance += prd.radiance * attenuation;
 
-        if( prd.done || attenuation.x + attenuation.y + attenuation.z < 0.001f )
+        if( prd.done || attenuation.x + attenuation.y + attenuation.z < 0.0001f )
             break;
         attenuation *= prd.attenuation;
+        CHECK_FINITE( attenuation );
         /*
         const float    p_continue          = fmaxf( attenuation );
         const unsigned RR_SOBOL_DIM_OFFSET = 64;

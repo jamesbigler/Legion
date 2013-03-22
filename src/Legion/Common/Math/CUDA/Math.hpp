@@ -24,6 +24,8 @@ namespace legion
     LDEVICE inline bool nan( float3 x )
     { return isnan( x.x ) || isnan( x.y ) || isnan( x.z ); }
     
+    LDEVICE inline bool finite( float x )
+    { return isfinite( x ); }
 
     LDEVICE inline bool finite( float2 x )
     { return isfinite( x.x ) && isfinite( x.y ); }

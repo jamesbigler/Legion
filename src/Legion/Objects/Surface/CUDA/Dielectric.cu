@@ -96,6 +96,9 @@ legion::BSDFSample dielectricSampleBSDF(
     }
     sample.is_singular = true;
 
+    CHECK_FINITE( sample.w_in       );
+    CHECK_FINITE( sample.f_over_pdf );
+    CHECK_FINITE( sample.pdf        );
     return sample;
 }
 

@@ -67,6 +67,9 @@ LDEVICE BeckmannDistribution::BeckmannDistribution( float alpha )
 
 LDEVICE float3 BeckmannDistribution::sample( float2 seed ) const
 {
+    if( m_alpha < 0.000001f )
+        return make_float3( 0.0f, 0.0f, 1.0f );
+
     const float alpha_sqr     = m_alpha*m_alpha;
     const float tan_theta_sqr = -alpha_sqr*logf( 1.0f - seed.x );
     const float cos_theta     = 1.0f / sqrtf( 1.0f + tan_theta_sqr );
@@ -82,7 +85,7 @@ LDEVICE float3 BeckmannDistribution::sample( float2 seed ) const
 LDEVICE float BeckmannDistribution::pdf( float3 N, float3 H ) const
 {
     const float cos_theta = optix::dot( N, H );
-    if( cos_theta <= 0.0 )
+    if( cos_theta <= 0.0f || m_alpha < 0.000001f )
       return 0.0f;
 
     const float alpha_sqr     = m_alpha*m_alpha;
@@ -98,7 +101,7 @@ LDEVICE float BeckmannDistribution::pdf( float3 N, float3 H ) const
 LDEVICE float BeckmannDistribution::D( float3 N, float3 H ) const
 {
     const float cos_theta = optix::dot( N, H );
-    if( cos_theta <= 0.0 )
+    if( cos_theta <= 0.0f || m_alpha < 0.000001f )
       return 0.0f;
 
     const float alpha_sqr     = m_alpha*m_alpha;
@@ -244,19 +247,27 @@ public:
                 p.shading_normal, w_out, p.geometric_normal
                 );
 
-        if( optix::dot( w_out, N ) <= 0.0 )
-            return sample;
+        
+        //if( optix::dot( w_out, N ) <= 0.0 )
+        //    return sample;
 
         const legion::ONB onb( N );
         const float3 m = onb.inverseTransform( m_distribution.sample( seed ) );
 
         sample.w_in = optix::reflect( -w_out, m );
 
-        const float n_dot_i = optix::dot( N, sample.w_in );
-        const float m_dot_i = optix::dot( m, sample.w_in );
-        const float pdf     = m_distribution.pdf( N, m )/( 4.0f*m_dot_i );
-        if( n_dot_i <= 0.0 || pdf <= 0.0f )
+        const float n_dot_i        = optix::dot( N, sample.w_in );
+        const float m_dot_i        = optix::dot( m, sample.w_in );
+        const float microfacet_pdf = m_distribution.pdf( N, m );
+        if( m_dot_i        <= 0.0f || 
+            n_dot_i        <= 0.0f || 
+            microfacet_pdf <= 0.0f )
             return sample;
+        const float pdf = microfacet_pdf / ( 4.0f*m_dot_i );
+        if( !legion::finite( pdf ) )
+        {
+            printf( "\tmpdf %f m_dot_i %f\n", microfacet_pdf, m_dot_i );
+        }
 
         const float n_dot_m = fabs( optix::dot( N, m ) );
 

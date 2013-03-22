@@ -121,7 +121,7 @@ class BSDF_GLASS( SurfaceNode ):
     
     def mapInput( self, idx, name ):
         print( 'glass param {}'.format( name ) )
-        return [ '', '', '', '', '', '', '', ''][ idx ]
+        return [ 'transmitance', '', 'ior_in', ''][ idx ]
 
 
 class BSDF_TRANSLUCENT( SurfaceNode ):
@@ -162,7 +162,7 @@ class TEX_IMAGE( TextureNode ):
 
 class FRESNEL( TextureNode ):
     def legionPluginType( self ):
-        return "FresnelTexture" 
+        return "FresnelSchlickTexture" 
     
     def mapInput( self, idx, name ):
         print( 'fresneltex param {}'.format( name ) )

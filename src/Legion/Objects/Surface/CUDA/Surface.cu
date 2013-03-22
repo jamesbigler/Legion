@@ -74,9 +74,12 @@ void legionClosestHit()
         const float3 w_out = -ray.direction;
         legion::BSDFSample bsdf_sample = 
             legionSurfaceSampleBSDF( bsdf_seed, w_out, local_geom );
+        CHECK_FINITE( bsdf_sample.w_in       );
+        CHECK_FINITE( bsdf_sample.f_over_pdf );
+        CHECK_FINITE( bsdf_sample.pdf        );
+
 
         const float3 P = ray.origin + t_hit * ray.direction;
-
 
         radiance_prd.origin              = P;
         radiance_prd.direction           = bsdf_sample.w_in;
@@ -85,6 +88,7 @@ void legionClosestHit()
         radiance_prd.done                = bsdf_sample.pdf <= 0.0;
         radiance_prd.use_mis_weight      = !bsdf_sample.is_singular; 
 
+        
         /*
         radiance_prd.radiance = bsdf_sample.f_over_pdf;
         radiance_prd.done = true; 
@@ -101,17 +105,24 @@ void legionClosestHit()
     {
         const float3 w_in = ray.direction;
 
-        radiance = legionSurfaceEmission( w_in, local_geom );
+        float3 radiance = legionSurfaceEmission( w_in, local_geom );
+        CHECK_FINITE( radiance );
 
         if( last_use_mis && !legion::isBlack( radiance  ))
         {
-            const float3 P          = ray.origin;
+            const float3 P           = ray.origin;
             const float  light_pdf  = legionLightPDF( w_in, P )*choose_light_p;
             const float  bsdf_pdf   = last_pdf; 
             const float  mis_weight = legion::powerHeuristic(
                                           bsdf_pdf, light_pdf );
+            CHECK_FINITE( light_pdf  );
+            CHECK_FINITE( bsdf_pdf   );
+            CHECK_FINITE( mis_weight );
+
             radiance *= mis_weight;
+
         }
+        radiance = radiance;
     }
 
     //
@@ -134,10 +145,13 @@ void legionClosestHit()
             optix::faceforward( 
                 local_geom.shading_normal, w_out, local_geom.geometric_normal
                 );
+
         const legion::LightSample light_sample = 
-            legion::lightSample( 
-                    light_index, light_seed, P, N
-                    ); 
+            legion::lightSample( light_index, light_seed, P, N ); 
+        CHECK_FINITE( light_sample.w_in     );
+        CHECK_FINITE( light_sample.pdf      );
+        CHECK_FINITE( light_sample.distance );
+        CHECK_FINITE( light_sample.normal   );
 
         const float3 w_in      = light_sample.w_in;
         const float  light_pdf = light_sample.pdf*choose_light_p;
@@ -152,12 +166,16 @@ void legionClosestHit()
 
             const float  bsdf_pdf = bsdf.w;
             const float3 bsdf_val = make_float3( bsdf );
+            CHECK_FINITE( bsdf_val );
+            CHECK_FINITE( bsdf_pdf );
 
             if( bsdf_pdf > 0.0f )
             {
                 const float  mis_weight = legion::powerHeuristic(
                                               light_pdf, bsdf_pdf );
                 const float3 atten      = bsdf_val*( mis_weight / light_pdf );
+                CHECK_FINITE( mis_weight );
+                CHECK_FINITE( atten      );
 
 
                 const float3 light_radiance = 
@@ -166,6 +184,7 @@ void legionClosestHit()
                             light_sample.w_in, 
                             light_sample.distance,
                             light_sample.normal );
+                CHECK_FINITE( light_radiance );
 
                 radiance += light_radiance*atten;
             }

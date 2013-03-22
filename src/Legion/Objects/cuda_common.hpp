@@ -26,6 +26,16 @@
 #include <optix_world.h>
 #include <Legion/Common/Math/CUDA/Sobol.hpp>
 
+#if 0
+#    define WHERESTR  "[file %s, line %d]: "
+#    define WHEREARG  __FILE__, __LINE__
+#    define DEBUGPRINT( x )      printf( WHERESTR x, WHEREARG )
+#    define CHECK_FINITE( x )  \
+         if(!legion::finite(x)) DEBUGPRINT("Nonfinite value found: '" #x "'\n");
+#else
+#    define CHECK_FINITE( x )
+#endif
+
 //------------------------------------------------------------------------------
 //
 // Common rtVariables.  These will all be set internally by legion 

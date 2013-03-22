@@ -51,7 +51,12 @@ legion::BSDFSample beckmannSampleBSDF(
     NopFresnel           fresnel;
     MicrofacetSurface<BeckmannDistribution, NopFresnel> 
         surface( make_float3( R ), distribution, fresnel );
-    return surface.sample( make_float2( seed ), w_out, p );
+    legion::BSDFSample sample = surface.sample( make_float2( seed ), w_out, p );
+
+    CHECK_FINITE( sample.w_in       );
+    CHECK_FINITE( sample.f_over_pdf );
+    CHECK_FINITE( sample.pdf        );
+    return sample;
 }
 
 
@@ -68,7 +73,10 @@ float4 beckmannEvaluateBSDF(
     NopFresnel           fresnel;
     MicrofacetSurface<BeckmannDistribution, NopFresnel> 
         surface( make_float3( R ), distribution, fresnel );
-    return surface.evaluate( w_out, p, w_in );
+    const float4 val = surface.evaluate( w_out, p, w_in );
+
+    CHECK_FINITE( val );
+    return val;
 }
 
 
@@ -82,5 +90,8 @@ float beckmannPDF( float3 w_out, legion::LocalGeometry p, float3 w_in )
     NopFresnel           fresnel;
     MicrofacetSurface<BeckmannDistribution, NopFresnel> 
         surface( R , distribution, fresnel );
-    return surface.pdf( w_out, p, w_in );
+    const float pdf = surface.pdf( w_out, p, w_in );
+    
+    CHECK_FINITE( pdf );
+    return pdf;
 }

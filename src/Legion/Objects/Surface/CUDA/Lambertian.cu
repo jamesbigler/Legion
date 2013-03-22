@@ -60,6 +60,9 @@ legion::BSDFSample lambertianSampleBSDF(
     sample.f_over_pdf  = make_float3( R );
     sample.is_singular = false;
 
+    CHECK_FINITE( sample.w_in       );
+    CHECK_FINITE( sample.f_over_pdf );
+    CHECK_FINITE( sample.pdf        );
     return sample;
 }
 
@@ -76,7 +79,10 @@ float4 lambertianEvaluateBSDF(
     const float4 R      =  legionTex( reflectance, p, w_out );
     const float  cosine = fmaxf( 0.0f, optix::dot( w_in, normal ) );
     const float  pdf    = cosine * legion::ONE_DIV_PI;
-    return make_float4( pdf * make_float3( R ), pdf );
+    const float4 val    = make_float4( pdf * make_float3( R ), pdf );
+    
+    CHECK_FINITE( val );
+    return val;
 }
 
 
@@ -86,6 +92,9 @@ float lambertianPDF( float3 w_out, legion::LocalGeometry p, float3 w_in )
     const float3 normal = optix::faceforward( 
             p.shading_normal, w_out, p.geometric_normal
             );
-    float cosine = fmaxf( 0.0f, optix::dot( w_in, normal ) );
-    return cosine * legion::ONE_DIV_PI;
+    const float cosine = fmaxf( 0.0f, optix::dot( w_in, normal ) );
+    const float pdf = cosine * legion::ONE_DIV_PI;
+    
+    CHECK_FINITE( pdf );
+    return pdf;
 }

@@ -257,6 +257,9 @@ legion::BSDFSample wardSampleBSDF(
         sample.is_singular = 0u; 
     }
         
+    CHECK_FINITE( sample.w_in       );
+    CHECK_FINITE( sample.f_over_pdf );
+    CHECK_FINITE( sample.pdf        );
     return sample;
 }
 
@@ -275,17 +278,25 @@ float4 wardEvaluateBSDF(
     if( cos_in <= 0.0f || cos_out <= 0.0f )
         return make_float4( 0.0f );
 
-    return wardEvalPDF( w_out, N, w_in, diffuse_weight);
+    const float4 val = wardEvalPDF( w_out, N, w_in, diffuse_weight);
+
+    CHECK_FINITE( val );
+    return val;
 }
 
 
 RT_CALLABLE_PROGRAM
 float wardPDF( float3 w_out, legion::LocalGeometry p, float3 w_in )
 {
-        const float3 N = optix::faceforward( 
-                p.shading_normal, w_out, p.geometric_normal
-                );
-        const float  diffuse_pdf  = diffusePDF( w_out, N, w_in );
-        const float  specular_pdf = specularPDF( w_out, N, w_in );
-        return optix::lerp( specular_pdf, diffuse_pdf, diffuse_weight );
+    const float3 N = optix::faceforward( 
+            p.shading_normal, w_out, p.geometric_normal
+            );
+    const float  diffuse_pdf  = diffusePDF( w_out, N, w_in );
+    const float  specular_pdf = specularPDF( w_out, N, w_in );
+    const float  pdf          = optix::lerp( specular_pdf,
+                                             diffuse_pdf,
+                                             diffuse_weight );
+
+    CHECK_FINITE( pdf );
+    return pdf;
 }
