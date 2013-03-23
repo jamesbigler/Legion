@@ -4,6 +4,7 @@ import os
 import os.path
 import shutil
 import subprocess
+import pprint
 
 def create_dir( dirname, remove_preexisting=True ):
     if remove_preexisting and os.path.exists( dirname ):
@@ -53,26 +54,49 @@ def build_legion( dirname, legion_root, optix_root ):
 #------------------------------------------------------------------------------
 def run_tests( legion_root, legion_bin ):
     tests = [
-            'dielectric',
-            'metal', 
-            'monkey/monkey',
-            'simple',
-            'ward',
+            ( 'dielectric'   , '-n 32' ),
+            ( 'metal'        , '-n 32' ),
+            ( 'monkey/monkey', '-n 8' ),
+            ( 'simple'       , '-n 32' ),
+            ( 'ward'         , '-n 32' ),
             ]
 
-    dirname = 'results_legion_regress_'
+    lr        = os.path.join( legion_bin, 'lr' )
+    scene_dir = os.path.join( legion_root, 'src/Standalone/lr/scenes' )
+    dirname   = 'results_legion_regress_'
     create_dir( dirname )
 
-    lr = os.path.join( legion_bin, 'lr' )
-    scene_dir = os.path.join( legion_root, 'src/Standalone/lr/scenes' )
-    for test in tests:
-        xml_file = os.path.join( scene_dir, test+'.xml' )
-        test_cmd = '{} {}'.format( lr, xml_file )
-        print "Running <<{}>>".format( test_cmd )
-        subprocess.check_call( test_cmd, shell=True, executable='/bin/bash' )
+    stats = []
 
+    for test, test_args in tests:
+        # execute the test
+        xml_file = os.path.join( scene_dir, test+'.xml' )
+        test_cmd = '{} {} {}'.format( lr, test_args, xml_file )
+        print "Running <<{}>>".format( test_cmd )
+        subprocess.check_call(test_cmd, shell=True, executable='/bin/bash')
+
+        # print stats
+        test_stats = [ ('name', test ) ]
+        with open( 'legion.log', 'r' ) as log_file:
+            for line in log_file:
+                if 'STAT:' in line:
+                    fields = map( lambda x: x.strip(), line.split( '|' ) )
+                    if fields[1] == 'gpu':
+                        gpu_name = fields[2]
+                        continue
+                    test_stats.append( ( fields[1], fields[2] ) )
+        stats.append( test_stats )
+
+        # copy result image to result dir
         img_file = os.path.basename( test ) + '.exr'
         os.rename( img_file, os.path.join( dirname, img_file ) ) 
+
+    stat_filename = os.path.join( dirname, 'stats.csv' )
+    with open( stat_filename, 'a' ) as stat_file:
+        stat_file.write( "gpu_name = '{}'\n".format( gpu_name ) )
+        stat_file.write( "stats = " )
+        pp = pprint.PrettyPrinter( indent=4, stream=stat_file )
+        pp.pprint( stats )
 
 
 import argparse

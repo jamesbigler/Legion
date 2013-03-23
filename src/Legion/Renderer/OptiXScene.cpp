@@ -33,6 +33,8 @@
 #include <Legion/Objects/VariableContainer.hpp>
 #include <Legion/Renderer/OptiXScene.hpp>
 #include <config.hpp>
+#include <algorithm>
+#include <iterator>
 
 using namespace legion;
 

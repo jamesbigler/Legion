@@ -126,7 +126,8 @@ void ProgressiveRenderer::render( VariableContainer& container )
     const float num_pixels = getResolution().x() * 
                              getResolution().y() * 
                              getSamplesPerPixel();
-    LLOG_INFO << "\tTotal pixels/second : " 
+    LLOG_STAT << "| render time | " << progressive_updates.total_time;
+    LLOG_STAT << "| pixels/second | " 
               << static_cast<unsigned>( num_pixels / 
                                         progressive_updates.total_time );
 

@@ -41,8 +41,10 @@ void printUsageAndExit( const char* argv0 );
 
 void printUsageAndExit( const char* argv0 )
 {
-    std::cout << "\nUsage  : " << argv0 << " [options] <scene_file.xml>\n\n"
-              << std::endl;
+    std::cout
+        << "\nUsage  : " << argv0 << " [options] <scene_file.xml>\n\n"
+        << "\t-n | --num_samples <NUM_SAMPLES>  Set number of samples\n"
+        << std::endl;
     exit(0);
 }
 
@@ -57,6 +59,22 @@ int main( int argc , char** argv )
 {
     if( argc < 2 )
         printUsageAndExit( argv[0] );
+
+    unsigned num_samples = 0u;
+    for( int i = 1; i < argc-1; ++i )
+    {
+        const std::string arg = argv[i];
+        if( arg == "-n" || arg == "--num-samples" )
+        {
+            if( i == argc-2 )
+                printUsageAndExit( argv[0] );
+            num_samples = lr::lexical_cast<unsigned>( argv[++i] );
+        }
+        else
+        {
+            printUsageAndExit( argv[0] );
+        }
+    }
 
     // Render scene using IDisplay specified in xml file
     try
@@ -74,6 +92,8 @@ int main( int argc , char** argv )
         legion::Context context;
         context.addAssetPath( scene_dir );
         lr::XMLToLegion translate( text, &context, true );
+        if( num_samples )
+            context.getRenderer()->setSamplesPerPixel( num_samples );
         context.render();
 
         delete [] text;
