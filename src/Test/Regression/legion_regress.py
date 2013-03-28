@@ -52,7 +52,7 @@ def build_legion( dirname, legion_root, optix_root ):
 #
 #
 #------------------------------------------------------------------------------
-def run_tests( legion_root, legion_bin ):
+def run_tests( dirname, legion_root, legion_bin ):
     tests = [
             ( 'dielectric'   , '-n 32' ),
             ( 'metal'        , '-n 32' ),
@@ -63,7 +63,6 @@ def run_tests( legion_root, legion_bin ):
 
     lr        = os.path.join( legion_bin, 'lr' )
     scene_dir = os.path.join( legion_root, 'src/Standalone/lr/scenes' )
-    dirname   = 'results_legion_regress_'
     create_dir( dirname )
 
     stats = []
@@ -99,6 +98,111 @@ def run_tests( legion_root, legion_bin ):
         pp.pprint( stats )
 
 
+#------------------------------------------------------------------------------
+#
+#
+#
+#------------------------------------------------------------------------------
+import itertools
+import math
+
+def compare_images( name, gpixels, rpixels, tol_avg, tol_max, max_bad_pixels ):
+    if len( gpixels ) != len( rpixels ):
+        raise AssertionError( "compare_images given images with diff size" )
+
+    def luminance( p ):
+        return 0.30*p[0] + 0.59*p[1] + 0.11*p[2] 
+
+
+    def pixel_diff( p0, p1 ):
+        if( p0[0] == p1[0] and 
+            p0[1] == p1[1] and
+            p0[2] == p1[2] ):
+            return 0.0
+        pdiff = ( math.fabs( p1[0]-p0[0] ),
+                  math.fabs( p1[1]-p0[1] ),
+                  math.fabs( p1[2]-p0[2] ) )
+        pdiff_lum = luminance( pdiff )
+        avg_lum    = ( luminance( p0 ) + luminance( p1 ) ) * 0.5
+        return pdiff_lum / avg_lum
+
+    num_bad_pixels = 0
+    diff_sum = 0.0
+    for gpixel, rpixel in itertools.izip( gpixels, rpixels ):
+        diff = pixel_diff( gpixel, rpixel )
+        diff_sum += diff
+        if diff > tol_max:
+            num_bad_pixels += 1
+    diff_avg = diff_sum / float( len( gpixels ) )
+
+    if diff_avg > tol_avg or num_bad_pixels > max_bad_pixels:
+        print "[FAIL] {} avg pixel difference:{} bad pixel count {}".format(
+                name, diff_avg, num_bad_pixels )
+        return False
+    else:
+        print "[PASS] {} avg pixel difference:{} bad pixel count {}".format(
+                name, diff_avg, num_bad_pixels )
+        return True 
+
+
+
+#------------------------------------------------------------------------------
+#
+#
+#
+#------------------------------------------------------------------------------
+import OpenEXR
+import Imath 
+import glob
+import array
+
+def check_results( gold_dir, results_dir ):
+    gold_files   = glob.glob( os.path.join( gold_dir, '*.exr' ) )
+    result_files = glob.glob( os.path.join( results_dir, '*.exr' ) )
+
+    pp = pprint.PrettyPrinter( indent=4 )
+    pp.pprint( gold_files )
+    pp.pprint( result_files )
+    for gold_file in gold_files:
+        basename = os.path.basename( gold_file )
+        result_file = '' 
+        for file in result_files:
+            if os.path.basename( file ) == basename:
+                result_files.remove( file )
+                result_file = file
+                break
+        if not result_file:
+            print "WARNING: No result found to match '{}'".format( gold_file )
+            continue
+        print "Comparing '{}':'{}'".format( gold_file, result_file )
+        FLOAT      = Imath.PixelType(Imath.PixelType.FLOAT)
+        gimage     = OpenEXR.InputFile( gold_file )
+        (GR,GG,GB) = [ array.array('f', gimage.channel(Chan, FLOAT)).tolist()
+                       for Chan in ("R", "G", "B") ]
+        gpixels    = zip( GR, GG, GB ) 
+
+        rimage     = OpenEXR.InputFile( result_file )
+        (RR,RG,RB) = [ array.array('f', rimage.channel(Chan, FLOAT)).tolist()
+                       for Chan in ("R", "G", "B") ]
+        rpixels    = zip( RR, RG, RB ) 
+
+        tol_avg = 0.000001
+        tol_max = 0.1
+        compare_images( basename, gpixels, rpixels, tol_avg, tol_max, 100 )
+
+    for result_file in result_files:
+        print "WARNING: No gold found to match '{}'".format( result_file )
+            
+        
+
+    '''
+    image = OpenEXR.InputFile( "GoldenGate.exr" )
+    (r, g, b) = golden.channels("RGB")
+    print len(r), len(g), len(b)
+    '''
+
+
+
 import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument( 'legion_root', 
@@ -113,5 +217,14 @@ parser.add_argument( '-o', '--optix-root',
 
 args = parser.parse_args()
 
-build_legion( "build_legion_regress_", args.legion_root, args.optix_root )
-run_tests( args.legion_root, os.path.join( 'build_legion_regress_', 'bin' ) )
+'''
+build_legion( "build_legion_regress_",
+              args.legion_root,
+              args.optix_root )
+
+run_tests   ( 'results_legion_regress_',
+              args.legion_root,
+              os.path.join( 'build_legion_regress_', 'bin' ) )
+'''
+check_results( 'legion_regress_gold',
+              'results_legion_regress_' ) 
