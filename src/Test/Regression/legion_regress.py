@@ -5,6 +5,7 @@ import os.path
 import shutil
 import subprocess
 import pprint
+from termcolor import colored
 
 def create_dir( dirname, remove_preexisting=True ):
     if remove_preexisting and os.path.exists( dirname ):
@@ -40,7 +41,7 @@ def build_legion( dirname, legion_root, optix_root ):
     subprocess.check_call( cmake_cmd, shell=True, executable='/bin/bash' )
 
 
-    make_cmd = 'make -j4'
+    make_cmd = 'make -j4 lr'
     print "Running <<{}>>".format( make_cmd )
     subprocess.check_call( make_cmd, shell=True, executable='/bin/bash' )
     
@@ -54,18 +55,18 @@ def build_legion( dirname, legion_root, optix_root ):
 #------------------------------------------------------------------------------
 def run_tests( dirname, legion_root, legion_bin ):
     tests = [
-            ( 'dielectric'   , '-n 32' ),
-            ( 'metal'        , '-n 32' ),
+            ( 'dielectric'   , '-n 16' ),
+            ( 'metal'        , '-n 16' ),
             ( 'monkey/monkey', '-n 8' ),
-            ( 'simple'       , '-n 32' ),
-            ( 'ward'         , '-n 32' ),
+            ( 'simple'       , '-n 16' ),
+            ( 'ward'         , '-n 16' ),
             ]
 
     lr        = os.path.join( legion_bin, 'lr' )
     scene_dir = os.path.join( legion_root, 'src/Standalone/lr/scenes' )
     create_dir( dirname )
 
-    stats = []
+    stats = [] 
 
     for test, test_args in tests:
         # execute the test
@@ -75,7 +76,7 @@ def run_tests( dirname, legion_root, legion_bin ):
         subprocess.check_call(test_cmd, shell=True, executable='/bin/bash')
 
         # print stats
-        test_stats = [ ('name', test ) ]
+        test_stats = { 'name': test }
         with open( 'legion.log', 'r' ) as log_file:
             for line in log_file:
                 if 'STAT:' in line:
@@ -83,14 +84,14 @@ def run_tests( dirname, legion_root, legion_bin ):
                     if fields[1] == 'gpu':
                         gpu_name = fields[2]
                         continue
-                    test_stats.append( ( fields[1], fields[2] ) )
+                    test_stats[ fields[1] ] = fields[2]
         stats.append( test_stats )
 
         # copy result image to result dir
         img_file = os.path.basename( test ) + '.exr'
         os.rename( img_file, os.path.join( dirname, img_file ) ) 
 
-    stat_filename = os.path.join( dirname, 'stats.csv' )
+    stat_filename = os.path.join( dirname, 'stats.py' )
     with open( stat_filename, 'a' ) as stat_file:
         stat_file.write( "gpu_name = '{}'\n".format( gpu_name ) )
         stat_file.write( "stats = " )
@@ -145,24 +146,33 @@ def compare_images( name, gpixels, rpixels, tol_avg, tol_max, max_bad_pixels ):
         return True 
 
 
+#------------------------------------------------------------------------------
+#
+#
+#
+#------------------------------------------------------------------------------
 
-#------------------------------------------------------------------------------
-#
-#
-#
-#------------------------------------------------------------------------------
 import OpenEXR
 import Imath 
 import glob
 import array
+import sys
 
-def check_results( gold_dir, results_dir ):
+def check_results( gold_dir, results_dir, idiff_path ):
+
     gold_files   = glob.glob( os.path.join( gold_dir, '*.exr' ) )
     result_files = glob.glob( os.path.join( results_dir, '*.exr' ) )
+
+    sys.path.insert( 0, results_dir )
+    stats_module = __import__( 'stats' )
+    print stats_module.gpu_name
+    print stats_module.stats
 
     pp = pprint.PrettyPrinter( indent=4 )
     pp.pprint( gold_files )
     pp.pprint( result_files )
+
+    failed = []
     for gold_file in gold_files:
         basename = os.path.basename( gold_file )
         result_file = '' 
@@ -172,28 +182,34 @@ def check_results( gold_dir, results_dir ):
                 result_file = file
                 break
         if not result_file:
-            print "WARNING: No result found to match '{}'".format( gold_file )
+            print colored( "WARNING: No result found to match '{}'".format( gold_file ), 'yellow' )
+            failed.append( gold_file + ': (No matching result file)' )
             continue
-        print "Comparing '{}':'{}'".format( gold_file, result_file )
-        FLOAT      = Imath.PixelType(Imath.PixelType.FLOAT)
-        gimage     = OpenEXR.InputFile( gold_file )
-        (GR,GG,GB) = [ array.array('f', gimage.channel(Chan, FLOAT)).tolist()
-                       for Chan in ("R", "G", "B") ]
-        gpixels    = zip( GR, GG, GB ) 
+        print colored( "Comparing '{}':'{}'".format( gold_file, result_file ), 'blue' )
+        if idiff_path:
+            idiff_cmd = idiff_path + ' -v {} {}'.format( gold_file, result_file )
+            res = subprocess.call( idiff_cmd, shell=True, executable='/bin/bash' )
+            if res != 0:
+                print colored( "TEST FAILED", 'red' )
+                failed.append( result_file + ': (Image compare fail)' )
+            else:
+                print colored( "TEST PASSED", 'green' )
 
-        rimage     = OpenEXR.InputFile( result_file )
-        (RR,RG,RB) = [ array.array('f', rimage.channel(Chan, FLOAT)).tolist()
-                       for Chan in ("R", "G", "B") ]
-        rpixels    = zip( RR, RG, RB ) 
-
-        tol_avg = 0.000001
-        tol_max = 0.1
-        compare_images( basename, gpixels, rpixels, tol_avg, tol_max, 100 )
 
     for result_file in result_files:
-        print "WARNING: No gold found to match '{}'".format( result_file )
-            
+        print colored( "WARNING: No gold found to match '{}' ... ignoring".format(result_file),
+                       'yellow' )
+
+    num_passed = len(gold_files) - len(failed)
+    num_tests  = len(gold_files)
+    color = 'green' if num_passed == num_tests else 'red' 
+    print colored( "[{}/{}] tests passed.".format( num_passed, num_tests ), color )
+    if len(failed):
+        print "Failure cases:"
+        for fail_file in failed:
+            print colored( "\t{}".format( fail_file ), 'yellow' )
         
+
 
     '''
     image = OpenEXR.InputFile( "GoldenGate.exr" )
@@ -208,12 +224,17 @@ parser = argparse.ArgumentParser()
 parser.add_argument( 'legion_root', 
                      metavar='LEGION_ROOT_DIR',
                      default='.',
-                     help='Directory path to legion root directory ' )
+                     help='Path to legion root directory ' )
 
 parser.add_argument( '-o', '--optix-root', 
                      metavar='OPTIX_ROOT_DIR',
                      default='.',
-                     help='Directory path to optix root directory ' )
+                     help='Path to optix root directory ' )
+
+parser.add_argument( '-i', '--idiff-path', 
+                     metavar='IDIFF_PATH',
+                     default='./extern/idiff',
+                     help='Path to idiff executable' )
 
 args = parser.parse_args()
 
@@ -222,9 +243,11 @@ build_legion( "build_legion_regress_",
               args.legion_root,
               args.optix_root )
 
-run_tests   ( 'results_legion_regress_',
-              args.legion_root,
-              os.path.join( 'build_legion_regress_', 'bin' ) )
+run_tests( 'results_legion_regress_',
+           args.legion_root,
+           os.path.join( 'build_legion_regress_', 'bin' ) )
 '''
+
 check_results( 'legion_regress_gold',
-              'results_legion_regress_' ) 
+               'results_legion_regress_',
+               args.idiff_path ) 
