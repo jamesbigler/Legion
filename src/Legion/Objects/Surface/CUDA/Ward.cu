@@ -193,6 +193,7 @@ legion::BSDFSample wardSampleBSDF(
                             make_float3( ward )/ sample.pdf  :
                             make_float3( 0.0f );
         sample.is_singular = 0u; 
+        sample.event_type = legion::BSDF_EVENT_DIFFUSE;
     }
     else
     {
@@ -255,6 +256,7 @@ legion::BSDFSample wardSampleBSDF(
                             make_float3( ward )/ sample.pdf  :
                             make_float3( 0.0f );
         sample.is_singular = 0u; 
+        sample.event_type  = legion::BSDF_EVENT_SPECULAR;
     }
         
     CHECK_FINITE( sample.w_in       );

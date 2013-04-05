@@ -43,7 +43,10 @@ void printUsageAndExit( const char* argv0 )
 {
     std::cout
         << "\nUsage  : " << argv0 << " [options] <scene_file.xml>\n\n"
-        << "\t-n | --num_samples <NUM_SAMPLES>  Set number of samples\n"
+        << "\t-n | --num_samples    <NUM_SAMPLES>  Set number of samples\n"
+        << "\t-r | --res            <X> <Y>        Set image resolution\n"
+        << "\t-s | --specular-depth <SPEC_DEPTH>   Set maximum specular depth\n"
+        << "\t-d | --diffuse-depth  <DIFF_DEPTH>   Set maximum diffusedepth\n"
         << std::endl;
     exit(0);
 }
@@ -60,15 +63,38 @@ int main( int argc , char** argv )
     if( argc < 2 )
         printUsageAndExit( argv[0] );
 
-    unsigned num_samples = 0u;
+    int num_samples = 0;
+    int res_x       = 0;
+    int res_y       = 0;
+    int diff_depth  = -1;
+    int spec_depth  = -1;
     for( int i = 1; i < argc-1; ++i )
     {
         const std::string arg = argv[i];
         if( arg == "-n" || arg == "--num-samples" )
         {
-            if( i == argc-2 )
+            if( i >= argc-2 )
                 printUsageAndExit( argv[0] );
-            num_samples = lr::lexical_cast<unsigned>( argv[++i] );
+            num_samples = lr::lexical_cast<int>( argv[++i] );
+        }
+        else if( arg == "-r" || arg == "--res" )
+        {
+            if( i >= argc-3 )
+                printUsageAndExit( argv[0] );
+            res_x = lr::lexical_cast<int>( argv[++i] );
+            res_y = lr::lexical_cast<int>( argv[++i] );
+        }
+        else if( arg == "-d" || arg == "--diffuse-depth" )
+        {
+            if( i >= argc-2 )
+                printUsageAndExit( argv[0] );
+            diff_depth = lr::lexical_cast<int>( argv[++i] );
+        }
+        else if( arg == "-s" || arg == "--specular-depth" )
+        {
+            if( i >= argc-2 )
+                printUsageAndExit( argv[0] );
+            spec_depth = lr::lexical_cast<int>( argv[++i] );
         }
         else
         {
@@ -94,6 +120,12 @@ int main( int argc , char** argv )
         lr::XMLToLegion translate( text, &context, true );
         if( num_samples )
             context.getRenderer()->setSamplesPerPixel( num_samples );
+        if( res_x && res_y )
+            context.getRenderer()->setResolution(legion::Index2(res_x, res_y));
+        if( diff_depth >= 0 )
+            context.getRenderer()->setMaxDiffuseDepth( diff_depth );
+        if( spec_depth >= 0 )
+            context.getRenderer()->setMaxSpecularDepth( spec_depth );
         context.render();
 
         delete [] text;

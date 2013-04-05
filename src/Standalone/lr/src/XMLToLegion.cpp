@@ -60,6 +60,10 @@ XMLToLegion::XMLToLegion( char* text,
     }
     
     XMLNode* scene_node = m_doc.first_node( "legion_scene" );
+    XMLAttribute* scene_name_attr = scene_node->first_attribute( "name" );
+    const std::string scene_name = scene_name_attr ? 
+                                   scene_name_attr->value() : 
+                                   "lr scene";
     if( !scene_node )
         throw std::runtime_error( 
                 "XMLToLegion: XML does not contian legion_scene"
@@ -69,7 +73,7 @@ XMLToLegion::XMLToLegion( char* text,
         createDisplay( scene_node->first_node("display") );
 
     if( display )
-        display->beginScene( scene_node->name() );
+        display->beginScene( scene_name );
 
     createRenderer( display, scene_node->first_node( "renderer" ) );
     createCamera  ( scene_node->first_node( "camera" ) );
@@ -241,6 +245,16 @@ void XMLToLegion::createRenderer( legion::IDisplay* display,
     if( attr )
         renderer->setResolution( 
                 lexical_cast<legion::Index2>( std::string( attr->value() ) ) );
+    
+    attr = renderer_node->first_attribute( "max_specular_depth" );
+    if( attr )
+        renderer->setMaxSpecularDepth( 
+                lexical_cast<unsigned>( std::string( attr->value() ) ) );
+    
+    attr = renderer_node->first_attribute( "max_diffuse_depth" );
+    if( attr )
+        renderer->setMaxDiffuseDepth( 
+                lexical_cast<unsigned>( std::string( attr->value() ) ) );
 
     m_ctx->setRenderer( renderer );
 }

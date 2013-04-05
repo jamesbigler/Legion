@@ -308,7 +308,7 @@ void OptiXScene::sync()
     // Update optix variables for all objects
     //
     {
-        VariableContainer vc( m_raygen_program.get() );
+        VariableContainer vc( m_optix_context.get() );
         m_renderer->setVariables( vc );
     }
         

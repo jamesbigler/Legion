@@ -55,19 +55,20 @@ def build_legion( dirname, legion_root, optix_root ):
 #------------------------------------------------------------------------------
 def run_tests( dirname, legion_root, legion_bin ):
     tests = [
-            ( 'dielectric'   , '-n 16' ),
-            ( 'metal'        , '-n 16' ),
-            ( 'monkey/monkey', '-n 8' ),
-            ( 'simple'       , '-n 16' ),
-            ( 'ward'         , '-n 16' ),
+            ( 'dielectric'   , '-n 4096 -r 512 384 -s 4 -d 1' ),
+            ( 'metal'        , '-n 1024 -r 512 384 -s 3 -d 1' ),
+            ( 'monkey/monkey', '-n 1024 -r 480 270 -s 2 -d 1' ),
+            ( 'simple'       , '-n 512  -r 512 384 -d 4'  ),
+            ( 'ward'         , '-n 1024 -r 512 384 -s 3 -d 1' ),
             ]
 
     lr        = os.path.join( legion_bin, 'lr' )
     scene_dir = os.path.join( legion_root, 'src/Standalone/lr/scenes' )
     create_dir( dirname )
 
-    stats = [] 
+    stats = {} 
 
+    os.environ[ 'optix.compile.doRematerialization' ] = '100'
     for test, test_args in tests:
         # execute the test
         xml_file = os.path.join( scene_dir, test+'.xml' )
@@ -76,16 +77,16 @@ def run_tests( dirname, legion_root, legion_bin ):
         subprocess.check_call(test_cmd, shell=True, executable='/bin/bash')
 
         # print stats
-        test_stats = { 'name': test }
+        test_stats = {}
         with open( 'legion.log', 'r' ) as log_file:
             for line in log_file:
                 if 'STAT:' in line:
                     fields = map( lambda x: x.strip(), line.split( '|' ) )
                     if fields[1] == 'gpu':
-                        gpu_name = fields[2]
+                        gpu_name = fields[2].strip( ',' )
                         continue
                     test_stats[ fields[1] ] = fields[2]
-        stats.append( test_stats )
+        stats[test] = test_stats
 
         # copy result image to result dir
         img_file = os.path.basename( test ) + '.exr'
@@ -163,15 +164,6 @@ def check_results( gold_dir, results_dir, idiff_path ):
     gold_files   = glob.glob( os.path.join( gold_dir, '*.exr' ) )
     result_files = glob.glob( os.path.join( results_dir, '*.exr' ) )
 
-    sys.path.insert( 0, results_dir )
-    stats_module = __import__( 'stats' )
-    print stats_module.gpu_name
-    print stats_module.stats
-
-    pp = pprint.PrettyPrinter( indent=4 )
-    pp.pprint( gold_files )
-    pp.pprint( result_files )
-
     failed = []
     for gold_file in gold_files:
         basename = os.path.basename( gold_file )
@@ -182,13 +174,17 @@ def check_results( gold_dir, results_dir, idiff_path ):
                 result_file = file
                 break
         if not result_file:
-            print colored( "WARNING: No result found to match '{}'".format( gold_file ), 'yellow' )
+            print colored(
+                    "WARNING: No result found to match '{}'".format(
+                        gold_file ), 'yellow'
+                    )
             failed.append( gold_file + ': (No matching result file)' )
             continue
-        print colored( "Comparing '{}':'{}'".format( gold_file, result_file ), 'blue' )
+        print colored( "Comparing '{}':'{}'".format( gold_file, result_file ),
+                       'blue' )
         if idiff_path:
-            idiff_cmd = idiff_path + ' -v {} {}'.format( gold_file, result_file )
-            res = subprocess.call( idiff_cmd, shell=True, executable='/bin/bash' )
+            idiff_cmd = idiff_path + ' -v {} {}'.format(gold_file, result_file)
+            res = subprocess.call(idiff_cmd, shell=True, executable='/bin/bash')
             if res != 0:
                 print colored( "TEST FAILED", 'red' )
                 failed.append( result_file + ': (Image compare fail)' )
@@ -197,25 +193,36 @@ def check_results( gold_dir, results_dir, idiff_path ):
 
 
     for result_file in result_files:
-        print colored( "WARNING: No gold found to match '{}' ... ignoring".format(result_file),
-                       'yellow' )
+        print colored(
+                "WARNING: No gold found to match '{}' ... ignoring".format(
+                    result_file), 'yellow' 
+                )
 
     num_passed = len(gold_files) - len(failed)
     num_tests  = len(gold_files)
     color = 'green' if num_passed == num_tests else 'red' 
-    print colored( "[{}/{}] tests passed.".format( num_passed, num_tests ), color )
+    print colored( "[{}/{}] tests passed.".format(num_passed, num_tests), color)
     if len(failed):
         print "Failure cases:"
         for fail_file in failed:
             print colored( "\t{}".format( fail_file ), 'yellow' )
         
+    import legion_regress_gold.stats as gold_stats
+    sys.path.insert( 0, results_dir)
+    import stats as results_stats
 
-
-    '''
-    image = OpenEXR.InputFile( "GoldenGate.exr" )
-    (r, g, b) = golden.channels("RGB")
-    print len(r), len(g), len(b)
-    '''
+    print colored( 'Comparing render times (seconds)', 'blue' )
+    for name, gold_results in gold_stats.stats[results_stats.gpu_name].items():
+        print '{:<40}'.format( colored( name, 'yellow' ) ),
+        test_results = results_stats.stats[ name ]
+        gold_render_time = float( gold_results[ 'render time' ] )
+        test_render_time = float( test_results[ 'render time' ] )
+        speedup = test_render_time / gold_render_time
+        color = 'green' if speedup > 1.05 else 'red' if speedup < 0.95 else 'white'
+        print colored( '{:>8.3f} -> {:>8.3f} : {:>5.3f}'.format(
+            gold_render_time,
+            test_render_time,
+            speedup ), color )
 
 
 
@@ -238,7 +245,6 @@ parser.add_argument( '-i', '--idiff-path',
 
 args = parser.parse_args()
 
-'''
 build_legion( "build_legion_regress_",
               args.legion_root,
               args.optix_root )
@@ -246,7 +252,6 @@ build_legion( "build_legion_regress_",
 run_tests( 'results_legion_regress_',
            args.legion_root,
            os.path.join( 'build_legion_regress_', 'bin' ) )
-'''
 
 check_results( 'legion_regress_gold',
                'results_legion_regress_',

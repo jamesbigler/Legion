@@ -95,6 +95,7 @@ legion::BSDFSample dielectricSampleBSDF(
         sample.f_over_pdf  = transmittance*attenuation;
     }
     sample.is_singular = true;
+    sample.event_type = legion::BSDF_EVENT_SPECULAR;
 
     CHECK_FINITE( sample.w_in       );
     CHECK_FINITE( sample.f_over_pdf );
