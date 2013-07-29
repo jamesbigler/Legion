@@ -245,6 +245,7 @@ public:
         sample.is_singular = true;
         sample.pdf         = 0.0f;
         sample.f_over_pdf  = make_float3( 0.0f );
+        sample.event_type  = legion::BSDF_EVENT_SPECULAR; 
 
 
         // Get the microfacet normal

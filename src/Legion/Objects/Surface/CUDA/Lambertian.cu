@@ -59,6 +59,7 @@ legion::BSDFSample lambertianSampleBSDF(
     sample.pdf         = z * legion::ONE_DIV_PI;
     sample.f_over_pdf  = make_float3( R );
     sample.is_singular = false;
+    sample.event_type  = legion::BSDF_EVENT_DIFFUSE;
 
     CHECK_FINITE( sample.w_in       );
     CHECK_FINITE( sample.f_over_pdf );

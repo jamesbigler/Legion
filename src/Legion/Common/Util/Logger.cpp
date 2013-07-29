@@ -50,6 +50,7 @@ std::string Log::toString( Log::Level level )
     {
         "ERROR",
         "WARNING",
+        "STAT",
         "INFO",
         "DEBUG",
         "DEBUG1",

@@ -43,6 +43,7 @@
 #define LLOG_WARN    LLOG( legion::Log::WARNING )
 #define LLOG_INFO    LLOG( legion::Log::INFO    )
 #define LLOG_DEBUG   LLOG( legion::Log::DEBUG   )
+#define LLOG_STAT    LLOG( legion::Log::STAT    )
 
 namespace legion
 {
@@ -70,6 +71,7 @@ public:
     {
         ERROR=0,
         WARNING,
+        STAT,
         INFO,
         DEBUG,
         DEBUG1,

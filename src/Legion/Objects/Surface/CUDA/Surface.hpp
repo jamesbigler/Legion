@@ -28,12 +28,20 @@
 
 namespace legion
 {
+
+enum BSDFEventType
+{
+    BSDF_EVENT_SPECULAR=0,
+    BSDF_EVENT_DIFFUSE
+};
+
 struct BSDFSample
 {
     float3 w_in;
     float3 f_over_pdf;
     float pdf;
-    unsigned is_singular;
+    short is_singular;
+    short event_type;
 };
 
 }

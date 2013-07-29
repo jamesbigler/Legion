@@ -23,115 +23,11 @@
 
 #include <Legion/Legion.hpp>
 #include <rapidxml/rapidxml.hpp>
+#include <Util.hpp>
 #include <XMLToLegion.hpp>
 #include <iostream>
-#include <stdexcept>
-#include <sstream>
 
 using namespace lr;
-
-//------------------------------------------------------------------------------
-//
-//
-//
-//------------------------------------------------------------------------------
-namespace
-{
-
-template<typename Target, typename Source>
-Target lexical_cast( const Source& arg )
-{
-    std::stringstream interpreter;
-    Target result;
-    if( !( interpreter << arg     )       ||
-        !( interpreter >> result  )       ||
-        !( interpreter >> std::ws ).eof() )
-        throw std::runtime_error( "lexical_cast failure." );
-    return result;
-}
-
-
-template<>
-legion::Index2 lexical_cast<legion::Index2, std::string>( 
-        const std::string& arg )
-{
-    std::stringstream oss( arg );
-    legion::Index2 result;
-    if( !( oss >> result[0] >> result[1] ) ||
-        !( oss >> std::ws ).eof()        )
-        throw std::runtime_error( "lexical_cast failure." );
-    return result;
-}
-
-
-template<>
-legion::Vector2 lexical_cast<legion::Vector2, std::string>( 
-        const std::string& arg )
-{
-    std::stringstream oss( arg );
-    legion::Vector2 result;
-    if( !( oss >> result[0] >> result[1] ) ||
-        !( oss >> std::ws ).eof()        )
-        throw std::runtime_error( "lexical_cast failure." );
-    return result;
-}
-
-
-template<>
-legion::Vector3 lexical_cast<legion::Vector3, std::string>(
-        const std::string& arg )
-{
-    std::stringstream oss( arg );
-    legion::Vector3 result;
-    if( !( oss >> result[0] >> result[1] >> result[2] ) ||
-        !( oss >> std::ws ).eof()                     )
-        throw std::runtime_error( "lexical_cast failure." );
-    return result;
-}
-
-
-template<>
-legion::Vector4 lexical_cast<legion::Vector4, std::string>(
-        const std::string& arg )
-{
-    std::stringstream oss( arg );
-    legion::Vector4 result;
-    if( !( oss >> result[0] >> result[1] >> result[2] >> result[3] ) ||
-        !( oss >> std::ws ).eof()                                  )
-        throw std::runtime_error( "lexical_cast failure." );
-    return result;
-}
-
-
-template<>
-legion::Matrix lexical_cast<legion::Matrix, std::string>(
-        const std::string& arg )
-{
-    std::stringstream oss( arg );
-    legion::Matrix result;
-    if( !(oss >> result[ 0] >> result[ 1] >> result[ 2] >> result[ 3]
-              >> result[ 4] >> result[ 5] >> result[ 6] >> result[ 7]
-              >> result[ 8] >> result[ 9] >> result[10] >> result[11]
-              >> result[12] >> result[13] >> result[14] >> result[15] ) ||
-        !( oss >> std::ws ).eof()                                     )
-        throw std::runtime_error( "lexical_cast failure." );
-    return result;
-}
-
-
-template<>
-legion::Color lexical_cast<legion::Color, std::string>(
-        const std::string& arg )
-{
-    std::stringstream oss( arg );
-    legion::Color result;
-    if( !( oss >> result[0] >> result[1] >> result[2] ) ||
-        !( oss >> std::ws ).eof()                     )
-        throw std::runtime_error( "lexical_cast failure." );
-    return result;
-}
-
-}
 
 //------------------------------------------------------------------------------
 //
@@ -164,6 +60,10 @@ XMLToLegion::XMLToLegion( char* text,
     }
     
     XMLNode* scene_node = m_doc.first_node( "legion_scene" );
+    XMLAttribute* scene_name_attr = scene_node->first_attribute( "name" );
+    const std::string scene_name = scene_name_attr ? 
+                                   scene_name_attr->value() : 
+                                   "lr scene";
     if( !scene_node )
         throw std::runtime_error( 
                 "XMLToLegion: XML does not contian legion_scene"
@@ -173,7 +73,7 @@ XMLToLegion::XMLToLegion( char* text,
         createDisplay( scene_node->first_node("display") );
 
     if( display )
-        display->beginScene( scene_node->name() );
+        display->beginScene( scene_name );
 
     createRenderer( display, scene_node->first_node( "renderer" ) );
     createCamera  ( scene_node->first_node( "camera" ) );
@@ -345,6 +245,16 @@ void XMLToLegion::createRenderer( legion::IDisplay* display,
     if( attr )
         renderer->setResolution( 
                 lexical_cast<legion::Index2>( std::string( attr->value() ) ) );
+    
+    attr = renderer_node->first_attribute( "max_specular_depth" );
+    if( attr )
+        renderer->setMaxSpecularDepth( 
+                lexical_cast<unsigned>( std::string( attr->value() ) ) );
+    
+    attr = renderer_node->first_attribute( "max_diffuse_depth" );
+    if( attr )
+        renderer->setMaxDiffuseDepth( 
+                lexical_cast<unsigned>( std::string( attr->value() ) ) );
 
     m_ctx->setRenderer( renderer );
 }

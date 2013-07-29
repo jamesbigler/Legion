@@ -42,19 +42,24 @@ public:
         : IObject( context ),
           m_display( 0u),
           m_resolution( 1024, 768u ),
-          m_samples_per_pixel( 64u )
+          m_spp( 64u ),
+          m_max_diff_depth( 2u ),
+          m_max_spec_depth( 8u )
     {}
 
     virtual ~IRenderer() {}
 
-    void      setDisplay( IDisplay* display )    { m_display = display; }
-    IDisplay* getDisplay()const                  { return m_display;    }
+    void      setDisplay( IDisplay* display )      { m_display = display; }
+    IDisplay* getDisplay()const                    { return m_display;    }
 
-    void     setSamplesPerPixel( unsigned spp )  { m_samples_per_pixel = spp;  }
-    unsigned getSamplesPerPixel()const           { return m_samples_per_pixel; }
+    void     setSamplesPerPixel( unsigned spp )    { m_spp = spp;  }
+    unsigned getSamplesPerPixel()const             { return m_spp; }
     
-    void     setResolution( const Index2& res )  { m_resolution = res;  }
-    Index2   getResolution()const                { return m_resolution; }
+    void     setResolution( const Index2& res )    { m_resolution = res;  }
+    Index2   getResolution()const                  { return m_resolution; }
+    
+    void     setMaxDiffuseDepth( unsigned depth )  { m_max_diff_depth = depth; }
+    void     setMaxSpecularDepth( unsigned depth ) { m_max_spec_depth = depth; }
 
     virtual const char*    name()const=0;
     virtual const char*    rayGenProgramName()const=0;
@@ -63,7 +68,9 @@ public:
 protected:
     IDisplay* m_display;
     Index2    m_resolution;
-    unsigned  m_samples_per_pixel;
+    unsigned  m_spp;
+    unsigned  m_max_diff_depth;
+    unsigned  m_max_spec_depth;
 };
 
 }

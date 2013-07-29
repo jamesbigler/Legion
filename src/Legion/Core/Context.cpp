@@ -99,10 +99,10 @@ public:
     PluginContext& getPluginContext();
 
 private:
+    std::ofstream   m_log_file;
     Factory         m_factory;
     OptiXScene      m_optix_scene;
     PluginContext   m_plugin_context;
-    std::ofstream   m_log_file;
 
     IRenderer*              m_renderer;
     ICamera*                m_camera;
@@ -112,14 +112,29 @@ private:
 
 
 Context::Impl::Impl( Context* context ) 
-    : m_factory( context ),
+    : m_log_file( "legion.log" ),
+      m_factory( context ),
       m_optix_scene(),
       m_plugin_context( m_optix_scene.getOptiXContext() ),
-      m_log_file( "legion.log" ),
       m_renderer( 0 ),
       m_camera( 0 )
 {
     Log::setStream( m_log_file );
+
+    // Log gpu info
+    optix::Context optix_context = m_optix_scene.getOptiXContext();
+    std::vector<int> devices = optix_context->getEnabledDevices();
+    std::vector<std::string> device_names;
+    for( std::vector<int>::iterator it = devices.begin();
+         it != devices.end();
+         ++it )
+        device_names.push_back( optix_context->getDeviceName( *it ) );
+    std::sort( device_names.begin(), device_names.end() );
+    std::ostringstream oss;
+    std::copy( device_names.begin(), device_names.end(),
+               std::ostream_iterator<std::string>( oss, "," ) );
+    LLOG_STAT << "| gpu | " << oss.str();
+
     Factory& f = m_factory;
     f.registerObject( "ThinLens",              &ThinLens::create              );
     f.registerObject( "ImageFileDisplay",      &ImageFileDisplay::create      );

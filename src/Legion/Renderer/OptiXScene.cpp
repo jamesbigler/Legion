@@ -33,6 +33,8 @@
 #include <Legion/Objects/VariableContainer.hpp>
 #include <Legion/Renderer/OptiXScene.hpp>
 #include <config.hpp>
+#include <algorithm>
+#include <iterator>
 
 using namespace legion;
 
@@ -306,7 +308,7 @@ void OptiXScene::sync()
     // Update optix variables for all objects
     //
     {
-        VariableContainer vc( m_raygen_program.get() );
+        VariableContainer vc( m_optix_context.get() );
         m_renderer->setVariables( vc );
     }
         

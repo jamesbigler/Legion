@@ -33,6 +33,9 @@ rtDeclareVariable( legion::LocalGeometry, local_geom, attribute local_geom, );
 rtDeclareVariable( optix::Ray,            ray,        rtCurrentRay, );
 rtDeclareVariable( float,                 t_hit,      rtIntersectionDistance, );
 
+rtDeclareVariable( unsigned, max_diff_depth,  , );
+rtDeclareVariable( unsigned, max_spec_depth,  , );
+
 
 RT_PROGRAM
 void legionAnyHit()
@@ -62,7 +65,7 @@ void legionClosestHit()
     {
         legion::LCGRand rand( radiance_prd.rand_seed );
         const unsigned sobol_index = radiance_prd.sobol_index;
-        const float3 bsdf_seed = radiance_prd.depth > 0 ?
+        const float3 bsdf_seed = radiance_prd.diff_depth > 0 ?
             make_float3( rand(), rand(), rand() )       :
             make_float3( 
                     legion::Sobol::gen( sobol_index, radiance_prd.sobol_dim++ ),
@@ -81,13 +84,16 @@ void legionClosestHit()
 
         const float3 P = ray.origin + t_hit * ray.direction;
 
-        radiance_prd.origin              = P;
-        radiance_prd.direction           = bsdf_sample.w_in;
-        radiance_prd.attenuation         = bsdf_sample.f_over_pdf;
-        radiance_prd.pdf                 = bsdf_sample.pdf; 
-        radiance_prd.done                = bsdf_sample.pdf <= 0.0;
-        radiance_prd.use_mis_weight      = !bsdf_sample.is_singular; 
-
+        if( bsdf_sample.event_type == legion::BSDF_EVENT_SPECULAR ) radiance_prd.spec_depth += 1;
+        if( bsdf_sample.event_type == legion::BSDF_EVENT_DIFFUSE  ) radiance_prd.diff_depth += 1;
+        radiance_prd.origin         = P;
+        radiance_prd.direction      = bsdf_sample.w_in;
+        radiance_prd.attenuation    = bsdf_sample.f_over_pdf;
+        radiance_prd.pdf            = bsdf_sample.pdf; 
+        radiance_prd.use_mis_weight = !bsdf_sample.is_singular; 
+        radiance_prd.done           = bsdf_sample.pdf <= 0.0 ||
+                                      radiance_prd.spec_depth>max_spec_depth ||
+                                      radiance_prd.diff_depth>max_diff_depth;
         
         /*
         radiance_prd.radiance = bsdf_sample.f_over_pdf;
