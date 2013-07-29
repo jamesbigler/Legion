@@ -51,7 +51,7 @@ def build_legion( dirname, legion_root, optix_root ):
 #
 #
 #------------------------------------------------------------------------------
-def run_tests( legion_root, legion_bin ):
+def run_tests( dirname, legion_root, legion_bin ):
     tests = [
             'dielectric',
             'metal', 
@@ -60,7 +60,6 @@ def run_tests( legion_root, legion_bin ):
             'ward',
             ]
 
-    dirname = 'results_legion_regress_'
     create_dir( dirname )
 
     lr = os.path.join( legion_bin, 'lr' )
@@ -89,5 +88,11 @@ parser.add_argument( '-o', '--optix-root',
 
 args = parser.parse_args()
 
-build_legion( "build_legion_regress_", args.legion_root, args.optix_root )
-run_tests( args.legion_root, os.path.join( 'build_legion_regress_', 'bin' ) )
+build_legion( "build_legion_regress_",
+              args.legion_root,
+              args.optix_root )
+
+run_tests( 'results_legion_regress_',
+           args.legion_root,
+           os.path.join( 'build_legion_regress_', 'bin' ) )
+    
