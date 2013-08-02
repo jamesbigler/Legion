@@ -31,6 +31,7 @@
 #include <Legion/Objects/Renderer/IRenderer.hpp>
 #include <Legion/Objects/VariableContainer.hpp>
 #include <Legion/Renderer/OptiXScene.hpp>
+#include <algorithm>
 #include <fstream>
 
 // TODO: For object registration.  Better way to do this???  Perhaps a static
