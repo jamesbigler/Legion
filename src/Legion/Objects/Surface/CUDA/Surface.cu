@@ -109,15 +109,19 @@ void legionClosestHit()
     // Emitted contribution
     //
     {
-        const float3 w_in = ray.direction;
+        legion::LightSample light_sample;
+        light_sample.w_in     = -ray.direction; 
+        light_sample.distance = t_hit; 
+        light_sample.normal   = local_geom.shading_normal; 
+        light_sample.pdf      = 1.0f;
 
-        radiance = legionSurfaceEmission( w_in, local_geom );
+        radiance = legionSurfaceEmission( light_sample );
         CHECK_FINITE( radiance );
 
         if( last_use_mis && !legion::isBlack( radiance  ))
         {
             const float3 P           = ray.origin;
-            const float  light_pdf  = legionLightPDF( w_in, P )*choose_light_p;
+            const float  light_pdf  = legionLightPDF( light_sample.w_in, P )*choose_light_p;
             const float  bsdf_pdf   = last_pdf; 
             const float  mis_weight = legion::powerHeuristic(
                                           bsdf_pdf, light_pdf );
@@ -183,11 +187,7 @@ void legionClosestHit()
 
 
                 const float3 light_radiance = 
-                    legion::lightEvaluate( 
-                            light_index, 
-                            light_sample.w_in, 
-                            light_sample.distance,
-                            light_sample.normal );
+                    legion::lightEvaluate( light_index, light_sample );
                 CHECK_FINITE( light_radiance );
 
                 radiance += light_radiance*atten;

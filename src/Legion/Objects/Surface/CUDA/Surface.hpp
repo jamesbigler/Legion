@@ -24,6 +24,7 @@
 #define LEGION_OBJECTS_SURFACE_CUDA_SURFACE_HPP_
 
 #include <Legion/Objects/cuda_common.hpp>
+#include <Legion/Objects/Light/CUDA/Light.hpp>
 
 
 namespace legion
@@ -46,6 +47,8 @@ struct BSDFSample
 
 }
 
+rtDeclareVariable( float, legionSurfaceArea, , );
+
 rtCallableProgram( legion::BSDFSample,
                    legionSurfaceSampleBSDF,
                    ( float3, float3 , legion::LocalGeometry ) );
@@ -58,15 +61,18 @@ rtCallableProgram( float4,
                    legionSurfaceEvaluateBSDF,
                    ( float3 , legion::LocalGeometry, float3 ) );
 
+// pdf          legionSurfacePDF(
+//                   float3 w_in,
+//                   LocalGeometry p,
+//                   float3 w_out)
 rtCallableProgram( float, 
                    legionSurfacePDF,
                    ( float3, legion::LocalGeometry, float3 ) );
 
-// (w_out, shading_point)
-rtDeclareVariable( float, legionSurfaceArea, , );
+// emittance    legionSurfaceEmission( point_on_light )
 rtCallableProgram( float3, 
                    legionSurfaceEmission,
-                   ( float3, legion::LocalGeometry ) ); 
+                   ( legion::LightSample ) ); 
 
 //------------------------------------------------------------------------------
 //
@@ -75,14 +81,14 @@ rtCallableProgram( float3,
 //------------------------------------------------------------------------------
 
 RT_CALLABLE_PROGRAM
-float3 nullSurfaceEmission( float3 w_in, float3 light_point )
+float3 nullSurfaceEmission( legion::LightSample )
 {
     return make_float3( 0.0f );
 }
 
 
 RT_CALLABLE_PROGRAM
-legion::BSDFSample nullSurfaceSampleBSDF( float2 seed, float3 w_out, legion::LocalGeometry p )
+legion::BSDFSample nullSurfaceSampleBSDF( float3 seed, float3 w_out, legion::LocalGeometry p )
 {
     legion::BSDFSample sample;
     sample.w_in        = make_float3( 0.0f );

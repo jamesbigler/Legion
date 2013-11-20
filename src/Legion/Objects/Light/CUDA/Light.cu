@@ -69,7 +69,7 @@ legion::LightSample nullLightSample( float2, float3, float3 )
 }
 
 RT_CALLABLE_PROGRAM
-float3 nullLightEvaluate( float3, float, float3 )
+float3 nullLightEvaluate( legion::LightSample )
 { 
     return make_float3( 0.0f );
 } 

@@ -23,14 +23,14 @@
 #include <Legion/Objects/cuda_common.hpp>
 
 RT_CALLABLE_PROGRAM
-float legionDefaultTextureProc1( float2, float3 )
+float legionDefaultTextureProc1( legion::LocalGeometry, float3 )
 { return 0.0f; }
 
 RT_CALLABLE_PROGRAM
-float2 legionDefaultTextureProc2( float2, float3 )
+float2 legionDefaultTextureProc2( legion::LocalGeometry, float3 )
 { return make_float2( 0.0f ); }
 
 RT_CALLABLE_PROGRAM
-float4 legionDefaultTextureProc4( float2, float3 )
+float4 legionDefaultTextureProc4( legion::LocalGeometry, float3 )
 { return make_float4( 0.0f, 1.0f, 0.0f, 0.0f ); }
 

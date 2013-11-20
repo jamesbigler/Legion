@@ -57,12 +57,12 @@ rtCallableProgram( legion::LightSample, legionLightSample_2, ( float2, float3, f
 rtCallableProgram( legion::LightSample, legionLightSample_3, ( float2, float3, float3 ) ); 
 rtCallableProgram( legion::LightSample, legionLightSample_4, ( float2, float3, float3 ) ); 
 
-// float3 legionLightEmission( float3 w_in, float light_dist, float3 light_normal  )
-rtCallableProgram( float3, legionLightEvaluate_0, ( float3, float, float3 ) ); 
-rtCallableProgram( float3, legionLightEvaluate_1, ( float3, float, float3 ) ); 
-rtCallableProgram( float3, legionLightEvaluate_2, ( float3, float, float3 ) ); 
-rtCallableProgram( float3, legionLightEvaluate_3, ( float3, float, float3 ) ); 
-rtCallableProgram( float3, legionLightEvaluate_4, ( float3, float, float3 ) ); 
+// float3 legionLightEmission( legion::LightSample light_info )
+rtCallableProgram( float3, legionLightEvaluate_0, ( legion::LightSample ) ); 
+rtCallableProgram( float3, legionLightEvaluate_1, ( legion::LightSample ) ); 
+rtCallableProgram( float3, legionLightEvaluate_2, ( legion::LightSample ) ); 
+rtCallableProgram( float3, legionLightEvaluate_3, ( legion::LightSample ) ); 
+rtCallableProgram( float3, legionLightEvaluate_4, ( legion::LightSample ) ); 
 
 namespace legion
 {
@@ -82,15 +82,15 @@ LightSample lightSample( unsigned light_idx, float2 seed, float3 shading_point, 
 
 
 LDEVICE inline
-float3 lightEvaluate( unsigned light_idx, float3 w_in, float light_dist, float3 light_normal )
+float3 lightEvaluate( unsigned light_idx, legion::LightSample sample )
 {
     switch( light_idx )
     {
-        case 0:  return legionLightEvaluate_0( w_in, light_dist, light_normal );
-        case 1:  return legionLightEvaluate_1( w_in, light_dist, light_normal );
-        case 2:  return legionLightEvaluate_2( w_in, light_dist, light_normal );
-        case 3:  return legionLightEvaluate_3( w_in, light_dist, light_normal );
-        default: return legionLightEvaluate_4( w_in, light_dist, light_normal );
+        case 0:  return legionLightEvaluate_0( sample );
+        case 1:  return legionLightEvaluate_1( sample );
+        case 2:  return legionLightEvaluate_2( sample );
+        case 3:  return legionLightEvaluate_3( sample );
+        default: return legionLightEvaluate_4( sample );
     };
 }
 

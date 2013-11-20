@@ -34,10 +34,7 @@ float3 constantEnvironmentMissEvaluate(
 
 
 RT_CALLABLE_PROGRAM
-float3 constantEnvironmentLightEvaluate( 
-        float3 dir, 
-        float, 
-        float3 )
+float3 constantEnvironmentLightEvaluate( legion::LightSample )
 {
     return radiance; 
 }
