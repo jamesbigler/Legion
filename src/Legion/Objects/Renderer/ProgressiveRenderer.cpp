@@ -24,6 +24,7 @@
 #include <Legion/Objects/Renderer/ProgressiveRenderer.hpp>
 #include <Legion/Objects/Display/IDisplay.hpp>
 #include <Legion/Objects/VariableContainer.hpp>
+#include <Legion/Common/Math/MTRand.hpp>
 #include <Legion/Common/Util/AutoTimerHelpers.hpp>
 #include <Legion/Common/Util/Logger.hpp>
 
@@ -84,7 +85,7 @@ void ProgressiveRenderer::render( VariableContainer& container )
     //
     // Progressive loop
     //
-    srand48( 12345678 );
+    legion::MTRand32 mtrand;
 
     LoopTimerInfo progressive_updates( "\tProgressive loop    :" );
 
@@ -96,7 +97,7 @@ void ProgressiveRenderer::render( VariableContainer& container )
         LoopTimer timer( progressive_updates );
 
         container.setUnsigned( "sample_index", i         );
-        container.setFloat   ( "light_seed"  , drand48() );
+        container.setFloat   ( "light_seed"  , mtrand() );
         launchOptiX( getResolution() );
 
         const IDisplay::FrameType frame_type = m_display->getUpdateFrameType();
