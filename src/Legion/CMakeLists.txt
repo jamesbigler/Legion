@@ -39,16 +39,26 @@ include_directories(
     "${CMAKE_BINARY_DIR}/include"
     )
 
+if( WIN32 )
+  include_directories(
+    "${CMAKE_SOURCE_DIR}/src/Support/openexr-2.0.1/config.windows"
+    "${CMAKE_SOURCE_DIR}/src/Support/ilmbase-2.0.1/config.windows"
+    )
+else()
+  include_directories(
+    "${CMAKE_SOURCE_DIR}/src/Support/openexr-2.0.1/config"
+    "${CMAKE_SOURCE_DIR}/src/Support/ilmbase-2.0.1/config"
+    )
+endif()
+
 include_directories(
     "${CMAKE_SOURCE_DIR}/src/Support/openexr-2.0.1"
-    "${CMAKE_SOURCE_DIR}/src/Support/openexr-2.0.1/config"
     "${CMAKE_SOURCE_DIR}/src/Support/openexr-2.0.1/IlmImf"
     "${CMAKE_SOURCE_DIR}/src/Support/ilmbase-2.0.1"
     "${CMAKE_SOURCE_DIR}/src/Support/ilmbase-2.0.1/Half"
     "${CMAKE_SOURCE_DIR}/src/Support/ilmbase-2.0.1/Iex"
     "${CMAKE_SOURCE_DIR}/src/Support/ilmbase-2.0.1/Imath"
     "${CMAKE_SOURCE_DIR}/src/Support/ilmbase-2.0.1/IlmThread"
-    "${CMAKE_SOURCE_DIR}/src/Support/ilmbase-2.0.1/config"
     )
 
 # build the library and ptx files

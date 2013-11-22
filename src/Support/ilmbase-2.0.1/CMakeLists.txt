@@ -113,9 +113,9 @@ ENDIF ()
 
 # Tests
 
-ADD_SUBDIRECTORY ( HalfTest )
-ADD_SUBDIRECTORY ( IexTest )
-ADD_SUBDIRECTORY ( ImathTest )
+#ADD_SUBDIRECTORY ( HalfTest )
+#ADD_SUBDIRECTORY ( IexTest )
+#ADD_SUBDIRECTORY ( ImathTest )
 
 # Installation
 

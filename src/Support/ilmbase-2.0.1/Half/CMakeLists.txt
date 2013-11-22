@@ -1,6 +1,6 @@
 # yue.nicholas@gmail.com
 
-ADD_EXECUTABLE ( eLut eLut.cpp )
+#ADD_EXECUTABLE ( eLut eLut.cpp )
 
 ADD_CUSTOM_COMMAND (
   TARGET eLut POST_BUILD
@@ -12,7 +12,7 @@ SET_SOURCE_FILES_PROPERTIES(
   PROPERTIES HEADER_FILE_ONLY TRUE
   )
 
-ADD_EXECUTABLE ( toFloat toFloat.cpp )
+#ADD_EXECUTABLE ( toFloat toFloat.cpp )
 ADD_CUSTOM_COMMAND (
   TARGET toFloat POST_BUILD
   COMMAND toFloat > ${CMAKE_CURRENT_SOURCE_DIR}/toFloat.h
