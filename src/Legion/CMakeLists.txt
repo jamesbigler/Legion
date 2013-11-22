@@ -1,7 +1,5 @@
 
 
-find_package( ZLIB REQUIRED )
-
 set( PTX_OUTPUT_DIR "${CMAKE_BINARY_DIR}/lib/ptx" CACHE PATH
      "Path to where generated PTX is stored" 
      ) 
@@ -42,7 +40,6 @@ include_directories(
     )
 
 include_directories(
-    "${ZLIB_INCLUDE_DIRS}"
     "${CMAKE_SOURCE_DIR}/src/Support/openexr-2.0.1"
     "${CMAKE_SOURCE_DIR}/src/Support/openexr-2.0.1/config"
     "${CMAKE_SOURCE_DIR}/src/Support/openexr-2.0.1/IlmImf"
@@ -157,17 +154,17 @@ add_library( legion SHARED
 
 # Link against optix
 target_link_libraries( legion
-    optix
-    ${optix_rpath}
-    IlmImf
+    ${Boost_LIBRARIES}
     Half
     Iex
     IexMath
     IlmImf
+    IlmImf
     IlmThread
     Imath
-    ${Boost_LIBRARIES}
-    ${ZLIB_LIBRARIES}
+    optix
+    ${optix_rpath}
+    zlib
     )
 
 

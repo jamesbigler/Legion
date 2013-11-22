@@ -27,6 +27,7 @@ find_package( OptiX    REQUIRED )
 find_package( CUDA 4.0 REQUIRED )
 
 include_directories(
+    "${CMAKE_BINARY_DIR}/include"
     "${CMAKE_CURRENT_SOURCE_DIR}"
     "${CUDA_INCLUDE_DIRS}" 
     "${OptiX_INCLUDE}"

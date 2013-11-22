@@ -21,6 +21,8 @@ INCLUDE_DIRECTORIES (
   "${CMAKE_SOURCE_DIR}/src/Support/ilmbase-2.0.1/Imath"
   "${CMAKE_SOURCE_DIR}/src/Support/ilmbase-2.0.1/IlmThread"
   "${CMAKE_SOURCE_DIR}/src/Support/ilmbase-2.0.1/config"
+  "${CMAKE_SOURCE_DIR}/src/Support/ilmbase-2.0.1/config"
+  "${CMAKE_SOURCE_DIR}/src/Support/zlib-1.2.8"
 )
 
 IF (WIN32)
@@ -33,12 +35,12 @@ IF (WIN32)
   SET ( Z_LIB zlib )
 ELSE()
   SET ( PTHREAD_LIB pthread )
-  SET ( Z_LIB z )
+  #SET ( Z_LIB z )
+  SET ( Z_LIB zlib )
 ENDIF()
 
 INCLUDE_DIRECTORIES ( ${ILMBASE_PACKAGE_PREFIX}/include/OpenEXR )
 LINK_DIRECTORIES ( ${ILMBASE_PACKAGE_PREFIX}/lib )
-MESSAGE ( "ILMBASE_PACKAGE_PREFIX = " ${ILMBASE_PACKAGE_PREFIX})
 
 ADD_SUBDIRECTORY ( IlmImf )
 #ADD_SUBDIRECTORY ( IlmImfTest )
