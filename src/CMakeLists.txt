@@ -25,13 +25,10 @@ set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O2 -g")
 
 find_package( OptiX    REQUIRED )
 find_package( CUDA 4.0 REQUIRED )
-find_package( OpenEXR  REQUIRED )
 
-# Add the path to the OptiX headers to our include paths.
 include_directories(
     "${CMAKE_CURRENT_SOURCE_DIR}"
     "${CUDA_INCLUDE_DIRS}" 
-    "${OPENEXR_INCLUDE_PATHS}"
     "${OptiX_INCLUDE}"
     )
 
@@ -39,7 +36,7 @@ include_directories(
 configure_file( "${CMAKE_CURRENT_SOURCE_DIR}/clang_complete.in"  "${CMAKE_CURRENT_SOURCE_DIR}/.clang_complete" )
 
 
+add_subdirectory( Support )
 add_subdirectory( Legion)
 add_subdirectory( Standalone )
 add_subdirectory( Test )
-

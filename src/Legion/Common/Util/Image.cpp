@@ -23,12 +23,12 @@
 
 #include <Legion/Common/Util/Image.hpp>
 #include <Legion/Core/Exception.hpp>
-#include <ImfArray.h>
-#include <ImfOutputFile.h>
-#include <ImfInputFile.h>
-#include <ImfRgbaFile.h>
-#include <ImfChannelList.h>
-#include <ImfFrameBuffer.h>
+#include <IlmImf/ImfArray.h>
+#include <IlmImf/ImfOutputFile.h>
+#include <IlmImf/ImfInputFile.h>
+#include <IlmImf/ImfRgbaFile.h>
+#include <IlmImf/ImfChannelList.h>
+#include <IlmImf/ImfFrameBuffer.h>
 
 
 

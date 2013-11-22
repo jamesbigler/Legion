@@ -48,7 +48,7 @@ int main( int , char** )
         LLOG_INFO << "teapot scene ...";
         
         legion::ConstantTexture white( &ctx );
-        white.set( legion::Color(  1.0f, 1.0f, 1.0f ) );
+        white.set( legion::Color(  0.9f, 0.9f, 0.9f ) );
 
         legion::Lambertian lambertian( &ctx );
         lambertian.setReflectance( &white );
