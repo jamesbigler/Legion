@@ -1,11 +1,9 @@
-CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 
-PROJECT (OpenEXR)
+#ADD_DEFINITIONS ( -DHAVE_CONFIG_H -DILM_IMF_TEST_IMAGEDIR="${CMAKE_SOURCE_DIR}/openexr/IlmImfTest/" )
 
-ADD_DEFINITIONS ( -DHAVE_CONFIG_H -DILM_IMF_TEST_IMAGEDIR="${CMAKE_SOURCE_DIR}/openexr/IlmImfTest/" )
 
 INCLUDE_DIRECTORIES (
-  config
+  "${CMAKE_BINARY_DIR}/include"
   IlmImf
   exrmaketiled
   exrenvmap
@@ -20,8 +18,6 @@ INCLUDE_DIRECTORIES (
   "${CMAKE_SOURCE_DIR}/src/Support/ilmbase-2.0.1/Iex"
   "${CMAKE_SOURCE_DIR}/src/Support/ilmbase-2.0.1/Imath"
   "${CMAKE_SOURCE_DIR}/src/Support/ilmbase-2.0.1/IlmThread"
-  "${CMAKE_SOURCE_DIR}/src/Support/ilmbase-2.0.1/config"
-  "${CMAKE_SOURCE_DIR}/src/Support/ilmbase-2.0.1/config"
   "${CMAKE_SOURCE_DIR}/src/Support/zlib-1.2.8"
 )
 

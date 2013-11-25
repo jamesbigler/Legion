@@ -8,7 +8,7 @@ IF ( NOT WIN32)
   ADD_DEFINITIONS ( -pthread )
 ENDIF ()
 
-INCLUDE_DIRECTORIES ( Iex IexMath Imath Half config IlmThread IexTest ImathTest HalfTest )
+INCLUDE_DIRECTORIES ( Iex IexMath Imath Half IlmThread IexTest ImathTest HalfTest "${CMAKE_BINARY_DIR}/config/" )
 
 MACRO(GET_TARGET_PROPERTY_WITH_DEFAULT _variable _target _property _default_value)
    GET_TARGET_PROPERTY (${_variable} ${_target} ${_property})
@@ -67,14 +67,13 @@ ADD_SUBDIRECTORY ( Imath )
 ADD_SUBDIRECTORY ( IlmThread )
 
 IF (WIN32)
-  FILE ( COPY ${CMAKE_SOURCE_DIR}/config.windows/IlmBaseConfig.h
-    DESTINATION ${CMAKE_SOURCE_DIR}/config
-    )
+  FILE ( WRITE  ${CMAKE_BINARY_DIR}/include/IlmBaseConfig.h "#undef HAVE_PTHREAD\n" )
+  FILE ( APPEND ${CMAKE_BINARY_DIR}/include/IlmBaseConfig.h "#undef HAVE_POSIX_SEMAPHORES\n" )
 ELSE ()
-  FILE ( WRITE ${CMAKE_SOURCE_DIR}/config/IlmBaseConfig.h "#define HAVE_PTHREAD 1\n" )
-  FILE ( APPEND ${CMAKE_SOURCE_DIR}/config/IlmBaseConfig.h "#define HAVE_POSIX_SEMAPHORES 1\n" )
-  FILE ( APPEND ${CMAKE_SOURCE_DIR}/config/IlmBaseConfig.h "#define ILMBASE_VERSION_STRING \"2.0.0\"\n" )
-  FILE ( APPEND ${CMAKE_SOURCE_DIR}/config/IlmBaseConfig.h "#define ILMBASE_PACKAGE_STRING \"IlmBase 2.0.0\"\n" )
+  FILE ( WRITE  ${CMAKE_BINARY_DIR}/include/IlmBaseConfig.h "#define HAVE_PTHREAD 1\n" )
+  FILE ( APPEND ${CMAKE_BINARY_DIR}/include/IlmBaseConfig.h "#undef HAVE_POSIX_SEMAPHORES\n" )
+  FILE ( APPEND ${CMAKE_BINARY_DIR}/include/IlmBaseConfig.h "#define ILMBASE_VERSION_STRING \"2.0.0\"\n" )
+  FILE ( APPEND ${CMAKE_BINARY_DIR}/include/IlmBaseConfig.h "#define ILMBASE_PACKAGE_STRING \"IlmBase 2.0.0\"\n" )
 ENDIF ()
 
 SET_TARGET_PROPERTIES ( Half
@@ -120,7 +119,7 @@ ENDIF ()
 # Installation
 
 INSTALL ( FILES 
-  config/IlmBaseConfig.h
+  #config/IlmBaseConfig.h
   DESTINATION
   include/OpenEXR
 
