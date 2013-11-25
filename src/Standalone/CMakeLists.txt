@@ -2,6 +2,9 @@
 add_executable( simple simple.cpp)
 target_link_libraries( simple legion )
 
+add_executable( white white.cpp)
+target_link_libraries( white legion )
+
 add_executable( ward ward.cpp)
 target_link_libraries( ward legion )
 
