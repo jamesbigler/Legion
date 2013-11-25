@@ -28,6 +28,7 @@
 
 #include <Legion/Objects/Geometry/IGeometry.hpp>
 #include <Legion/Common/Math/Vector.hpp>
+#include <Legion/Common/Util/Preprocessor.hpp>
 
 namespace legion
 {
@@ -36,33 +37,33 @@ class VariableContainer;
 class Parameters;
 class ISurface;
 
-class Parallelogram : public IGeometry
+class LAPI Parallelogram : public IGeometry
 {
 public:
-    static IGeometry* create( Context* context, const Parameters& params );
+    LAPI static IGeometry* create( Context* context, const Parameters& params );
 
-    Parallelogram( Context* context );
-    
-    const char* name()const;
-    const char* intersectionFunctionName()const;
-    const char* boundingBoxFunctionName()const;
-    const char* sampleFunctionName()const;
-    const char* pdfFunctionName()const;
+    LAPI Parallelogram( Context* context );
+    LAPI 
+    LAPI const char* name()const;
+    LAPI const char* intersectionFunctionName()const;
+    LAPI const char* boundingBoxFunctionName()const;
+    LAPI const char* sampleFunctionName()const;
+    LAPI const char* pdfFunctionName()const;
 
-    unsigned    numPrimitives()const;
-    float       area()const;
+    LAPI unsigned    numPrimitives()const;
+    LAPI float       area()const;
 
-    void        setTransform( const Matrix& transform );
-    Matrix      getTransform() const;
+    LAPI void        setTransform( const Matrix& transform );
+    LAPI Matrix      getTransform() const;
 
-    void        setSurface( ISurface* surface );
-    ISurface*   getSurface()const;
+    LAPI void        setSurface( ISurface* surface );
+    LAPI ISurface*   getSurface()const;
 
-    void        setAnchorUV( const Vector3& anchor,
-                             const Vector3& U,
-                             const Vector3& V );
-                         
-    void setVariables( VariableContainer& container )const;
+    LAPI void        setAnchorUV( const Vector3& anchor,
+    LAPI                          const Vector3& U,
+    LAPI                          const Vector3& V );
+    LAPI                      
+    LAPI void setVariables( VariableContainer& container )const;
 
 private:
     Matrix    m_transform;

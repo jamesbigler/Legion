@@ -26,6 +26,7 @@
 #define LEGION_OBJECTS_SURFACE_MIXTURE_HPP_
 
 #include <Legion/Objects/Surface/ISurface.hpp>
+#include <Legion/Common/Util/Preprocessor.hpp>
 
 namespace legion
 {
@@ -34,24 +35,24 @@ class VariableContainer;
 class ITexture;
 
 /// Pure virtual interface for Surfaces
-class Mixture : public ISurface
+class LAPI Mixture : public ISurface
 {
 public:
-    static ISurface* create( Context* context, const Parameters& params );
+    LAPI static ISurface* create( Context* context, const Parameters& params );
 
-    Mixture( Context* context );
-    ~Mixture();
+    LAPI Mixture( Context* context );
+    LAPI ~Mixture();
 
-    void setSurfaces( const ISurface* s0, const ISurface* s1 );
-    void setMixtureWeight( const ITexture* mixture_weight );
+    LAPI void setSurfaces( const ISurface* s0, const ISurface* s1 );
+    LAPI void setMixtureWeight( const ITexture* mixture_weight );
 
-    const char* name()const;
-    const char* sampleBSDFFunctionName()const;
-    const char* evaluateBSDFFunctionName()const;
-    const char* pdfFunctionName()const;
-    const char* emissionFunctionName()const;
-    
-    void setVariables( VariableContainer& container ) const;
+    LAPI const char* name()const;
+    LAPI const char* sampleBSDFFunctionName()const;
+    LAPI const char* evaluateBSDFFunctionName()const;
+    LAPI const char* pdfFunctionName()const;
+    LAPI const char* emissionFunctionName()const;
+    LAPI 
+    LAPI void setVariables( VariableContainer& container ) const;
 
 private:
     const ISurface* m_s0;

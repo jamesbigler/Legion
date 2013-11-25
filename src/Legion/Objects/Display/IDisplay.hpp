@@ -24,6 +24,7 @@
 #define LEGION_OBJECTS_DISPLAY_IDISPLAY_HPP_
 
 #include <Legion/Common/Math/Vector.hpp>
+#include <Legion/Common/Util/Preprocessor.hpp>
 #include <Legion/Objects/IObject.hpp>
 #include <optixu/optixpp_namespace.h>
 
@@ -32,7 +33,7 @@ namespace legion
 
 class VariableContainer;
 
-class IDisplay: public IObject
+class LAPI IDisplay: public IObject
 {
 public:
     typedef unsigned char Byte;
@@ -44,30 +45,30 @@ public:
         BOTH  = 3     //< Report both ( BYTE | FLOAT )
     };
 
-    IDisplay( Context* context ) : IObject( context ) {}
+    LAPI IDisplay( Context* context ) : IObject( context ) {}
 
     /// Report desired update frame format 
-    virtual FrameType getUpdateFrameType()=0;
+    LAPI virtual FrameType getUpdateFrameType()=0;
 
     /// Report desired complete frame format 
-    virtual FrameType getCompleteFrameType()=0;
+    LAPI virtual FrameType getCompleteFrameType()=0;
 
-    virtual ~IDisplay() {}
+    LAPI virtual ~IDisplay() {}
     
     /// Set the number of expected frame updates until complete
-    virtual void setUpdateCount( unsigned m_update_count             )=0;
+    LAPI virtual void setUpdateCount( unsigned m_update_count             )=0;
 
     /// Scene processing has begun
-    virtual void beginScene    ( const std::string& scene_name       )=0;
+    LAPI virtual void beginScene    ( const std::string& scene_name       )=0;
     
     /// Scene processing has begun
-    virtual void beginFrame    ( const Index2& resolution            )=0;
+    LAPI virtual void beginFrame    ( const Index2& resolution            )=0;
 
     /// Update frame buffer with current partially finished results
-    virtual bool updateFrame   ( const float* fpix, const Byte* cpix )=0;
+    LAPI virtual bool updateFrame   ( const float* fpix, const Byte* cpix )=0;
 
     /// Complete frame buffer 
-    virtual void completeFrame ( const float* fpix, const Byte* cpix )=0;
+    LAPI virtual void completeFrame ( const float* fpix, const Byte* cpix )=0;
 };
 
 }

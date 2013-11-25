@@ -23,7 +23,7 @@
 #ifndef LEGION_COMMON_UTIL_LOGGER_H_
 #define LEGION_COMMON_UTIL_LOGGER_H_
 
-
+#include <Legion/Common/Util/Preprocessor.hpp>
 #include <iostream>
 #include <ctime>
 #include <sys/time.h>
@@ -64,7 +64,7 @@ namespace legion
 ///
 /// Inspired by http://drdobbs.com/cpp/201804215
 ///
-class Log
+class LAPI Log
 {
 public:
     enum Level
@@ -81,15 +81,15 @@ public:
     };
 
     /// INFO: Do not use this public interface directly: use LLOG macro
-    Log();
+    LAPI Log();
     /// INFO: Do not use this public interface directly: use LLOG macro
-    ~Log();
+    LAPI ~Log();
     /// INFO: Do not use this public interface directly: use LLOG macro
-    std::ostream& get( Level level = INFO );
+    LAPI std::ostream& get( Level level = INFO );
 
-    static Level         getReportingLevel();
-    static void          setReportingLevel( Level level );
-    static void          setStream( std::ostream& out );
+    LAPI static Level         getReportingLevel();
+    LAPI static void          setReportingLevel( Level level );
+    LAPI static void          setStream( std::ostream& out );
 
 private:
     Log(const Log&);

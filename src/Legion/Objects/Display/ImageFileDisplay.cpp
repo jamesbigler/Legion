@@ -125,7 +125,7 @@ bool ImageFileDisplay::updateFrame( const float*, const Byte* )
     return true;
 }
 
-void ImageFileDisplay::completeFrame( const float* fpix, const Byte* bpix )
+void ImageFileDisplay::completeFrame( const float* fpix, const Byte* )
 {
 
     if( m_update_count > 0 )

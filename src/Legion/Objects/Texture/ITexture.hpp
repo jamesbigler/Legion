@@ -28,13 +28,14 @@
 #define LEGION_OBJECTS_TEXTURE_ITEXTURE_HPP_
 
 #include <Legion/Objects/IObject.hpp>
+#include <Legion/Common/Util/Preprocessor.hpp>
 
 
 namespace legion
 {
 
 /// Pure virtual interface for Textures.
-class ITexture : public IObject
+class LAPI ITexture : public IObject
 {
 public:
     static const unsigned MAX_VALUE_DIM=4u;
@@ -48,29 +49,29 @@ public:
         TYPE_PROCEDURAL
     };
 
-    ITexture( Context* context );
-    virtual ~ITexture();
+    LAPI ITexture( Context* context );
+    LAPI virtual ~ITexture();
 
-    virtual Type     getType()const=0;
+    LAPI virtual Type     getType()const=0;
 
-    virtual unsigned getValueDim()const=0;
+    LAPI virtual unsigned getValueDim()const=0;
 
     //
     // For constant valued textures
     //
-    virtual void getConstValue( float* val )const;
+    LAPI virtual void getConstValue( float* val )const;
 
     //
     // For image textures 
     //
-    virtual int getTexID()const;
+    LAPI virtual int getTexID()const;
 
 
     //
     // For procedural functions
     //
-    virtual const char* name()const;
-    virtual const char* proceduralFunctionName()const;
+    LAPI virtual const char* name()const;
+    LAPI virtual const char* proceduralFunctionName()const;
 };
 
 

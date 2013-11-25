@@ -26,6 +26,7 @@
 #include <Legion/Core/Color.hpp>
 #include <Legion/Common/Math/Matrix.hpp>
 #include <Legion/Common/Math/Vector.hpp>
+#include <Legion/Common/Util/Preprocessor.hpp>
 #include <string>
 #include <map>
 #include <iosfwd>
@@ -38,7 +39,7 @@ class ITexture;
 class ISurface;
 
 
-class Parameters
+class LAPI Parameters
 {
 public:
     enum ParameterType
@@ -55,36 +56,36 @@ public:
     };
 
     template <typename T>
-    bool get( const std::string& name, const T& default_val, T& val )const;
+    LAPI bool get( const std::string& name, const T& default_val, T& val )const;
    
     template <typename T>
-    T get( const std::string& name, const T& default_val )const;
+    LAPI T get( const std::string& name, const T& default_val )const;
     
-    bool get( const std::string& name, float&       val )const;
-    bool get( const std::string& name, int&         val )const;
-    bool get( const std::string& name, ISurface*&   val )const;
-    bool get( const std::string& name, ITexture*&   val )const;
-    bool get( const std::string& name, Vector2&     val )const;
-    bool get( const std::string& name, Vector3&     val )const;
-    bool get( const std::string& name, Vector4&     val )const;
-    bool get( const std::string& name, Color&       val )const;
-    bool get( const std::string& name, Matrix&      val )const;
-    bool get( const std::string& name, std::string& val )const;
+    LAPI bool get( const std::string& name, float&       val )const;
+    LAPI bool get( const std::string& name, int&         val )const;
+    LAPI bool get( const std::string& name, ISurface*&   val )const;
+    LAPI bool get( const std::string& name, ITexture*&   val )const;
+    LAPI bool get( const std::string& name, Vector2&     val )const;
+    LAPI bool get( const std::string& name, Vector3&     val )const;
+    LAPI bool get( const std::string& name, Vector4&     val )const;
+    LAPI bool get( const std::string& name, Color&       val )const;
+    LAPI bool get( const std::string& name, Matrix&      val )const;
+    LAPI bool get( const std::string& name, std::string& val )const;
 
-    bool set( const std::string& name, float              val );
-    bool set( const std::string& name, int                val );
-    bool set( const std::string& name, ISurface*          val );
-    bool set( const std::string& name, ITexture*          val );
-    bool set( const std::string& name, const Vector2&     val );
-    bool set( const std::string& name, const Vector3&     val );
-    bool set( const std::string& name, const Vector4&     val );
-    bool set( const std::string& name, const Color&       val );
-    bool set( const std::string& name, const Matrix&      val );
-    bool set( const std::string& name, const std::string& val );
+    LAPI bool set( const std::string& name, float              val );
+    LAPI bool set( const std::string& name, int                val );
+    LAPI bool set( const std::string& name, ISurface*          val );
+    LAPI bool set( const std::string& name, ITexture*          val );
+    LAPI bool set( const std::string& name, const Vector2&     val );
+    LAPI bool set( const std::string& name, const Vector3&     val );
+    LAPI bool set( const std::string& name, const Vector4&     val );
+    LAPI bool set( const std::string& name, const Color&       val );
+    LAPI bool set( const std::string& name, const Matrix&      val );
+    LAPI bool set( const std::string& name, const std::string& val );
 
-    void reportUnused( std::ostream& out )const;
+    LAPI void reportUnused( std::ostream& out )const;
 
-    void clear();
+    LAPI void clear();
 
 private:
     template <typename T>

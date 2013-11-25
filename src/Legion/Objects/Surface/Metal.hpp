@@ -24,6 +24,7 @@
 #define LEGION_OBJECTS_SURFACE_METAL_HPP_
 
 #include <Legion/Objects/Surface/ISurface.hpp>
+#include <Legion/Common/Util/Preprocessor.hpp>
 #include <string>
 #include <map>
 
@@ -35,27 +36,27 @@ class ITexture;
 class ConstantTexture;
 class Color;
 
-class Metal : public ISurface
+class LAPI Metal : public ISurface
 {
 public:
-    static ISurface* create( Context* context, const Parameters& params );
+    LAPI static ISurface* create( Context* context, const Parameters& params );
 
-    Metal( Context* context );
-    ~Metal();
-    
-    void setMetalType  ( const std::string& type     );
-    void setReflectance( const ITexture* reflectance );
-    void setAlpha      ( const ITexture* alpha       );
-    void setEta        ( const ITexture* eta         );
-    void setK          ( const ITexture* k           );
-    
-    const char* name()const;
-    const char* sampleBSDFFunctionName()const;
-    const char* evaluateBSDFFunctionName()const;
-    const char* pdfFunctionName()const;
-    const char* emissionFunctionName()const;
+    LAPI Metal( Context* context );
+    LAPI ~Metal();
+    LAPI 
+    LAPI void setMetalType  ( const std::string& type     );
+    LAPI void setReflectance( const ITexture* reflectance );
+    LAPI void setAlpha      ( const ITexture* alpha       );
+    LAPI void setEta        ( const ITexture* eta         );
+    LAPI void setK          ( const ITexture* k           );
+    LAPI 
+    LAPI const char* name()const;
+    LAPI const char* sampleBSDFFunctionName()const;
+    LAPI const char* evaluateBSDFFunctionName()const;
+    LAPI const char* pdfFunctionName()const;
+    LAPI const char* emissionFunctionName()const;
 
-    void setVariables( VariableContainer& container ) const ;
+    LAPI void setVariables( VariableContainer& container ) const ;
 
 
 private:

@@ -29,21 +29,22 @@
 
 #include <Legion/Objects/Texture/ITexture.hpp>
 #include <Legion/Common/Math/Vector.hpp>
+#include <Legion/Common/Util/Preprocessor.hpp>
 
 
 namespace legion
 {
 
 /// Procedural value textures.
-class ProceduralTexture : public ITexture
+class LAPI ProceduralTexture : public ITexture
 {
 public:
-    ProceduralTexture( Context* context ) : ITexture( context ) {}
+    LAPI ProceduralTexture( Context* context ) : ITexture( context ) {}
 
-    virtual ~ProceduralTexture() {}
+    LAPI virtual ~ProceduralTexture() {}
 
-    virtual const char* name()const=0;
-    virtual const char* proceduralFunctionName()const=0;
+    LAPI virtual const char* name()const=0;
+    LAPI virtual const char* proceduralFunctionName()const=0;
 };
 
 }

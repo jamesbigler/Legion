@@ -27,6 +27,26 @@
 #define LEGION_COMMON_UTIL_PREPROCESSOR_HPP_
 
 
+#ifndef LAPI                                                                    
+#  if legion_EXPORTS // Set by CMAKE                                              
+#    if defined( _WIN32 )                                                        
+#      define LAPI __declspec(dllexport)                                        
+#    elif defined( linux ) || defined ( __CYGWIN__ )                             
+#      define LAPI __attribute__ ((visibility ("default")))                     
+#    elif defined( __APPLE__ ) && defined( __MACH__ )                            
+#      define LAPI __attribute__ ((visibility ("default")))                     
+#    else                                                                        
+#      error "CODE FOR THIS OS HAS NOT YET BEEN DEFINED"                         
+#    endif                                                                       
+#  else
+#    if defined( _WIN32 )                                                        
+#      define LAPI __declspec(dllimport)                                        
+#    else
+#      define LAPI
+#    endif
+#  endif
+#endif
+
 #define LFUNC __PRETTY_FUNCTION__
 
 #if defined(__CUDACC__) || defined(__CUDABE__)

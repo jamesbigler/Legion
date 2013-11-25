@@ -4,6 +4,7 @@
 
 #include <Legion/Common/Math/Matrix.hpp>
 #include <Legion/Common/Math/Vector.hpp>
+#include <Legion/Common/Util/Preprocessor.hpp>
 #include <iosfwd>
 
 namespace legion
@@ -13,17 +14,18 @@ namespace legion
     class Matrix;
 
     template<unsigned DIM, typename TYPE>
-    std::ostream& operator<<( std::ostream& out,
-                              const legion::Vector<DIM, TYPE>& v ); 
+    LAPI std::ostream& operator<<( std::ostream& out,
+                                   const legion::Vector<DIM, TYPE>& v ); 
 
-    std::ostream& operator<<( std::ostream& out, const legion::Color& c ); 
+    LAPI std::ostream& operator<<( std::ostream& out, const legion::Color& c ); 
 
-    std::ostream& operator<<( std::ostream& out, const legion::Matrix& m ); 
+    LAPI std::ostream& operator<<( std::ostream& out, const legion::Matrix& m ); 
 
 
     template<unsigned DIM, typename TYPE>
-    inline std::ostream& operator<<( std::ostream& out,
-                                     const legion::Vector<DIM, TYPE>& v )
+    LAPI inline std::ostream& operator<<(
+        std::ostream& out,
+        const legion::Vector<DIM, TYPE>& v )
     {
         out << "[";
         for( unsigned int i = 0; i < DIM-1; ++i ) out << v[i] << ", ";

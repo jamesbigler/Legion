@@ -10,12 +10,12 @@ endif( NOT CMAKE_BUILD_TYPE )
 add_definitions( -DLLOG_MAX_LEVEL=legion::Log::DEBUG )
 
 
-#if( "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" )
-#    #set(CMAKE_CXX_FLAGS "-Wall -Wextra -pedantic -Werror -funroll-loops -floop-optimize -ffast-math -Qunused-arguments" ) # -stdlib=libc++" )
-#    set(CMAKE_CXX_FLAGS "-Wall -Wextra -Werror -funroll-loops -floop-optimize -ffast-math -Qunused-arguments" ) # -stdlib=libc++" )
-#elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
-#    set(CMAKE_CXX_FLAGS "-Wall -Wextra -Werror -funroll-loops -floop-optimize -ffast-math" )
-#endif()
+if( "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" )
+  #set(CMAKE_CXX_FLAGS "-fvisibility-inlines-hidden -fvisibility=hidden -Wall -Wextra -pedantic  -funroll-loops -floop-optimize -ffast-math -Qunused-arguments" )
+  set(CMAKE_CXX_FLAGS "-fvisibility-inlines-hidden -fvisibility=hidden -Wall -Wextra -Werror -funroll-loops -floop-optimize -ffast-math -Qunused-arguments" )
+elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+  set(CMAKE_CXX_FLAGS "-fvisibility-inlines-hidden -fvisibility=hidden -Wall -Wextra -Werror -funroll-loops -floop-optimize -ffast-math" )
+endif()
 
 
 set(CMAKE_CXX_FLAGS_DEBUG          "-g")

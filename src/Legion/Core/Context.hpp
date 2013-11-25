@@ -24,6 +24,7 @@
 #define LEGION_CORE_CONTEXT_HPP_
 
 #include <Legion/Common/Util/Noncopyable.hpp>
+#include <Legion/Common/Util/Preprocessor.hpp>
 #include <Legion/Common/Math/Vector.hpp>
 
 #include <memory>
@@ -44,37 +45,37 @@ class Parameters;
 class PluginContext;
 
 
-class Context : public Noncopyable
+class LAPI Context : public Noncopyable
 {
 public:
     class Impl;
 
-    Context();
-    ~Context();
+    LAPI Context();
+    LAPI ~Context();
 
-    ICamera*      createCamera     ( const char* name, const Parameters& p );
-    IDisplay*     createDisplay    ( const char* name, const Parameters& p );
-    IEnvironment* createEnvironment( const char* name, const Parameters& p );
-    IGeometry*    createGeometry   ( const char* name, const Parameters& p );
-    ILight*       createLight      ( const char* name, const Parameters& p );
-    IRenderer*    createRenderer   ( const char* name, const Parameters& p );
-    ISurface*     createSurface    ( const char* name, const Parameters& p );
-    ITexture*     createTexture    ( const char* name, const Parameters& p );
+    LAPI ICamera*      createCamera     ( const char* name, const Parameters& p );
+    LAPI IDisplay*     createDisplay    ( const char* name, const Parameters& p );
+    LAPI IEnvironment* createEnvironment( const char* name, const Parameters& p );
+    LAPI IGeometry*    createGeometry   ( const char* name, const Parameters& p );
+    LAPI ILight*       createLight      ( const char* name, const Parameters& p );
+    LAPI IRenderer*    createRenderer   ( const char* name, const Parameters& p );
+    LAPI ISurface*     createSurface    ( const char* name, const Parameters& p );
+    LAPI ITexture*     createTexture    ( const char* name, const Parameters& p );
 
 
-    void setRenderer   ( IRenderer*    renderer    );
-    void setCamera     ( ICamera*      camera      );
-    void setEnvironment( IEnvironment* environment );
-    void addGeometry   ( IGeometry*    geometry    );
-    void addLight      ( ILight*       light       );
+    LAPI void setRenderer   ( IRenderer*    renderer    );
+    LAPI void setCamera     ( ICamera*      camera      );
+    LAPI void setEnvironment( IEnvironment* environment );
+    LAPI void addGeometry   ( IGeometry*    geometry    );
+    LAPI void addLight      ( ILight*       light       );
 
-    IRenderer*  getRenderer();
+    LAPI IRenderer*  getRenderer();
 
-    void addAssetPath( const std::string& path );
+    LAPI void addAssetPath( const std::string& path );
 
-    void render();
+    LAPI void render();
 
-    PluginContext& getPluginContext();
+    LAPI PluginContext& getPluginContext();
 
 private:
     //std::unique_ptr<Impl> m_impl;

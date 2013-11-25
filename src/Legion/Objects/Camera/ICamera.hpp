@@ -29,6 +29,7 @@
 #define LEGION_OBJECTS_CAMERA_ICAMERA_HPP_
 
 #include <Legion/Objects/IObject.hpp>
+#include <Legion/Common/Util/Preprocessor.hpp>
 
 namespace legion
 {
@@ -45,23 +46,23 @@ struct CameraSample
 */
 
 /// Pure virtual interface for Camera objects
-class ICamera : public IObject
+class LAPI ICamera : public IObject
 {
 public:
-    ICamera( Context* context ) : IObject( context ) {}
+    LAPI ICamera( Context* context ) : IObject( context ) {}
 
-    virtual ~ICamera() {}
+    LAPI virtual ~ICamera() {}
 
     /// Return the name of this Camera type.  The associated PTX file should
     /// be named {name()}.ptx
-    virtual const char* name()const=0;
+    LAPI virtual const char* name()const=0;
 
     /// Return the name of this Camera's cuda ray generation function 
-    virtual const char* createRayFunctionName()const=0;
+    LAPI virtual const char* createRayFunctionName()const=0;
 
     /// Set the Camera-to-World transform
     ///    \param camera_to_world   Camera-to-World transform
-    virtual void setCameraToWorld( const Matrix& camera_to_world )=0;
+    LAPI virtual void setCameraToWorld( const Matrix& camera_to_world )=0;
 };
 
 

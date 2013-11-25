@@ -32,7 +32,6 @@ namespace legion
 {
 
 class ICamera;
-class IFilm;
 class IGeometry;
 class ILight;
 class IRenderer;
@@ -97,7 +96,6 @@ private:
     IRenderer*              m_renderer;
     ICamera*                m_camera;
     IEnvironment*           m_environment;
-    IFilm*                  m_film;
     std::vector<ILight*>    m_lights;
     GeometryMap             m_geometry;
     

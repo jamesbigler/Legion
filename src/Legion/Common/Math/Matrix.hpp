@@ -24,7 +24,12 @@
 #define LEGION_COMMON_MATH_MATRIX_H_
 
 #include <Legion/Common/Math/Vector.hpp>
+#include <Legion/Common/Util/Preprocessor.hpp>
 
+
+//
+//TODO: Move this to Legion/Core dir
+//
 
 #define MATRIX_ACCESS(m,i,j) m[i*4+j]
 
@@ -49,55 +54,55 @@ Matrix  operator*( const Matrix& m, float f );
 Matrix  operator*( float f, const Matrix& m );
 
 
-class Matrix
+class LAPI Matrix
 {
 public:
-                  Matrix();
+    LAPI               Matrix();
 
-    explicit      Matrix( const float data[16] );
+    LAPI explicit      Matrix( const float data[16] );
 
-                  Matrix( const Matrix& m );
+    LAPI               Matrix( const Matrix& m );
 
-    Matrix&       operator=( const Matrix& b );
+    LAPI Matrix&       operator=( const Matrix& b );
 
-    float         operator[]( unsigned i )const;
+    LAPI float         operator[]( unsigned i )const;
 
-    float&        operator[]( unsigned i );
+    LAPI float&        operator[]( unsigned i );
 
-    Vector4       getRow( unsigned m )const;
+    LAPI Vector4       getRow( unsigned m )const;
 
-    Vector4       getCol( unsigned n )const;
+    LAPI Vector4       getCol( unsigned n )const;
 
-    float*        getData();
+    LAPI float*        getData();
 
-    const float*  getData()const;
+    LAPI const float*  getData()const;
 
-    void          setRow( unsigned m, const Vector4 &r );
+    LAPI void          setRow( unsigned m, const Vector4 &r );
 
-    void          setCol( unsigned n, const Vector4 &c );
+    LAPI void          setCol( unsigned n, const Vector4 &c );
 
-    Matrix        transpose()const;
+    LAPI Matrix        transpose()const;
 
-    Matrix        inverse()const;
+    LAPI Matrix        inverse()const;
 
-    Vector3       transformPoint( const Vector3& p )const;
-    Vector3       transformVector( const Vector3& v )const;
+    LAPI Vector3       transformPoint( const Vector3& p )const;
+    LAPI Vector3       transformVector( const Vector3& v )const;
 
-    static Matrix rotate( float radians, const Vector3& axis );
+    LAPI static Matrix rotate( float radians, const Vector3& axis );
 
-    static Matrix translate( const Vector3& vec );
+    LAPI static Matrix translate( const Vector3& vec );
 
-    static Matrix scale( const Vector3& vec );
-    
-    static Matrix lookAt( const Vector3& eye,
-                          const Vector3& at,
-                          const Vector3& up );
+    LAPI static Matrix scale( const Vector3& vec );
+    LAPI 
+    LAPI static Matrix lookAt( const Vector3& eye,
+    LAPI                       const Vector3& at,
+    LAPI                       const Vector3& up );
 
-    static Matrix identity();
+    LAPI static Matrix identity();
 
 
     // Ordered comparison operator so Matrix can be used in an STL container.
-    bool          operator<( const Matrix& rhs ) const;
+    LAPI bool          operator<( const Matrix& rhs ) const;
 
 private:
     float         det() const;

@@ -24,6 +24,7 @@
 #define LEGION_OBJECTS_RENDERER_IRENDERER_HPP_
 
 #include <Legion/Common/Math/Vector.hpp>
+#include <Legion/Common/Util/Preprocessor.hpp>
 #include <Legion/Objects/IObject.hpp>
 #include <optixu/optixpp_namespace.h>
 
@@ -35,10 +36,10 @@ class IDisplay;
 
 /// Owns the optix raygen program, the output framebuffer,  and all ray
 /// scheduling
-class IRenderer : public IObject
+class LAPI IRenderer : public IObject
 {
 public:
-    IRenderer( Context* context ) 
+    LAPI IRenderer( Context* context ) 
         : IObject( context ),
           m_display( 0u),
           m_resolution( 1024, 768u ),
@@ -47,23 +48,23 @@ public:
           m_max_spec_depth( 8u )
     {}
 
-    virtual ~IRenderer() {}
+    LAPI virtual ~IRenderer() {}
 
-    void      setDisplay( IDisplay* display )      { m_display = display; }
-    IDisplay* getDisplay()const                    { return m_display;    }
+    LAPI void      setDisplay( IDisplay* display )      { m_display = display; }
+    LAPI IDisplay* getDisplay()const                    { return m_display;    }
 
-    void     setSamplesPerPixel( unsigned spp )    { m_spp = spp;  }
-    unsigned getSamplesPerPixel()const             { return m_spp; }
-    
-    void     setResolution( const Index2& res )    { m_resolution = res;  }
-    Index2   getResolution()const                  { return m_resolution; }
-    
-    void     setMaxDiffuseDepth( unsigned depth )  { m_max_diff_depth = depth; }
-    void     setMaxSpecularDepth( unsigned depth ) { m_max_spec_depth = depth; }
+    LAPI void     setSamplesPerPixel( unsigned spp )    { m_spp = spp;  }
+    LAPI unsigned getSamplesPerPixel()const             { return m_spp; }
+    LAPI 
+    LAPI void     setResolution( const Index2& res )    { m_resolution = res;  }
+    LAPI Index2   getResolution()const                  { return m_resolution; }
+    LAPI 
+    LAPI void     setMaxDiffuseDepth( unsigned depth )  { m_max_diff_depth = depth; }
+    LAPI void     setMaxSpecularDepth( unsigned depth ) { m_max_spec_depth = depth; }
 
-    virtual const char*    name()const=0;
-    virtual const char*    rayGenProgramName()const=0;
-    virtual void           render( VariableContainer& container )=0;
+    LAPI virtual const char*    name()const=0;
+    LAPI virtual const char*    rayGenProgramName()const=0;
+    LAPI virtual void           render( VariableContainer& container )=0;
 
 protected:
     IDisplay* m_display;

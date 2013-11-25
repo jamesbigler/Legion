@@ -28,18 +28,19 @@
 #define LEGION_INTERFACE_ILIGHTSHADER_HPP_
 
 #include <Legion/Objects/IObject.hpp>
+#include <Legion/Common/Util/Preprocessor.hpp>
 
 namespace legion
 {
 
 
 /// Pure virtual interface for all Light classes
-class ILight : public IObject
+class LAPI ILight : public IObject
 {
 public:
-    ILight( Context* context ) : IObject( context ) {}
+    LAPI ILight( Context* context ) : IObject( context ) {}
 
-    virtual ~ILight() {}
+    LAPI virtual ~ILight() {}
 
     
     /*

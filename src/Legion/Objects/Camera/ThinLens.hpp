@@ -26,6 +26,7 @@
 #include <Legion/Objects/Camera/ICamera.hpp>
 #include <Legion/Common/Math/Matrix.hpp>
 #include <Legion/Common/Math/Vector.hpp>
+#include <Legion/Common/Util/Preprocessor.hpp>
 
 namespace legion
 {
@@ -35,40 +36,40 @@ namespace legion
 
 /// A basic thin lens camera implementation.  Supports depth-of-field with a
 /// round lens model.
-class ThinLens : public ICamera
+class LAPI ThinLens : public ICamera
 {
 public:
-    static ICamera* create( Context* context, const Parameters& params );
+    LAPI static ICamera* create( Context* context, const Parameters& params );
 
     /// Create a ThinLens object
-    ThinLens( Context* context );
+    LAPI ThinLens( Context* context );
 
     /// Destroy a ThinLens object
-    ~ThinLens();
+    LAPI ~ThinLens();
 
-    const char* name()const;
+    LAPI const char* name()const;
 
-    const char* createRayFunctionName()const;
+    LAPI const char* createRayFunctionName()const;
     
     /// Set the Camera-to-World transform
     ///    \param camera_to_world   Camera-to-World transform
-    void setCameraToWorld( const Matrix& camera_to_world );
+    LAPI void setCameraToWorld( const Matrix& camera_to_world );
 
     /// Set the distance from the lens to the world point of perfect focus
     ///   \param distance  distance to world focal plane
-    void setFocalDistance( float distance );
+    LAPI void setFocalDistance( float distance );
 
     /// Set the radius of the lens aperture to control the extent of the circle
     /// of confusion
     ///   \param radius  The lens radius
-    void setApertureRadius( float radius );
+    LAPI void setApertureRadius( float radius );
 
     ///
-    void setViewPlane( float l, float r, float b, float t );
-    void setViewPlane( const Vector4& lrbt );
+    LAPI void setViewPlane( float l, float r, float b, float t );
+    LAPI void setViewPlane( const Vector4& lrbt );
 
     /// See IObject::setVariables
-    void setVariables( VariableContainer& container ) const;
+    LAPI void setVariables( VariableContainer& container ) const;
     
 private:
     Matrix       m_camera_to_world;  ///< Camera-to-world transform

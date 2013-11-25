@@ -2,42 +2,44 @@
 #ifndef LEGION_CORE_COLOR_HPP_
 #define LEGION_CORE_COLOR_HPP_
 
+#include <Legion/Common/Util/Preprocessor.hpp>
+
 namespace legion
 {
 
 
-class Color
+class LAPI Color
 {
 public:
-    Color() {}
-    explicit Color( float rgb );
-    Color( float r, float g, float b );
+    LAPI Color() {}
+    LAPI explicit Color( float rgb );
+    LAPI Color( float r, float g, float b );
 
-    float red()const               { return m_c[0]; }
-    float green()const             { return m_c[1]; }
-    float blue()const              { return m_c[2]; }
-    
-    float r()const                 { return m_c[0]; }
-    float g()const                 { return m_c[1]; }
-    float b()const                 { return m_c[2]; }
+    LAPI float red()const               { return m_c[0]; }
+    LAPI float green()const             { return m_c[1]; }
+    LAPI float blue()const              { return m_c[2]; }
+    LAPI 
+    LAPI float r()const                 { return m_c[0]; }
+    LAPI float g()const                 { return m_c[1]; }
+    LAPI float b()const                 { return m_c[2]; }
 
-    void  setRed  ( float r )      { m_c[0] = r; }
-    void  setGreen( float g )      { m_c[1] = g; }
-    void  setBlue ( float b )      { m_c[2] = b; }
+    LAPI void  setRed  ( float r )      { m_c[0] = r; }
+    LAPI void  setGreen( float g )      { m_c[1] = g; }
+    LAPI void  setBlue ( float b )      { m_c[2] = b; }
 
-    float  operator[]( unsigned idx )const { return m_c[idx]; }
-    float& operator[]( unsigned idx )      { return m_c[idx]; }
+    LAPI float  operator[]( unsigned idx )const { return m_c[idx]; }
+    LAPI float& operator[]( unsigned idx )      { return m_c[idx]; }
 
-    Color& operator= ( const Color& rhs );
-    Color& operator*=( const Color& rhs );
-    Color& operator/=( const Color& rhs );
-    Color& operator+=( const Color& rhs );
-    Color& operator-=( const Color& rhs );
-    Color& operator*=( float rhs );
-    Color& operator/=( float rhs );
+    LAPI Color& operator= ( const Color& rhs );
+    LAPI Color& operator*=( const Color& rhs );
+    LAPI Color& operator/=( const Color& rhs );
+    LAPI Color& operator+=( const Color& rhs );
+    LAPI Color& operator-=( const Color& rhs );
+    LAPI Color& operator*=( float rhs );
+    LAPI Color& operator/=( float rhs );
 
-    float luminance()const;
-    float sum()const;
+    LAPI float luminance()const;
+    LAPI float sum()const;
 private:
 
     float m_c[3];

@@ -4,6 +4,7 @@
 
 
 #include <Legion/Objects/Surface/ISurface.hpp>
+#include <Legion/Common/Util/Preprocessor.hpp>
 #include <Legion/Core/Color.hpp>
 
 
@@ -12,23 +13,23 @@ namespace legion
 
 class VariableContainer;
 
-class DiffuseEmitter : public ISurface
+class LAPI DiffuseEmitter : public ISurface
 {
 public:
-    static ISurface* create( Context* context, const Parameters& params );
+    LAPI static ISurface* create( Context* context, const Parameters& params );
 
-    DiffuseEmitter( Context* context );
-    ~DiffuseEmitter();
+    LAPI DiffuseEmitter( Context* context );
+    LAPI ~DiffuseEmitter();
     
-    void setRadiance( const Color& radiance );
+    LAPI void setRadiance( const Color& radiance );
     
-    const char* name()const;
-    const char* emissionFunctionName()const;
-    const char* sampleBSDFFunctionName()const;
-    const char* evaluateBSDFFunctionName()const;
-    const char* pdfFunctionName()const;
+    LAPI const char* name()const;
+    LAPI const char* emissionFunctionName()const;
+    LAPI const char* sampleBSDFFunctionName()const;
+    LAPI const char* evaluateBSDFFunctionName()const;
+    LAPI const char* pdfFunctionName()const;
 
-    void setVariables( VariableContainer& container ) const ;
+    LAPI void setVariables( VariableContainer& container ) const ;
 
 private:
     Color m_radiance;

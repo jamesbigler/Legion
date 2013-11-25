@@ -29,6 +29,7 @@
 #define LEGION_OBJECTS_ENVIRONMENT_CONSTANT_ENVIRONMENT_HPP_
 
 #include <Legion/Objects/Environment/IEnvironment.hpp>
+#include <Legion/Common/Util/Preprocessor.hpp>
 #include <Legion/Core/Color.hpp>
 
 namespace legion
@@ -36,29 +37,29 @@ namespace legion
 
 
 /// Pure virtual interface for Environment objects
-class ConstantEnvironment : public IEnvironment 
+class LAPI ConstantEnvironment : public IEnvironment 
 {
 public:
-    static IEnvironment* create( Context* context, const Parameters& params );
+    LAPI static IEnvironment* create( Context* context, const Parameters& params );
 
-    ConstantEnvironment( Context* context );
+    LAPI ConstantEnvironment( Context* context );
 
-    ~ConstantEnvironment();
+    LAPI ~ConstantEnvironment();
 
     /// Return the name of this Environment type.  The associated PTX file
     /// should be named {name()}.ptx
-    const char* name() const;
+    LAPI const char* name() const;
 
 
-    const char* missEvaluateFunctionName()const;
+    LAPI const char* missEvaluateFunctionName()const;
 
-    const char* lightEvaluateFunctionName()const;
+    LAPI const char* lightEvaluateFunctionName()const;
 
-    const char* sampleFunctionName() const;
+    LAPI const char* sampleFunctionName() const;
 
-    void setRadiance( const Color& radiance );
+    LAPI void setRadiance( const Color& radiance );
     
-    void setVariables( VariableContainer& container ) const;
+    LAPI void setVariables( VariableContainer& container ) const;
 private:
 
     Color m_radiance;

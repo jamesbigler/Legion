@@ -24,6 +24,7 @@
 #define LEGION_OBJECTS_SURFACE_BECKMANN_HPP_
 
 #include <Legion/Objects/Surface/ISurface.hpp>
+#include <Legion/Common/Util/Preprocessor.hpp>
 
 namespace legion
 {
@@ -31,24 +32,24 @@ namespace legion
 class VariableContainer;
 class ITexture;
 
-class Beckmann : public ISurface
+class LAPI Beckmann : public ISurface
 {
 public:
-    static ISurface* create( Context* context, const Parameters& params );
+    LAPI static ISurface* create( Context* context, const Parameters& params );
 
-    Beckmann( Context* context );
-    ~Beckmann();
-    
-    void setReflectance( const ITexture* reflectance );
-    void setAlpha      ( const ITexture* alpha);
-    
-    const char* name()const;
-    const char* sampleBSDFFunctionName()const;
-    const char* evaluateBSDFFunctionName()const;
-    const char* pdfFunctionName()const;
-    const char* emissionFunctionName()const;
+    LAPI Beckmann( Context* context );
+    LAPI ~Beckmann();
+    LAPI 
+    LAPI void setReflectance( const ITexture* reflectance );
+    LAPI void setAlpha      ( const ITexture* alpha);
+    LAPI 
+    LAPI const char* name()const;
+    LAPI const char* sampleBSDFFunctionName()const;
+    LAPI const char* evaluateBSDFFunctionName()const;
+    LAPI const char* pdfFunctionName()const;
+    LAPI const char* emissionFunctionName()const;
 
-    void setVariables( VariableContainer& container ) const ;
+    LAPI void setVariables( VariableContainer& container ) const ;
 
 private:
     const ITexture* m_reflectance;

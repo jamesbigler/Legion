@@ -29,6 +29,7 @@
 
 #include <Legion/Objects/Texture/ProceduralTexture.hpp>
 #include <Legion/Common/Math/Vector.hpp>
+#include <Legion/Common/Util/Preprocessor.hpp>
 #include <Legion/Core/Color.hpp>
 
 
@@ -37,23 +38,23 @@ namespace legion
 
 
 /// FresnelSchlick value textures.
-class FresnelSchlickTexture : public ProceduralTexture
+class LAPI FresnelSchlickTexture : public ProceduralTexture
 {
 public:
-    static ITexture* create( Context* context, const Parameters& params );
+    LAPI static ITexture* create( Context* context, const Parameters& params );
 
-    FresnelSchlickTexture( Context* context );
-    ~FresnelSchlickTexture();
+    LAPI FresnelSchlickTexture( Context* context );
+    LAPI ~FresnelSchlickTexture();
 
-    void        setEta( float eta );
+    LAPI void        setEta( float eta );
 
-    Type        getType()const;
-    unsigned    getValueDim()const;
+    LAPI Type        getType()const;
+    LAPI unsigned    getValueDim()const;
 
-    const char* name()const;
-    const char* proceduralFunctionName()const;
+    LAPI const char* name()const;
+    LAPI const char* proceduralFunctionName()const;
 
-    void setVariables( VariableContainer& ) const;
+    LAPI void setVariables( VariableContainer& ) const;
 private:
     float m_eta;
 };

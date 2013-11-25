@@ -26,26 +26,27 @@
 #define LEGION_OBJECTS_SURFACE_ISURFACE_HPP_
 
 #include <Legion/Objects/IObject.hpp>
+#include <Legion/Common/Util/Preprocessor.hpp>
 
 
 namespace legion
 {
 
 /// Pure virtual interface for Surfaces
-class ISurface : public IObject
+class LAPI ISurface : public IObject
 {
 public:
-    ISurface( Context* context ) : IObject( context ) {}
+    LAPI ISurface( Context* context ) : IObject( context ) {}
 
-    virtual ~ISurface() {}
+    LAPI virtual ~ISurface() {}
 
 
-    virtual const char* name()const=0;
-    virtual const char* sampleBSDFFunctionName()const=0;
-    virtual const char* evaluateBSDFFunctionName()const=0;
+    LAPI virtual const char* name()const=0;
+    LAPI virtual const char* sampleBSDFFunctionName()const=0;
+    LAPI virtual const char* evaluateBSDFFunctionName()const=0;
     // TODO: make this bsdfPDFFunctionName
-    virtual const char* pdfFunctionName()const=0;
-    virtual const char* emissionFunctionName()const=0;
+    LAPI virtual const char* pdfFunctionName()const=0;
+    LAPI virtual const char* emissionFunctionName()const=0;
 
 };
 

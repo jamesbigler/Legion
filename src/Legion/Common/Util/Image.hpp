@@ -27,26 +27,27 @@
 #ifndef LEGION_COMMON_UTIL_IMAGE_HPP_
 #define LEGION_COMMON_UTIL_IMAGE_HPP_
 
+#include <Legion/Common/Util/Preprocessor.hpp>
 #include <string>
 #include <optixu/optixpp_namespace.h>
 
 namespace legion
 {
 
-bool writeOpenEXR( const std::string& filename,
-                   unsigned width,
-                   unsigned height,
-                   unsigned num_channels,
-                   const float* pixels );
+LAPI bool writeOpenEXR( const std::string& filename,
+                        unsigned width,
+                        unsigned height,
+                        unsigned num_channels,
+                        const float* pixels );
 
-bool readOpenEXR(  const std::string& filename,
-                   optix::Buffer buffer );
+LAPI bool readOpenEXR(  const std::string& filename,
+                        optix::Buffer buffer );
 
-bool readOpenEXR(  const std::string& filename,
-                   unsigned& width,
-                   unsigned& height,
-                   unsigned& num_channels,
-                   float** image );
+LAPI bool readOpenEXR(  const std::string& filename,
+                        unsigned& width,
+                        unsigned& height,
+                        unsigned& num_channels,
+                        float** image );
 }
 
 

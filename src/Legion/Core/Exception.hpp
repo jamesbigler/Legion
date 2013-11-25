@@ -3,23 +3,24 @@
 #define LEGION_CORE_EXCEPTION_HPP_
 
 #include <stdexcept>
+#include <Legion/Common/Util/Preprocessor.hpp>
 
 namespace legion
 {
 
-class Exception : public std::runtime_error
+class LAPI Exception : public std::runtime_error
 {
 public:
-    Exception();
-    explicit Exception( const std::string& mssg );
+    LAPI Exception();
+    LAPI explicit Exception( const std::string& mssg );
 };
 
 
-class AssertionFailure : public Exception
+class LAPI AssertionFailure : public Exception
 {
 public:
-    AssertionFailure();
-    explicit AssertionFailure( const std::string& mssg );
+    LAPI AssertionFailure();
+    LAPI explicit AssertionFailure( const std::string& mssg );
 };
 
 }

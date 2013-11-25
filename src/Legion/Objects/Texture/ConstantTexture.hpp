@@ -29,6 +29,7 @@
 
 #include <Legion/Objects/Texture/ITexture.hpp>
 #include <Legion/Common/Math/Vector.hpp>
+#include <Legion/Common/Util/Preprocessor.hpp>
 
 
 namespace legion
@@ -38,23 +39,23 @@ class Color;
 class Parameters;
 
 /// Constant value textures.
-class ConstantTexture : public ITexture
+class LAPI ConstantTexture : public ITexture
 {
 public:
-    static ITexture* create( Context* context, const Parameters& params );
+    LAPI static ITexture* create( Context* context, const Parameters& params );
 
-    ConstantTexture( Context* context );
+    LAPI ConstantTexture( Context* context );
 
-    ~ConstantTexture();
+    LAPI ~ConstantTexture();
 
-    void set( const float&   f );
-    void set( const Color&   c ); // Padded to float4
-    void set( const Vector2& v );
-    void set( const Vector4& v );
-    
-    Type     getType()const;
-    unsigned getValueDim()const;
-    void     getConstValue( float* val )const;
+    LAPI void set( const float&   f );
+    LAPI void set( const Color&   c ); // Padded to float4
+    LAPI void set( const Vector2& v );
+    LAPI void set( const Vector4& v );
+    LAPI 
+    LAPI Type     getType()const;
+    LAPI unsigned getValueDim()const;
+    LAPI void     getConstValue( float* val )const;
 
 private:
     unsigned   m_val_dim;

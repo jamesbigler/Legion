@@ -72,7 +72,6 @@ OptiXScene::OptiXScene()
       m_program_mgr( m_optix_context ),
       m_renderer( 0u ),
       m_camera( 0u ),
-      m_film( 0u ),
       m_num_lights( 0u )
 {
     m_program_mgr.addPath( PTX_DIR );

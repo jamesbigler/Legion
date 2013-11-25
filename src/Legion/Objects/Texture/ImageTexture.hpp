@@ -29,25 +29,26 @@
 
 #include <Legion/Objects/Texture/ITexture.hpp>
 #include <Legion/Common/Math/Vector.hpp>
+#include <Legion/Common/Util/Preprocessor.hpp>
 
 
 namespace legion
 {
 
 /// Image value textures.
-class ImageTexture : public ITexture
+class LAPI ImageTexture : public ITexture
 {
 public:
-    static ITexture* create( Context* context, const Parameters& params );
+    LAPI static ITexture* create( Context* context, const Parameters& params );
 
-    ImageTexture( Context* context );
-    ~ImageTexture();
+    LAPI ImageTexture( Context* context );
+    LAPI ~ImageTexture();
 
-    void set( const std::string& filename ); 
-    
-    Type     getType()const;
-    unsigned getValueDim()const;
-    int      getTexID()const;
+    LAPI void set( const std::string& filename ); 
+    LAPI 
+    LAPI Type     getType()const;
+    LAPI unsigned getValueDim()const;
+    LAPI int      getTexID()const;
 
 private:
     unsigned    m_val_dim;

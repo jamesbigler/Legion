@@ -29,6 +29,7 @@
 
 #include <Legion/Objects/Texture/ProceduralTexture.hpp>
 #include <Legion/Common/Math/Vector.hpp>
+#include <Legion/Common/Util/Preprocessor.hpp>
 #include <Legion/Core/Color.hpp>
 
 
@@ -37,24 +38,24 @@ namespace legion
 
 
 /// Perlin value textures.
-class PerlinTexture : public ProceduralTexture
+class LAPI PerlinTexture : public ProceduralTexture
 {
 public:
-    static ITexture* create( Context* context, const Parameters& params );
+    LAPI static ITexture* create( Context* context, const Parameters& params );
 
-    PerlinTexture( Context* context );
-    ~PerlinTexture();
+    LAPI PerlinTexture( Context* context );
+    LAPI ~PerlinTexture();
 
-    void        setColors( const Color& c0, const Color& c1 );
-    void        setScale( float scale );
+    LAPI void        setColors( const Color& c0, const Color& c1 );
+    LAPI void        setScale( float scale );
 
-    Type        getType()const;
-    unsigned    getValueDim()const;
+    LAPI Type        getType()const;
+    LAPI unsigned    getValueDim()const;
 
-    const char* name()const;
-    const char* proceduralFunctionName()const;
+    LAPI const char* name()const;
+    LAPI const char* proceduralFunctionName()const;
 
-    void setVariables( VariableContainer& ) const;
+    LAPI void setVariables( VariableContainer& ) const;
 private:
     Color m_c0;
     Color m_c1;

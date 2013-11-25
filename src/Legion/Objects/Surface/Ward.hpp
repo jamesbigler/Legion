@@ -4,6 +4,7 @@
 
 
 #include <Legion/Objects/Surface/ISurface.hpp>
+#include <Legion/Common/Util/Preprocessor.hpp>
 #include <Legion/Core/Color.hpp>
 
 
@@ -12,26 +13,26 @@ namespace legion
 
 class VariableContainer;
 
-class Ward : public ISurface
+class LAPI Ward : public ISurface
 {
 public:
-    static ISurface* create( Context* context, const Parameters& params );
+    LAPI static ISurface* create( Context* context, const Parameters& params );
 
-    Ward( Context* context );
-    ~Ward();
-    
-    void setDiffuseReflectance( const Color& reflectance );
-    void setSpecularReflectance( const Color& reflectance );
-    void setAlphaU( float alpha_u );
-    void setAlphaV( float alpha_v );
-    
-    const char* name()const;
-    const char* sampleBSDFFunctionName()const;
-    const char* evaluateBSDFFunctionName()const;
-    const char* pdfFunctionName()const;
-    const char* emissionFunctionName()const;
+    LAPI Ward( Context* context );
+    LAPI ~Ward();
+    LAPI 
+    LAPI void setDiffuseReflectance( const Color& reflectance );
+    LAPI void setSpecularReflectance( const Color& reflectance );
+    LAPI void setAlphaU( float alpha_u );
+    LAPI void setAlphaV( float alpha_v );
+    LAPI 
+    LAPI const char* name()const;
+    LAPI const char* sampleBSDFFunctionName()const;
+    LAPI const char* evaluateBSDFFunctionName()const;
+    LAPI const char* pdfFunctionName()const;
+    LAPI const char* emissionFunctionName()const;
 
-    void setVariables( VariableContainer& container ) const ;
+    LAPI void setVariables( VariableContainer& container ) const ;
 
 private:
     Color m_diffuse_reflectance;

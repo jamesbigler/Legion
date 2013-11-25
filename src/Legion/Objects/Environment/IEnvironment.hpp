@@ -35,22 +35,22 @@ namespace legion
 
 
 /// Pure virtual interface for Environment objects
-class IEnvironment : public IObject
+class LAPI IEnvironment : public IObject
 {
 public:
-    IEnvironment( Context* context ) : IObject( context ) {}
+    LAPI IEnvironment( Context* context ) : IObject( context ) {}
 
-    virtual ~IEnvironment() {}
+    LAPI virtual ~IEnvironment() {}
 
     /// Return the name of this Environment type.  The associated PTX file should
     /// be named {name()}.ptx
-    virtual const char* name()const=0;
+    LAPI virtual const char* name()const=0;
 
-    virtual const char* missEvaluateFunctionName()const=0;
+    LAPI virtual const char* missEvaluateFunctionName()const=0;
 
-    virtual const char* lightEvaluateFunctionName()const=0;
+    LAPI virtual const char* lightEvaluateFunctionName()const=0;
 
-    virtual const char* sampleFunctionName()const=0;
+    LAPI virtual const char* sampleFunctionName()const=0;
 };
 
 

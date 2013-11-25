@@ -24,6 +24,7 @@
 #define LEGION_OBJECTS_SURFACE_LAMBERTIAN_HPP_
 
 #include <Legion/Objects/Surface/ISurface.hpp>
+#include <Legion/Common/Util/Preprocessor.hpp>
 
 namespace legion
 {
@@ -31,23 +32,23 @@ namespace legion
 class VariableContainer;
 class ITexture;
 
-class Lambertian : public ISurface
+class LAPI Lambertian : public ISurface
 {
 public:
-    static ISurface* create( Context* context, const Parameters& params );
+    LAPI static ISurface* create( Context* context, const Parameters& params );
 
-    Lambertian( Context* context );
-    ~Lambertian();
-    
-    void setReflectance( const ITexture* reflectance );
-    
-    const char* name()const;
-    const char* sampleBSDFFunctionName()const;
-    const char* evaluateBSDFFunctionName()const;
-    const char* pdfFunctionName()const;
-    const char* emissionFunctionName()const;
+    LAPI Lambertian( Context* context );
+    LAPI ~Lambertian();
+    LAPI 
+    LAPI void setReflectance( const ITexture* reflectance );
+    LAPI 
+    LAPI const char* name()const;
+    LAPI const char* sampleBSDFFunctionName()const;
+    LAPI const char* evaluateBSDFFunctionName()const;
+    LAPI const char* pdfFunctionName()const;
+    LAPI const char* emissionFunctionName()const;
 
-    void setVariables( VariableContainer& container ) const;
+    LAPI void setVariables( VariableContainer& container ) const;
 
 private:
     const ITexture* m_reflectance;

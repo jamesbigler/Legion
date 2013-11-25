@@ -31,21 +31,22 @@
 #include <Legion/Objects/Light/ILight.hpp>
 #include <Legion/Core/Color.hpp>
 #include <Legion/Common/Math/Vector.hpp>
+#include <Legion/Common/Util/Preprocessor.hpp>
 
 namespace legion
 {
 
 
 /// Pure virtual interface for all LightShader classes
-class PointLight : public ILight
+class LAPI PointLight : public ILight
 {
 public:
-    PointLight( Context* context );
+    LAPI PointLight( Context* context );
 
-    void setVariables( VariableContainer& container ) const;
+    LAPI void setVariables( VariableContainer& container ) const;
     
-    void setIntensity( const Color& intensity );
-    void setPosition( const Vector3& position );
+    LAPI void setIntensity( const Color& intensity );
+    LAPI void setPosition( const Vector3& position );
 
 private:
     Color   m_intensity;

@@ -24,6 +24,7 @@
 #define LEGION_OBJECTS_DISPLAY_IMAGE_FILE_DISPLAY_HPP_
 
 #include <Legion/Objects/Display/IDisplay.hpp>
+#include <Legion/Common/Util/Preprocessor.hpp>
 #include <Legion/Common/Util/Timer.hpp>
 #include <string>
 
@@ -32,23 +33,23 @@ namespace legion
 
 class VariableContainer;
 
-class ImageFileDisplay : public IDisplay
+class LAPI ImageFileDisplay : public IDisplay
 {
 public:
-    static IDisplay* create( Context* context, const Parameters& params );
+    LAPI static IDisplay* create( Context* context, const Parameters& params );
 
-    ImageFileDisplay( Context* context, const char* filename );
+    LAPI ImageFileDisplay( Context* context, const char* filename );
     
     //FrameType getUpdateFrameType()       { return NONE;  }
-    FrameType getUpdateFrameType()       { return BYTE;  }
-    FrameType getCompleteFrameType()     { return FLOAT; }
+    LAPI FrameType getUpdateFrameType()       { return BYTE;  }
+    LAPI FrameType getCompleteFrameType()     { return FLOAT; }
     
-    void setUpdateCount( unsigned m_update_count );
+    LAPI void setUpdateCount( unsigned m_update_count );
 
-    void beginScene   ( const std::string& scene_name );
-    void beginFrame   ( const Index2& resolution );
-    bool updateFrame  ( const float* fpix, const Byte* cpix );
-    void completeFrame( const float* fpix, const Byte* cpix );
+    LAPI void beginScene   ( const std::string& scene_name );
+    LAPI void beginFrame   ( const Index2& resolution );
+    LAPI bool updateFrame  ( const float* fpix, const Byte* cpix );
+    LAPI void completeFrame( const float* fpix, const Byte* cpix );
 private:
     static const int s_result_width = 29;
     static const int s_field_width  = 21;

@@ -27,18 +27,19 @@
 #define LEGION_OBJECTS_GEOMETRY_TRI_MESH_HPP_
 
 #include <Legion/Objects/Geometry/IGeometry.hpp>
+#include <Legion/Common/Util/Preprocessor.hpp>
 
 namespace legion
 {
 
 class VariableContainer;
 
-class TriMesh : public IGeometry
+class LAPI TriMesh : public IGeometry
 {
 public:
-    static IGeometry* create( Context* context, const Parameters& params );
+    LAPI static IGeometry* create( Context* context, const Parameters& params );
 
-    TriMesh( Context* context );
+    LAPI TriMesh( Context* context );
 
     struct Vertex
     {
@@ -60,34 +61,34 @@ public:
     };
 
 
-    const char* name()const;
-    const char* intersectionFunctionName()const;
-    const char* boundingBoxFunctionName()const;
-    const char* sampleFunctionName()const;
-    const char* pdfFunctionName()const;
+    LAPI const char* name()const;
+    LAPI const char* intersectionFunctionName()const;
+    LAPI const char* boundingBoxFunctionName()const;
+    LAPI const char* sampleFunctionName()const;
+    LAPI const char* pdfFunctionName()const;
 
-    unsigned    numPrimitives()const;
-    float       area()const;
+    LAPI unsigned    numPrimitives()const;
+    LAPI float       area()const;
 
-    void        setTransform( const Matrix& transform );
-    Matrix      getTransform() const;
+    LAPI void        setTransform( const Matrix& transform );
+    LAPI Matrix      getTransform() const;
 
-    void        setSurface( ISurface* surface );
-    ISurface*   getSurface()const;
+    LAPI void        setSurface( ISurface* surface );
+    LAPI ISurface*   getSurface()const;
 
-    void        setTriangles( const std::vector<Vector3>& vertices,
-                              const std::vector<Index3>& triangles );
+    LAPI void        setTriangles( const std::vector<Vector3>& vertices,
+    LAPI                           const std::vector<Index3>& triangles );
 
-    void        setTriangles( const std::vector<VertexUV>& vertices,
-                              const std::vector<Index3>& triangles );
+    LAPI void        setTriangles( const std::vector<VertexUV>& vertices,
+    LAPI                           const std::vector<Index3>& triangles );
 
-    void        setTriangles( const std::vector<VertexN>& vertices,
-                              const std::vector<Index3>& triangles );
+    LAPI void        setTriangles( const std::vector<VertexN>& vertices,
+    LAPI                           const std::vector<Index3>& triangles );
 
-    void        setTriangles( const std::vector<Vertex>& vertices,
-                              const std::vector<Index3>& triangles );
+    LAPI void        setTriangles( const std::vector<Vertex>& vertices,
+    LAPI                           const std::vector<Index3>& triangles );
 
-    void setVariables( VariableContainer& container ) const;
+    LAPI void setVariables( VariableContainer& container ) const;
 private:
     enum VertexType
     {

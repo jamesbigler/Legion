@@ -29,6 +29,7 @@
 
 #include <Legion/Objects/IObject.hpp>
 #include <Legion/Common/Math/Matrix.hpp>
+#include <Legion/Common/Util/Preprocessor.hpp>
 
 namespace legion
 {
@@ -37,67 +38,67 @@ class Matrix;
 class ISurface;
 
 /// Pure virtual interface for Geometry objects
-class IGeometry : public IObject
+class LAPI IGeometry : public IObject
 {
 public:
-    IGeometry( Context* context ) : IObject( context ) {}
-    virtual ~IGeometry() {}
+    LAPI IGeometry( Context* context ) : IObject( context ) {}
+    LAPI virtual ~IGeometry() {}
 
-    virtual const char* name()                    const=0;
-    virtual const char* intersectionFunctionName()const=0;
-    virtual const char* boundingBoxFunctionName() const=0;
-    virtual const char* sampleFunctionName()      const=0;
-    virtual const char* pdfFunctionName()         const=0;
+    LAPI virtual const char* name()                    const=0;
+    LAPI virtual const char* intersectionFunctionName()const=0;
+    LAPI virtual const char* boundingBoxFunctionName() const=0;
+    LAPI virtual const char* sampleFunctionName()      const=0;
+    LAPI virtual const char* pdfFunctionName()         const=0;
 
-    virtual unsigned    numPrimitives()const=0;
-    virtual float       area()const=0;
+    LAPI virtual unsigned    numPrimitives()const=0;
+    LAPI virtual float       area()const=0;
 
-    virtual void        setTransform( const Matrix& transform )=0;
-    virtual Matrix      getTransform() const=0;
+    LAPI virtual void        setTransform( const Matrix& transform )=0;
+    LAPI virtual Matrix      getTransform() const=0;
 
-    virtual void        setSurface( ISurface* surface )=0;
-    virtual ISurface*   getSurface()const = 0 ;
+    LAPI virtual void        setSurface( ISurface* surface )=0;
+    LAPI virtual ISurface*   getSurface()const = 0 ;
 };
 
 
 
-class Instance : public IGeometry
+class LAPI Instance : public IGeometry
 {
 public:
-    Instance( Context* context, IGeometry* child, const Matrix& transform )
+    LAPI Instance( Context* context, IGeometry* child, const Matrix& transform )
         : IGeometry( context ),
           m_transform( transform ), 
           m_child( child ),
           m_surface( 0 )
     {}
 
-    ~Instance() {}
+    LAPI ~Instance() {}
 
-    const char* name()const
+    LAPI const char* name()const
     { return m_child->name(); }
 
-    const char* intersectionFunctionName()const
+    LAPI const char* intersectionFunctionName()const
     { return m_child->intersectionFunctionName(); }
 
-    const char* boundingBoxFunctionName()const
+    LAPI const char* boundingBoxFunctionName()const
     { return m_child->boundingBoxFunctionName(); }
 
-    const char* sampleFunctionName()const
+    LAPI const char* sampleFunctionName()const
     { return m_child->sampleFunctionName(); }
 
-    virtual unsigned numPrimitives()const
+    LAPI virtual unsigned numPrimitives()const
     { return m_child->numPrimitives(); }
 
-    void setTransform( const Matrix& transform )
+    LAPI void setTransform( const Matrix& transform )
     { m_transform = transform; }
 
-    Matrix getTransform() const
+    LAPI Matrix getTransform() const
     { return m_transform * m_child->getTransform(); }
 
-    void setSurface( ISurface* surface )
+    LAPI void setSurface( ISurface* surface )
     { m_surface = surface; }
     
-    ISurface* getSurface()const 
+    LAPI ISurface* getSurface()const 
     { return m_surface ? m_surface : m_child->getSurface(); }
 
 private:
