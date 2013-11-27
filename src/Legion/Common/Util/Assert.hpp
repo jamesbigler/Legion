@@ -4,6 +4,7 @@
 #define LEGION_COMMON_UTIL_ASSERT_H_
 
 #include <Legion/Core/Exception.hpp>
+#include <Legion/Common/Util/Preprocessor.hpp>
 #include <string>
 #include <sstream>
 
@@ -39,7 +40,7 @@ template<size_t> struct StaticAssertionChecker       {};
 //
 //------------------------------------------------------------------------------
 #define LEGION_TODO()                                                          \
-    throw legion::Exception( std::string( __PRETTY_FUNCTION__ ) +              \
+    throw legion::Exception( std::string( LFUNC ) +              \
                      ": Unimplemented code path taken (TODO)");
 
 
@@ -67,7 +68,7 @@ template<size_t> struct StaticAssertionChecker       {};
         if( !(p) )                                                             \
         {                                                                      \
             std::stringstream ss;                                              \
-            ss << __func__ <<  " passed NULL input pointer '" << #p << "'";    \
+            ss << LFUNC <<  " passed NULL input pointer '" << #p << "'";    \
             throw legion::AssertionFailure( ss.str() );                        \
         }                                                                      \
     } while( 0 )

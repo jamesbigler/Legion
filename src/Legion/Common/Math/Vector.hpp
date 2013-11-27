@@ -19,48 +19,48 @@ namespace legion
 
 /// Vector (numeric tuple) class of arbitrary dimension and element type
 template <unsigned DIM, typename TYPE>
-class LAPI Vector
+class Vector
 {
 public:
-    LAPI Vector();
-    LAPI explicit Vector( TYPE t );
-    LAPI Vector( TYPE x, TYPE y );                      // Only valid for Vector<2>
-    LAPI Vector( TYPE x, TYPE y, TYPE z );              // Only valid for Vector<3>
-    LAPI Vector( TYPE x, TYPE y, TYPE z, TYPE w  );     // Only valid for Vector<4>
-    LAPI Vector( const Vector& v );
-    LAPI Vector( const Vector<DIM-1,TYPE>& v, TYPE last );
-    LAPI explicit Vector( const TYPE v[DIM] );
+    Vector();
+    explicit Vector( TYPE t );
+    Vector( TYPE x, TYPE y );                      // Only valid for Vector<2>
+    Vector( TYPE x, TYPE y, TYPE z );              // Only valid for Vector<3>
+    Vector( TYPE x, TYPE y, TYPE z, TYPE w  );     // Only valid for Vector<4>
+    Vector( const Vector& v );
+    Vector( const Vector<DIM-1,TYPE>& v, TYPE last );
+    explicit Vector( const TYPE v[DIM] );
     
     template <typename TYPE2>
-    LAPI explicit Vector( const Vector<DIM, TYPE2>& v );
+    explicit Vector( const Vector<DIM, TYPE2>& v );
 
-    LAPI TYPE x() const;
-    LAPI TYPE y() const;
-    LAPI TYPE z() const;                                // Only valid for Vector<3,4>
-    LAPI TYPE w() const;                                // Only valid for Vector<4>
-    LAPI void setX( TYPE x );
-    LAPI void setY( TYPE y );
-    LAPI void setZ( TYPE z );                           // Only valid for Vector<3,4>
-    LAPI void setW( TYPE w );                           // Only valid for Vector<3>
+    TYPE x() const;
+    TYPE y() const;
+    TYPE z() const;                                // Only valid for Vector<3,4>
+    TYPE w() const;                                // Only valid for Vector<4>
+    void setX( TYPE x );
+    void setY( TYPE y );
+    void setZ( TYPE z );                           // Only valid for Vector<3,4>
+    void setW( TYPE w );                           // Only valid for Vector<3>
 
 
-    LAPI TYPE  operator[]( unsigned idx ) const;
-    LAPI TYPE& operator[]( unsigned idx );
+    TYPE  operator[]( unsigned idx ) const;
+    TYPE& operator[]( unsigned idx );
 
-    LAPI Vector<DIM, TYPE>& operator= ( const Vector<DIM, TYPE>& rhs );
-    LAPI Vector<DIM, TYPE>& operator*=( const Vector<DIM, TYPE>& rhs );
-    LAPI Vector<DIM, TYPE>& operator/=( const Vector<DIM, TYPE>& rhs );
-    LAPI Vector<DIM, TYPE>& operator+=( const Vector<DIM, TYPE>& rhs );
-    LAPI Vector<DIM, TYPE>& operator-=( const Vector<DIM, TYPE>& rhs );
-    LAPI Vector<DIM, TYPE>& operator*=( TYPE rhs );
-    LAPI Vector<DIM, TYPE>& operator/=( TYPE rhs );
+    Vector<DIM, TYPE>& operator= ( const Vector<DIM, TYPE>& rhs );
+    Vector<DIM, TYPE>& operator*=( const Vector<DIM, TYPE>& rhs );
+    Vector<DIM, TYPE>& operator/=( const Vector<DIM, TYPE>& rhs );
+    Vector<DIM, TYPE>& operator+=( const Vector<DIM, TYPE>& rhs );
+    Vector<DIM, TYPE>& operator-=( const Vector<DIM, TYPE>& rhs );
+    Vector<DIM, TYPE>& operator*=( TYPE rhs );
+    Vector<DIM, TYPE>& operator/=( TYPE rhs );
 
-    LAPI TYPE max()const;
-    LAPI TYPE min()const;
+    TYPE max()const;
+    TYPE min()const;
 
-    LAPI TYPE length() const;
-    LAPI TYPE lengthSquared() const;
-    LAPI TYPE normalize();
+    TYPE length() const;
+    TYPE lengthSquared() const;
+    TYPE normalize();
 private:
     TYPE m_v[ DIM ];
 };

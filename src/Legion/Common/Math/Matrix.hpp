@@ -54,7 +54,7 @@ Matrix  operator*( const Matrix& m, float f );
 Matrix  operator*( float f, const Matrix& m );
 
 
-class LAPI Matrix
+class LCLASSAPI Matrix
 {
 public:
     LAPI               Matrix();
@@ -93,10 +93,10 @@ public:
     LAPI static Matrix translate( const Vector3& vec );
 
     LAPI static Matrix scale( const Vector3& vec );
-    LAPI 
+
     LAPI static Matrix lookAt( const Vector3& eye,
-    LAPI                       const Vector3& at,
-    LAPI                       const Vector3& up );
+                               const Vector3& at,
+                               const Vector3& up );
 
     LAPI static Matrix identity();
 

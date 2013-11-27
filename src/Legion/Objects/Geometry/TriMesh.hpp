@@ -34,7 +34,7 @@ namespace legion
 
 class VariableContainer;
 
-class LAPI TriMesh : public IGeometry
+class LCLASSAPI TriMesh : public IGeometry
 {
 public:
     LAPI static IGeometry* create( Context* context, const Parameters& params );
@@ -77,16 +77,16 @@ public:
     LAPI ISurface*   getSurface()const;
 
     LAPI void        setTriangles( const std::vector<Vector3>& vertices,
-    LAPI                           const std::vector<Index3>& triangles );
+                                   const std::vector<Index3>& triangles );
 
     LAPI void        setTriangles( const std::vector<VertexUV>& vertices,
-    LAPI                           const std::vector<Index3>& triangles );
+                                   const std::vector<Index3>& triangles );
 
     LAPI void        setTriangles( const std::vector<VertexN>& vertices,
-    LAPI                           const std::vector<Index3>& triangles );
+                                   const std::vector<Index3>& triangles );
 
     LAPI void        setTriangles( const std::vector<Vertex>& vertices,
-    LAPI                           const std::vector<Index3>& triangles );
+                                   const std::vector<Index3>& triangles );
 
     LAPI void setVariables( VariableContainer& container ) const;
 private:

@@ -13,7 +13,7 @@ namespace legion
 
 class VariableContainer;
 
-class LAPI DiffuseEmitter : public ISurface
+class LCLASSAPI DiffuseEmitter : public ISurface
 {
 public:
     LAPI static ISurface* create( Context* context, const Parameters& params );

@@ -38,7 +38,7 @@ namespace legion
 
 
 /// Pure virtual interface for all LightShader classes
-class LAPI PointLight : public ILight
+class LCLASSAPI PointLight : public ILight
 {
 public:
     LAPI PointLight( Context* context );

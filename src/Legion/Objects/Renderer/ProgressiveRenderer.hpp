@@ -34,7 +34,7 @@ class IDisplay;
 
 /// Owns the optix raygen program, the output framebuffer,  and all ray
 /// scheduling
-class LAPI ProgressiveRenderer : public IRenderer
+class LCLASSAPI ProgressiveRenderer : public IRenderer
 {
 public:
     LAPI static IRenderer* create( Context* context, const Parameters& params );
@@ -45,7 +45,7 @@ public:
     LAPI const char*    name()const;
     LAPI const char*    rayGenProgramName()const;
     LAPI void           render( VariableContainer& container );
-    LAPI 
+
     LAPI void setVariables( VariableContainer& container ) const;
 private:
     optix::Buffer m_float_output_buffer;

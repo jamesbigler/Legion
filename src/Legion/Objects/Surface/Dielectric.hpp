@@ -14,14 +14,14 @@ namespace legion
 class VariableContainer;
 class ITexture;
 
-class LAPI Dielectric : public ISurface
+class LCLASSAPI Dielectric : public ISurface
 {
 public:
     LAPI static ISurface* create( Context* context, const Parameters& params );
 
     LAPI Dielectric( Context* context );
     LAPI ~Dielectric();
-    LAPI 
+
     LAPI void setIOROut( float ior_out );
     LAPI void setIORIn ( float ior_in  );
 
@@ -29,7 +29,7 @@ public:
     LAPI void setReflectance  ( const Color& reflectance   );
     LAPI void setTransmittance( const Color& transmittance );
 
-    LAPI 
+
     LAPI const char* name()const;
     LAPI const char* sampleBSDFFunctionName()const;
     LAPI const char* evaluateBSDFFunctionName()const;

@@ -38,7 +38,7 @@ namespace legion
 
 
 /// Checker value textures.
-class LAPI CheckerTexture : public ProceduralTexture
+class LCLASSAPI CheckerTexture : public ProceduralTexture
 {
 public:
     LAPI static ITexture* create( Context* context, const Parameters& params );

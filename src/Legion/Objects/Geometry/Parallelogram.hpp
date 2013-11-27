@@ -37,13 +37,13 @@ class VariableContainer;
 class Parameters;
 class ISurface;
 
-class LAPI Parallelogram : public IGeometry
+class LCLASSAPI Parallelogram : public IGeometry
 {
 public:
     LAPI static IGeometry* create( Context* context, const Parameters& params );
 
     LAPI Parallelogram( Context* context );
-    LAPI 
+
     LAPI const char* name()const;
     LAPI const char* intersectionFunctionName()const;
     LAPI const char* boundingBoxFunctionName()const;
@@ -60,9 +60,9 @@ public:
     LAPI ISurface*   getSurface()const;
 
     LAPI void        setAnchorUV( const Vector3& anchor,
-    LAPI                          const Vector3& U,
-    LAPI                          const Vector3& V );
-    LAPI                      
+                                  const Vector3& U,
+                                  const Vector3& V );
+
     LAPI void setVariables( VariableContainer& container )const;
 
 private:

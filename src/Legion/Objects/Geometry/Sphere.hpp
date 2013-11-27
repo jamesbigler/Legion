@@ -37,13 +37,13 @@ class VariableContainer;
 class Parameters;
 class ISurface;
 
-class LAPI Sphere : public IGeometry
+class LCLASSAPI Sphere : public IGeometry
 {
 public:
     LAPI static IGeometry* create( Context* context, const Parameters& params );
 
     LAPI Sphere( Context* context );
-    LAPI 
+
     LAPI const char* name()const;
     LAPI const char* intersectionFunctionName()const;
     LAPI const char* boundingBoxFunctionName()const;

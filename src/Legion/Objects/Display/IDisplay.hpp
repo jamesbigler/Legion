@@ -33,7 +33,7 @@ namespace legion
 
 class VariableContainer;
 
-class LAPI IDisplay: public IObject
+class LCLASSAPI IDisplay: public IObject
 {
 public:
     typedef unsigned char Byte;

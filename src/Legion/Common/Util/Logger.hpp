@@ -25,8 +25,7 @@
 
 #include <Legion/Common/Util/Preprocessor.hpp>
 #include <iostream>
-#include <ctime>
-#include <sys/time.h>
+#include <string>
 
 
 #ifndef LLOG_MAX_LEVEL
@@ -39,7 +38,7 @@
     else if( level > legion::Log::getReportingLevel() ) ;                      \
     else legion::Log().get( level )
 
-#define LLOG_ERROR   LLOG( legion::Log::ERROR   )
+#define LLOG_ERROR   LLOG( legion::Log::ERR   )
 #define LLOG_WARN    LLOG( legion::Log::WARNING )
 #define LLOG_INFO    LLOG( legion::Log::INFO    )
 #define LLOG_DEBUG   LLOG( legion::Log::DEBUG   )
@@ -64,12 +63,12 @@ namespace legion
 ///
 /// Inspired by http://drdobbs.com/cpp/201804215
 ///
-class LAPI Log
+class LCLASSAPI Log
 {
 public:
     enum Level
     {
-        ERROR=0,
+        ERR=0,
         WARNING,
         STAT,
         INFO,

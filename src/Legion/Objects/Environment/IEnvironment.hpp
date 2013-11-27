@@ -35,7 +35,7 @@ namespace legion
 
 
 /// Pure virtual interface for Environment objects
-class LAPI IEnvironment : public IObject
+class LCLASSAPI IEnvironment : public IObject
 {
 public:
     LAPI IEnvironment( Context* context ) : IObject( context ) {}

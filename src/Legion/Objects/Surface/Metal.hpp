@@ -36,20 +36,20 @@ class ITexture;
 class ConstantTexture;
 class Color;
 
-class LAPI Metal : public ISurface
+class LCLASSAPI Metal : public ISurface
 {
 public:
     LAPI static ISurface* create( Context* context, const Parameters& params );
 
     LAPI Metal( Context* context );
     LAPI ~Metal();
-    LAPI 
+
     LAPI void setMetalType  ( const std::string& type     );
     LAPI void setReflectance( const ITexture* reflectance );
     LAPI void setAlpha      ( const ITexture* alpha       );
     LAPI void setEta        ( const ITexture* eta         );
     LAPI void setK          ( const ITexture* k           );
-    LAPI 
+
     LAPI const char* name()const;
     LAPI const char* sampleBSDFFunctionName()const;
     LAPI const char* evaluateBSDFFunctionName()const;

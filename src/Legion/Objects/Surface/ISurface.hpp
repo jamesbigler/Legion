@@ -33,7 +33,7 @@ namespace legion
 {
 
 /// Pure virtual interface for Surfaces
-class LAPI ISurface : public IObject
+class LCLASSAPI ISurface : public IObject
 {
 public:
     LAPI ISurface( Context* context ) : IObject( context ) {}

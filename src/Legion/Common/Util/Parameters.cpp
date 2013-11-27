@@ -73,7 +73,7 @@ PARAMETERS_GET_IMPL( TextureParams, m_texture_params, ITexture*   );
 #define PARAMETERS_SET_IMPL( map_name, val_type )                              \
     bool Parameters::set( const std::string& name, val_type val )              \
     {                                                                          \
-        bool already_present = map_name.count( name );                         \
+        bool already_present = map_name.count( name ) != 0;                    \
         map_name.insert( std::make_pair( name, Param<val_type>( val ) ) );     \
         return already_present;                                                \
     }
@@ -81,7 +81,7 @@ PARAMETERS_GET_IMPL( TextureParams, m_texture_params, ITexture*   );
 #define PARAMETERS_SET_REF_IMPL( map_name, val_type )                          \
     bool Parameters::set( const std::string& name, const val_type& val )       \
     {                                                                          \
-        bool already_present = map_name.count( name );                         \
+        bool already_present = map_name.count( name ) != 0;                    \
         map_name.insert( std::make_pair( name, Param<val_type>( val ) ) );     \
         return already_present;                                                \
     }
@@ -91,7 +91,7 @@ PARAMETERS_GET_IMPL( TextureParams, m_texture_params, ITexture*   );
     {                                                                          \
         if( !val )                                                             \
             throw Exception( "NULL passed to Parameters::set: " + name );      \
-        bool already_present = map_name.count( name );                         \
+        bool already_present = map_name.count( name ) != 0;                    \
         map_name.insert( std::make_pair( name, Param<val_type*>( val ) ) );    \
         return already_present;                                                \
     }

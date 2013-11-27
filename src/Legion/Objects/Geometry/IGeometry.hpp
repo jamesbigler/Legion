@@ -38,7 +38,7 @@ class Matrix;
 class ISurface;
 
 /// Pure virtual interface for Geometry objects
-class LAPI IGeometry : public IObject
+class LCLASSAPI IGeometry : public IObject
 {
 public:
     LAPI IGeometry( Context* context ) : IObject( context ) {}
@@ -62,7 +62,7 @@ public:
 
 
 
-class LAPI Instance : public IGeometry
+class LCLASSAPI Instance : public IGeometry
 {
 public:
     LAPI Instance( Context* context, IGeometry* child, const Matrix& transform )

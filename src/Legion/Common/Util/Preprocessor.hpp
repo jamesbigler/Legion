@@ -31,23 +31,29 @@
 #  if legion_EXPORTS // Set by CMAKE                                              
 #    if defined( _WIN32 )                                                        
 #      define LAPI __declspec(dllexport)                                        
-#    elif defined( linux ) || defined ( __CYGWIN__ )                             
+#      define LCLASSAPI
+#    else
 #      define LAPI __attribute__ ((visibility ("default")))                     
-#    elif defined( __APPLE__ ) && defined( __MACH__ )                            
-#      define LAPI __attribute__ ((visibility ("default")))                     
-#    else                                                                        
-#      error "CODE FOR THIS OS HAS NOT YET BEEN DEFINED"                         
+#      define LCLASSAPI LAPI                                        
 #    endif                                                                       
 #  else
 #    if defined( _WIN32 )                                                        
 #      define LAPI __declspec(dllimport)                                        
+#      define LCLASSAPI
 #    else
 #      define LAPI
+#      define LCLASSAPI
 #    endif
 #  endif
 #endif
 
-#define LFUNC __PRETTY_FUNCTION__
+#if defined(__GNUC__)
+#  define LFUNC      __PRETTY_FUNCTION__
+#elif defined(_MSC_VER)
+#  define LFUNC      __FUNCTION__ // or perhaps __FUNCDNAME__ + __FUNCSIG__
+#else
+#  define LFUNC       __func__
+#endif
 
 #if defined(__CUDACC__) || defined(__CUDABE__)
 #    define LCUDA

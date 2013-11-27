@@ -39,7 +39,7 @@ class ITexture;
 class ISurface;
 
 
-class LAPI Parameters
+class LCLASSAPI Parameters
 {
 public:
     enum ParameterType
@@ -56,10 +56,10 @@ public:
     };
 
     template <typename T>
-    LAPI bool get( const std::string& name, const T& default_val, T& val )const;
+    bool get( const std::string& name, const T& default_val, T& val )const;
    
     template <typename T>
-    LAPI T get( const std::string& name, const T& default_val )const;
+    T get( const std::string& name, const T& default_val )const;
     
     LAPI bool get( const std::string& name, float&       val )const;
     LAPI bool get( const std::string& name, int&         val )const;

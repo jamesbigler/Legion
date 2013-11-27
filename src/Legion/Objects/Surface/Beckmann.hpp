@@ -32,17 +32,17 @@ namespace legion
 class VariableContainer;
 class ITexture;
 
-class LAPI Beckmann : public ISurface
+class LCLASSAPI Beckmann : public ISurface
 {
 public:
     LAPI static ISurface* create( Context* context, const Parameters& params );
 
     LAPI Beckmann( Context* context );
     LAPI ~Beckmann();
-    LAPI 
+
     LAPI void setReflectance( const ITexture* reflectance );
     LAPI void setAlpha      ( const ITexture* alpha);
-    LAPI 
+
     LAPI const char* name()const;
     LAPI const char* sampleBSDFFunctionName()const;
     LAPI const char* evaluateBSDFFunctionName()const;

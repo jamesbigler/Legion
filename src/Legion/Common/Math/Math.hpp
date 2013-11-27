@@ -59,7 +59,7 @@ namespace legion
 
       const float R = dot( xyz, Vector3(  3.2410f, -1.5374f, -0.4986f ) );
       const float G = dot( xyz, Vector3( -0.9692f,  1.8760f,  0.0416f ) );
-      const float B = dot( xyz, Vector3(  0.0556f, -0.2040,   1.0570f ) );
+      const float B = dot( xyz, Vector3(  0.0556f, -0.2040f,  1.0570f ) );
       return Vector3( R, G, B );
     }
 
@@ -67,9 +67,9 @@ namespace legion
     inline Vector3 rgb2Yxy( Vector3 rgb)
     {
       // convert to xyz
-      const float X = dot( rgb, Vector3( 0.4124, 0.3576, 0.1805 ) );
-      const float Y = dot( rgb, Vector3( 0.2126, 0.7152, 0.0722 ) );
-      const float Z = dot( rgb, Vector3( 0.0193, 0.1192, 0.9505 ) );
+      const float X = dot( rgb, Vector3( 0.4124f, 0.3576f, 0.1805f ) );
+      const float Y = dot( rgb, Vector3( 0.2126f, 0.7152f, 0.0722f ) );
+      const float Z = dot( rgb, Vector3( 0.0193f, 0.1192f, 0.9505f ) );
 
       // convert xyz to Yxy
       return Vector3( Y,
@@ -84,7 +84,7 @@ namespace legion
         const Vector3 Yxy        = rgb2Yxy( c );
         const float   Y          = Yxy.x();
         const float   scaled_Y   = Y * exposure;
-        const float   mapped_Y   = scaled_Y / ( scaled_Y + 1.0 );
+        const float   mapped_Y   = scaled_Y / ( scaled_Y + 1.0f );
         const Vector3 mapped_Yxy( mapped_Y, Yxy.y(), Yxy.z() );
 
         return Yxy2rgb( mapped_Yxy );

@@ -36,7 +36,7 @@ namespace legion
 {
 
 /// Image value textures.
-class LAPI ImageTexture : public ITexture
+class LCLASSAPI ImageTexture : public ITexture
 {
 public:
     LAPI static ITexture* create( Context* context, const Parameters& params );
@@ -45,7 +45,7 @@ public:
     LAPI ~ImageTexture();
 
     LAPI void set( const std::string& filename ); 
-    LAPI 
+
     LAPI Type     getType()const;
     LAPI unsigned getValueDim()const;
     LAPI int      getTexID()const;

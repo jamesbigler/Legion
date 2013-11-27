@@ -36,7 +36,7 @@ namespace legion
 
 /// A basic thin lens camera implementation.  Supports depth-of-field with a
 /// round lens model.
-class LAPI ThinLens : public ICamera
+class LCLASSAPI ThinLens : public ICamera
 {
 public:
     LAPI static ICamera* create( Context* context, const Parameters& params );

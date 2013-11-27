@@ -39,7 +39,7 @@ class Color;
 class Parameters;
 
 /// Constant value textures.
-class LAPI ConstantTexture : public ITexture
+class LCLASSAPI ConstantTexture : public ITexture
 {
 public:
     LAPI static ITexture* create( Context* context, const Parameters& params );
@@ -52,7 +52,7 @@ public:
     LAPI void set( const Color&   c ); // Padded to float4
     LAPI void set( const Vector2& v );
     LAPI void set( const Vector4& v );
-    LAPI 
+
     LAPI Type     getType()const;
     LAPI unsigned getValueDim()const;
     LAPI void     getConstValue( float* val )const;

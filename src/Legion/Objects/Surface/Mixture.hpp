@@ -35,7 +35,7 @@ class VariableContainer;
 class ITexture;
 
 /// Pure virtual interface for Surfaces
-class LAPI Mixture : public ISurface
+class LCLASSAPI Mixture : public ISurface
 {
 public:
     LAPI static ISurface* create( Context* context, const Parameters& params );
@@ -51,7 +51,7 @@ public:
     LAPI const char* evaluateBSDFFunctionName()const;
     LAPI const char* pdfFunctionName()const;
     LAPI const char* emissionFunctionName()const;
-    LAPI 
+
     LAPI void setVariables( VariableContainer& container ) const;
 
 private:

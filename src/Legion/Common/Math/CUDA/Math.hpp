@@ -11,10 +11,11 @@ namespace legion
     typedef unsigned           uint32;
     typedef unsigned long long uint64;
 
-    const float PI             = static_cast<float>( M_PI );
-    const float TWO_PI         = PI * 2.0f;
-    const float ONE_DIV_PI     = 1.0f / PI;
-    const float ONE_DIV_TWO_PI = 1.0f / TWO_PI;
+
+    LDEVICE static const float PI             = static_cast<float>( M_PI );
+    LDEVICE static const float TWO_PI         = 2.0f * static_cast<float>( M_PI );
+    LDEVICE static const float ONE_DIV_PI     = 1.0f / static_cast<float>( M_PI );
+    LDEVICE static const float ONE_DIV_TWO_PI = 1.0f / (2.0f * static_cast<float>( M_PI ));
 
 
     LDEVICE inline bool nan( float2 x )

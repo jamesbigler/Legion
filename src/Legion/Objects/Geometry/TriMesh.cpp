@@ -128,7 +128,7 @@ unsigned TriMesh::numPrimitives()const
 {
     RTsize triangle_count;
     m_triangles->getSize( triangle_count );
-    return triangle_count;
+    return static_cast<unsigned>(triangle_count);
 }
 
 
@@ -174,11 +174,11 @@ void TriMesh::setTriangles( const std::vector<Vector3>& vertices,
 
     m_triangles = createOptiXBuffer( RT_BUFFER_INPUT,
                                      RT_FORMAT_UNSIGNED_INT3,
-                                     triangles.size() );
+                                     static_cast<unsigned int>(triangles.size()) );
 
     m_vertices  = createOptiXBuffer( RT_BUFFER_INPUT,
                                      RT_FORMAT_FLOAT3,
-                                     vertices.size() );
+                                     static_cast<unsigned int>(vertices.size()) );
 
     std::copy( triangles.begin(),
                triangles.end(),
@@ -211,11 +211,11 @@ void TriMesh::setTriangles( const std::vector<VertexN>& vertices,
 
     m_triangles = createOptiXBuffer( RT_BUFFER_INPUT,
                                      RT_FORMAT_UNSIGNED_INT3,
-                                     triangles.size() );
+                                     static_cast<unsigned int>(triangles.size()) );
 
     m_vertices  = createOptiXBuffer( RT_BUFFER_INPUT,
                                      RT_FORMAT_USER,
-                                     vertices.size() );
+                                     static_cast<unsigned int>(vertices.size()) );
     m_vertices->setElementSize( sizeof( VertexN ) );
 
     std::copy( triangles.begin(),
@@ -290,7 +290,7 @@ void TriMesh::loadMeshData( const std::string& filename, TriMesh* mesh )
     LLOG_INFO << "\t" << verttype << " " << vertcount << " " << tricount;
 
     const bool have_normals = verttype & 0x01;
-    const bool have_uvs     = verttype & 0x02;
+    const bool have_uvs     = (verttype & 0x02) != 0;
     if( !have_normals && !have_uvs )
       ::loadDataHelper<Vector3 >( in, vertcount, tricount, mesh );
     else if( have_normals && !have_uvs )

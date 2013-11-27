@@ -104,10 +104,10 @@ bool ImageFileDisplay::updateFrame( const float*, const Byte* )
     ++m_cur_update;
     if( m_update_count > 0 )
     {
-        const unsigned percent_done = 
+        const unsigned percent_done = static_cast<unsigned>(
             static_cast<float>( m_cur_update )   /
             static_cast<float>( m_update_count ) *
-            100.0f;
+            100.0f);
         std::cout << "\b\b\b\b" 
                   << std::setw( 3 ) 
                   << std::setiosflags(std::ios::right ) 

@@ -37,7 +37,7 @@ namespace legion
 
 
 /// Pure virtual interface for Environment objects
-class LAPI ConstantEnvironment : public IEnvironment 
+class LCLASSAPI ConstantEnvironment : public IEnvironment 
 {
 public:
     LAPI static IEnvironment* create( Context* context, const Parameters& params );

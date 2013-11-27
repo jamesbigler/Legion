@@ -13,19 +13,19 @@ namespace legion
 
 class VariableContainer;
 
-class LAPI Ward : public ISurface
+class LCLASSAPI Ward : public ISurface
 {
 public:
     LAPI static ISurface* create( Context* context, const Parameters& params );
 
     LAPI Ward( Context* context );
     LAPI ~Ward();
-    LAPI 
+
     LAPI void setDiffuseReflectance( const Color& reflectance );
     LAPI void setSpecularReflectance( const Color& reflectance );
     LAPI void setAlphaU( float alpha_u );
     LAPI void setAlphaV( float alpha_v );
-    LAPI 
+
     LAPI const char* name()const;
     LAPI const char* sampleBSDFFunctionName()const;
     LAPI const char* evaluateBSDFFunctionName()const;

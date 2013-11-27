@@ -36,7 +36,7 @@ class IDisplay;
 
 /// Owns the optix raygen program, the output framebuffer,  and all ray
 /// scheduling
-class LAPI IRenderer : public IObject
+class LCLASSAPI IRenderer : public IObject
 {
 public:
     LAPI IRenderer( Context* context ) 
@@ -55,10 +55,10 @@ public:
 
     LAPI void     setSamplesPerPixel( unsigned spp )    { m_spp = spp;  }
     LAPI unsigned getSamplesPerPixel()const             { return m_spp; }
-    LAPI 
+
     LAPI void     setResolution( const Index2& res )    { m_resolution = res;  }
     LAPI Index2   getResolution()const                  { return m_resolution; }
-    LAPI 
+
     LAPI void     setMaxDiffuseDepth( unsigned depth )  { m_max_diff_depth = depth; }
     LAPI void     setMaxSpecularDepth( unsigned depth ) { m_max_spec_depth = depth; }
 

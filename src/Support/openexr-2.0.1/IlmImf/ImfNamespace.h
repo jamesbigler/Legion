@@ -78,11 +78,12 @@
 #include "OpenEXRConfig.h"
 
 
-#ifndef OPENEXR_IMF_NAMESPACE
+//#ifndef OPENEXR_IMF_NAMESPACE
 #define OPENEXR_IMF_NAMESPACE Imf
-#endif
+//#endif
 
 #ifndef OPENEXR_IMF_INTERNAL_NAMESPACE
+#error "blah"
 #define OPENEXR_IMF_INTERNAL_NAMESPACE OPENEXR_IMF_NAMESPACE
 #endif
 

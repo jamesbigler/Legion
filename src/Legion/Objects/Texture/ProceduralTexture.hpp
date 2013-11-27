@@ -36,7 +36,7 @@ namespace legion
 {
 
 /// Procedural value textures.
-class LAPI ProceduralTexture : public ITexture
+class LCLASSAPI ProceduralTexture : public ITexture
 {
 public:
     LAPI ProceduralTexture( Context* context ) : ITexture( context ) {}

@@ -35,7 +35,7 @@ namespace legion
 
 class VariableContainer;
 
-class LAPI IObject : public Noncopyable
+class LCLASSAPI IObject : public Noncopyable
 {
 public:
     LAPI IObject( Context* context );

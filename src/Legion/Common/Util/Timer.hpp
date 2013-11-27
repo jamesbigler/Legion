@@ -36,7 +36,11 @@ namespace legion
 class Timer
 {
 public:
+#if defined(_WIN32)
+    typedef __int64            Ticks;
+#else
     typedef unsigned long long Ticks;
+#endif
 
     /// Initialize timer
     Timer();

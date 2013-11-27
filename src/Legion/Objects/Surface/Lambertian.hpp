@@ -32,16 +32,16 @@ namespace legion
 class VariableContainer;
 class ITexture;
 
-class LAPI Lambertian : public ISurface
+class LCLASSAPI Lambertian : public ISurface
 {
 public:
     LAPI static ISurface* create( Context* context, const Parameters& params );
 
     LAPI Lambertian( Context* context );
     LAPI ~Lambertian();
-    LAPI 
+
     LAPI void setReflectance( const ITexture* reflectance );
-    LAPI 
+
     LAPI const char* name()const;
     LAPI const char* sampleBSDFFunctionName()const;
     LAPI const char* evaluateBSDFFunctionName()const;

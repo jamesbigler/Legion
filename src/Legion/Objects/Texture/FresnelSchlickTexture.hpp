@@ -38,7 +38,7 @@ namespace legion
 
 
 /// FresnelSchlick value textures.
-class LAPI FresnelSchlickTexture : public ProceduralTexture
+class LCLASSAPI FresnelSchlickTexture : public ProceduralTexture
 {
 public:
     LAPI static ITexture* create( Context* context, const Parameters& params );

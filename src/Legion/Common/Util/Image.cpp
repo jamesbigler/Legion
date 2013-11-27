@@ -22,6 +22,7 @@
 // (MIT/X11 License)
 
 #include <Legion/Common/Util/Image.hpp>
+#include <Legion/Common/Util/Preprocessor.hpp>
 #include <Legion/Core/Exception.hpp>
 #include <IlmImf/ImfArray.h>
 #include <IlmImf/ImfOutputFile.h>
@@ -43,7 +44,7 @@ bool legion::writeOpenEXR( const std::string& filename,
 {
     if( num_channels < 3 || num_channels > 4 )
     {
-        throw Exception( std::string( __PRETTY_FUNCTION__ ) + ": Only 3-channel"
+        throw Exception( std::string( LFUNC ) + ": Only 3-channel"
                          " and 4-channel images supported - RGB(A)" );
     }
 

@@ -45,7 +45,7 @@ class Parameters;
 class PluginContext;
 
 
-class LAPI Context : public Noncopyable
+class LCLASSAPI Context : public Noncopyable
 {
 public:
     class Impl;

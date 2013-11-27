@@ -9,6 +9,13 @@ endif( NOT CMAKE_BUILD_TYPE )
 
 add_definitions( -DLLOG_MAX_LEVEL=legion::Log::DEBUG )
 
+if(WIN32)
+  # We should set this macro as well to get our nice trig functions
+  add_definitions(-D_USE_MATH_DEFINES)
+  # Microsoft does some stupid things like #define min and max.
+  add_definitions(-DNOMINMAX)
+endif()
+
 
 if( "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" )
   #set(CMAKE_CXX_FLAGS "-fvisibility-inlines-hidden -fvisibility=hidden -Wall -Wextra -pedantic  -funroll-loops -floop-optimize -ffast-math -Qunused-arguments" )
@@ -18,10 +25,12 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
 endif()
 
 
-set(CMAKE_CXX_FLAGS_DEBUG          "-g")
-set(CMAKE_CXX_FLAGS_MINSIZEREL     "-Os -DNDEBUG")
-set(CMAKE_CXX_FLAGS_RELEASE        "-O4 -DNDEBUG")
-set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O2 -g")
+if(NOT WIN32)
+  set(CMAKE_CXX_FLAGS_DEBUG          "-g")
+  set(CMAKE_CXX_FLAGS_MINSIZEREL     "-Os -DNDEBUG")
+  set(CMAKE_CXX_FLAGS_RELEASE        "-O4 -DNDEBUG")
+  set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O2 -g")
+endif()
 
 find_package( OptiX    REQUIRED )
 find_package( CUDA 4.0 REQUIRED )

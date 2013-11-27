@@ -86,7 +86,7 @@ unsigned Sphere::numPrimitives()const
 
 float Sphere::area()const
 {
-    return 4.0*legion::PI*m_radius*m_radius;
+    return 4.0f*legion::PI*m_radius*m_radius;
 }
 
 

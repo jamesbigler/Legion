@@ -161,16 +161,16 @@ void Metal::initializeMetalLookup()
         return;
     initialized = true;
 
-    addMetalLookup( "aluminum", Color( 1.661,  0.8814, 0.5211 ),
-                                Color( 9.224,  6.273,  4.753  ) );
-    addMetalLookup( "copper",   Color( 0.2129, 0.9196, 1.103  ),
-                                Color( 3.918,  2.46,   2.137  ) );
-    addMetalLookup( "gold",     Color( 0.1723, 0.3827, 1.437  ),
-                                Color( 3.976,  2.381,  1.605  ) );
-    addMetalLookup( "nickel",   Color( 2.361,  1.663,  1.468  ),
-                                Color( 4.498,  3.051,  2.344  ) );
-    addMetalLookup( "platinum", Color( 2.83,   1.996,  1.646  ),
-                                Color( 5.001,  3.493,  2.796  ) );
-    addMetalLookup( "silver",   Color( 0.1555, 0.1169, 0.1384 ),
-                                Color( 4.822,  3.123,  2.146  ) );
+    addMetalLookup( "aluminum", Color( 1.661f,  0.8814f, 0.5211f ),
+                                Color( 9.224f,  6.273f,  4.753f  ) );
+    addMetalLookup( "copper",   Color( 0.2129f, 0.9196f, 1.103f  ),
+                                Color( 3.918f,  2.46f,   2.137f  ) );
+    addMetalLookup( "gold",     Color( 0.1723f, 0.3827f, 1.437f  ),
+                                Color( 3.976f,  2.381f,  1.605f  ) );
+    addMetalLookup( "nickel",   Color( 2.361f,  1.663f,  1.468f  ),
+                                Color( 4.498f,  3.051f,  2.344f  ) );
+    addMetalLookup( "platinum", Color( 2.83f,   1.996f,  1.646f  ),
+                                Color( 5.001f,  3.493f,  2.796f  ) );
+    addMetalLookup( "silver",   Color( 0.1555f, 0.1169f, 0.1384f ),
+                                Color( 4.822f,  3.123f,  2.146f  ) );
 }

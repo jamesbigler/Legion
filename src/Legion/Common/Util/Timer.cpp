@@ -63,6 +63,28 @@ namespace
     }
 }
 
+#elif defined(_WIN32)
+
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+
+namespace
+{
+    inline Timer::Ticks getTicks()
+    {
+        LARGE_INTEGER currentTime;
+        QueryPerformanceCounter(&currentTime);
+        return currentTime.QuadPart;
+    }
+
+    inline double secondsPerTick()
+    {
+      LARGE_INTEGER frequency;
+      QueryPerformanceFrequency(&frequency);
+      return 1.0/static_cast<double>(frequency.QuadPart);
+    }
+}
+
 #else
 #    error "Timer: Unsupported OS!"
 #endif

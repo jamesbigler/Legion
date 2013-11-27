@@ -46,7 +46,7 @@ struct CameraSample
 */
 
 /// Pure virtual interface for Camera objects
-class LAPI ICamera : public IObject
+class LCLASSAPI ICamera : public IObject
 {
 public:
     LAPI ICamera( Context* context ) : IObject( context ) {}

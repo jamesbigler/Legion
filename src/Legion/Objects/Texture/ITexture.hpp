@@ -35,7 +35,7 @@ namespace legion
 {
 
 /// Pure virtual interface for Textures.
-class LAPI ITexture : public IObject
+class LCLASSAPI ITexture : public IObject
 {
 public:
     static const unsigned MAX_VALUE_DIM=4u;

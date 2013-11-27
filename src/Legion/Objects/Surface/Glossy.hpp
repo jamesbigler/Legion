@@ -32,18 +32,18 @@ namespace legion
 class VariableContainer;
 class ITexture;
 
-class LAPI Glossy : public ISurface
+class LCLASSAPI Glossy : public ISurface
 {
 public:
     LAPI static ISurface* create( Context* context, const Parameters& params );
 
     LAPI Glossy( Context* context );
     LAPI ~Glossy();
-    LAPI 
+
     LAPI void setReflectance( const ITexture* reflectance );
     LAPI void setAlpha      ( const ITexture* alpha       );
     LAPI void setEta        ( const ITexture* alpha       );
-    LAPI 
+
     LAPI const char* name()const;
     LAPI const char* sampleBSDFFunctionName()const;
     LAPI const char* evaluateBSDFFunctionName()const;

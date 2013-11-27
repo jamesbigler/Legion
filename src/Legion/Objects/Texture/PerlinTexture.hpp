@@ -38,7 +38,7 @@ namespace legion
 
 
 /// Perlin value textures.
-class LAPI PerlinTexture : public ProceduralTexture
+class LCLASSAPI PerlinTexture : public ProceduralTexture
 {
 public:
     LAPI static ITexture* create( Context* context, const Parameters& params );

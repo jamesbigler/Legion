@@ -35,7 +35,7 @@ namespace legion
 
 
 /// Pure virtual interface for all Light classes
-class LAPI ILight : public IObject
+class LCLASSAPI ILight : public IObject
 {
 public:
     LAPI ILight( Context* context ) : IObject( context ) {}

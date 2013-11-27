@@ -8,7 +8,7 @@
 namespace legion
 {
 
-class LAPI Exception : public std::runtime_error
+class Exception : public std::runtime_error
 {
 public:
     LAPI Exception();
@@ -16,7 +16,7 @@ public:
 };
 
 
-class LAPI AssertionFailure : public Exception
+class AssertionFailure : public Exception
 {
 public:
     LAPI AssertionFailure();

@@ -239,7 +239,7 @@ void XMLToLegion::createRenderer( legion::IDisplay* display,
 
     attr = renderer_node->first_attribute( "samples_per_pixel" );
     if( attr )
-        renderer->setSamplesPerPixel( lexical_cast<float>( attr->value() ) );
+        renderer->setSamplesPerPixel( lexical_cast<unsigned int>( attr->value() ) );
 
     attr = renderer_node->first_attribute( "resolution" );
     if( attr )

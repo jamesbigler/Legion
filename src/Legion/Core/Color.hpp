@@ -8,7 +8,7 @@ namespace legion
 {
 
 
-class LAPI Color
+class LCLASSAPI Color
 {
 public:
     LAPI Color() {}
@@ -18,7 +18,7 @@ public:
     LAPI float red()const               { return m_c[0]; }
     LAPI float green()const             { return m_c[1]; }
     LAPI float blue()const              { return m_c[2]; }
-    LAPI 
+
     LAPI float r()const                 { return m_c[0]; }
     LAPI float g()const                 { return m_c[1]; }
     LAPI float b()const                 { return m_c[2]; }

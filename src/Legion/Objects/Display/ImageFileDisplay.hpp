@@ -33,7 +33,7 @@ namespace legion
 
 class VariableContainer;
 
-class LAPI ImageFileDisplay : public IDisplay
+class LCLASSAPI ImageFileDisplay : public IDisplay
 {
 public:
     LAPI static IDisplay* create( Context* context, const Parameters& params );

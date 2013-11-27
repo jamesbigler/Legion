@@ -6,9 +6,8 @@ set( PTX_OUTPUT_DIR "${CMAKE_BINARY_DIR}/lib/ptx" CACHE PATH
 
 set( CUDA_GENERATED_OUTPUT_DIR ${PTX_OUTPUT_DIR} )
 
-
 # Set up build .cu -> .ptx build 
-set( CUDA_NVCC_FLAGS "-arch sm_30" )
+set( CUDA_NVCC_FLAGS "-arch sm_30 --use_fast_math" )
 CUDA_COMPILE_PTX( ptx_files
     Objects/Camera/CUDA/ThinLens.cu
     Objects/Environment/CUDA/ConstantEnvironment.cu
@@ -61,6 +60,9 @@ include_directories(
     "${CMAKE_SOURCE_DIR}/src/Support/ilmbase-2.0.1/IlmThread"
     )
 
+source_group("PTX Files"  REGULAR_EXPRESSION ".+\\.ptx$")
+source_group("CUDA Files" REGULAR_EXPRESSION ".+\\.cu$")
+  
 # build the library and ptx files
 add_library( legion SHARED
     ${ptx_files}
@@ -84,6 +86,7 @@ add_library( legion SHARED
     Common/Util/Noncopyable.hpp
     Common/Util/Parameters.cpp
     Common/Util/Parameters.hpp
+    Common/Util/Preprocessor.hpp
     Common/Util/Singleton.hpp
     Common/Util/Stream.cpp
     Common/Util/Stream.hpp
@@ -168,7 +171,6 @@ target_link_libraries( legion
     Half
     Iex
     IexMath
-    IlmImf
     IlmImf
     IlmThread
     Imath
