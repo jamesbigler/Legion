@@ -54,7 +54,7 @@ XMLToLegion::XMLToLegion( char* text,
     }
     catch( rapidxml::parse_error& e )
     {
-        std::cout << "XML parse error: " << e.what() 
+        LLOG_INFO << "XML parse error: " << e.what() 
                   << ": <" << e.where<char>() << ">" << std::endl;
         throw;
     }
@@ -205,7 +205,7 @@ legion::IDisplay* XMLToLegion::createDisplay( const XMLNode* display_node )
                 "XMLToLegion: Display node missing 'type' attribute"
                 );
 
-    std::cout << "Creating display  : '" << attr->value() << "'" << std::endl;
+    LLOG_INFO << "Creating display  : '" << attr->value() << "'" << std::endl;
 
     const char* display_type = attr->value();
     loadParams( display_node );
@@ -226,7 +226,7 @@ void XMLToLegion::createRenderer( legion::IDisplay* display,
         throw std::runtime_error(
                 "XMLToLegion: Renderer node missing 'type' attribute"
                 );
-    std::cout << "Creating renderer: '" << attr->value() << "'" << std::endl;
+    LLOG_INFO << "Creating renderer: '" << attr->value() << "'" << std::endl;
 
     const char* renderer_type = attr->value();
     loadParams( renderer_node );
@@ -272,7 +272,7 @@ void XMLToLegion::createCamera( const XMLNode* camera_node )
         throw std::runtime_error(
                 "XMLToLegion: Camera node missing 'type' attribute"
                 );
-    std::cout << "Creating camera  : '" << attr->value() << "'" << std::endl;
+    LLOG_INFO << "Creating camera  : '" << attr->value() << "'" << std::endl;
     
 
     const char* camera_type = attr->value();
@@ -285,7 +285,7 @@ void XMLToLegion::createCamera( const XMLNode* camera_node )
                 std::string( attr->value() )
                 );
         camera->setCameraToWorld( m ); 
-        std::cerr << "setting camera matrix to " << m << std::endl;
+        LLOG_INFO << "setting camera matrix to " << m << std::endl;
     }
 
     m_ctx->setCamera( camera );
@@ -317,7 +317,7 @@ void XMLToLegion::createScene( const XMLNode* scene_node )
                     "XMLToLegion: Texture node missing 'type' attribute"
                     );
 
-        std::cout << "Creating texture : '" << type_attr->value() << "'"
+        LLOG_INFO << "Creating texture : '" << type_attr->value() << "'"
                   << " : '" << name_attr->value() << "'" << std::endl;
         loadParams( tex_node );
 
@@ -347,7 +347,7 @@ void XMLToLegion::createScene( const XMLNode* scene_node )
                     "XMLToLegion: Surface node missing 'type' attribute"
                     );
 
-        std::cout << "Creating surface : '" << type_attr->value() << "'"
+        LLOG_INFO << "Creating surface : '" << type_attr->value() << "'"
                   << " : '" << name_attr->value() << "'" << std::endl;
 
         loadParams( surface_node );
@@ -383,7 +383,7 @@ void XMLToLegion::createScene( const XMLNode* scene_node )
 
         const XMLAttribute* name_attr = geometry_node->first_attribute("name");
         const std::string name = name_attr ? name_attr->value() : "";
-        std::cout << "Creating geometry: " << type_attr->value() << ": '"
+        LLOG_INFO << "Creating geometry: " << type_attr->value() << ": '"
                   << name << "'" << std::endl;
 
         loadParams( geometry_node );
@@ -414,7 +414,7 @@ void XMLToLegion::createScene( const XMLNode* scene_node )
                     "XMLToLegion: Environment  node missing 'type' attribute"
                     );
 
-        std::cout << "Creating env     : '" << type_attr->value() << "'"
+        LLOG_INFO << "Creating env     : '" << type_attr->value() << "'"
                   << std::endl;
 
         loadParams( env_node );

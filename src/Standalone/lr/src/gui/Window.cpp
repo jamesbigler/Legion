@@ -48,7 +48,6 @@ Window::Window( const char* filename )
     const std::string scene_dir = pos == std::string::npos ?
         "."                      :
         scene_file.substr( 0, pos );
-    std::cout << "adding asset path '" << scene_dir << "'" <<std::endl;
     m_ctx->addAssetPath( scene_dir );
 
 

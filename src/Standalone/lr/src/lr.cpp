@@ -114,7 +114,6 @@ int main( int argc , char** argv )
         const std::string scene_dir = pos == std::string::npos ?
                                       "."                      :
                                       scene_file.substr( 0, pos );
-        std::cout << "adding asset path '" << scene_dir << "'" <<std::endl;
         legion::Context context;
         context.addAssetPath( scene_dir );
         lr::XMLToLegion translate( text, &context, true );

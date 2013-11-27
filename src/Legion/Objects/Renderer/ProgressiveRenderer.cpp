@@ -166,7 +166,5 @@ void ProgressiveRenderer::setVariables( VariableContainer& container ) const
     container.setUnsigned( "do_byte_complete",    do_byte_complete      );
     container.setUnsigned( "max_diff_depth",      m_max_diff_depth      );
     container.setUnsigned( "max_spec_depth",      m_max_spec_depth      );
-    std::cerr << "setting max diff depth to " << m_max_diff_depth << std::endl;
-    std::cerr << "setting max spec depth to " << m_max_spec_depth << std::endl;
 }
 
