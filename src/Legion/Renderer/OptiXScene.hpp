@@ -77,31 +77,33 @@ private:
 
     typedef std::map<IGeometry*, optix::GeometryInstance > GeometryMap;
 
-    optix::Context          m_optix_context;
-    optix::Program          m_raygen_program;
-    optix::Program          m_create_ray_program;
-    optix::Program          m_closest_hit_program;
-    optix::Program          m_any_hit_program;
-    optix::Program          m_environment_sample;
-    optix::Program          m_environment_light_evaluate;
-    optix::Program          m_environment_miss_evaluate;
-    optix::Program          m_environment_program;
-    optix::Program          m_default_texture_proc1;
-    optix::Program          m_default_texture_proc2;
-    optix::Program          m_default_texture_proc4;
-    optix::GeometryGroup    m_top_group;
+    optix::Context           m_optix_context;
+    optix::Program           m_raygen_program;
+    optix::Program           m_create_ray_program;
+    optix::Program           m_closest_hit_program;
+    optix::Program           m_any_hit_program;
+    optix::Program           m_environment_sample;
+    optix::Program           m_environment_light_evaluate;
+    optix::Program           m_environment_miss_evaluate;
+    optix::Program           m_environment_program;
+    optix::Program           m_default_texture_proc1;
+    optix::Program           m_default_texture_proc2;
+    optix::Program           m_default_texture_proc4;
+    optix::GeometryGroup     m_top_group;
 
-    OptiXProgramManager     m_program_mgr;
+    OptiXProgramManager      m_program_mgr;
 
-    IRenderer*              m_renderer;
-    ICamera*                m_camera;
-    IEnvironment*           m_environment;
-    std::vector<ILight*>    m_lights;
-    GeometryMap             m_geometry;
-    
-    unsigned                m_num_lights;
+    IRenderer*               m_renderer;
+    ICamera*                 m_camera;
+    IEnvironment*            m_environment;
+    std::vector<ILight*>     m_lights;
+    GeometryMap              m_geometry;
 
-    static const unsigned   MAX_LIGHTS=5u; // Hack until rtCallableBuffer
+    optix::Buffer            m_light_sample_buffer;
+    std::vector<RTprogramid> m_light_sample_ids;
+
+    optix::Buffer            m_light_eval_buffer;
+    std::vector<RTprogramid> m_light_eval_ids;
 };
 
 }

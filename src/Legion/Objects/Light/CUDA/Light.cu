@@ -27,7 +27,7 @@
 
 namespace legion
 {
-
+#if 0
 struct LightSample 
 {
     float3        w_in;        //< Direction to light
@@ -105,6 +105,7 @@ float3 lightEvaluate( unsigned light_idx, float3 w_in, float light_dist, float3 
     };
 }
 
+#endif
 }
 
 #endif // LEGION_OBJECTS_SURFACE_CUDA_LIGHT_HPP_

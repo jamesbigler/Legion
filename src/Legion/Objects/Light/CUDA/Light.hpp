@@ -39,11 +39,6 @@ struct LightSample
 
 }
 
-//
-// TODO: these will become rtCallableBuffers soon (once I implement in optix)
-//
-
-rtDeclareVariable( unsigned, legionLightCount, , );
 
 
 //float legionLightPDF( float3 w_in, float3 p )
@@ -51,48 +46,36 @@ rtCallableProgram( float, legionLightPDF, ( float3, float3 ) );
 
 
 // LightSample legionLightSample( float2 seed, float3 shading_point, float3 shading_normal )
-rtCallableProgram( legion::LightSample, legionLightSample_0, ( float2, float3, float3 ) ); 
-rtCallableProgram( legion::LightSample, legionLightSample_1, ( float2, float3, float3 ) ); 
-rtCallableProgram( legion::LightSample, legionLightSample_2, ( float2, float3, float3 ) ); 
-rtCallableProgram( legion::LightSample, legionLightSample_3, ( float2, float3, float3 ) ); 
-rtCallableProgram( legion::LightSample, legionLightSample_4, ( float2, float3, float3 ) ); 
+typedef legion::LightSample (*lightSampleFunc)( float2, float3, float3 );
+rtBuffer< lightSampleFunc, 1 > legionLightSampleFuncs;
 
 // float3 legionLightEmission( legion::LightSample light_info )
-rtCallableProgram( float3, legionLightEvaluate_0, ( legion::LightSample ) ); 
-rtCallableProgram( float3, legionLightEvaluate_1, ( legion::LightSample ) ); 
-rtCallableProgram( float3, legionLightEvaluate_2, ( legion::LightSample ) ); 
-rtCallableProgram( float3, legionLightEvaluate_3, ( legion::LightSample ) ); 
-rtCallableProgram( float3, legionLightEvaluate_4, ( legion::LightSample ) ); 
+typedef float3 (*lightSampleEvaluateFuncType)( legion::LightSample );
+rtBuffer<lightSampleEvaluateFuncType,1> legionLightEvaluateFuncs;
 
 namespace legion
 {
 
 LDEVICE inline
+unsigned lightCount()
+{
+    return legionLightSampleFuncs.size();
+}
+
+
+LDEVICE inline
 LightSample lightSample( unsigned light_idx, float2 seed, float3 shading_point, float3 shading_normal )
 {
-    switch( light_idx )
-    {
-        case 0:   return legionLightSample_0( seed, shading_point, shading_normal );
-        case 1:   return legionLightSample_1( seed, shading_point, shading_normal );
-        case 2:   return legionLightSample_2( seed, shading_point, shading_normal );
-        case 3:   return legionLightSample_3( seed, shading_point, shading_normal );
-        default:  return legionLightSample_4( seed, shading_point, shading_normal );
-    };
+    return legionLightSampleFuncs[light_idx]( seed, shading_point, shading_normal );
 }
 
 
 LDEVICE inline
 float3 lightEvaluate( unsigned light_idx, legion::LightSample sample )
 {
-    switch( light_idx )
-    {
-        case 0:  return legionLightEvaluate_0( sample );
-        case 1:  return legionLightEvaluate_1( sample );
-        case 2:  return legionLightEvaluate_2( sample );
-        case 3:  return legionLightEvaluate_3( sample );
-        default: return legionLightEvaluate_4( sample );
-    };
+    return legionLightEvaluateFuncs[light_idx]( sample );
 }
+
 
 }
 

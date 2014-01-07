@@ -37,7 +37,7 @@ rtBuffer<uchar4, 2> byte_output_buffer;
 
 RT_PROGRAM void progressiveRendererRayGen()
 {
-    const unsigned light_index = light_seed*legionLightCount;
+    const unsigned light_index = light_seed * legion::lightCount();
     float2 screen_sample;
     float2 lens_sample;
     float  time_sample;

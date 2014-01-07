@@ -103,7 +103,7 @@ void legionClosestHit()
     }
 
     float3 radiance = make_float3( 0.0f );
-    const float choose_light_p = 1.0f / static_cast<float>( legionLightCount );
+    const float choose_light_p = 1.0f / static_cast<float>( legion::lightCount() );
 
     //
     // Emitted contribution

@@ -71,11 +71,24 @@ OptiXScene::OptiXScene()
     : m_optix_context( optix::Context::create() ),
       m_program_mgr( m_optix_context ),
       m_renderer( 0u ),
-      m_camera( 0u ),
-      m_num_lights( 0u )
+      m_camera( 0u )
 {
     m_program_mgr.addPath( PTX_DIR );
     initializeOptixContext();
+
+    m_light_sample_buffer = m_optix_context->createBuffer(
+        RT_BUFFER_INPUT,
+        RT_FORMAT_PROGRAM_ID,
+        0 // initially empty
+        );
+    m_optix_context[ "legionLightSampleFuncs" ]->set( m_light_sample_buffer );
+
+    m_light_eval_buffer = m_optix_context->createBuffer(
+        RT_BUFFER_INPUT,
+        RT_FORMAT_PROGRAM_ID,
+        0 // initially empty
+        );
+    m_optix_context[ "legionLightEvaluateFuncs" ]->set( m_light_eval_buffer );
 }
 
 
@@ -147,18 +160,8 @@ void OptiXScene::setEnvironment( IEnvironment* environment )
                 );
 
         // Add light
-        if( m_num_lights <= MAX_LIGHTS )
-        {
-            std::stringstream ss;
-            ss << "legionLightSample_" << m_num_lights;
-            m_optix_context[ ss.str() ]->set( m_environment_sample);
-
-            ss.str( "" );
-            ss << "legionLightEvaluate_" << m_num_lights;
-            m_optix_context[ ss.str() ]->set( m_environment_light_evaluate );
-
-            ++m_num_lights;
-        }
+        m_light_sample_ids.push_back( m_environment_sample->getId() );
+        m_light_eval_ids.push_back( m_environment_light_evaluate->getId() );
     }
     OPTIX_CATCH_RETHROW;
 }
@@ -252,21 +255,15 @@ void OptiXScene::addGeometry( IGeometry* geometry )
         //
         // Add Light
         //
-        if( emission_func_name != "nullSurfaceEmission" && 
-            m_num_lights <= MAX_LIGHTS )
+        if( emission_func_name != "nullSurfaceEmission" )
         {
             optix::Program sample = 
                 m_program_mgr.get( std::string( geometry->name() ) + ".ptx",
                                    geometry->sampleFunctionName(),
                                    false );
 
-            std::stringstream ss;
-            ss << "legionLightSample_" << m_num_lights;
-            m_optix_context[ ss.str() ]->set( sample );
-
-            ss.str( "" );
-            ss << "legionLightEvaluate_" << m_num_lights;
-            m_optix_context[ ss.str() ]->set( emission );
+            m_light_sample_ids.push_back( sample->getId() );
+            m_light_eval_ids.push_back( emission->getId() );
 
             // TODO: move to sync
             VariableContainer vc0( sample.get() );
@@ -274,8 +271,6 @@ void OptiXScene::addGeometry( IGeometry* geometry )
 
             VariableContainer vc1( emission.get() );
             surface->setVariables( vc1 );
-
-            ++m_num_lights;
         }
 
         m_top_group->setChildCount( m_top_group->getChildCount()+1u );
@@ -302,7 +297,6 @@ void OptiXScene::sync()
     LEGION_ASSERT( m_renderer );
     LEGION_ASSERT( m_camera );
   
-    m_optix_context[ "legionLightCount" ]->setUint( m_num_lights );
     //
     // Update optix variables for all objects
     //
@@ -335,25 +329,6 @@ void OptiXScene::sync()
     }
 
 
-    // Set up null functions for unused light variables
-    for( unsigned i = m_num_lights; i < MAX_LIGHTS; ++i )
-    {
-        optix::Program null_light_sample = 
-          m_program_mgr.get( "Light.ptx", "nullLightSample" );
-
-        optix::Program null_light_evaluate = 
-          m_program_mgr.get( "Light.ptx", "nullLightEvaluate" );
-
-        std::stringstream ss;
-        ss << "legionLightSample_" << i;
-        m_optix_context[ ss.str() ]->set( null_light_sample );
-
-        ss.str( "" );
-        ss << "legionLightEvaluate_" << i;
-        m_optix_context[ ss.str() ]->set( null_light_evaluate );
-    }
-
-
     for( GeometryMap::iterator geom_it = m_geometry.begin();
          geom_it != m_geometry.end();
          ++geom_it )
@@ -379,6 +354,23 @@ void OptiXScene::sync()
         setSurfaceVariables( sample_bsdf, surface );
         setSurfaceVariables( pdf,         surface );
     }
+
+    // Sync lights
+    LEGION_ASSERT( m_light_sample_ids.size() == m_light_eval_ids.size() );
+    const RTsize num_lights = m_light_sample_ids.size();
+
+    m_light_sample_buffer->setSize( num_lights );
+    m_light_eval_buffer->setSize( num_lights );
+
+    RTprogramid* sample_ids = static_cast<RTprogramid*>( m_light_sample_buffer->map() );
+    RTprogramid* eval_ids   = static_cast<RTprogramid*>( m_light_eval_buffer->map() );
+    for( size_t i = 0; i < num_lights; ++i )
+    {
+        sample_ids[i] = m_light_sample_ids[i];
+        eval_ids[i]   = m_light_eval_ids[i];
+    }
+    m_light_sample_buffer->unmap();
+    m_light_eval_buffer->unmap();
 }
 
 void OptiXScene::initializeOptixContext()
