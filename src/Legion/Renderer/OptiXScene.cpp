@@ -120,6 +120,7 @@ void OptiXScene::setCamera( ICamera* camera )
         m_create_ray_program = 
             m_program_mgr.get( std::string( camera->name() ) + ".ptx",
                                camera->createRayFunctionName() );
+        m_create_ray_program->getId();
 
         m_optix_context[ "legionCameraCreateRay" ]->set( m_create_ray_program );
     }
@@ -145,14 +146,17 @@ void OptiXScene::setEnvironment( IEnvironment* environment )
         m_environment_miss_evaluate = 
             m_program_mgr.get( std::string( environment->name() ) + ".ptx",
                                environment->missEvaluateFunctionName() );
+        m_environment_miss_evaluate->getId();
 
         m_environment_light_evaluate = 
             m_program_mgr.get( std::string( environment->name() ) + ".ptx",
                                environment->lightEvaluateFunctionName() );
+        m_environment_light_evaluate->getId();
 
         m_environment_sample = 
             m_program_mgr.get( std::string( environment->name() ) + ".ptx",
                     environment->sampleFunctionName() );
+        m_environment_sample->getId();
 
         // Set miss program evaluator
         m_optix_context[ "legionEnvironmentMissEvaluate" ]->set( 
@@ -224,18 +228,21 @@ void OptiXScene::addGeometry( IGeometry* geometry )
                                surface->evaluateBSDFFunctionName(),
                                false );
         material[ "legionSurfaceEvaluateBSDF" ]->set( evaluate_bsdf );
+        evaluate_bsdf->getId();
         
         optix::Program sample_bsdf = 
             m_program_mgr.get( surface_ptx,
                                surface->sampleBSDFFunctionName(),
                                false );
         material[ "legionSurfaceSampleBSDF" ]->set( sample_bsdf );
+        sample_bsdf->getId();
         
         optix::Program pdf = 
             m_program_mgr.get( surface_ptx,
                                surface->pdfFunctionName(),
                                false );
         material[ "legionSurfacePDF" ]->set( pdf );
+        pdf->getId();
         
         const std::string emission_func_name = surface->emissionFunctionName();
         optix::Program emission = 
@@ -245,11 +252,13 @@ void OptiXScene::addGeometry( IGeometry* geometry )
                     false
                     );
         material[ "legionSurfaceEmission" ]->set( emission );
+        emission->getId();
 
         optix::Program light_pdf = 
           m_program_mgr.get( std::string( geometry->name() ) + ".ptx",
                              geometry->pdfFunctionName() );
         optix_geometry_instance[ "legionLightPDF" ]->set( light_pdf );
+        light_pdf->getId();
 
 
         //
@@ -406,18 +415,21 @@ void OptiXScene::initializeOptixContext()
                     "Texture.ptx", 
                     "legionDefaultTextureProc1"
                     );
+        m_default_texture_proc1->getId();
         
         m_default_texture_proc2 =
                 m_program_mgr.get( 
                     "Texture.ptx", 
                     "legionDefaultTextureProc2"
                     );
+        m_default_texture_proc2->getId();
         
         m_default_texture_proc4 =
                 m_program_mgr.get( 
                     "Texture.ptx", 
                     "legionDefaultTextureProc4"
                     );
+        m_default_texture_proc4->getId();
 
     }
     OPTIX_CATCH_RETHROW;
@@ -465,6 +477,8 @@ void OptiXScene::setNestedSurfaceVariables( OptiXNode          node,
                     surf->sampleBSDFFunctionName(),
                     false
                     );
+        proc->getId();
+
         VariableContainer vc( proc.get() );
         surf->setVariables( vc );
         const VariableContainer::Textures& textures = vc.getTextures();
@@ -485,6 +499,8 @@ void OptiXScene::setNestedSurfaceVariables( OptiXNode          node,
                     surf->evaluateBSDFFunctionName(),
                     false
                     );
+        proc->getId();
+
         VariableContainer vc( proc.get() );
         surf->setVariables( vc );
         const VariableContainer::Textures& textures = vc.getTextures();
@@ -505,6 +521,8 @@ void OptiXScene::setNestedSurfaceVariables( OptiXNode          node,
                     surf->pdfFunctionName(),
                     false
                     );
+        proc->getId();
+
         VariableContainer vc( proc.get() );
         surf->setVariables( vc );
         const VariableContainer::Textures& textures = vc.getTextures();
@@ -525,6 +543,8 @@ void OptiXScene::setNestedSurfaceVariables( OptiXNode          node,
                     surf->emissionFunctionName(),
                     false
                     );
+        proc->getId();
+
         VariableContainer vc( proc.get() );
         surf->setVariables( vc );
         const VariableContainer::Textures& textures = vc.getTextures();
@@ -623,6 +643,7 @@ void OptiXScene::setTextureVariables( OptiXNode          node,
                     tex->proceduralFunctionName(),
                     false
                     );
+        proc->getId();
 
         VariableContainer vc( proc.get() );
         tex->setVariables( vc );
