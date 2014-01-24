@@ -371,8 +371,8 @@ void OptiXScene::sync()
     m_light_sample_buffer->setSize( num_lights );
     m_light_eval_buffer->setSize( num_lights );
 
-    RTprogramid* sample_ids = static_cast<RTprogramid*>( m_light_sample_buffer->map() );
-    RTprogramid* eval_ids   = static_cast<RTprogramid*>( m_light_eval_buffer->map() );
+    int* sample_ids = static_cast<int*>( m_light_sample_buffer->map() );
+    int* eval_ids   = static_cast<int*>( m_light_eval_buffer->map() );
     for( size_t i = 0; i < num_lights; ++i )
     {
         sample_ids[i] = m_light_sample_ids[i];

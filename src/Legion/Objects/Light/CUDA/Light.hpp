@@ -46,12 +46,10 @@ rtCallableProgram( float, legionLightPDF, ( float3, float3 ) );
 
 
 // LightSample legionLightSample( float2 seed, float3 shading_point, float3 shading_normal )
-typedef legion::LightSample (*lightSampleFunc)( float2, float3, float3 );
-rtBuffer< lightSampleFunc, 1 > legionLightSampleFuncs;
+rtBuffer< rtCallableProgramId<legion::LightSample,float2,float3,float3>, 1 > legionLightSampleFuncs;
 
 // float3 legionLightEmission( legion::LightSample light_info )
-typedef float3 (*lightSampleEvaluateFuncType)( legion::LightSample );
-rtBuffer<lightSampleEvaluateFuncType,1> legionLightEvaluateFuncs;
+rtBuffer< rtCallableProgramId<float3,legion::LightSample>,1> legionLightEvaluateFuncs;
 
 namespace legion
 {

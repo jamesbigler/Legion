@@ -100,10 +100,10 @@ private:
     GeometryMap              m_geometry;
 
     optix::Buffer            m_light_sample_buffer;
-    std::vector<RTprogramid> m_light_sample_ids;
+    std::vector<int>         m_light_sample_ids;
 
     optix::Buffer            m_light_eval_buffer;
-    std::vector<RTprogramid> m_light_eval_ids;
+    std::vector<int>         m_light_eval_ids;
 };
 
 }
