@@ -179,5 +179,20 @@ target_link_libraries( legion
     zlib
     )
 
+if (WIN32)
+  add_custom_command(OUTPUT "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/$(Configuration)/optix.1.dll"
+    COMMAND ${CMAKE_COMMAND} -E copy
+    "${optix_DLL}"
+     "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/$(Configuration)"
+     DEPENDS "${optix_DLL}"
+     COMMENT "${CMAKE_COMMAND} -E copy ${optix_DLL} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/$(Configuration)"
+     )
+  add_custom_target(optix_copy_dlls
+    DEPENDS "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/$(Configuration)/optix.1.dll"
+    DEPENDS "${optix_DLL}"
+    )
+  # Add optix_copy_dlls target as a dependency of legion
+  add_dependencies(legion optix_copy_dlls)
+endif()
 
 
