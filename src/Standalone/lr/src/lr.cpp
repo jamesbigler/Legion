@@ -68,6 +68,7 @@ int main( int argc , char** argv )
     int res_y       = 0;
     int diff_depth  = -1;
     int spec_depth  = -1;
+    std::string cache_file;
     for( int i = 1; i < argc-1; ++i )
     {
         const std::string arg = argv[i];
@@ -95,6 +96,12 @@ int main( int argc , char** argv )
             if( i >= argc-2 )
                 printUsageAndExit( argv[0] );
             spec_depth = lr::lexical_cast<int>( argv[++i] );
+        }
+        else if( arg == "-c" || arg == "--as-cache-file" )
+        {
+            if( i >= argc-2 )
+                printUsageAndExit( argv[0] );
+            cache_file = std::string(argv[++i]);
         }
         else
         {
@@ -125,6 +132,8 @@ int main( int argc , char** argv )
             context.getRenderer()->setMaxDiffuseDepth( diff_depth );
         if( spec_depth >= 0 )
             context.getRenderer()->setMaxSpecularDepth( spec_depth );
+        if( !cache_file.empty() )
+            context.setAccelCacheFileName( cache_file.c_str() );
         context.render();
 
         delete [] text;

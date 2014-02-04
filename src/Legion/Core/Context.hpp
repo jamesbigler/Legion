@@ -69,6 +69,8 @@ public:
     LAPI void addGeometry   ( IGeometry*    geometry    );
     LAPI void addLight      ( ILight*       light       );
 
+    LAPI void setAccelCacheFileName( const char* name );
+    
     LAPI IRenderer*  getRenderer();
 
     LAPI void addAssetPath( const std::string& path );

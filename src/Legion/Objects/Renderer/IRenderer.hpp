@@ -64,6 +64,7 @@ public:
 
     LAPI virtual const char*    name()const=0;
     LAPI virtual const char*    rayGenProgramName()const=0;
+    LAPI virtual void           preRender( VariableContainer& container )=0;
     LAPI virtual void           render( VariableContainer& container )=0;
 
 protected:

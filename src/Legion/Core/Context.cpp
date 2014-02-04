@@ -91,6 +91,8 @@ public:
     void addGeometry   ( IGeometry* geometry );
     void addLight      ( ILight* light );
 
+    void setAccelCacheFileName( const char* name );
+
     IRenderer* getRenderer()  { return m_renderer;  }
 
     void addAssetPath( const std::string& path );
@@ -108,6 +110,8 @@ private:
     IRenderer*              m_renderer;
     ICamera*                m_camera;
     std::vector<IGeometry*> m_geometry;
+
+    std::string     m_accel_cache_filename;
 };
 
 
@@ -250,6 +254,10 @@ void Context::Impl::addLight( ILight* light )
     m_optix_scene.addLight( light );
 }
 
+void Context::Impl::setAccelCacheFileName( const char* name )
+{
+    m_accel_cache_filename = name;
+}
 
 void Context::Impl::addAssetPath( const std::string& path )
 {
@@ -261,6 +269,8 @@ void Context::Impl::addAssetPath( const std::string& path )
 void Context::Impl::render()
 {
     m_optix_scene.sync();
+    if (!m_accel_cache_filename.empty())
+        m_optix_scene.loadAccelCache(m_accel_cache_filename);
 
     LLOG_INFO << "Rendering frame ... ";
     Timer timer;
@@ -268,6 +278,9 @@ void Context::Impl::render()
     optix::Program ray_gen_program = 
         m_optix_scene.getOptiXContext()->getRayGenerationProgram( 0 );
     VariableContainer vc( ray_gen_program.get() );
+    m_renderer->preRender( vc );
+    if (!m_accel_cache_filename.empty())
+        m_optix_scene.saveAccelCache(m_accel_cache_filename);
     m_renderer->render( vc );
     timer.stop();
     LLOG_INFO << "Frame complete ... (" << timer.getTimeElapsed() << "s)";
@@ -329,6 +342,11 @@ void Context::addLight( ILight* light )
     m_impl->addLight( light );
 }
 
+void Context::setAccelCacheFileName( const char* name )
+{
+    LEGION_ASSERT_POINTER_PARAM( name );
+    m_impl->setAccelCacheFileName( name );
+}
 
 void Context::addAssetPath( const std::string& path )
 {

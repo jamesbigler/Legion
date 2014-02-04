@@ -66,9 +66,9 @@ const char* ProgressiveRenderer::rayGenProgramName()const
 }
 
 
-void ProgressiveRenderer::render( VariableContainer& container )
+void ProgressiveRenderer::preRender( VariableContainer& container )
 {
-    LLOG_INFO << "\tProgressiveRenderer : rendering ...";
+    LLOG_INFO << "\tProgressiveRenderer : pre rendering ...";
     m_float_output_buffer->setSize( getResolution().x(), getResolution().y() );
     m_byte_output_buffer->setSize ( getResolution().x(), getResolution().y() );
 
@@ -81,7 +81,11 @@ void ProgressiveRenderer::render( VariableContainer& container )
         AutoPrintTimer apt( PrintTimeElapsed( "\tCompile/accel build " ) );
         launchOptiX( Index2( 0u, 0u ) );
     }
+}
 
+void ProgressiveRenderer::render( VariableContainer& container )
+{
+    LLOG_INFO << "\tProgressiveRenderer : rendering ...";
     //
     // Progressive loop
     //
