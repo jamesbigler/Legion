@@ -31,7 +31,7 @@ using namespace lr;
 
 bool lr::readFile( const char* filename, char** contents )
 {
-    std::ifstream in( filename );
+    std::ifstream in( filename, std::ios::binary );
     if( !in )
     {
         std::cout << "Failed to open file '" << filename << "'"
@@ -48,6 +48,6 @@ bool lr::readFile( const char* filename, char** contents )
     *contents = new char[ length+1 ];
     in.read( *contents, length );
     (*contents)[length] = '\0';
-    
+
     return true;
 }
