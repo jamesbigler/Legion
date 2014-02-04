@@ -44,6 +44,7 @@ public:
 
     LAPI const char*    name()const;
     LAPI const char*    rayGenProgramName()const;
+    LAPI void           preRender( VariableContainer& container );
     LAPI void           render( VariableContainer& container );
 
     LAPI void setVariables( VariableContainer& container ) const;

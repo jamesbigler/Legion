@@ -35,6 +35,7 @@
 #include <config.hpp>
 #include <algorithm>
 #include <iterator>
+#include <fstream>
 
 using namespace legion;
 
@@ -71,7 +72,8 @@ OptiXScene::OptiXScene()
     : m_optix_context( optix::Context::create() ),
       m_program_mgr( m_optix_context ),
       m_renderer( 0u ),
-      m_camera( 0u )
+      m_camera( 0u ),
+      m_accel_cache_loaded( false )
 {
     m_program_mgr.addPath( PTX_DIR );
     initializeOptixContext();
@@ -674,5 +676,86 @@ void OptiXScene::setTextureVariables( OptiXNode          node,
             default: 
                 throw Exception( "Invalid texture result dim: " + name );
         };
+    }
+}
+
+void
+OptiXScene::loadAccelCache(const std::string& cache_file)
+{
+    std::ifstream in( cache_file.c_str(), std::ifstream::in | std::ifstream::binary );
+    if ( in ) {
+        unsigned long long int size = 0ull;
+
+#ifdef WIN32
+        // This is to work around a bug in Visual Studio where a pos_type is cast to an
+        // int before being cast to the requested type, thus wrapping file sizes at 2
+        // GB. To be fixed in VS2011.
+        FILE *fp = fopen(cache_file.c_str(), "rb");
+
+        _fseeki64(fp, 0L, SEEK_END);
+        size = _ftelli64(fp);
+        fclose(fp);
+#else
+        // Read data from file
+        in.seekg (0, std::ios::end);
+        std::ifstream::pos_type szp = in.tellg();
+        in.seekg (0, std::ios::beg);
+        size = static_cast<unsigned long long int>(szp);
+#endif
+
+        std::cerr << "acceleration cache file found: '" << cache_file << "' (" << size << " bytes)\n";
+      
+        if(sizeof(size_t) <= 4 && size >= 0x80000000ULL) {
+            std::cerr << "[WARNING] acceleration cache file too large for 32-bit application.\n";
+            m_accel_cache_loaded = false;
+            return;
+        }
+
+        std::vector<char> d(static_cast<size_t>(size));
+        char* data = &d[0];
+        in.read( data, static_cast<std::streamsize>(size) );
+      
+        // Load data into accel
+        optix::Acceleration accel = m_top_group->getAcceleration();
+        try {
+            accel->setData( data, static_cast<RTsize>(size) );
+            m_accel_cache_loaded = true;
+
+        } catch( optix::Exception& e ) {
+            // Setting the acceleration cache failed, but that's not a problem. Since the
+            // acceleration is marked dirty and builder and traverser are both set
+            // already, it will simply build as usual, without using the cache. So we just
+            // warn the user here, but don't do anything else.
+            std::cerr << "[WARNING] could not use acceleration cache, reason: " << e.getErrorString() << std::endl;
+            m_accel_cache_loaded = false;
+        }
+
+    } else {
+        m_accel_cache_loaded = false;
+        std::cerr << "no acceleration cache file found\n";
+    }
+}
+
+void
+OptiXScene::saveAccelCache(const std::string& cache_file)
+{
+    // If accel caching on, marshallize the accel 
+    if( !m_accel_cache_loaded ) {
+
+        // Get data from accel
+        optix::Acceleration accel = m_top_group->getAcceleration();
+        RTsize size = accel->getDataSize();
+        std::vector<char> d(size);
+        char* data = &d[0];
+        accel->getData( data );
+
+        // Write to file
+        std::ofstream out( cache_file.c_str(), std::ofstream::out | std::ofstream::binary );
+        if( !out ) {
+            std::cerr << "could not open acceleration cache file '" << cache_file << "'" << std::endl;
+            return;
+        }
+        out.write( data, size );
+        std::cerr << "acceleration cache written: '" << cache_file << "'" << std::endl;
     }
 }
