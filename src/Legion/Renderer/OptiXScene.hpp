@@ -51,6 +51,8 @@ public:
 
     void addAssetPath( const std::string& path );
     void sync();
+    void loadAccelCache(const std::string& cache_file);
+    void saveAccelCache(const std::string& cache_file);
 
     optix::Context getOptiXContext() { return m_optix_context; }
 
@@ -104,6 +106,8 @@ private:
 
     optix::Buffer            m_light_eval_buffer;
     std::vector<int>         m_light_eval_ids;
+
+    bool                     m_accel_cache_loaded;
 };
 
 }
