@@ -67,14 +67,15 @@ ADD_SUBDIRECTORY ( Imath )
 ADD_SUBDIRECTORY ( IlmThread )
 
 IF (WIN32)
-  FILE ( WRITE  ${CMAKE_BINARY_DIR}/include/IlmBaseConfig.h "#undef HAVE_PTHREAD\n" )
-  FILE ( APPEND ${CMAKE_BINARY_DIR}/include/IlmBaseConfig.h "#undef HAVE_POSIX_SEMAPHORES\n" )
+  FILE ( WRITE  ${CMAKE_BINARY_DIR}/include/IlmBaseConfig.h.in "#undef HAVE_PTHREAD\n" )
+  FILE ( APPEND ${CMAKE_BINARY_DIR}/include/IlmBaseConfig.h.in "#undef HAVE_POSIX_SEMAPHORES\n" )
 ELSE ()
-  FILE ( WRITE  ${CMAKE_BINARY_DIR}/include/IlmBaseConfig.h "#define HAVE_PTHREAD 1\n" )
-  FILE ( APPEND ${CMAKE_BINARY_DIR}/include/IlmBaseConfig.h "#undef HAVE_POSIX_SEMAPHORES\n" )
-  FILE ( APPEND ${CMAKE_BINARY_DIR}/include/IlmBaseConfig.h "#define ILMBASE_VERSION_STRING \"2.0.0\"\n" )
-  FILE ( APPEND ${CMAKE_BINARY_DIR}/include/IlmBaseConfig.h "#define ILMBASE_PACKAGE_STRING \"IlmBase 2.0.0\"\n" )
+  FILE ( WRITE  ${CMAKE_BINARY_DIR}/include/IlmBaseConfig.h.in "#define HAVE_PTHREAD 1\n" )
+  FILE ( APPEND ${CMAKE_BINARY_DIR}/include/IlmBaseConfig.h.in "#undef HAVE_POSIX_SEMAPHORES\n" )
+  FILE ( APPEND ${CMAKE_BINARY_DIR}/include/IlmBaseConfig.h.in "#define ILMBASE_VERSION_STRING \"2.0.0\"\n" )
+  FILE ( APPEND ${CMAKE_BINARY_DIR}/include/IlmBaseConfig.h.in "#define ILMBASE_PACKAGE_STRING \"IlmBase 2.0.0\"\n" )
 ENDIF ()
+configure_file(${CMAKE_BINARY_DIR}/include/IlmBaseConfig.h.in ${CMAKE_BINARY_DIR}/include/IlmBaseConfig.h COPYONLY)
 
 SET_TARGET_PROPERTIES ( Half
   PROPERTIES
