@@ -7,7 +7,7 @@ set( PTX_OUTPUT_DIR "${CMAKE_BINARY_DIR}/lib/ptx" CACHE PATH
 set( CUDA_GENERATED_OUTPUT_DIR ${PTX_OUTPUT_DIR} )
 
 # Set up build .cu -> .ptx build 
-set( CUDA_NVCC_FLAGS "-arch sm_30 --use_fast_math" )
+set( CUDA_NVCC_FLAGS -arch sm_30 --use_fast_math )
 CUDA_COMPILE_PTX( ptx_files
     Objects/Camera/CUDA/ThinLens.cu
     Objects/Environment/CUDA/ConstantEnvironment.cu
@@ -68,7 +68,10 @@ add_library( legion SHARED
     ${ptx_files}
     Common/Math/CUDA/Math.hpp
     Common/Math/CUDA/ONB.hpp
+    Common/Math/CUDA/PerlinNoise.hpp
+    Common/Math/CUDA/Rand.hpp
     Common/Math/CUDA/Sobol.hpp
+    Common/Math/CUDA/sobol_matrices.hpp
     Common/Math/Filter.hpp
     Common/Math/MTRand.cpp
     Common/Math/MTRand.hpp
@@ -103,12 +106,14 @@ add_library( legion SHARED
     Core/PluginContext.cpp
     Core/PluginContext.hpp
     Legion.hpp
+    Objects/Camera/CUDA/Camera.hpp
     Objects/Camera/ICamera.hpp
     Objects/Camera/ThinLens.cpp
     Objects/Camera/ThinLens.hpp
     Objects/Display/IDisplay.hpp
     Objects/Display/ImageFileDisplay.cpp
     Objects/Display/ImageFileDisplay.hpp
+    Objects/Environment/CUDA/Environment.hpp
     Objects/Environment/ConstantEnvironment.cpp
     Objects/Environment/ConstantEnvironment.hpp
     Objects/Environment/IEnvironment.hpp
@@ -125,11 +130,14 @@ add_library( legion SHARED
     Objects/Light/ILight.hpp
     Objects/Light/PointLight.cpp
     Objects/Light/PointLight.hpp
+    Objects/Renderer/CUDA/Renderer.hpp
     Objects/Renderer/IRenderer.hpp
     Objects/Renderer/ProgressiveRenderer.cpp
     Objects/Renderer/ProgressiveRenderer.hpp
     Objects/Surface/Beckmann.cpp
     Objects/Surface/Beckmann.hpp
+    Objects/Surface/CUDA/Microfacet.hpp
+    Objects/Surface/CUDA/Surface.hpp
     Objects/Surface/Dielectric.cpp
     Objects/Surface/Dielectric.hpp
     Objects/Surface/DiffuseEmitter.cpp
@@ -145,6 +153,7 @@ add_library( legion SHARED
     Objects/Surface/Mixture.hpp
     Objects/Surface/Ward.cpp
     Objects/Surface/Ward.hpp
+    Objects/Texture/CUDA/Texture.hpp
     Objects/Texture/CheckerTexture.cpp
     Objects/Texture/CheckerTexture.hpp
     Objects/Texture/ConstantTexture.cpp
@@ -157,8 +166,10 @@ add_library( legion SHARED
     Objects/Texture/ImageTexture.hpp
     Objects/Texture/PerlinTexture.cpp
     Objects/Texture/PerlinTexture.hpp
+    Objects/Texture/ProceduralTexture.hpp
     Objects/VariableContainer.cpp
     Objects/VariableContainer.hpp
+    Objects/cuda_common.hpp
     Renderer/OptiXProgramManager.cpp
     Renderer/OptiXProgramManager.hpp
     Renderer/OptiXScene.cpp
