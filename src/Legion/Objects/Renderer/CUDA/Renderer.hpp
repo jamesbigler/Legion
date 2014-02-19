@@ -26,13 +26,14 @@
 namespace legion
 {
 
-__device__
+__device__ __forceinline__
 float3 radiance(
         uint64   sobol_index,
         float3   origin,
         float3   direction,
         unsigned light_idx, 
-        unsigned sample_index )
+        unsigned sample_index,
+        unsigned& num_iters)
 {
     legion::RadiancePRD prd;
     prd.radiance            = make_float3( 0.0f );
@@ -51,14 +52,16 @@ float3 radiance(
     float3 radiance    = make_float3( 0.0f );
     float3 attenuation = make_float3( 1.0f );
     optix::Ray ray = legion::makePrimaryRay( origin, direction );
+    num_iters = 0;
     
-    for( unsigned i = 0u; i < 10; ++i ) 
+    for( unsigned i = 0u; i < 10; ++i,++num_iters ) 
     {
         prd.done     = true;
         prd.radiance = make_float3( 0.0f );
         rtTrace( legion_top_group, ray, prd );
         CHECK_FINITE( prd.radiance );
-        
+        //if (launch_index == make_uint2(1124,330)) printf("\n(%u,%u): i = %u\n", launch_index.x, launch_index.y, i);
+
         radiance += prd.radiance * attenuation;
 
         if( prd.done || attenuation.x + attenuation.y + attenuation.z < 0.0001f )

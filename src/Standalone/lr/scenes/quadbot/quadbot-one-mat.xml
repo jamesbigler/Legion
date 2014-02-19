@@ -1,0 +1,1626 @@
+<legion_scene name="blender">
+	<camera camera_to_world="0.8682843446731567 -0.11464083194732666 0.4826388955116272 4.6060099601745605  0.4936000406742096 0.10274321585893631 -0.8635990023612976 -8.060309410095215  0.04941581189632416 0.988079845905304 0.1457969695329666 2.666222333908081  0.0 0.0 0.0 1.0" type="ThinLens">
+		<float name="focal_distance" value="8.0"/>
+		<vector4 name="view_plane" value="-3.657142809573653 3.657142809573653 -2.057142846354806 2.057142846354806"/>
+		<float name="aperture_radius" value="0.019999999552965164"/>
+	</camera>
+	<renderer resolution="1920 1080" samples_per_pixel="128" type="ProgressiveRenderer"/>
+
+    <display type="ImageFileDisplay">
+        <string name="filename" value="quadbot.exr" />
+    </display>
+
+	<scene>
+        <texture type="ConstantTexture" name="white_tex">
+            <color name="value" value="0.8 0.8 0.8" />
+        </texture>
+        
+        <!-- <surface type="Lambertian" name="lambertian"> -->
+        <!--     <texture name="reflectance" value="white_tex"/> -->
+        <!-- </surface> -->
+
+        <surface type="DiffuseEmitter" name="yellow_emitter">
+            <color name="radiance" value="64 64 20" />
+        </surface>
+
+        <!-- <surface type="DiffuseEmitter" name="blue_emitter"> -->
+        <!--     <color name="radiance" value="40 40 60" /> -->
+        <!-- </surface> -->
+
+        <!-- <geometry type="Sphere" surface="blue_emitter"> -->
+        <!--     <vector3 name="center" value="8 4 6" /> -->
+        <!--     <float   name="radius" value="1.0" /> -->
+        <!-- </geometry> -->
+
+        <geometry type="Sphere" surface="yellow_emitter">
+            <vector3 name="center" value="-6 -2 5" />
+            <float   name="radius" value="1.0" />
+        </geometry>
+
+
+
+
+		<surface name="Light" type="Ward">
+			<color name="diffuse_reflectance" value="0.6400000190734865 0.6400000190734865 0.6400000190734865"/>
+			<color name="specular_reflectance" value="0.5 0.5 0.5"/>
+			<float name="alpha_u" value="0.10000000149011612"/>
+			<float name="alpha_v" value="0.10000000149011612"/>
+		</surface>
+
+
+        <geometry type="Parallelogram" surface="Light">
+            <vector3 name="anchor" value="-8.0 8 0.0" /> 
+            <vector3 name="V" value="0.0  -16.0 0.0" />
+            <vector3 name="U" value="16.0 0.0 0.0" /> 
+        </geometry>
+
+    
+
+		<geometry name="Plane.009" surface="Light" type="TriMesh">
+			<string name="datafile" value="Plane.009.lmesh"/>
+		</geometry>
+		<geometry name="temp_block_geo.001" surface="Light" type="TriMesh">
+			<string name="datafile" value="temp_block_geo.001.lmesh"/>
+		</geometry>
+		<geometry name="leg_front_pieces.013" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_front_pieces.013.lmesh"/>
+		</geometry>
+		<geometry name="leg_front_pieces.065" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_front_pieces.065.lmesh"/>
+		</geometry>
+		<geometry name="leg_front_pieces.063" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_front_pieces.063.lmesh"/>
+		</geometry>
+		<geometry name="leg_front_pieces.064" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_front_pieces.064.lmesh"/>
+		</geometry>
+		<geometry name="shoulder.001" surface="Light" type="TriMesh">
+			<string name="datafile" value="shoulder.001.lmesh"/>
+		</geometry>
+		<geometry name="shoulder.000" surface="Light" type="TriMesh">
+			<string name="datafile" value="shoulder.000.lmesh"/>
+		</geometry>
+		<geometry name="leg_back_pieces.016" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_back_pieces.016.lmesh"/>
+		</geometry>
+		<geometry name="leg_back_pieces.017" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_back_pieces.017.lmesh"/>
+		</geometry>
+		<geometry name="leg_back_pieces.018" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_back_pieces.018.lmesh"/>
+		</geometry>
+		<geometry name="leg_back_pieces.020" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_back_pieces.020.lmesh"/>
+		</geometry>
+		<geometry name="leg_back_pieces.019" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_back_pieces.019.lmesh"/>
+		</geometry>
+		<geometry name="Cube.013" surface="Light" type="TriMesh">
+			<string name="datafile" value="Cube.013.lmesh"/>
+		</geometry>
+		<geometry name="Cylinder.001" surface="Light" type="TriMesh">
+			<string name="datafile" value="Cylinder.001.lmesh"/>
+		</geometry>
+		<geometry name="Cylinder.003" surface="Light" type="TriMesh">
+			<string name="datafile" value="Cylinder.003.lmesh"/>
+		</geometry>
+		<geometry name="Plane.011" surface="Light" type="TriMesh">
+			<string name="datafile" value="Plane.011.lmesh"/>
+		</geometry>
+		<geometry name="Cylinder.002" surface="Light" type="TriMesh">
+			<string name="datafile" value="Cylinder.002.lmesh"/>
+		</geometry>
+		<geometry name="Cube.019" surface="Light" type="TriMesh">
+			<string name="datafile" value="Cube.019.lmesh"/>
+		</geometry>
+		<geometry name="Cylinder.004" surface="Light" type="TriMesh">
+			<string name="datafile" value="Cylinder.004.lmesh"/>
+		</geometry>
+		<geometry name="Cylinder.006" surface="Light" type="TriMesh">
+			<string name="datafile" value="Cylinder.006.lmesh"/>
+		</geometry>
+		<geometry name="leg_back_pieces.022" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_back_pieces.022.lmesh"/>
+		</geometry>
+		<geometry name="Cube.016" surface="Light" type="TriMesh">
+			<string name="datafile" value="Cube.016.lmesh"/>
+		</geometry>
+		<geometry name="Plane.010" surface="Light" type="TriMesh">
+			<string name="datafile" value="Plane.010.lmesh"/>
+		</geometry>
+		<geometry name="leg_back_pieces.021" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_back_pieces.021.lmesh"/>
+		</geometry>
+		<geometry name="Circle.023" surface="Light" type="TriMesh">
+			<string name="datafile" value="Circle.023.lmesh"/>
+		</geometry>
+		<geometry name="leg_back_pieces.023" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_back_pieces.023.lmesh"/>
+		</geometry>
+		<geometry name="leg_back_pieces.025" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_back_pieces.025.lmesh"/>
+		</geometry>
+		<geometry name="leg_back_pieces.024" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_back_pieces.024.lmesh"/>
+		</geometry>
+		<geometry name="leg_back_pieces.030" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_back_pieces.030.lmesh"/>
+		</geometry>
+		<geometry name="leg_back_pieces.026" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_back_pieces.026.lmesh"/>
+		</geometry>
+		<geometry name="leg_back_pieces.013" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_back_pieces.013.lmesh"/>
+		</geometry>
+		<geometry name="leg_back_pieces.027" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_back_pieces.027.lmesh"/>
+		</geometry>
+		<geometry name="leg_back_pieces.046" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_back_pieces.046.lmesh"/>
+		</geometry>
+		<geometry name="leg_back_pieces.044" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_back_pieces.044.lmesh"/>
+		</geometry>
+		<geometry name="leg_back_pieces.045" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_back_pieces.045.lmesh"/>
+		</geometry>
+		<geometry name="leg_back_pieces.036" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_back_pieces.036.lmesh"/>
+		</geometry>
+		<geometry name="leg_back_pieces.041" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_back_pieces.041.lmesh"/>
+		</geometry>
+		<geometry name="leg_back_pieces.043" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_back_pieces.043.lmesh"/>
+		</geometry>
+		<geometry name="leg_back_pieces.042" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_back_pieces.042.lmesh"/>
+		</geometry>
+		<geometry name="leg_back_pieces.040" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_back_pieces.040.lmesh"/>
+		</geometry>
+		<geometry name="leg_back_pieces.029" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_back_pieces.029.lmesh"/>
+		</geometry>
+		<geometry name="leg_back_pieces.035" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_back_pieces.035.lmesh"/>
+		</geometry>
+		<geometry name="leg_back_pieces.028" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_back_pieces.028.lmesh"/>
+		</geometry>
+		<geometry name="Cylinder.009" surface="Light" type="TriMesh">
+			<string name="datafile" value="Cylinder.009.lmesh"/>
+		</geometry>
+		<geometry name="leg_back_pieces.038" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_back_pieces.038.lmesh"/>
+		</geometry>
+		<geometry name="leg_back_pieces.037" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_back_pieces.037.lmesh"/>
+		</geometry>
+		<geometry name="leg_back_pieces.039" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_back_pieces.039.lmesh"/>
+		</geometry>
+		<geometry name="Circle.029" surface="Light" type="TriMesh">
+			<string name="datafile" value="Circle.029.lmesh"/>
+		</geometry>
+		<geometry name="Circle.028" surface="Light" type="TriMesh">
+			<string name="datafile" value="Circle.028.lmesh"/>
+		</geometry>
+		<geometry name="Circle.027" surface="Light" type="TriMesh">
+			<string name="datafile" value="Circle.027.lmesh"/>
+		</geometry>
+		<geometry name="Circle.025" surface="Light" type="TriMesh">
+			<string name="datafile" value="Circle.025.lmesh"/>
+		</geometry>
+		<geometry name="Circle.024" surface="Light" type="TriMesh">
+			<string name="datafile" value="Circle.024.lmesh"/>
+		</geometry>
+		<geometry name="Circle.030" surface="Light" type="TriMesh">
+			<string name="datafile" value="Circle.030.lmesh"/>
+		</geometry>
+		<geometry name="Cube.020" surface="Light" type="TriMesh">
+			<string name="datafile" value="Cube.020.lmesh"/>
+		</geometry>
+		<geometry name="leg_back_pieces.009" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_back_pieces.009.lmesh"/>
+		</geometry>
+		<geometry name="leg_back_pieces.012" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_back_pieces.012.lmesh"/>
+		</geometry>
+		<geometry name="leg_back_pieces.034" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_back_pieces.034.lmesh"/>
+		</geometry>
+		<geometry name="leg_back_pieces.011" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_back_pieces.011.lmesh"/>
+		</geometry>
+		<geometry name="leg_back_pieces.033" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_back_pieces.033.lmesh"/>
+		</geometry>
+		<geometry name="Cube.003" surface="Light" type="TriMesh">
+			<string name="datafile" value="Cube.003.lmesh"/>
+		</geometry>
+		<geometry name="leg_back_pieces.005" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_back_pieces.005.lmesh"/>
+		</geometry>
+		<geometry name="Plane" surface="Light" type="TriMesh">
+			<string name="datafile" value="Plane.lmesh"/>
+		</geometry>
+		<geometry name="Cube" surface="Light" type="TriMesh">
+			<string name="datafile" value="Cube.lmesh"/>
+		</geometry>
+		<geometry name="leg_back_pieces.007" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_back_pieces.007.lmesh"/>
+		</geometry>
+		<geometry name="Cylinder.013" surface="Light" type="TriMesh">
+			<string name="datafile" value="Cylinder.013.lmesh"/>
+		</geometry>
+		<geometry name="Circle" surface="Light" type="TriMesh">
+			<string name="datafile" value="Circle.lmesh"/>
+		</geometry>
+		<geometry name="leg_back_pieces.032" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_back_pieces.032.lmesh"/>
+		</geometry>
+		<geometry name="leg_back_pieces.031" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_back_pieces.031.lmesh"/>
+		</geometry>
+		<geometry name="leg_back_pieces.008" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_back_pieces.008.lmesh"/>
+		</geometry>
+		<geometry name="leg_back_pieces.002" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_back_pieces.002.lmesh"/>
+		</geometry>
+		<geometry name="Cube.041" surface="Light" type="TriMesh">
+			<string name="datafile" value="Cube.041.lmesh"/>
+		</geometry>
+		<geometry name="Cylinder.014" surface="Light" type="TriMesh">
+			<string name="datafile" value="Cylinder.014.lmesh"/>
+		</geometry>
+		<geometry name="Plane.017" surface="Light" type="TriMesh">
+			<string name="datafile" value="Plane.017.lmesh"/>
+		</geometry>
+		<geometry name="Cylinder.015" surface="Light" type="TriMesh">
+			<string name="datafile" value="Cylinder.015.lmesh"/>
+		</geometry>
+		<geometry name="Cylinder.016" surface="Light" type="TriMesh">
+			<string name="datafile" value="Cylinder.016.lmesh"/>
+		</geometry>
+		<geometry name="Cylinder.017" surface="Light" type="TriMesh">
+			<string name="datafile" value="Cylinder.017.lmesh"/>
+		</geometry>
+		<geometry name="leg_back_pieces.010" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_back_pieces.010.lmesh"/>
+		</geometry>
+		<geometry name="leg_back_pieces.001" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_back_pieces.001.lmesh"/>
+		</geometry>
+		<geometry name="leg_back_pieces.003" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_back_pieces.003.lmesh"/>
+		</geometry>
+		<geometry name="leg_back_pieces.015" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_back_pieces.015.lmesh"/>
+		</geometry>
+		<geometry name="leg_back_pieces.004" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_back_pieces.004.lmesh"/>
+		</geometry>
+		<geometry name="leg_back_pieces.006" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_back_pieces.006.lmesh"/>
+		</geometry>
+		<geometry name="leg_back_pieces.014" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_back_pieces.014.lmesh"/>
+		</geometry>
+		<geometry name="Cylinder.012" surface="Light" type="TriMesh">
+			<string name="datafile" value="Cylinder.012.lmesh"/>
+		</geometry>
+		<geometry name="Circle.002" surface="Light" type="TriMesh">
+			<string name="datafile" value="Circle.002.lmesh"/>
+		</geometry>
+		<geometry name="Circle.008" surface="Light" type="TriMesh">
+			<string name="datafile" value="Circle.008.lmesh"/>
+		</geometry>
+		<geometry name="Circle.007" surface="Light" type="TriMesh">
+			<string name="datafile" value="Circle.007.lmesh"/>
+		</geometry>
+		<geometry name="Circle.006" surface="Light" type="TriMesh">
+			<string name="datafile" value="Circle.006.lmesh"/>
+		</geometry>
+		<geometry name="Circle.005" surface="Light" type="TriMesh">
+			<string name="datafile" value="Circle.005.lmesh"/>
+		</geometry>
+		<geometry name="leg_back_pieces" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_back_pieces.lmesh"/>
+		</geometry>
+		<geometry name="Cube.006" surface="Light" type="TriMesh">
+			<string name="datafile" value="Cube.006.lmesh"/>
+		</geometry>
+		<geometry name="Circle.001" surface="Light" type="TriMesh">
+			<string name="datafile" value="Circle.001.lmesh"/>
+		</geometry>
+		<geometry name="leg_front_pieces.050" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_front_pieces.050.lmesh"/>
+		</geometry>
+		<geometry name="leg_front_pieces.051" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_front_pieces.051.lmesh"/>
+		</geometry>
+		<geometry name="leg_front_pieces.018" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_front_pieces.018.lmesh"/>
+		</geometry>
+		<geometry name="leg_front_pieces.022" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_front_pieces.022.lmesh"/>
+		</geometry>
+		<geometry name="leg_front_pieces.021" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_front_pieces.021.lmesh"/>
+		</geometry>
+		<geometry name="leg_front_pieces.019" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_front_pieces.019.lmesh"/>
+		</geometry>
+		<geometry name="leg_front_pieces.020" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_front_pieces.020.lmesh"/>
+		</geometry>
+		<geometry name="Cube.007" surface="Light" type="TriMesh">
+			<string name="datafile" value="Cube.007.lmesh"/>
+		</geometry>
+		<geometry name="Cube.014" surface="Light" type="TriMesh">
+			<string name="datafile" value="Cube.014.lmesh"/>
+		</geometry>
+		<geometry name="leg_front_pieces.024" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_front_pieces.024.lmesh"/>
+		</geometry>
+		<geometry name="leg_front_pieces.023" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_front_pieces.023.lmesh"/>
+		</geometry>
+		<geometry name="leg_front_pieces.025" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_front_pieces.025.lmesh"/>
+		</geometry>
+		<geometry name="Cube.017" surface="Light" type="TriMesh">
+			<string name="datafile" value="Cube.017.lmesh"/>
+		</geometry>
+		<geometry name="Cube.015" surface="Light" type="TriMesh">
+			<string name="datafile" value="Cube.015.lmesh"/>
+		</geometry>
+		<geometry name="leg_front_pieces.026" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_front_pieces.026.lmesh"/>
+		</geometry>
+		<geometry name="leg_front_pieces.027" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_front_pieces.027.lmesh"/>
+		</geometry>
+		<geometry name="leg_front_pieces.029" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_front_pieces.029.lmesh"/>
+		</geometry>
+		<geometry name="leg_front_pieces.031" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_front_pieces.031.lmesh"/>
+		</geometry>
+		<geometry name="leg_front_pieces.030" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_front_pieces.030.lmesh"/>
+		</geometry>
+		<geometry name="leg_front_pieces.032" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_front_pieces.032.lmesh"/>
+		</geometry>
+		<geometry name="leg_front_pieces.033" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_front_pieces.033.lmesh"/>
+		</geometry>
+		<geometry name="leg_front_pieces.028" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_front_pieces.028.lmesh"/>
+		</geometry>
+		<geometry name="leg_front_pieces.049" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_front_pieces.049.lmesh"/>
+		</geometry>
+		<geometry name="leg_front_pieces.048" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_front_pieces.048.lmesh"/>
+		</geometry>
+		<geometry name="leg_front_pieces.034" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_front_pieces.034.lmesh"/>
+		</geometry>
+		<geometry name="leg_front_pieces.052" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_front_pieces.052.lmesh"/>
+		</geometry>
+		<geometry name="leg_front_pieces.054" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_front_pieces.054.lmesh"/>
+		</geometry>
+		<geometry name="leg_front_pieces.055" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_front_pieces.055.lmesh"/>
+		</geometry>
+		<geometry name="leg_front_pieces.056" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_front_pieces.056.lmesh"/>
+		</geometry>
+		<geometry name="leg_front_pieces.057" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_front_pieces.057.lmesh"/>
+		</geometry>
+		<geometry name="leg_front_pieces.058" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_front_pieces.058.lmesh"/>
+		</geometry>
+		<geometry name="Circle.022" surface="Light" type="TriMesh">
+			<string name="datafile" value="Circle.022.lmesh"/>
+		</geometry>
+		<geometry name="Cube.018" surface="Light" type="TriMesh">
+			<string name="datafile" value="Cube.018.lmesh"/>
+		</geometry>
+		<geometry name="Circle.019" surface="Light" type="TriMesh">
+			<string name="datafile" value="Circle.019.lmesh"/>
+		</geometry>
+		<geometry name="Circle.018" surface="Light" type="TriMesh">
+			<string name="datafile" value="Circle.018.lmesh"/>
+		</geometry>
+		<geometry name="Circle.017" surface="Light" type="TriMesh">
+			<string name="datafile" value="Circle.017.lmesh"/>
+		</geometry>
+		<geometry name="Circle.016" surface="Light" type="TriMesh">
+			<string name="datafile" value="Circle.016.lmesh"/>
+		</geometry>
+		<geometry name="Circle.015" surface="Light" type="TriMesh">
+			<string name="datafile" value="Circle.015.lmesh"/>
+		</geometry>
+		<geometry name="Circle.014" surface="Light" type="TriMesh">
+			<string name="datafile" value="Circle.014.lmesh"/>
+		</geometry>
+		<geometry name="leg_front_pieces.053" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_front_pieces.053.lmesh"/>
+		</geometry>
+		<geometry name="leg_front_pieces" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_front_pieces.lmesh"/>
+		</geometry>
+		<geometry name="leg_front_pieces.044" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_front_pieces.044.lmesh"/>
+		</geometry>
+		<geometry name="leg_front_pieces.009" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_front_pieces.009.lmesh"/>
+		</geometry>
+		<geometry name="leg_front_pieces.042" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_front_pieces.042.lmesh"/>
+		</geometry>
+		<geometry name="leg_front_pieces.008" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_front_pieces.008.lmesh"/>
+		</geometry>
+		<geometry name="Cube.001" surface="Light" type="TriMesh">
+			<string name="datafile" value="Cube.001.lmesh"/>
+		</geometry>
+		<geometry name="Cube.004" surface="Light" type="TriMesh">
+			<string name="datafile" value="Cube.004.lmesh"/>
+		</geometry>
+		<geometry name="leg_front_pieces.006" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_front_pieces.006.lmesh"/>
+		</geometry>
+		<geometry name="leg_front_pieces.011" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_front_pieces.011.lmesh"/>
+		</geometry>
+		<geometry name="leg_front_pieces.010" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_front_pieces.010.lmesh"/>
+		</geometry>
+		<geometry name="leg_front_pieces.014" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_front_pieces.014.lmesh"/>
+		</geometry>
+		<geometry name="Cube.005" surface="Light" type="TriMesh">
+			<string name="datafile" value="Cube.005.lmesh"/>
+		</geometry>
+		<geometry name="Cube.002" surface="Light" type="TriMesh">
+			<string name="datafile" value="Cube.002.lmesh"/>
+		</geometry>
+		<geometry name="leg_front_pieces.039" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_front_pieces.039.lmesh"/>
+		</geometry>
+		<geometry name="leg_front_pieces.047" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_front_pieces.047.lmesh"/>
+		</geometry>
+		<geometry name="leg_front_pieces.041" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_front_pieces.041.lmesh"/>
+		</geometry>
+		<geometry name="leg_front_pieces.040" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_front_pieces.040.lmesh"/>
+		</geometry>
+		<geometry name="leg_front_pieces.046" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_front_pieces.046.lmesh"/>
+		</geometry>
+		<geometry name="leg_front_pieces.045" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_front_pieces.045.lmesh"/>
+		</geometry>
+		<geometry name="leg_front_pieces.016" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_front_pieces.016.lmesh"/>
+		</geometry>
+		<geometry name="leg_front_pieces.043" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_front_pieces.043.lmesh"/>
+		</geometry>
+		<geometry name="leg_front_pieces.015" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_front_pieces.015.lmesh"/>
+		</geometry>
+		<geometry name="leg_front_pieces.004" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_front_pieces.004.lmesh"/>
+		</geometry>
+		<geometry name="leg_front_pieces.005" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_front_pieces.005.lmesh"/>
+		</geometry>
+		<geometry name="leg_front_pieces.003" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_front_pieces.003.lmesh"/>
+		</geometry>
+		<geometry name="leg_front_pieces.002" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_front_pieces.002.lmesh"/>
+		</geometry>
+		<geometry name="leg_front_pieces.007" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_front_pieces.007.lmesh"/>
+		</geometry>
+		<geometry name="leg_front_pieces.001" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_front_pieces.001.lmesh"/>
+		</geometry>
+		<geometry name="leg_front_pieces.035" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_front_pieces.035.lmesh"/>
+		</geometry>
+		<geometry name="leg_front_pieces.036" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_front_pieces.036.lmesh"/>
+		</geometry>
+		<geometry name="leg_front_pieces.012" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_front_pieces.012.lmesh"/>
+		</geometry>
+		<geometry name="leg_front_pieces.038" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_front_pieces.038.lmesh"/>
+		</geometry>
+		<geometry name="Circle.003" surface="Light" type="TriMesh">
+			<string name="datafile" value="Circle.003.lmesh"/>
+		</geometry>
+		<geometry name="Circle.013" surface="Light" type="TriMesh">
+			<string name="datafile" value="Circle.013.lmesh"/>
+		</geometry>
+		<geometry name="Circle.012" surface="Light" type="TriMesh">
+			<string name="datafile" value="Circle.012.lmesh"/>
+		</geometry>
+		<geometry name="Circle.011" surface="Light" type="TriMesh">
+			<string name="datafile" value="Circle.011.lmesh"/>
+		</geometry>
+		<geometry name="Circle.009" surface="Light" type="TriMesh">
+			<string name="datafile" value="Circle.009.lmesh"/>
+		</geometry>
+		<geometry name="Circle.004" surface="Light" type="TriMesh">
+			<string name="datafile" value="Circle.004.lmesh"/>
+		</geometry>
+		<geometry name="Cube.012" surface="Light" type="TriMesh">
+			<string name="datafile" value="Cube.012.lmesh"/>
+		</geometry>
+		<geometry name="Circle.010" surface="Light" type="TriMesh">
+			<string name="datafile" value="Circle.010.lmesh"/>
+		</geometry>
+		<geometry name="jet_plate.003" surface="Light" type="TriMesh">
+			<string name="datafile" value="jet_plate.003.lmesh"/>
+		</geometry>
+		<geometry name="Plane.005" surface="Light" type="TriMesh">
+			<string name="datafile" value="Plane.005.lmesh"/>
+		</geometry>
+		<geometry name="Plane.012" surface="Light" type="TriMesh">
+			<string name="datafile" value="Plane.012.lmesh"/>
+		</geometry>
+		<geometry name="Circle.026" surface="Light" type="TriMesh">
+			<string name="datafile" value="Circle.026.lmesh"/>
+		</geometry>
+		<geometry name="Circle.020" surface="Light" type="TriMesh">
+			<string name="datafile" value="Circle.020.lmesh"/>
+		</geometry>
+		<geometry name="butt_piece.002" surface="Light" type="TriMesh">
+			<string name="datafile" value="butt_piece.002.lmesh"/>
+		</geometry>
+		<geometry name="butt_piece.001" surface="Light" type="TriMesh">
+			<string name="datafile" value="butt_piece.001.lmesh"/>
+		</geometry>
+		<geometry name="butt_piece.003" surface="Light" type="TriMesh">
+			<string name="datafile" value="butt_piece.003.lmesh"/>
+		</geometry>
+		<geometry name="butt_piece.004" surface="Light" type="TriMesh">
+			<string name="datafile" value="butt_piece.004.lmesh"/>
+		</geometry>
+		<geometry name="butt_piece" surface="Light" type="TriMesh">
+			<string name="datafile" value="butt_piece.lmesh"/>
+		</geometry>
+		<geometry name="Plane.004" surface="Light" type="TriMesh">
+			<string name="datafile" value="Plane.004.lmesh"/>
+		</geometry>
+		<geometry name="Plane.003" surface="Light" type="TriMesh">
+			<string name="datafile" value="Plane.003.lmesh"/>
+		</geometry>
+		<geometry name="Plane.002" surface="Light" type="TriMesh">
+			<string name="datafile" value="Plane.002.lmesh"/>
+		</geometry>
+		<geometry name="back_parts.001" surface="Light" type="TriMesh">
+			<string name="datafile" value="back_parts.001.lmesh"/>
+		</geometry>
+		<geometry name="back_parts.005" surface="Light" type="TriMesh">
+			<string name="datafile" value="back_parts.005.lmesh"/>
+		</geometry>
+		<geometry name="back_parts.002" surface="Light" type="TriMesh">
+			<string name="datafile" value="back_parts.002.lmesh"/>
+		</geometry>
+		<geometry name="back_parts.003" surface="Light" type="TriMesh">
+			<string name="datafile" value="back_parts.003.lmesh"/>
+		</geometry>
+		<geometry name="back_parts.004" surface="Light" type="TriMesh">
+			<string name="datafile" value="back_parts.004.lmesh"/>
+		</geometry>
+		<geometry name="Plane.014" surface="Light" type="TriMesh">
+			<string name="datafile" value="Plane.014.lmesh"/>
+		</geometry>
+		<geometry name="Plane.013" surface="Light" type="TriMesh">
+			<string name="datafile" value="Plane.013.lmesh"/>
+		</geometry>
+		<geometry name="Plane.007" surface="Light" type="TriMesh">
+			<string name="datafile" value="Plane.007.lmesh"/>
+		</geometry>
+		<geometry name="Plane.006" surface="Light" type="TriMesh">
+			<string name="datafile" value="Plane.006.lmesh"/>
+		</geometry>
+		<geometry name="ab_plates.008" surface="Light" type="TriMesh">
+			<string name="datafile" value="ab_plates.008.lmesh"/>
+		</geometry>
+		<geometry name="ab_plates.007" surface="Light" type="TriMesh">
+			<string name="datafile" value="ab_plates.007.lmesh"/>
+		</geometry>
+		<geometry name="ab_plates.006" surface="Light" type="TriMesh">
+			<string name="datafile" value="ab_plates.006.lmesh"/>
+		</geometry>
+		<geometry name="ab_plates" surface="Light" type="TriMesh">
+			<string name="datafile" value="ab_plates.lmesh"/>
+		</geometry>
+		<geometry name="ab_plates.002" surface="Light" type="TriMesh">
+			<string name="datafile" value="ab_plates.002.lmesh"/>
+		</geometry>
+		<geometry name="ab_plates.003" surface="Light" type="TriMesh">
+			<string name="datafile" value="ab_plates.003.lmesh"/>
+		</geometry>
+		<geometry name="ab_plates.009" surface="Light" type="TriMesh">
+			<string name="datafile" value="ab_plates.009.lmesh"/>
+		</geometry>
+		<geometry name="ab_plates.005" surface="Light" type="TriMesh">
+			<string name="datafile" value="ab_plates.005.lmesh"/>
+		</geometry>
+		<geometry name="ab_plates.004" surface="Light" type="TriMesh">
+			<string name="datafile" value="ab_plates.004.lmesh"/>
+		</geometry>
+		<geometry name="ab_plates.001" surface="Light" type="TriMesh">
+			<string name="datafile" value="ab_plates.001.lmesh"/>
+		</geometry>
+		<geometry name="Cube.031" surface="Light" type="TriMesh">
+			<string name="datafile" value="Cube.031.lmesh"/>
+		</geometry>
+		<geometry name="Cube.033" surface="Light" type="TriMesh">
+			<string name="datafile" value="Cube.033.lmesh"/>
+		</geometry>
+		<geometry name="Cube.035" surface="Light" type="TriMesh">
+			<string name="datafile" value="Cube.035.lmesh"/>
+		</geometry>
+		<geometry name="Cube.032" surface="Light" type="TriMesh">
+			<string name="datafile" value="Cube.032.lmesh"/>
+		</geometry>
+		<geometry name="Cube.029" surface="Light" type="TriMesh">
+			<string name="datafile" value="Cube.029.lmesh"/>
+		</geometry>
+		<geometry name="Cube.023" surface="Light" type="TriMesh">
+			<string name="datafile" value="Cube.023.lmesh"/>
+		</geometry>
+		<geometry name="Cube.025" surface="Light" type="TriMesh">
+			<string name="datafile" value="Cube.025.lmesh"/>
+		</geometry>
+		<geometry name="Cube.028" surface="Light" type="TriMesh">
+			<string name="datafile" value="Cube.028.lmesh"/>
+		</geometry>
+		<geometry name="Cube.024" surface="Light" type="TriMesh">
+			<string name="datafile" value="Cube.024.lmesh"/>
+		</geometry>
+		<geometry name="Cube.021" surface="Light" type="TriMesh">
+			<string name="datafile" value="Cube.021.lmesh"/>
+		</geometry>
+		<geometry name="Cube.010" surface="Light" type="TriMesh">
+			<string name="datafile" value="Cube.010.lmesh"/>
+		</geometry>
+		<geometry name="Cube.008" surface="Light" type="TriMesh">
+			<string name="datafile" value="Cube.008.lmesh"/>
+		</geometry>
+		<geometry name="Cube.009" surface="Light" type="TriMesh">
+			<string name="datafile" value="Cube.009.lmesh"/>
+		</geometry>
+		<geometry name="Cube.037" surface="Light" type="TriMesh">
+			<string name="datafile" value="Cube.037.lmesh"/>
+		</geometry>
+		<geometry name="Cube.011" surface="Light" type="TriMesh">
+			<string name="datafile" value="Cube.011.lmesh"/>
+		</geometry>
+		<geometry name="Cube.063" surface="Light" type="TriMesh">
+			<string name="datafile" value="Cube.063.lmesh"/>
+		</geometry>
+		<geometry name="Cube.056" surface="Light" type="TriMesh">
+			<string name="datafile" value="Cube.056.lmesh"/>
+		</geometry>
+		<geometry name="Cube.055" surface="Light" type="TriMesh">
+			<string name="datafile" value="Cube.055.lmesh"/>
+		</geometry>
+		<geometry name="Cube.049" surface="Light" type="TriMesh">
+			<string name="datafile" value="Cube.049.lmesh"/>
+		</geometry>
+		<geometry name="Cube.042" surface="Light" type="TriMesh">
+			<string name="datafile" value="Cube.042.lmesh"/>
+		</geometry>
+		<geometry name="Cube.036" surface="Light" type="TriMesh">
+			<string name="datafile" value="Cube.036.lmesh"/>
+		</geometry>
+		<geometry name="Cube.040" surface="Light" type="TriMesh">
+			<string name="datafile" value="Cube.040.lmesh"/>
+		</geometry>
+		<geometry name="Cube.045" surface="Light" type="TriMesh">
+			<string name="datafile" value="Cube.045.lmesh"/>
+		</geometry>
+		<geometry name="Cube.034" surface="Light" type="TriMesh">
+			<string name="datafile" value="Cube.034.lmesh"/>
+		</geometry>
+		<geometry name="Cube.027" surface="Light" type="TriMesh">
+			<string name="datafile" value="Cube.027.lmesh"/>
+		</geometry>
+		<geometry name="Cube.030" surface="Light" type="TriMesh">
+			<string name="datafile" value="Cube.030.lmesh"/>
+		</geometry>
+		<geometry name="Cube.026" surface="Light" type="TriMesh">
+			<string name="datafile" value="Cube.026.lmesh"/>
+		</geometry>
+		<geometry name="Cube.022" surface="Light" type="TriMesh">
+			<string name="datafile" value="Cube.022.lmesh"/>
+		</geometry>
+		<geometry name="back_parts.013" surface="Light" type="TriMesh">
+			<string name="datafile" value="back_parts.013.lmesh"/>
+		</geometry>
+		<geometry name="back_parts.012" surface="Light" type="TriMesh">
+			<string name="datafile" value="back_parts.012.lmesh"/>
+		</geometry>
+		<geometry name="back_parts.010" surface="Light" type="TriMesh">
+			<string name="datafile" value="back_parts.010.lmesh"/>
+		</geometry>
+		<geometry name="back_parts.009" surface="Light" type="TriMesh">
+			<string name="datafile" value="back_parts.009.lmesh"/>
+		</geometry>
+		<geometry name="back_parts.011" surface="Light" type="TriMesh">
+			<string name="datafile" value="back_parts.011.lmesh"/>
+		</geometry>
+		<geometry name="back_parts.007" surface="Light" type="TriMesh">
+			<string name="datafile" value="back_parts.007.lmesh"/>
+		</geometry>
+		<geometry name="back_parts.014" surface="Light" type="TriMesh">
+			<string name="datafile" value="back_parts.014.lmesh"/>
+		</geometry>
+		<geometry name="back_parts.006" surface="Light" type="TriMesh">
+			<string name="datafile" value="back_parts.006.lmesh"/>
+		</geometry>
+		<geometry name="back_parts" surface="Light" type="TriMesh">
+			<string name="datafile" value="back_parts.lmesh"/>
+		</geometry>
+		<geometry name="back_parts.008" surface="Light" type="TriMesh">
+			<string name="datafile" value="back_parts.008.lmesh"/>
+		</geometry>
+		<geometry name="jet_pack_connector" surface="Light" type="TriMesh">
+			<string name="datafile" value="jet_pack_connector.lmesh"/>
+		</geometry>
+		<geometry name="jet_pack" surface="Light" type="TriMesh">
+			<string name="datafile" value="jet_pack.lmesh"/>
+		</geometry>
+		<geometry name="jet_pack.001" surface="Light" type="TriMesh">
+			<string name="datafile" value="jet_pack.001.lmesh"/>
+		</geometry>
+		<geometry name="chest" surface="Light" type="TriMesh">
+			<string name="datafile" value="chest.lmesh"/>
+		</geometry>
+		<geometry name="jet_plate.005" surface="Light" type="TriMesh">
+			<string name="datafile" value="jet_plate.005.lmesh"/>
+		</geometry>
+		<geometry name="jet_plate.002" surface="Light" type="TriMesh">
+			<string name="datafile" value="jet_plate.002.lmesh"/>
+		</geometry>
+		<geometry name="jet_plate.001" surface="Light" type="TriMesh">
+			<string name="datafile" value="jet_plate.001.lmesh"/>
+		</geometry>
+		<geometry name="jet_plate" surface="Light" type="TriMesh">
+			<string name="datafile" value="jet_plate.lmesh"/>
+		</geometry>
+		<geometry name="neck_parts.001" surface="Light" type="TriMesh">
+			<string name="datafile" value="neck_parts.001.lmesh"/>
+		</geometry>
+		<geometry name="Cylinder.007" surface="Light" type="TriMesh">
+			<string name="datafile" value="Cylinder.007.lmesh"/>
+		</geometry>
+		<geometry name="neck_parts" surface="Light" type="TriMesh">
+			<string name="datafile" value="neck_parts.lmesh"/>
+		</geometry>
+		<geometry name="Cylinder.005" surface="Light" type="TriMesh">
+			<string name="datafile" value="Cylinder.005.lmesh"/>
+		</geometry>
+		<geometry name="neck_parts.011" surface="Light" type="TriMesh">
+			<string name="datafile" value="neck_parts.011.lmesh"/>
+		</geometry>
+		<geometry name="neck_parts.013" surface="Light" type="TriMesh">
+			<string name="datafile" value="neck_parts.013.lmesh"/>
+		</geometry>
+		<geometry name="neck_parts.015" surface="Light" type="TriMesh">
+			<string name="datafile" value="neck_parts.015.lmesh"/>
+		</geometry>
+		<geometry name="neck_parts.003" surface="Light" type="TriMesh">
+			<string name="datafile" value="neck_parts.003.lmesh"/>
+		</geometry>
+		<geometry name="neck_parts.005" surface="Light" type="TriMesh">
+			<string name="datafile" value="neck_parts.005.lmesh"/>
+		</geometry>
+		<geometry name="neck_parts.007" surface="Light" type="TriMesh">
+			<string name="datafile" value="neck_parts.007.lmesh"/>
+		</geometry>
+		<geometry name="neck_parts.008" surface="Light" type="TriMesh">
+			<string name="datafile" value="neck_parts.008.lmesh"/>
+		</geometry>
+		<geometry name="neck_parts.009" surface="Light" type="TriMesh">
+			<string name="datafile" value="neck_parts.009.lmesh"/>
+		</geometry>
+		<geometry name="head_part.002" surface="Light" type="TriMesh">
+			<string name="datafile" value="head_part.002.lmesh"/>
+		</geometry>
+		<geometry name="head_part.003" surface="Light" type="TriMesh">
+			<string name="datafile" value="head_part.003.lmesh"/>
+		</geometry>
+		<geometry name="head_part.004" surface="Light" type="TriMesh">
+			<string name="datafile" value="head_part.004.lmesh"/>
+		</geometry>
+		<geometry name="head_part.005" surface="Light" type="TriMesh">
+			<string name="datafile" value="head_part.005.lmesh"/>
+		</geometry>
+		<geometry name="head_part.006" surface="Light" type="TriMesh">
+			<string name="datafile" value="head_part.006.lmesh"/>
+		</geometry>
+		<geometry name="head_part.012" surface="Light" type="TriMesh">
+			<string name="datafile" value="head_part.012.lmesh"/>
+		</geometry>
+		<geometry name="head_part.015" surface="Light" type="TriMesh">
+			<string name="datafile" value="head_part.015.lmesh"/>
+		</geometry>
+		<geometry name="head_part.016" surface="Light" type="TriMesh">
+			<string name="datafile" value="head_part.016.lmesh"/>
+		</geometry>
+		<geometry name="head_part.017" surface="Light" type="TriMesh">
+			<string name="datafile" value="head_part.017.lmesh"/>
+		</geometry>
+		<geometry name="head_part.018" surface="Light" type="TriMesh">
+			<string name="datafile" value="head_part.018.lmesh"/>
+		</geometry>
+		<geometry name="head_part.019" surface="Light" type="TriMesh">
+			<string name="datafile" value="head_part.019.lmesh"/>
+		</geometry>
+		<geometry name="head_part.020" surface="Light" type="TriMesh">
+			<string name="datafile" value="head_part.020.lmesh"/>
+		</geometry>
+		<geometry name="head_part.021" surface="Light" type="TriMesh">
+			<string name="datafile" value="head_part.021.lmesh"/>
+		</geometry>
+		<geometry name="head_part.022" surface="Light" type="TriMesh">
+			<string name="datafile" value="head_part.022.lmesh"/>
+		</geometry>
+		<geometry name="head_part.023" surface="Light" type="TriMesh">
+			<string name="datafile" value="head_part.023.lmesh"/>
+		</geometry>
+		<geometry name="head_part.024" surface="Light" type="TriMesh">
+			<string name="datafile" value="head_part.024.lmesh"/>
+		</geometry>
+		<geometry name="head_part.025" surface="Light" type="TriMesh">
+			<string name="datafile" value="head_part.025.lmesh"/>
+		</geometry>
+		<geometry name="head_part.026" surface="Light" type="TriMesh">
+			<string name="datafile" value="head_part.026.lmesh"/>
+		</geometry>
+		<geometry name="head_part.027" surface="Light" type="TriMesh">
+			<string name="datafile" value="head_part.027.lmesh"/>
+		</geometry>
+		<geometry name="head_part.028" surface="Light" type="TriMesh">
+			<string name="datafile" value="head_part.028.lmesh"/>
+		</geometry>
+		<geometry name="head_part.029" surface="Light" type="TriMesh">
+			<string name="datafile" value="head_part.029.lmesh"/>
+		</geometry>
+		<geometry name="head_part.030" surface="Light" type="TriMesh">
+			<string name="datafile" value="head_part.030.lmesh"/>
+		</geometry>
+		<geometry name="head_part.031" surface="Light" type="TriMesh">
+			<string name="datafile" value="head_part.031.lmesh"/>
+		</geometry>
+		<geometry name="head_part.032" surface="Light" type="TriMesh">
+			<string name="datafile" value="head_part.032.lmesh"/>
+		</geometry>
+		<geometry name="head_part.033" surface="Light" type="TriMesh">
+			<string name="datafile" value="head_part.033.lmesh"/>
+		</geometry>
+		<geometry name="head_part.034" surface="Light" type="TriMesh">
+			<string name="datafile" value="head_part.034.lmesh"/>
+		</geometry>
+		<geometry name="head_part.035" surface="Light" type="TriMesh">
+			<string name="datafile" value="head_part.035.lmesh"/>
+		</geometry>
+		<geometry name="head_part.036" surface="Light" type="TriMesh">
+			<string name="datafile" value="head_part.036.lmesh"/>
+		</geometry>
+		<geometry name="head_part.039" surface="Light" type="TriMesh">
+			<string name="datafile" value="head_part.039.lmesh"/>
+		</geometry>
+		<geometry name="head_part.040" surface="Light" type="TriMesh">
+			<string name="datafile" value="head_part.040.lmesh"/>
+		</geometry>
+		<geometry name="head_part.041" surface="Light" type="TriMesh">
+			<string name="datafile" value="head_part.041.lmesh"/>
+		</geometry>
+		<geometry name="head_part.042" surface="Light" type="TriMesh">
+			<string name="datafile" value="head_part.042.lmesh"/>
+		</geometry>
+		<geometry name="head_part.043" surface="Light" type="TriMesh">
+			<string name="datafile" value="head_part.043.lmesh"/>
+		</geometry>
+		<geometry name="head_part.044" surface="Light" type="TriMesh">
+			<string name="datafile" value="head_part.044.lmesh"/>
+		</geometry>
+		<geometry name="head_part.045" surface="Light" type="TriMesh">
+			<string name="datafile" value="head_part.045.lmesh"/>
+		</geometry>
+		<geometry name="head_part.046" surface="Light" type="TriMesh">
+			<string name="datafile" value="head_part.046.lmesh"/>
+		</geometry>
+		<geometry name="head_part.047" surface="Light" type="TriMesh">
+			<string name="datafile" value="head_part.047.lmesh"/>
+		</geometry>
+		<geometry name="head_part.048" surface="Light" type="TriMesh">
+			<string name="datafile" value="head_part.048.lmesh"/>
+		</geometry>
+		<geometry name="head_part.049" surface="Light" type="TriMesh">
+			<string name="datafile" value="head_part.049.lmesh"/>
+		</geometry>
+		<geometry name="head_part.054" surface="Light" type="TriMesh">
+			<string name="datafile" value="head_part.054.lmesh"/>
+		</geometry>
+		<geometry name="head_part" surface="Light" type="TriMesh">
+			<string name="datafile" value="head_part.lmesh"/>
+		</geometry>
+		<geometry name="head_part.056" surface="Light" type="TriMesh">
+			<string name="datafile" value="head_part.056.lmesh"/>
+		</geometry>
+		<geometry name="head_part.059" surface="Light" type="TriMesh">
+			<string name="datafile" value="head_part.059.lmesh"/>
+		</geometry>
+		<geometry name="head_part.062" surface="Light" type="TriMesh">
+			<string name="datafile" value="head_part.062.lmesh"/>
+		</geometry>
+		<geometry name="head_part.079" surface="Light" type="TriMesh">
+			<string name="datafile" value="head_part.079.lmesh"/>
+		</geometry>
+		<geometry name="head_part.057" surface="Light" type="TriMesh">
+			<string name="datafile" value="head_part.057.lmesh"/>
+		</geometry>
+		<geometry name="head_part.061" surface="Light" type="TriMesh">
+			<string name="datafile" value="head_part.061.lmesh"/>
+		</geometry>
+		<geometry name="head_part.060" surface="Light" type="TriMesh">
+			<string name="datafile" value="head_part.060.lmesh"/>
+		</geometry>
+		<geometry name="head_part.055" surface="Light" type="TriMesh">
+			<string name="datafile" value="head_part.055.lmesh"/>
+		</geometry>
+		<geometry name="head_part.001" surface="Light" type="TriMesh">
+			<string name="datafile" value="head_part.001.lmesh"/>
+		</geometry>
+		<geometry name="head_part.058" surface="Light" type="TriMesh">
+			<string name="datafile" value="head_part.058.lmesh"/>
+		</geometry>
+		<geometry name="head_part.075" surface="Light" type="TriMesh">
+			<string name="datafile" value="head_part.075.lmesh"/>
+		</geometry>
+		<geometry name="head_part.080" surface="Light" type="TriMesh">
+			<string name="datafile" value="head_part.080.lmesh"/>
+		</geometry>
+		<geometry name="head_part.078" surface="Light" type="TriMesh">
+			<string name="datafile" value="head_part.078.lmesh"/>
+		</geometry>
+		<geometry name="head_part.101" surface="Light" type="TriMesh">
+			<string name="datafile" value="head_part.101.lmesh"/>
+		</geometry>
+		<geometry name="head_part.103" surface="Light" type="TriMesh">
+			<string name="datafile" value="head_part.103.lmesh"/>
+		</geometry>
+		<geometry name="head_part.077" surface="Light" type="TriMesh">
+			<string name="datafile" value="head_part.077.lmesh"/>
+		</geometry>
+		<geometry name="head_part.102" surface="Light" type="TriMesh">
+			<string name="datafile" value="head_part.102.lmesh"/>
+		</geometry>
+		<geometry name="head_part.081" surface="Light" type="TriMesh">
+			<string name="datafile" value="head_part.081.lmesh"/>
+		</geometry>
+		<geometry name="head_part.076" surface="Light" type="TriMesh">
+			<string name="datafile" value="head_part.076.lmesh"/>
+		</geometry>
+		<geometry name="head_part.074" surface="Light" type="TriMesh">
+			<string name="datafile" value="head_part.074.lmesh"/>
+		</geometry>
+		<geometry name="head_part.063" surface="Light" type="TriMesh">
+			<string name="datafile" value="head_part.063.lmesh"/>
+		</geometry>
+		<geometry name="head_part.100" surface="Light" type="TriMesh">
+			<string name="datafile" value="head_part.100.lmesh"/>
+		</geometry>
+		<geometry name="head_part.099" surface="Light" type="TriMesh">
+			<string name="datafile" value="head_part.099.lmesh"/>
+		</geometry>
+		<geometry name="head_part.072" surface="Light" type="TriMesh">
+			<string name="datafile" value="head_part.072.lmesh"/>
+		</geometry>
+		<geometry name="head_part.098" surface="Light" type="TriMesh">
+			<string name="datafile" value="head_part.098.lmesh"/>
+		</geometry>
+		<geometry name="head_part.071" surface="Light" type="TriMesh">
+			<string name="datafile" value="head_part.071.lmesh"/>
+		</geometry>
+		<geometry name="head_part.073" surface="Light" type="TriMesh">
+			<string name="datafile" value="head_part.073.lmesh"/>
+		</geometry>
+		<geometry name="head_part.066" surface="Light" type="TriMesh">
+			<string name="datafile" value="head_part.066.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.000" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.000.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.196" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.196.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.198" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.198.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.201" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.201.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.203" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.203.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.204" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.204.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.205" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.205.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.206" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.206.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.207" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.207.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.208" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.208.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.209" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.209.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.210" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.210.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.211" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.211.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.212" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.212.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.213" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.213.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.214" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.214.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.215" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.215.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.216" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.216.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.217" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.217.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.218" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.218.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.219" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.219.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.220" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.220.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.221" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.221.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.223" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.223.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.224" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.224.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.225" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.225.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.226" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.226.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.227" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.227.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.228" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.228.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.229" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.229.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.230" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.230.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.231" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.231.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.232" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.232.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.233" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.233.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.234" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.234.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.235" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.235.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.236" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.236.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.237" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.237.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.238" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.238.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.239" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.239.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.240" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.240.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.241" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.241.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.242" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.242.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.243" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.243.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.244" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.244.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.245" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.245.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.246" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.246.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.249" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.249.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.250" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.250.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.251" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.251.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.252" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.252.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.253" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.253.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.254" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.254.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.255" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.255.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.256" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.256.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.257" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.257.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.258" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.258.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.259" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.259.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.260" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.260.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.261" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.261.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.262" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.262.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.263" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.263.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.264" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.264.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.265" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.265.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.267" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.267.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.268" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.268.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.269" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.269.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.270" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.270.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.271" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.271.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.272" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.272.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.273" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.273.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.274" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.274.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.275" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.275.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.276" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.276.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.277" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.277.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.278" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.278.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.279" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.279.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.280" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.280.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.281" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.281.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.282" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.282.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.283" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.283.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.284" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.284.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.285" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.285.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.286" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.286.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.287" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.287.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.288" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.288.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.289" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.289.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.290" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.290.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.291" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.291.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.293" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.293.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.294" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.294.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.295" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.295.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.298" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.298.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.300" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.300.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.302" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.302.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.303" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.303.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.304" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.304.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.305" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.305.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.306" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.306.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.307" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.307.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.308" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.308.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.309" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.309.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.310" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.310.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.311" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.311.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.312" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.312.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.313" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.313.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.314" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.314.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.315" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.315.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.317" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.317.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.320" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.320.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.322" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.322.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.323" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.323.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.324" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.324.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.325" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.325.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.326" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.326.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.327" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.327.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.328" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.328.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.329" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.329.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.330" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.330.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.331" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.331.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.332" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.332.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.333" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.333.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.334" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.334.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.335" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.335.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.336" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.336.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.337" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.337.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.338" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.338.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.339" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.339.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.340" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.340.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.341" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.341.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.342" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.342.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.343" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.343.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.344" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.344.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.345" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.345.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.346" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.346.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.347" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.347.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.348" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.348.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.349" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.349.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.350" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.350.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.351" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.351.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.352" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.352.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.353" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.353.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.354" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.354.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.355" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.355.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.356" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.356.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.357" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.357.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.358" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.358.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.359" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.359.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.360" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.360.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.361" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.361.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.362" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.362.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.363" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.363.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.364" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.364.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.365" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.365.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.366" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.366.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.367" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.367.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.368" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.368.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.369" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.369.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.370" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.370.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.371" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.371.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.372" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.372.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.373" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.373.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.374" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.374.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.375" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.375.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.376" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.376.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.377" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.377.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.378" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.378.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.379" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.379.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.380" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.380.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.381" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.381.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.382" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.382.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.383" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.383.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.384" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.384.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.385" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.385.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.386" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.386.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.387" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.387.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.388" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.388.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.389" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.389.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.390" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.390.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.391" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.391.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.392" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.392.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.393" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.393.lmesh"/>
+		</geometry>
+		<geometry name="eye_parts.394" surface="Light" type="TriMesh">
+			<string name="datafile" value="eye_parts.394.lmesh"/>
+		</geometry>
+		<geometry name="Plane.001" surface="Light" type="TriMesh">
+			<string name="datafile" value="Plane.001.lmesh"/>
+		</geometry>
+		<geometry name="shoulder.005" surface="Light" type="TriMesh">
+			<string name="datafile" value="shoulder.005.lmesh"/>
+		</geometry>
+		<geometry name="shoulder.004" surface="Light" type="TriMesh">
+			<string name="datafile" value="shoulder.004.lmesh"/>
+		</geometry>
+		<geometry name="leg_front_pieces.062" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_front_pieces.062.lmesh"/>
+		</geometry>
+		<geometry name="leg_front_pieces.059" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_front_pieces.059.lmesh"/>
+		</geometry>
+		<geometry name="leg_front_pieces.061" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_front_pieces.061.lmesh"/>
+		</geometry>
+		<geometry name="leg_front_pieces.060" surface="Light" type="TriMesh">
+			<string name="datafile" value="leg_front_pieces.060.lmesh"/>
+		</geometry>
+	</scene>
+</legion_scene>

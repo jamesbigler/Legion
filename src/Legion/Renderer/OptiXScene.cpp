@@ -39,6 +39,9 @@
 
 using namespace legion;
 
+static bool special_ward = true;
+static bool special_diffuse = true;
+
 #define OPTIX_CATCH_RETHROW                                                    \
     catch ( optix::Exception& e )                                              \
     {                                                                          \
@@ -218,13 +221,30 @@ void OptiXScene::addGeometry( IGeometry* geometry )
         //
         optix::Material material = m_optix_context->createMaterial();
         optix_geometry_instance->setMaterial( 0, material );
-        material->setClosestHitProgram( RADIANCE_TYPE, m_closest_hit_program );
         material->setAnyHitProgram( SHADOW_TYPE, m_any_hit_program );
 
         ISurface* surface = geometry->getSurface();
         const std::string surface_name( surface->name() );
         const std::string surface_ptx( surface_name + ".ptx" );
        
+        if (special_ward && surface_name == "Ward") {
+            optix::Program closest_hit = 
+                m_program_mgr.get( 
+                surface_ptx, 
+                "wardClosestHit"
+                );
+            material->setClosestHitProgram( RADIANCE_TYPE, closest_hit );
+        } else if (special_diffuse && surface_name == "DiffuseEmitter") {
+            optix::Program closest_hit = 
+                m_program_mgr.get( 
+                surface_ptx, 
+                "diffuseEmitterClosestHit"
+                );
+            material->setClosestHitProgram( RADIANCE_TYPE, closest_hit );
+        } else {
+            material->setClosestHitProgram( RADIANCE_TYPE, m_closest_hit_program );
+        }
+
         optix::Program evaluate_bsdf = 
             m_program_mgr.get( surface_ptx,
                                surface->evaluateBSDFFunctionName(),
@@ -239,12 +259,12 @@ void OptiXScene::addGeometry( IGeometry* geometry )
         material[ "legionSurfaceSampleBSDF" ]->set( sample_bsdf );
         sample_bsdf->getId();
         
-        optix::Program pdf = 
-            m_program_mgr.get( surface_ptx,
-                               surface->pdfFunctionName(),
-                               false );
-        material[ "legionSurfacePDF" ]->set( pdf );
-        pdf->getId();
+        //optix::Program pdf = 
+        //    m_program_mgr.get( surface_ptx,
+        //                       surface->pdfFunctionName(),
+        //                       false );
+        //material[ "legionSurfacePDF" ]->set( pdf );
+        //pdf->getId();
         
         const std::string emission_func_name = surface->emissionFunctionName();
         optix::Program emission = 
@@ -277,10 +297,18 @@ void OptiXScene::addGeometry( IGeometry* geometry )
             m_light_eval_ids.push_back( emission->getId() );
 
             // TODO: move to sync
+#if 0
             VariableContainer vc0( sample.get() );
+#else
+            VariableContainer vc0( m_optix_context.get() );
+#endif
             geometry->setVariables( vc0 );
 
+#if 0
             VariableContainer vc1( emission.get() );
+#else
+            VariableContainer vc1( m_optix_context.get() );
+#endif
             surface->setVariables( vc1 );
         }
 
@@ -317,7 +345,8 @@ void OptiXScene::sync()
     }
         
     {
-        VariableContainer vc( m_create_ray_program.get() );
+        //VariableContainer vc( m_create_ray_program.get() );
+        VariableContainer vc( m_optix_context.get() );
         m_camera->setVariables( vc );
     }
         
@@ -358,12 +387,13 @@ void OptiXScene::sync()
           optix_material[ "legionSurfaceEvaluateBSDF" ]->getProgram();
         optix::Program sample_bsdf =
           optix_material[ "legionSurfaceSampleBSDF"   ]->getProgram();
-        optix::Program pdf =
-          optix_material[ "legionSurfacePDF"          ]->getProgram();
-        //setSurfaceVariables( optix_material,   surface );
+        //optix::Program pdf =
+        //  optix_material[ "legionSurfacePDF"          ]->getProgram();
+        if (special_ward)
+            setSurfaceVariables( optix_material,   surface );
         setSurfaceVariables( eval_bsdf,   surface );
         setSurfaceVariables( sample_bsdf, surface );
-        setSurfaceVariables( pdf,         surface );
+        //setSurfaceVariables( pdf,         surface );
     }
 
     // Sync lights

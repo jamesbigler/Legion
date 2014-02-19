@@ -58,10 +58,10 @@ int main( int , char** )
 
         legion::ConstantEnvironment env( &ctx );
         env.setRadiance( legion::Color( 0.529f, 0.808f, 0.922f )*0.5f );
-        ctx.setEnvironment( &env );
+        //ctx.setEnvironment( &env );
 
         legion::ProgressiveRenderer renderer( &ctx );
-        renderer.setSamplesPerPixel( 32*2 );
+        renderer.setSamplesPerPixel( 1 );
         renderer.setDisplay( &display );
         ctx.setRenderer( &renderer );
 
